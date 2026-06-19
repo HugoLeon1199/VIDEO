@@ -1,0 +1,10 @@
+anthropic>=0.40.0
+google-genai>=0.8.0
+kokoro>=0.9.4
+faster-whisper>=1.1.0
+edge-tts>=6.1.12
+loguru>=0.7.2
+Pillow>=10.0.0
+tqdm>=4.66.0
+soundfile>=0.12.0
+numpy>=1.26.0

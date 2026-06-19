@@ -9,7 +9,7 @@ CLAUDE_MODEL = "claude-haiku-4-5-20251001"
 GEMINI_IMAGE_MODEL = "gemini-2.5-flash-image"
 
 # TTS Settings
-TTS_VOICE = "af_heart"   # Kokoro voice ID (American English, warm)
+TTS_VOICE = "am_fenrir"  # Kokoro voice ID (dramatic male, good for history storytelling)
 TTS_SPEED = 0.95         # Slightly slower for clarity
 
 # Image Settings

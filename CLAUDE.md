@@ -6,10 +6,10 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ```powershell
 # Set API keys (required before any run)
-$env:ANTHROPIC_API_KEY = "sk-ant-..."
-$env:GEMINI_API_KEY = "AIza..."
+$env:GEMINI_API_KEY = "AIza..."          # required for steps 4 and 5
+$env:ANTHROPIC_API_KEY = "sk-ant-..."   # required for step 7 only
 
-# Install dependencies
+# Install dependencies (first time)
 pip install -r requirements.txt
 
 # Full pipeline (steps 2–7) — requires script.txt already placed manually
@@ -24,11 +24,22 @@ python main.py --video-id "my-video-slug" --from-step 5
 # Resume after interruption (step 5 takes ~100 min and is the most likely to be interrupted)
 python main.py --video-id "my-video-slug" --resume
 
+# Demo mode: generate only N images (~30s video) for quick testing
+python main.py --video-id "my-video-slug" --from-step 4 --demo 10
+
 # Step 6 with subtitle burn-in (off by default)
 python main.py --video-id "my-video-slug" --step 6 --subtitles
 ```
 
-FFmpeg must be installed separately and available in `PATH`. All AI inference (TTS, transcription) runs locally on CPU — no GPU required.
+FFmpeg must be installed separately and available in `PATH` (`winget install Gyan.FFmpeg`). All AI inference (TTS, transcription) runs locally on CPU — no GPU required.
+
+## Before first run
+
+1. Create the video directory and place the script:
+   ```
+   output\{video-id}\script.txt
+   ```
+2. Script is written manually on Claude Web using the system prompt in `AGENTS.md`.
 
 ## Architecture
 
@@ -46,38 +57,42 @@ The pipeline is a linear 7-step sequence. Each step is a standalone module in `s
 | 6 | `render_video.py` | `images/` + `audio.mp3` + `image_prompts.json` | `final.mp4` |
 | 7 | `metadata.py` | `script.txt` | `metadata.json` |
 
-Each video lives in `output/{video_id}/`. Step 1 (writing the script) is always done manually on Claude Web; the pipeline starts at step 2.
+Each video lives in `output/{video_id}/`. Step 1 (writing the script) is always done manually; the automated pipeline starts at step 2.
 
-**Resume logic** (`detect_resume_step` in `main.py`): walks backward through output files to find the highest completed step, then starts from the next one. Step 5 also checks `images/progress.json` for partial image completion.
+**Resume logic** (`detect_resume_step` in `main.py`): checks existence of each output file in reverse order to find the last completed step, then continues from the next one. Step 5 additionally checks `images/progress.json` for partial image completion.
+
+**Demo mode** (`--demo N`): limits image count to N (default 10) and trims timestamps to cover only the first `N × 3` seconds. Useful for testing the full pipeline end-to-end without waiting 100 minutes.
 
 ## Key implementation details
 
-**TTS (step 2):** Tries Kokoro TTS first (`KPipeline(lang_code="a")`), falls back to `edge-tts` on any failure. Kokoro outputs numpy chunks at 24kHz → written to a temp WAV via `soundfile` → converted to MP3 via `ffmpeg -codec:a libmp3lame`.
+**TTS (step 2):** Tries Kokoro TTS first (`KPipeline(lang_code="a")`), falls back to `edge-tts` automatically on any failure. Kokoro outputs numpy chunks at 24kHz → written to a temp WAV via `soundfile` → converted to MP3 via `ffmpeg -codec:a libmp3lame`.
 
 **Transcription (step 3):** Uses `faster_whisper` model `"base"` with `compute_type="int8"` for CPU efficiency. Word-level timestamps are accumulated into sentence-level segments (break at punctuation or after 4.5s).
 
-**Image prompts (step 4):** Makes a single Claude Haiku API call with the full transcript. If the response returns fewer than 200 prompts, duplicates the last entry to pad. Trims if over 200. Always appends the fixed style suffix: `"ancient art style, prehistoric, minimalist, warm earth tones, no text"`.
+**Image prompts (step 4):** Prefers Gemini Flash text (`gemini-2.5-flash`) if `GEMINI_API_KEY` is set, falls back to Claude Haiku if only `ANTHROPIC_API_KEY` is set. Makes a single API call with the full transcript. If fewer than N prompts are returned, duplicates the last entry to pad. Always appends the fixed style suffix: `"ancient art style, prehistoric, minimalist, warm earth tones, no text"`.
 
-**Image generation (step 5):** Uses `google.genai` (the new SDK, not `google.generativeai`). Rate-limited to 2 req/min with a 31s sleep between requests. On 429/RESOURCE_EXHAUSTED sleeps 60s and retries up to 3 times. Progress is persisted to `images/progress.json` after every successful image so the step can be safely interrupted and resumed.
+**Image generation (step 5):** Uses `google.genai` SDK (not `google.generativeai`). Model: `gemini-2.5-flash-image` (requires billing — no free tier for image generation). Rate-limited to 2 req/min with 31s sleep between requests. On 429/RESOURCE_EXHAUSTED sleeps 60s and retries up to 3 times. Progress is persisted to `images/progress.json` after every successful image so the step can be safely interrupted and resumed.
 
-**Video render (step 6):** Builds a single large FFmpeg `filter_complex` string: each image gets `scale → pad → zoompan` (Ken Burns 5% zoom) then all clips are concatenated. With `--subtitles`, `timestamps.json` is converted to a temp `.srt` file and burned in via the `subtitles=` filter. FFmpeg receives 200 image inputs plus the audio as the last input.
+**Video render (step 6):** Builds a single FFmpeg `filter_complex` string: each image gets `scale → pad → zoompan` (Ken Burns 5% zoom) then all clips are concatenated. With `--subtitles`, `timestamps.json` is converted to a temp `.srt` file and burned in via the `subtitles=` filter. FFmpeg receives all image inputs plus audio as the last input (`-map {n}:a`).
 
-**API calls (steps 4 and 7):** Both use `anthropic.Anthropic(api_key=config.ANTHROPIC_API_KEY)`. Retry up to `CLAUDE_MAX_RETRIES` (2) times with `CLAUDE_RETRY_SLEEP` (5s) between attempts. JSON is extracted from responses by stripping markdown fences and finding the first `[`…`]` or `{`…`}` bounds.
+**API calls (steps 4 and 7):** JSON is extracted from responses by stripping markdown fences and finding the first `[`…`]` or `{`…`}` bounds. Retry up to `CLAUDE_MAX_RETRIES` (2) times with `CLAUDE_RETRY_SLEEP` (5s) on failure.
 
 ## Config
 
-All tunable values are in `config.py` (imported directly, not via env vars except for API keys). Key values to know:
+All tunable values are in `config.py` (read directly as constants, not via env vars except API keys).
 
-- `IMAGES_PER_VIDEO = 200` — changing this also changes the Claude prompt and the FFmpeg input count
-- `GEMINI_RATE_LIMIT_SLEEP = 31` — must stay ≥31s to stay under 2 req/min free-tier limit
-- `KEN_BURNS_ZOOM = 0.05` — fraction of zoom applied over each clip's duration via `zoompan`
+Key values:
+- `IMAGES_PER_VIDEO = 200` — changing this also affects the prompt and FFmpeg input count
+- `GEMINI_IMAGE_MODEL = "gemini-2.5-flash-image"` — correct model name (old name `gemini-2.5-flash-preview-image-generation` no longer works)
+- `GEMINI_RATE_LIMIT_SLEEP = 31` — keep ≥31s to stay under 2 req/min
+- `KEN_BURNS_ZOOM = 0.05` — 5% zoom applied over each clip's duration via `zoompan`
 
 ## Prompts
 
-`prompts/system_prompt.txt` — system prompt for step 4 (image prompts). Contains `{N}` placeholder replaced at runtime with `IMAGES_PER_VIDEO`.
+`prompts/system_prompt.txt` — used in step 4. Contains `{N}` placeholder replaced at runtime with image count.
 
-`prompts/metadata_prompt.txt` — system prompt for step 7 (metadata). Both prompts instruct Claude to return only raw JSON with no markdown.
+`prompts/metadata_prompt.txt` — used in step 7. Both prompts instruct the model to return only raw JSON with no markdown.
 
 ## Logging
 
-`loguru` is configured once in `main.py:setup_logging()`. Console shows INFO; `pipeline.log` captures DEBUG with rotation at 10 MB. All step modules use `from loguru import logger` directly — no additional setup needed per module.
+`loguru` configured once in `main.py:setup_logging()`. Console shows INFO; `pipeline.log` captures DEBUG with 10 MB rotation. All step modules use `from loguru import logger` directly.

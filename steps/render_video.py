@@ -146,6 +146,7 @@ def run(video_id: str, subtitles: bool = False) -> None:
             "-map", f"{n}:a",           # audio from last input
             "-c:v", "libx264",
             "-preset", "medium",
+            "-pix_fmt", "yuv420p",
             "-b:v", config.VIDEO_BITRATE,
             "-c:a", "aac",
             "-b:a", "192k",

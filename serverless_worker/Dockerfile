@@ -17,6 +17,10 @@ ENV MODEL_ID=black-forest-labs/FLUX.2-klein-4B \
 
 WORKDIR /app
 
+# Ensure python3 is available and symlinked
+RUN which python3 || (apt-get update -qq && apt-get install -y python3) && \
+    which python || ln -sf $(which python3) /usr/local/bin/python
+
 # Install pinned Python deps
 COPY requirements.txt /app/requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt

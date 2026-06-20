@@ -29,4 +29,4 @@ COPY image_utils.py /app/image_utils.py
 # HF_TOKEN is injected at runtime via RunPod Secrets — never baked into image
 # Model weights download to /runpod-volume/hf-cache at first cold-start
 
-CMD ["python", "-u", "handler.py"]
+CMD ["python3", "-u", "handler.py"]

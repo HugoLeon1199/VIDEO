@@ -2,7 +2,7 @@ import os
 
 # API Keys (set as environment variables before running)
 ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY", "")
-GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "GEMINI_KEY_REMOVED")
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "")
 
 # Models
 CLAUDE_MODEL = "claude-haiku-4-5-20251001"

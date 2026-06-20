@@ -26,4 +26,10 @@ COPY schemas.py /app/schemas.py
 COPY image_utils.py /app/image_utils.py
 
 # HF_TOKEN is injected at runtime via RunPod Secrets — never baked into image
-CMD ["python3", "-u", "handler.py"]
+#
+# The base runpod/pytorch image ships its own ENTRYPOINT (/start.sh for
+# SSH/Jupyter). If left in place it wraps our CMD and the serverless handler
+# never runs (container exits 127). Reset ENTRYPOINT and invoke python3 by
+# absolute path so there is no PATH ambiguity.
+ENTRYPOINT []
+CMD ["/usr/bin/python3", "-u", "/app/handler.py"]

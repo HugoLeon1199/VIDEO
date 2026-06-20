@@ -1,0 +1,18 @@
+{
+  "input": {
+    "video_id": "ancient-humans-without-medicine",
+    "scene_id": "001",
+    "mode": "text_to_image",
+    "prompt": "A primitive red ochre fish and a stone spear painted directly onto a rough cracked cave wall",
+    "global_style": "hand-drawn prehistoric illustration, aged parchment or cave-stone texture, rough charcoal outlines, muted ochre clay charcoal and moss pigments, flat colors, simple readable composition, no text",
+    "negative_prompt": "modern objects, glossy 3D, vector art, neon colors, text, letters, watermark",
+    "width": 1024,
+    "height": 576,
+    "steps": 4,
+    "guidance_scale": 1.0,
+    "candidate_seeds": [11001, 11002, 11003],
+    "output_format": "WEBP",
+    "quality": 92,
+    "output_mode": "base64"
+  }
+}

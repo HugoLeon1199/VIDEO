@@ -1,0 +1,40 @@
+# Secrets — never commit
+.env
+.env.*
+!.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.pytest_cache/
+*.egg-info/
+dist/
+build/
+.venv/
+venv/
+
+# Pipeline outputs (large binary files)
+output/*/audio.mp3
+output/*/images/
+output/*/final.mp4
+output/*/audio_trimmed.mp3
+output/*_demo*/
+
+# Logs
+*.log
+pipeline.log
+
+# Model weights — never commit
+*.safetensors
+*.ckpt
+*.bin
+*.pt
+*.pth
+
+# Docker
+.dockerignore
+
+# OS
+.DS_Store
+Thumbs.db

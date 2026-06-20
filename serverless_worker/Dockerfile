@@ -17,6 +17,15 @@ ENV MODEL_ID=black-forest-labs/FLUX.2-klein-4B \
 
 WORKDIR /app
 
+# Debug: print the base image's default start scripts (the thing that wraps
+# our CMD and causes exit 127). Visible in build logs.
+RUN echo "=== base start scripts ===" && \
+    ls -la /start.sh /*.sh 2>/dev/null || echo "no /start.sh"; \
+    ls -la ../start.sh 2>/dev/null || echo "no ../start.sh"; true
+
+# Remove RunPod base start scripts so nothing wraps our handler
+RUN rm -f /start.sh /pre_start.sh /post_start.sh ../start.sh 2>/dev/null || true
+
 COPY requirements.txt /app/requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 

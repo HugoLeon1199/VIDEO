@@ -19,7 +19,7 @@ from image_utils import (
     sha256_of,
     to_base64,
 )
-from model_loader import get_pipeline, load_model
+from model_loader import load_model
 from schemas import validate_input
 
 logging.basicConfig(
@@ -57,7 +57,9 @@ def handler(job: dict) -> dict:
     # Build full prompt
     full_prompt = f"{prompt}, {global_style}".strip(", ") if global_style else prompt
 
-    pipe = get_pipeline()
+    # Lazy-load model on first job (NOT at import) so the serverless loop
+    # starts immediately and the worker can accept jobs while/after loading.
+    pipe = load_model()
     images_out = []
     gen_errors = []
 
@@ -136,7 +138,9 @@ def handler(job: dict) -> dict:
     }
 
 
-# Load model once at cold-start before accepting any jobs
-load_model()
-
+# Start the serverless loop IMMEDIATELY so the worker registers and can
+# accept jobs. The model is lazy-loaded inside handler() on the first job
+# (load_model() caches the pipeline, so subsequent jobs reuse it).
+# Loading the 13GB model before start() makes RunPod report the worker as
+# "ready" while the serverless loop never actually starts → jobs stuck IN_QUEUE.
 runpod.serverless.start({"handler": handler})

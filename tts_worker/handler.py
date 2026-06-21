@@ -38,12 +38,26 @@ MODEL_CACHE = {}
 def _load_model():
     if "tts" in MODEL_CACHE:
         return MODEL_CACHE["tts"]
-    logger.info("Loading F5-TTS model...")
+    logger.info("Loading F5-TTS Vietnamese model...")
     t0 = time.time()
     from f5_tts.api import F5TTS
-    tts = F5TTS()
+    from huggingface_hub import hf_hub_download
+
+    # Download Vietnamese fine-tuned checkpoint
+    ckpt_path = hf_hub_download(
+        repo_id="dragonSwing/vi-f5tts",
+        filename="model_last.pt",
+        cache_dir=str(VOLUME_PATH / "hf-cache"),
+    )
+    vocab_path = hf_hub_download(
+        repo_id="dragonSwing/vi-f5tts",
+        filename="vocab.txt",
+        cache_dir=str(VOLUME_PATH / "hf-cache"),
+    )
+    logger.info("Vietnamese checkpoint: %s", ckpt_path)
+    tts = F5TTS(ckpt_file=ckpt_path, vocab_file=vocab_path)
     MODEL_CACHE["tts"] = tts
-    logger.info("F5-TTS loaded in %.1fs", time.time() - t0)
+    logger.info("F5-TTS Vietnamese loaded in %.1fs", time.time() - t0)
     return tts
 
 

@@ -23,6 +23,16 @@ ENV MODEL_ID=black-forest-labs/FLUX.2-klein-4B \
 
 WORKDIR /
 
+# Debug: show where python lives on runpod/base (printed in build log).
+# exit 127 at runtime = the CMD's `python` not found because runpod/base puts
+# python in a venv that is only on PATH via the login shell, while exec-form
+# CMD does not go through a shell.
+RUN echo "=== PYTHON LOCATION ===" && \
+    (which python || echo "no python on PATH") && \
+    (which python3 || echo "no python3 on PATH") && \
+    echo "PATH=$PATH" && \
+    (ls -la /opt/conda/bin/python* /opt/venv/bin/python* /usr/local/bin/python* /usr/bin/python* 2>/dev/null || true)
+
 COPY requirements.txt /requirements.txt
 RUN python -m pip install --no-cache-dir -r /requirements.txt
 
@@ -31,6 +41,8 @@ COPY model_loader.py /model_loader.py
 COPY schemas.py /schemas.py
 COPY image_utils.py /image_utils.py
 
-# Do NOT reset ENTRYPOINT — runpod/base's entrypoint sets up the serverless
-# runtime, then runs this CMD. HF_TOKEN injected at runtime via RunPod Secret.
-CMD ["python", "-u", "/handler.py"]
+# Run through a LOGIN shell so runpod/base's venv/conda activation is applied
+# (fixes exit 127 where exec-form `python` was not on PATH). `exec` makes python
+# PID 1 for correct signal handling. Do NOT reset ENTRYPOINT — runpod/base's
+# entrypoint sets up the serverless runtime, then runs this CMD.
+CMD ["bash", "-lc", "exec python -u /handler.py"]

@@ -76,9 +76,9 @@ def handler(job: dict) -> dict:
             import torch
             generator = torch.Generator("cuda").manual_seed(seed)
 
+            # FLUX.2 Klein (distilled) does NOT accept negative_prompt.
             result = pipe(
                 prompt=full_prompt,
-                negative_prompt=negative_prompt or None,
                 width=width,
                 height=height,
                 num_inference_steps=steps,

@@ -43,15 +43,20 @@ def _load_model():
     from f5_tts.api import F5TTS
     from huggingface_hub import hf_hub_download
 
-    # Download Vietnamese fine-tuned checkpoint (hynt/F5-TTS-Vietnamese-ViVoice)
+    # Download Vietnamese fine-tuned checkpoint (giahy2507/f5-tts-vietnamese)
+    cache_dir = str(VOLUME_PATH / "hf-cache")
     ckpt_path = hf_hub_download(
-        repo_id="hynt/F5-TTS-Vietnamese-ViVoice",
-        filename="model_last.pt",
-        cache_dir=str(VOLUME_PATH / "hf-cache"),
+        repo_id="giahy2507/f5-tts-vietnamese",
+        filename="model_3210000.pt",
+        cache_dir=cache_dir,
+    )
+    vocab_path = hf_hub_download(
+        repo_id="giahy2507/f5-tts-vietnamese",
+        filename="vocab.txt",
+        cache_dir=cache_dir,
     )
     logger.info("Vietnamese checkpoint: %s", ckpt_path)
-    # No custom vocab — use default F5-TTS vocab
-    tts = F5TTS(ckpt_file=ckpt_path)
+    tts = F5TTS(ckpt_file=ckpt_path, vocab_file=vocab_path)
     MODEL_CACHE["tts"] = tts
     logger.info("F5-TTS Vietnamese loaded in %.1fs", time.time() - t0)
     return tts

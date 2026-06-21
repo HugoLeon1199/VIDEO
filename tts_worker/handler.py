@@ -26,8 +26,11 @@ logging.basicConfig(
     format="%(asctime)s [%(levelname)s] %(name)s - %(message)s",
 )
 logger = logging.getLogger("tts_handler")
+logger.info("=== TTS worker starting ===")
+print("=== TTS worker starting ===", flush=True)
 
-VOLUME_PATH = Path(os.environ.get("RUNPOD_VOLUME_PATH", "/runpod-volume"))
+_vol = Path(os.environ.get("RUNPOD_VOLUME_PATH", "/runpod-volume"))
+VOLUME_PATH = _vol if _vol.exists() else Path("/tmp")
 REF_DIR = VOLUME_PATH / "tts_refs"
 MODEL_CACHE = {}
 

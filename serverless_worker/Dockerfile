@@ -19,4 +19,9 @@ RUN pip install --no-cache-dir runpod==1.7.9
 
 COPY handler.py /handler.py
 
-CMD ["python", "-u", "/handler.py"]
+# Use ENTRYPOINT (not CMD). The endpoint/template has a stray Docker "Container
+# Start Command" = "Endpoint" that OVERRIDES CMD, so a CMD-only image runs
+# `Endpoint` -> tini "exec Endpoint failed: No such file or directory" crash-loop.
+# ENTRYPOINT is NOT overridden by that field, so the container runs
+# `python -u /handler.py Endpoint` (handler ignores the extra arg) and starts.
+ENTRYPOINT ["python", "-u", "/handler.py"]

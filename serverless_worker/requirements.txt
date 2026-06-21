@@ -1,4 +1,4 @@
-runpod==1.7.9
+runpod==1.9.1
 torch==2.6.0
 torchvision==0.21.0
 diffusers==0.38.0

@@ -1,11 +1,14 @@
-# RunPod Serverless worker — official docs pattern (python:slim, system python)
+# RunPod Serverless worker — FLUX.2 Klein 4B  (FINAL working config)
 # Build context in RunPod settings: serverless_worker
 #
-# MINIMAL diagnostic image: only the runpod SDK, NO torch/diffusers. Purpose:
-# isolate whether the serverless loop picks up jobs on python:3.11.1-slim
-# (system python, clean entrypoint) — runpod/base and runpod/pytorch both went
-# "ready" but never picked up jobs. Tiny image => fast build + fast cold start.
-# Once the loop is confirmed, torch/diffusers + the real handler are added back.
+# Key lessons baked in:
+#  - python:3.11.1-slim => SYSTEM python (no venv), official RunPod docs base.
+#  - ENTRYPOINT (not CMD): the endpoint/template has a stray "Container Start
+#    Command" = "Endpoint" that OVERRIDES Docker CMD and crash-loops the worker
+#    ("[FATAL tini] exec Endpoint failed"). ENTRYPOINT is not overridden, so the
+#    container runs python -u /handler.py (+ ignored extra arg) and the
+#    serverless loop actually starts and picks up jobs.
+#  - Model is lazy-loaded inside handler() and cached on the network volume.
 
 FROM python:3.11.1-slim
 
@@ -13,15 +16,25 @@ ENV PYTHONUNBUFFERED=1 \
     PIP_NO_CACHE_DIR=1 \
     PIP_DISABLE_PIP_VERSION_CHECK=1
 
+ENV MODEL_ID=black-forest-labs/FLUX.2-klein-4B \
+    HF_HOME=/runpod-volume/hf-cache \
+    HF_HUB_CACHE=/runpod-volume/hf-cache \
+    RUNPOD_VOLUME_PATH=/runpod-volume
+
 WORKDIR /
 
-RUN pip install --no-cache-dir runpod==1.7.9
+# System libs needed by torch / Pillow / diffusers
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        git libgl1 libglib2.0-0 && \
+    rm -rf /var/lib/apt/lists/*
+
+COPY requirements.txt /requirements.txt
+RUN pip install --no-cache-dir -r /requirements.txt
 
 COPY handler.py /handler.py
+COPY model_loader.py /model_loader.py
+COPY schemas.py /schemas.py
+COPY image_utils.py /image_utils.py
 
-# Use ENTRYPOINT (not CMD). The endpoint/template has a stray Docker "Container
-# Start Command" = "Endpoint" that OVERRIDES CMD, so a CMD-only image runs
-# `Endpoint` -> tini "exec Endpoint failed: No such file or directory" crash-loop.
-# ENTRYPOINT is NOT overridden by that field, so the container runs
-# `python -u /handler.py Endpoint` (handler ignores the extra arg) and starts.
+# HF_TOKEN injected at runtime via RunPod Secret.
 ENTRYPOINT ["python", "-u", "/handler.py"]

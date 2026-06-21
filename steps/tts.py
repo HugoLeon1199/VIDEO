@@ -1,4 +1,4 @@
-"""Step 2: Text-to-Speech using Kokoro TTS (local), fallback to edge-tts."""
+"""Step 2: Text-to-Speech using Kokoro TTS (local), fallback to edge-tts, or RunPod F5-TTS clone."""
 
 import asyncio
 import subprocess
@@ -62,23 +62,43 @@ def _kokoro_tts(text: str, output_path: Path) -> None:
     logger.info("Kokoro TTS complete → {}", output_path)
 
 
-async def _edge_tts_async(text: str, output_path: Path) -> None:
+async def _edge_tts_async(text: str, output_path: Path, voice: str, rate: str = "-5%") -> None:
     import edge_tts
 
-    logger.info("Using edge-tts fallback (voice: en-US-GuyNeural)")
-    communicate = edge_tts.Communicate(text, voice="en-US-GuyNeural", rate="-5%")
+    logger.info("Using edge-tts (voice: {})", voice)
+    communicate = edge_tts.Communicate(text, voice=voice, rate=rate)
     await communicate.save(str(output_path))
     logger.info("edge-tts complete → {}", output_path)
 
 
-def _edge_tts(text: str, output_path: Path) -> None:
-    asyncio.run(_edge_tts_async(text, output_path))
+def _edge_tts(text: str, output_path: Path, voice: str = "en-US-GuyNeural", rate: str = "-5%") -> None:
+    asyncio.run(_edge_tts_async(text, output_path, voice=voice, rate=rate))
 
 
 def run(video_id: str) -> None:
     video_dir = Path(config.OUTPUT_DIR) / video_id
     script_path = video_dir / "script.txt"
     output_path = video_dir / "audio.mp3"
+
+    # Per-video TTS config override via tts_config.json
+    tts_config_path = video_dir / "tts_config.json"
+    tts_engine = "kokoro"
+    edge_voice = "en-US-GuyNeural"
+    edge_rate = "-5%"
+    clone_voice_id = "default"
+    clone_ref_audio = None  # path to reference audio for first-time embed
+    clone_speed = 1.0
+    if tts_config_path.exists():
+        import json
+        tts_cfg = json.loads(tts_config_path.read_text(encoding="utf-8"))
+        tts_engine = tts_cfg.get("engine", tts_engine)
+        edge_voice = tts_cfg.get("voice", edge_voice)
+        edge_rate = tts_cfg.get("rate", edge_rate)
+        clone_voice_id = tts_cfg.get("voice_id", clone_voice_id)
+        clone_ref_audio = tts_cfg.get("ref_audio")  # absolute path or relative to video_dir
+        clone_speed = tts_cfg.get("speed", clone_speed)
+        clone_ref_text = tts_cfg.get("ref_text", "")
+        logger.info("TTS config: engine={} voice={} rate={}", tts_engine, edge_voice, edge_rate)
 
     if not script_path.exists():
         logger.error("script.txt not found: {}", script_path)
@@ -91,15 +111,36 @@ def run(video_id: str) -> None:
 
     logger.info("Generating TTS for {} words...", len(text.split()))
 
-    try:
-        _kokoro_tts(text, output_path)
-    except (ImportError, Exception) as e:
-        logger.warning("Kokoro TTS failed ({}), falling back to edge-tts", e)
+    if tts_engine == "clone":
         try:
-            _edge_tts(text, output_path)
-        except Exception as e2:
-            logger.error("edge-tts also failed: {}", e2)
+            from tts_generation.runpod_tts_client import clone_voice
+            ref_path = None
+            if clone_ref_audio:
+                p = Path(clone_ref_audio)
+                ref_path = p if p.is_absolute() else video_dir / p
+            logger.info("Using F5-TTS clone (voice_id={}, ref={})", clone_voice_id, ref_path)
+            audio_bytes = clone_voice(text, voice_id=clone_voice_id, ref_audio_path=ref_path, ref_text=clone_ref_text, speed=clone_speed)
+            output_path.write_bytes(audio_bytes)
+            logger.info("F5-TTS clone complete → {}", output_path)
+        except Exception as e:
+            logger.error("F5-TTS clone failed: {}", e)
             sys.exit(1)
+    elif tts_engine == "edge":
+        try:
+            _edge_tts(text, output_path, voice=edge_voice, rate=edge_rate)
+        except Exception as e:
+            logger.error("edge-tts failed: {}", e)
+            sys.exit(1)
+    else:
+        try:
+            _kokoro_tts(text, output_path)
+        except (ImportError, Exception) as e:
+            logger.warning("Kokoro TTS failed ({}), falling back to edge-tts", e)
+            try:
+                _edge_tts(text, output_path, voice=edge_voice, rate=edge_rate)
+            except Exception as e2:
+                logger.error("edge-tts also failed: {}", e2)
+                sys.exit(1)
 
     if output_path.exists():
         duration = _get_audio_duration(output_path)

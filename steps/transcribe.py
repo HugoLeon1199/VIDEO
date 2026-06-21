@@ -10,6 +10,7 @@ import config
 
 
 def run(video_id: str) -> None:
+    import json as _json
     from faster_whisper import WhisperModel
 
     video_dir = Path(config.OUTPUT_DIR) / video_id
@@ -20,11 +21,24 @@ def run(video_id: str) -> None:
         logger.error("audio.mp3 not found: {}", audio_path)
         sys.exit(1)
 
-    logger.info("Loading faster-whisper model (medium.en, CPU, int8)...")
-    model = WhisperModel("medium.en", device="cpu", compute_type="int8")
+    # Per-video transcription config override via transcribe_config.json
+    whisper_model = "medium.en"
+    whisper_language = None  # None = auto-detect
+    transcribe_cfg_path = video_dir / "transcribe_config.json"
+    if transcribe_cfg_path.exists():
+        cfg = _json.loads(transcribe_cfg_path.read_text(encoding="utf-8"))
+        whisper_model = cfg.get("model", whisper_model)
+        whisper_language = cfg.get("language", whisper_language)
+        logger.info("Transcribe config: model={} language={}", whisper_model, whisper_language)
+
+    logger.info("Loading faster-whisper model ({}, CPU, int8)...", whisper_model)
+    model = WhisperModel(whisper_model, device="cpu", compute_type="int8")
 
     logger.info("Transcribing {}...", audio_path)
-    segments, info = model.transcribe(str(audio_path), word_timestamps=True)
+    transcribe_kwargs = {"word_timestamps": True}
+    if whisper_language:
+        transcribe_kwargs["language"] = whisper_language
+    segments, info = model.transcribe(str(audio_path), **transcribe_kwargs)
 
     logger.info(
         "Detected language: {} (probability {:.2f})",

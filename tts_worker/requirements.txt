@@ -1,0 +1,6 @@
+runpod
+f5-tts
+soundfile
+numpy
+torch
+torchaudio

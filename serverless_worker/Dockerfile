@@ -1,48 +1,22 @@
-# RunPod Serverless worker — FLUX.2 Klein 4B
-# Build context in RunPod settings must be: serverless_worker
+# RunPod Serverless worker — official docs pattern (python:slim, system python)
+# Build context in RunPod settings: serverless_worker
 #
-# IMPORTANT: use runpod/base (the SERVERLESS base image), NOT runpod/pytorch
-# (which is a POD image for SSH/Jupyter). runpod/base ships the correct
-# serverless runtime/entrypoint so `runpod.serverless.start()` attaches to the
-# job queue. Using runpod/pytorch made workers go "ready" but never pick up
-# jobs (stuck IN_QUEUE), even after fixing exit 127.
-#
-# runpod/base does NOT include torch, so we install it (plus diffusers stack).
+# MINIMAL diagnostic image: only the runpod SDK, NO torch/diffusers. Purpose:
+# isolate whether the serverless loop picks up jobs on python:3.11.1-slim
+# (system python, clean entrypoint) — runpod/base and runpod/pytorch both went
+# "ready" but never picked up jobs. Tiny image => fast build + fast cold start.
+# Once the loop is confirmed, torch/diffusers + the real handler are added back.
 
-FROM runpod/base:1.0.7-cuda1290-ubuntu2204
+FROM python:3.11.1-slim
 
 ENV PYTHONUNBUFFERED=1 \
     PIP_NO_CACHE_DIR=1 \
     PIP_DISABLE_PIP_VERSION_CHECK=1
 
-# Model cache on the mounted Network Volume (downloaded once)
-ENV MODEL_ID=black-forest-labs/FLUX.2-klein-4B \
-    HF_HOME=/runpod-volume/hf-cache \
-    HF_HUB_CACHE=/runpod-volume/hf-cache \
-    RUNPOD_VOLUME_PATH=/runpod-volume
-
 WORKDIR /
 
-# Debug: show where python lives on runpod/base (printed in build log).
-# exit 127 at runtime = the CMD's `python` not found because runpod/base puts
-# python in a venv that is only on PATH via the login shell, while exec-form
-# CMD does not go through a shell.
-RUN echo "=== PYTHON LOCATION ===" && \
-    (which python || echo "no python on PATH") && \
-    (which python3 || echo "no python3 on PATH") && \
-    echo "PATH=$PATH" && \
-    (ls -la /opt/conda/bin/python* /opt/venv/bin/python* /usr/local/bin/python* /usr/bin/python* 2>/dev/null || true)
-
-COPY requirements.txt /requirements.txt
-RUN python -m pip install --no-cache-dir -r /requirements.txt
+RUN pip install --no-cache-dir runpod==1.7.9
 
 COPY handler.py /handler.py
-COPY model_loader.py /model_loader.py
-COPY schemas.py /schemas.py
-COPY image_utils.py /image_utils.py
 
-# Run through a LOGIN shell so runpod/base's venv/conda activation is applied
-# (fixes exit 127 where exec-form `python` was not on PATH). `exec` makes python
-# PID 1 for correct signal handling. Do NOT reset ENTRYPOINT — runpod/base's
-# entrypoint sets up the serverless runtime, then runs this CMD.
-CMD ["bash", "-lc", "exec python -u /handler.py"]
+CMD ["python", "-u", "/handler.py"]

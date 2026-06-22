@@ -1,4 +1,4 @@
-"""Load FLUX.2 Dev 32B once at worker startup and keep it in memory."""
+"""Load FLUX.2 Klein 9B once at worker startup and keep it in memory."""
 
 from __future__ import annotations
 
@@ -17,9 +17,9 @@ _pipeline = None
 
 def load_model():
     """
-    Load FluxPipeline (FLUX.2 Dev 32B) onto GPU in bfloat16.
-    Called once at cold-start. Subsequent calls return the cached pipeline.
-    Requires H100/A100 80GB — model weights ~60GB in bfloat16.
+    Load Flux2KleinPipeline (9B) in bfloat16 full precision.
+    Requires 48GB GPU (~29GB VRAM peak).
+    Called once at cold-start. Subsequent calls return cached pipeline.
     """
     global _pipeline
     if _pipeline is not None:
@@ -30,17 +30,17 @@ def load_model():
 
     try:
         import torch
-        from diffusers import Flux2KleinPipeline as FluxPipeline
+        from diffusers import Flux2KleinPipeline
     except ImportError as e:
         logger.error("Missing dependency: %s", e)
         sys.exit(1)
 
     if not torch.cuda.is_available():
-        logger.error("No CUDA device found — cannot run FLUX.2 Dev")
+        logger.error("No CUDA device found — cannot run FLUX.2 Klein 9B")
         sys.exit(1)
 
     try:
-        pipe = FluxPipeline.from_pretrained(
+        pipe = Flux2KleinPipeline.from_pretrained(
             MODEL_ID,
             torch_dtype=torch.bfloat16,
             token=HF_TOKEN or None,
@@ -51,7 +51,7 @@ def load_model():
         sys.exit(1)
 
     elapsed = time.time() - t0
-    logger.info("Model loaded in %.1fs (dtype=bfloat16, device=cuda)", elapsed)
+    logger.info("Model loaded in %.1fs (bfloat16, device=cuda)", elapsed)
 
     _pipeline = pipe
     return _pipeline

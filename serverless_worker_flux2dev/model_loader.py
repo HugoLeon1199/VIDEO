@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import logging
 import os
-import sys
 import time
 
 logger = logging.getLogger(__name__)
@@ -33,11 +32,11 @@ def load_model():
         from diffusers import Flux2KleinPipeline
     except ImportError as e:
         logger.error("Missing dependency: %s", e)
-        sys.exit(1)
+        raise RuntimeError(f"Missing dependency: {e}") from e
 
     if not torch.cuda.is_available():
         logger.error("No CUDA device found — cannot run FLUX.2 Klein 9B")
-        sys.exit(1)
+        raise RuntimeError("No CUDA device available")
 
     try:
         pipe = Flux2KleinPipeline.from_pretrained(
@@ -48,7 +47,7 @@ def load_model():
         pipe = pipe.to("cuda")
     except Exception as e:
         logger.error("Failed to load model '%s': %s", MODEL_ID, e)
-        sys.exit(1)
+        raise
 
     elapsed = time.time() - t0
     logger.info("Model loaded in %.1fs (bfloat16, device=cuda)", elapsed)

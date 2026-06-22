@@ -9,7 +9,6 @@ import time
 logger = logging.getLogger(__name__)
 
 MODEL_ID = os.environ.get("MODEL_ID", "black-forest-labs/FLUX.2-klein-9B")
-HF_TOKEN = os.environ.get("HF_TOKEN")
 
 _pipeline = None
 
@@ -24,7 +23,9 @@ def load_model():
     if _pipeline is not None:
         return _pipeline
 
-    logger.info("Loading model %s ...", MODEL_ID)
+    # Read at call time so RunPod env injection is guaranteed to have happened
+    hf_token = os.environ.get("HF_TOKEN") or os.environ.get("HUGGING_FACE_HUB_TOKEN")
+    logger.info("Loading model %s (token=%s) ...", MODEL_ID, "set" if hf_token else "MISSING")
     t0 = time.time()
 
     try:
@@ -42,7 +43,7 @@ def load_model():
         pipe = Flux2KleinPipeline.from_pretrained(
             MODEL_ID,
             torch_dtype=torch.bfloat16,
-            token=HF_TOKEN or None,
+            token=hf_token or None,
         )
         pipe = pipe.to("cuda")
     except Exception as e:

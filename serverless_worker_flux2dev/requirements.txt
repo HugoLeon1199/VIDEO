@@ -1,0 +1,10 @@
+runpod==1.9.1
+torch==2.6.0
+torchvision==0.21.0
+diffusers==0.38.0
+transformers==5.12.1
+accelerate==1.7.0
+Pillow==11.2.1
+huggingface-hub==1.16.4
+sentencepiece==0.2.0
+protobuf==5.29.4

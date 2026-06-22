@@ -19,6 +19,8 @@ import logging
 import os
 import sys
 import time
+import threading
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
@@ -54,7 +56,13 @@ def _save_log(path: Path, log: dict) -> None:
 
 def _scene_done(log: dict, scene_id: str, n_candidates: int) -> bool:
     entry = log.get(scene_id, {})
-    return entry.get("status") == "completed" and entry.get("candidates_saved", 0) >= n_candidates
+    selected_image = entry.get("selected_image")
+    return (
+        entry.get("status") == "completed"
+        and entry.get("candidates_saved", 0) >= n_candidates
+        and bool(selected_image)
+        and Path(selected_image).exists()
+    )
 
 
 # ---------------------------------------------------------------------------
@@ -77,6 +85,7 @@ def main() -> None:
     parser.add_argument("--dry-run", action="store_true", help="Print what would run, no API calls")
     parser.add_argument("--validate-only", action="store_true", help="Validate prompts only, no generation")
     parser.add_argument("--fail-fast", action="store_true", help="Stop on first scene error")
+    parser.add_argument("--workers", type=int, default=10, help="Parallel workers (default 10)")
     parser.add_argument("--verbose", action="store_true")
     parser.add_argument("--output-root", default=os.environ.get("IMAGE_OUTPUT_ROOT", "output"))
     args = parser.parse_args()
@@ -139,7 +148,10 @@ def main() -> None:
         return
 
     # Setup backend
-    from image_generation.runpod_serverless_backend import RunPodServerlessBackend
+    from image_generation.runpod_serverless_backend import (
+        RunPodServerlessBackend,
+        promote_candidate_to_render_image,
+    )
     from image_generation.schemas import SceneRequest
 
     backend = RunPodServerlessBackend()
@@ -151,14 +163,14 @@ def main() -> None:
     t_start = time.time()
     total_ok = 0
     total_fail = 0
+    log_lock = threading.Lock()
 
-    for p in prompts:
+    def process_scene(p: dict) -> tuple[str, bool]:
         scene_id = f"{p['index']:03d}"
 
         if args.resume and not args.force and _scene_done(gen_log, scene_id, len(seeds)):
             logger.info("Scene %s already done — skipping", scene_id)
-            total_ok += 1
-            continue
+            return scene_id, True
 
         logger.info("Scene %s: %s", scene_id, p["prompt"][:80])
 
@@ -177,36 +189,58 @@ def main() -> None:
         t_scene = time.time()
         try:
             result = backend.generate(req)
+            selected_image = ""
+            if result.candidates:
+                selected_image = promote_candidate_to_render_image(
+                    result.candidates[0],
+                    video_id=args.video_id,
+                    scene_id=scene_id,
+                    output_root=args.output_root,
+                )
 
-            gen_log[scene_id] = {
-                "status": "completed" if not result.errors else "partial",
+            entry = {
+                "status": "completed" if selected_image and not result.errors else "partial",
                 "candidates_saved": len(result.candidates),
+                "selected_image": selected_image,
                 "errors": result.errors,
                 "job_id": result.job_id,
                 "duration_seconds": result.duration_seconds,
                 "saved_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
             }
-            _save_log(log_path, gen_log)
+            with log_lock:
+                gen_log[scene_id] = entry
+                _save_log(log_path, gen_log)
 
             if result.errors:
                 logger.warning("Scene %s partial: %s", scene_id, result.errors)
             else:
                 logger.info("Scene %s done — %d candidates in %.1fs",
                             scene_id, len(result.candidates), time.time() - t_scene)
-            total_ok += 1
+            return scene_id, True
 
         except Exception as e:
             logger.error("Scene %s FAILED: %s", scene_id, e)
-            gen_log[scene_id] = {
-                "status": "failed",
-                "error": str(e),
-                "saved_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
-            }
-            _save_log(log_path, gen_log)
-            total_fail += 1
-            if args.fail_fast:
-                logger.error("--fail-fast: stopping.")
-                break
+            with log_lock:
+                gen_log[scene_id] = {
+                    "status": "failed",
+                    "error": str(e),
+                    "saved_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+                }
+                _save_log(log_path, gen_log)
+            return scene_id, False
+
+    with ThreadPoolExecutor(max_workers=args.workers) as executor:
+        futures = {executor.submit(process_scene, p): p for p in prompts}
+        for future in as_completed(futures):
+            scene_id, ok = future.result()
+            if ok:
+                total_ok += 1
+            else:
+                total_fail += 1
+                if args.fail_fast:
+                    logger.error("--fail-fast: cancelling remaining jobs.")
+                    executor.shutdown(wait=False, cancel_futures=True)
+                    break
 
     # Write summary
     summary = {

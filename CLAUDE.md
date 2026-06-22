@@ -1,13 +1,13 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+This file provides guidance to Claude Code when working with this repository.
 
-## Running the pipeline
+## Running The Pipeline
 
 ```powershell
 $python = "C:\Users\LEON_RM\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\python.exe"
 
-# Full pipeline (steps 2–7) — requires script.txt already placed manually
+# Full pipeline, requires output/<video-id>/script.txt
 & $python main.py --video-id "my-video-slug"
 
 # Single step
@@ -16,75 +16,127 @@ $python = "C:\Users\LEON_RM\.cache\codex-runtimes\codex-primary-runtime\dependen
 # From a specific step to the end
 & $python main.py --video-id "my-video-slug" --from-step 5
 
-# Resume after interruption (checks timestamps vs prompts count; step 5 most likely to be interrupted)
+# Resume after interruption
 & $python main.py --video-id "my-video-slug" --resume
 
-# Demo mode: runs steps 4–6 in output/{slug}_demo{N}/ — never touches production folder
+# Demo mode, isolated under output/<video-id>_demo<N>/
 & $python main.py --video-id "my-video-slug" --demo 30
+
+# Generate images directly (preferred for step 5 — supports --workers and --candidates)
+& $python scripts/generate_images.py --video-id "my-video-slug" --candidates 1 --workers 10
 ```
 
-`GEMINI_API_KEY` is hardcoded in `config.py` (used for step 4 text API only). `ANTHROPIC_API_KEY` (step 7 only) and `RUNPOD_API_KEY` (step 5) must be set as env vars before running those steps. `RUNPOD_TEMPLATE_ID` must also be filled in `config.py` after creating a pod once in RunPod console.
+`GEMINI_API_KEY` is hardcoded in `config.py` and used only for step 4 text prompts.
+`RUNPOD_API_KEY` and `RUNPOD_ENDPOINT_ID` are required for step 5 and are loaded from `.env`.
+`ANTHROPIC_API_KEY` is required only for step 7.
 
-FFmpeg must be installed via `winget install Gyan.FFmpeg`. The path is hardcoded in `render_video.py:_ensure_ffmpeg_path()` as fallback if not in PATH.
+FFmpeg must be installed via `winget install Gyan.FFmpeg`; `steps/render_video.py` has a local WinGet path fallback.
 
 ## Architecture
 
-The pipeline is a linear 7-step sequence. Each step is a standalone module in `steps/` with a single `run(video_id: str)` entrypoint. `main.py` is a thin orchestrator.
-
-**Step flow and I/O:**
+Each step is a standalone module in `steps/`; `main.py` dispatches the step sequence.
 
 | Step | Module | Input | Output |
 |------|--------|-------|--------|
-| 1 | `generate_script.py` | — | validates `script.txt` exists |
+| 1 | `generate_script.py` | manual `script.txt` | validates format |
 | 2 | `tts.py` | `script.txt` | `audio.mp3` |
 | 3 | `transcribe.py` | `audio.mp3` | `timestamps.json` |
 | 4 | `image_prompts.py` | `timestamps.json` + `script.txt` | `image_prompts.json` |
 | 5 | `generate_images.py` | `image_prompts.json` | `images/img_001.png` … |
-| 6 | `render_video.py` | `images/` + `audio.mp3` + `image_prompts.json` | `final.mp4` + `subtitles.srt` |
+| 6 | `render_video.py` | images + audio + prompts | `final.mp4` + `subtitles.srt` |
 | 7 | `metadata.py` | `script.txt` | `metadata.json` |
 
-**Core invariant:** `N images = N sentences` (from `timestamps.json`). No padding or trimming — 100% audio-image sync.
+Core invariant: one prompt/image per timestamp entry. Demo mode is isolated and never overwrites production files.
 
-Each video lives in `output/{video_id}/`. Step 1 is always done manually; the pipeline starts at step 2.
+## Key Details
 
-**Demo mode** (`--demo N`): creates `output/{video_id}_demo{N}/`, copies `script.txt` + `timestamps.json`, trims `audio.mp3` to the last demo sentence end, runs steps 4–6 in isolation. Never overwrites production files.
+### TTS
+- English: Kokoro first (`am_fenrir`), fallback to `edge-tts`
+- Vietnamese: always `edge-tts` with per-video override `output/{video-id}/tts_config.json`:
+  ```json
+  {"engine": "edge", "voice": "vi-VN-NamMinhNeural", "rate": "-8%"}
+  ```
+- **Vietnamese script must not contain**: em dash `—` (ord 8212), leading `!`, `/` — these cause edge-tts "No audio received"
 
-**Resume logic** (`detect_resume_step`): reads `image_prompts.json` and `timestamps.json` to get real counts. If counts differ (stale demo overwrite), resumes from step 4. Otherwise resumes from the first incomplete step.
+### Transcription
+- English: `faster_whisper` model `base`, CPU/int8, sentence-level segments
+- Vietnamese: requires per-video override `output/{video-id}/transcribe_config.json`:
+  ```json
+  {"model": "medium", "language": "vi"}
+  ```
 
-## Key implementation details
+### Image Prompts (Step 4)
+- Gemini text model `gemini-2.5-flash` generates one prompt per timestamp
+- `_enforce_timings()` overwrites model-provided timings with exact transcript timings
+- For Vietnamese videos, prompts are often written manually and saved directly to `image_prompts.json`
+- English style: `Cinematic wide shot, [scene], photorealistic, natural lighting, shallow depth of field, 16:9, no text`
+- Vietnamese style: rural/village people (người quê), earthy, photorealistic cinematic, NOT doodle/stick-figure
 
-**TTS (step 2):** Tries Kokoro TTS first (`KPipeline(lang_code="a")`, voice `am_fenrir`), falls back to `edge-tts` on any failure. Kokoro numpy chunks → temp WAV via `soundfile` → MP3 via `ffmpeg -codec:a libmp3lame`.
+### Image Generation (Step 5)
+- **Backend:** RunPod Serverless endpoint `vej2dld6x9p0gh` (FLUX.2 Klein 9B, RTX 6000 Ada 48GB)
+- Run via `scripts/generate_images.py` with `--candidates 1 --workers 10` for production
+- Each scene: submit job → poll → save webp candidates under `images/scene_XXX/` → promote first candidate to `images/img_XXX.png`
+- Resume: skips any scene where `img_XXX.png` already exists
+- Progress stored in `generation_log.json`
+- Speed: ~4s/image, ~167s for 153 images at 5 workers
 
-**Transcription (step 3):** `faster_whisper` model `"base"`, `compute_type="int8"`. Word-level timestamps → sentence-level segments (break at punctuation or after 4.5s).
+### RunPod Serverless Worker
+- Source: `serverless_worker/` (Dockerfile, handler.py, model_loader.py)
+- RunPod build: context = `serverless_worker`, Dockerfile = `serverless_worker/Dockerfile`
+- **ENTRYPOINT not CMD** — RunPod's "Container Start Command" overrides CMD but not ENTRYPOINT
+- Model lazy-loads inside `handler()` so `runpod.serverless.start()` runs immediately
+- Network Volume `jqscreri1e` (US-IL-1, 50GB) mounted at `/runpod-volume` caches 13GB model
+- `HF_TOKEN` injected via RunPod Secrets (never in Dockerfile)
 
-**Image prompts (step 4):** Single **Gemini Flash text** API call (`gemini-2.5-flash`) with full transcript. Returns exactly N prompts (1 per sentence). `_enforce_timings()` overwrites AI-generated timestamps with exact values from `timestamps.json`. Style suffix appended to every prompt.
-
-**Image generation (step 5):** RunPod GPU cloud + ComfyUI + FLUX.2 Klein 4B Distilled FP8. Pipeline auto spin-up pod (`steps/runpod_manager.py`) → queues all prompts to ComfyUI API (`steps/comfyui_client.py`) → downloads PNG → terminates pod. 4 parallel workers, 1344×768 native 16:9. Progress saved to `images/progress.json`; safe to interrupt and `--resume` (pod will spin up again for remaining images).
-
-**Video render (step 6):** Two-pass FFmpeg:
-1. Each image → individual clip at exact duration (`next_prompt.start - current.start`; last image → `audio_duration - last.start`)
-2. Concat all clips + mux audio → `final.mp4`
-
-Scale: Lanczos to 1920×1080. Audio: AAC stereo 192k 48kHz. Bitrate: 8 Mbps. Also writes `subtitles.srt` sidecar for YouTube caption upload.
-
-**API calls (step 7):** Claude Haiku via `anthropic.Anthropic`. Retry 2× with 5s sleep.
+### Render (Step 6)
+- Two-pass FFmpeg: each canonical PNG → clip → concatenate + mux audio
+- Clip duration = `current.start` to `next.start`; last clip to audio end
+- Output: H.264 1920×1080, `VIDEO_BITRATE`, AAC stereo 192k 48kHz
 
 ## Config
 
-All tunable values in `config.py`. Key values:
+Key settings in `config.py`:
 
-- `GEMINI_API_KEY` — hardcoded default; used for step 4 text API only; never ask user to set it
-- `RUNPOD_API_KEY` — set as env var before step 5; `RUNPOD_TEMPLATE_ID` must be filled in config.py
-- `COMFYUI_MODEL = "flux2-klein-4b-distilled-fp8.safetensors"` — must exist in pod's ComfyUI models folder
+- `IMAGE_BACKEND = "runpod_serverless"`
+- `RUNPOD_API_KEY` and `RUNPOD_ENDPOINT_ID` from `.env`
+- `IMAGE_WIDTH = 1024`, `IMAGE_HEIGHT = 576`
+- `IMAGE_CANDIDATE_SEEDS = [11001, 11002, 11003]`
+- `IMAGE_OUTPUT_FORMAT = "WEBP"` for candidates; canonical render files are PNG
 - `VIDEO_BITRATE = "8M"`, `VIDEO_FPS = 30`, `VIDEO_WIDTH/HEIGHT = 1920/1080`
-- `TTS_VOICE = "am_fenrir"` — Kokoro dramatic male voice
 
-## Prompts
+## Vietnamese Video Workflow
 
-`prompts/system_prompt.txt` — step 4. Contains `{N}` placeholder (replaced at runtime). Includes VISUAL VARIETY RULES and forces horizontal 16:9 cave painting style.
+```powershell
+$python = "C:\Users\LEON_RM\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\python.exe"
+$vid = "my-topic-vi"
 
-`prompts/metadata_prompt.txt` — step 7. Returns raw JSON only.
+# 1. Write Vietnamese script (no em dash, no leading !, no /)
+#    Save to output/$vid/script.txt
 
-## Logging
+# 2. Create per-video config files
+'{"engine": "edge", "voice": "vi-VN-NamMinhNeural", "rate": "-8%"}' | Out-File "output/$vid/tts_config.json" -Encoding utf8
+'{"model": "medium", "language": "vi"}' | Out-File "output/$vid/transcribe_config.json" -Encoding utf8
 
-`loguru` configured once in `main.py:setup_logging()`. Console INFO, `pipeline.log` DEBUG with 10 MB rotation.
+# 3. TTS + Transcribe
+& $python main.py --video-id $vid --step 2
+& $python main.py --video-id $vid --step 3
+
+# 4. Write image_prompts.json manually (one entry per timestamps.json entry)
+#    Style: rural/village people, photorealistic cinematic
+
+# 5. Generate images
+& $python scripts/generate_images.py --video-id $vid --candidates 1 --workers 5
+
+# 6. Render
+& $python main.py --video-id $vid --step 6
+```
+
+## Validation
+
+```powershell
+& $python -m pytest tests -q
+& $python scripts/validate_runpod_serverless.py --video-id what-ancient-humans-did-all-day
+& $python scripts/generate_images.py --video-id what-ancient-humans-did-all-day --dry-run --to-scene 3
+```
+
+Use `scripts/test_one_scene.py` for one real RunPod job, then purge the queue if it gets stuck.

@@ -1,9 +1,9 @@
 """
-RunPod Serverless handler — FLUX.2 Dev 32B image generation.
+RunPod Serverless handler — FLUX.1 Dev 12B image generation.
 
 One job = one scene. Generates N candidates sequentially (deterministic seeds).
 Model is loaded once at cold-start via model_loader.load_model().
-Requires H100/A100 80GB GPU (~64GB VRAM). Supports negative_prompt.
+Requires 48GB GPU (~24GB VRAM). Supports negative_prompt.
 Default: 20 inference steps (non-distilled Dev model).
 """
 
@@ -30,7 +30,7 @@ logging.basicConfig(
 )
 logger = logging.getLogger("handler")
 
-MODEL_ID = "black-forest-labs/FLUX.2-dev"
+MODEL_ID = "black-forest-labs/FLUX.1-dev"
 DEFAULT_STEPS = 20
 
 

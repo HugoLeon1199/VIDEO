@@ -1,4 +1,4 @@
-"""Load FLUX.2 Dev 32B once at worker startup and keep it in memory."""
+"""Load FLUX.1 Dev 12B once at worker startup and keep it in memory."""
 
 from __future__ import annotations
 
@@ -8,15 +8,15 @@ import time
 
 logger = logging.getLogger(__name__)
 
-MODEL_ID = os.environ.get("MODEL_ID", "black-forest-labs/FLUX.2-dev")
+MODEL_ID = os.environ.get("MODEL_ID", "black-forest-labs/FLUX.1-dev")
 
 _pipeline = None
 
 
 def load_model():
     """
-    Load FluxPipeline (32B) in bfloat16 full precision.
-    Requires 80GB GPU (~64GB VRAM peak).
+    Load FluxPipeline (12B) in bfloat16 full precision.
+    Requires 48GB GPU (~24GB VRAM peak).
     Called once at cold-start. Subsequent calls return cached pipeline.
     """
     global _pipeline

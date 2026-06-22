@@ -81,7 +81,6 @@ def handler(job: dict) -> dict:
 
             result = pipe(
                 prompt=full_prompt,
-                negative_prompt=negative_prompt,
                 width=width,
                 height=height,
                 num_inference_steps=steps,

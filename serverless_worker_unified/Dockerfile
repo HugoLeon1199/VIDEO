@@ -20,7 +20,7 @@ RUN pip install --no-cache-dir \
     runpod \
     "diffusers==0.30.3" \
     "transformers==4.44.2" \
-    accelerate sentencepiece \
+    accelerate sentencepiece protobuf \
     Pillow
 
 ENV HF_HOME=/runpod-volume/hf-cache

@@ -18,8 +18,8 @@ RUN pip install --no-cache-dir \
 
 RUN pip install --no-cache-dir \
     runpod \
-    "diffusers==0.30.3" \
-    "transformers==4.44.2" \
+    "diffusers==0.31.0" \
+    "transformers==4.45.2" \
     accelerate sentencepiece protobuf \
     Pillow
 

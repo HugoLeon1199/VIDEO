@@ -43,6 +43,7 @@ def handler(job):
             t1 = time.time()
             result = pipe(
                 prompt=prompt,
+                negative_prompt=negative_prompt,
                 width=width,
                 height=height,
                 num_inference_steps=steps,

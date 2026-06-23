@@ -1,6 +1,15 @@
-FROM runpod/pytorch:2.4.0-py3.11-cuda12.4.1-devel-ubuntu22.04
+FROM nvidia/cuda:12.1.1-cudnn8-devel-ubuntu22.04
+
+ENV DEBIAN_FRONTEND=noninteractive
+RUN apt-get update && apt-get install -y python3.11 python3.11-dev python3-pip && \
+    ln -sf /usr/bin/python3.11 /usr/bin/python3 && \
+    ln -sf /usr/bin/python3.11 /usr/bin/python && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
+
+RUN pip install --no-cache-dir \
+    torch==2.4.0 torchvision --index-url https://download.pytorch.org/whl/cu121
 
 RUN pip install --no-cache-dir \
     runpod \

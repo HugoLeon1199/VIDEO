@@ -6,6 +6,12 @@ RUN apt-get update && apt-get install -y python3.11 python3.11-dev python3-pip &
     ln -sf /usr/bin/python3.11 /usr/bin/python && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
+# Remove any system-level diffusers/transformers that shadow pip installs
+RUN rm -rf /usr/lib/python3/dist-packages/diffusers \
+           /usr/lib/python3/dist-packages/transformers \
+           /usr/local/lib/python3.11/dist-packages/diffusers \
+           /usr/local/lib/python3.11/dist-packages/transformers
+
 WORKDIR /app
 
 RUN pip install --no-cache-dir \

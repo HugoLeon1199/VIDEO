@@ -1,13 +1,9 @@
-FROM nvidia/cuda:12.1.1-cudnn8-runtime-ubuntu22.04
-
-ENV DEBIAN_FRONTEND=noninteractive
-RUN apt-get update && apt-get install -y python3 python3-pip && rm -rf /var/lib/apt/lists/*
+FROM runpod/pytorch:2.4.0-py3.11-cuda12.4.1-devel-ubuntu22.04
 
 WORKDIR /app
 
-RUN pip3 install --no-cache-dir \
+RUN pip install --no-cache-dir \
     runpod \
-    torch torchvision --index-url https://download.pytorch.org/whl/cu121 \
     diffusers transformers accelerate sentencepiece \
     Pillow
 
@@ -16,4 +12,4 @@ ENV HF_HUB_CACHE=/runpod-volume/hf-cache
 
 COPY handler.py .
 
-ENTRYPOINT ["python3", "-u", "handler.py"]
+ENTRYPOINT ["python", "-u", "handler.py"]

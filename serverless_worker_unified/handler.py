@@ -17,8 +17,7 @@ def load_model():
             MODEL_ID,
             torch_dtype=torch.bfloat16,
             cache_dir="/runpod-volume/hf-cache",
-        )
-        _pipe.enable_model_cpu_offload()
+        ).to("cuda")
     return _pipe
 
 

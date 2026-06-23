@@ -14,19 +14,40 @@ TTS_SPEED = 0.95         # Slightly slower for clarity
 
 # RunPod Serverless (step 5 image generation)
 RUNPOD_API_KEY = os.getenv("RUNPOD_API_KEY", "")
-RUNPOD_ENDPOINT_ID = os.getenv("RUNPOD_ENDPOINT_ID", "")
+RUNPOD_ENDPOINT_ID = os.getenv("RUNPOD_ENDPOINT_ID", "")          # unified endpoint — FLUX.1-dev 12B
 RUNPOD_REQUEST_TIMEOUT = int(os.getenv("RUNPOD_REQUEST_TIMEOUT", "1800"))
 RUNPOD_POLL_INTERVAL = float(os.getenv("RUNPOD_POLL_INTERVAL", "3"))
 RUNPOD_MAX_RETRIES = int(os.getenv("RUNPOD_MAX_RETRIES", "3"))
 IMAGE_BACKEND = os.getenv("IMAGE_BACKEND", "runpod_serverless")
 
+# Per-track config — used by scripts/generate_images.py --track vi|en
+# Both tracks share the same unified endpoint (FLUX.1-dev 12B, 24GB GPU)
+TRACK_CONFIG = {
+    "vi": {
+        "endpoint_id_env": "RUNPOD_ENDPOINT_ID",
+        "model": "black-forest-labs/FLUX.1-dev",
+        "steps": 20,
+        "guidance_scale": 3.5,
+        "system_prompt_file": "prompts/image_prompt_vi.txt",
+        "output_subdir": "images_vi",
+    },
+    "en": {
+        "endpoint_id_env": "RUNPOD_ENDPOINT_ID",
+        "model": "black-forest-labs/FLUX.1-dev",
+        "steps": 20,
+        "guidance_scale": 3.5,
+        "system_prompt_file": "prompts/image_prompt_en.txt",
+        "output_subdir": "images_en",
+    },
+}
+
 # Image generation defaults (sent to serverless worker)
 IMAGE_WIDTH = 1024
 IMAGE_HEIGHT = 576
-IMAGE_STEPS = 4
-IMAGE_GUIDANCE_SCALE = 1.0
-IMAGE_CANDIDATES = 3
-IMAGE_CANDIDATE_SEEDS = [11001, 11002, 11003]
+IMAGE_STEPS = 20
+IMAGE_GUIDANCE_SCALE = 3.5
+IMAGE_CANDIDATES = 1
+IMAGE_CANDIDATE_SEEDS = [11001]
 IMAGE_OUTPUT_FORMAT = "WEBP"
 IMAGE_QUALITY = 92
 

@@ -74,6 +74,8 @@ def main() -> None:
     parser.add_argument("--video-id", required=True)
     parser.add_argument("--prompts", help="Path to image_prompts.json (defaults to output/<video-id>/image_prompts.json)")
     parser.add_argument("--backend", default="runpod_serverless", choices=["runpod_serverless"])
+    parser.add_argument("--track", choices=["vi", "en"], default=None,
+                        help="Image track: 'vi'=cinematic paleo art, 'en'=ink sketch parchment (both use FLUX.1-dev 12B)")
     parser.add_argument("--scene-id", help="Process only this scene_id")
     parser.add_argument("--from-scene", type=int, help="Start at this scene index (1-based)")
     parser.add_argument("--to-scene", type=int, help="Stop after this scene index (1-based)")
@@ -103,6 +105,18 @@ def main() -> None:
             if line and not line.startswith("#") and "=" in line:
                 k, _, v = line.partition("=")
                 os.environ.setdefault(k.strip(), v.strip())
+
+    # Apply track-specific config if --track is set
+    import config as _config
+    _track_steps = None
+    _track_guidance = None
+    _track_output_subdir = "images"
+    if args.track:
+        tc = _config.TRACK_CONFIG[args.track]
+        _track_steps = tc["steps"]
+        _track_guidance = tc["guidance_scale"]
+        _track_output_subdir = tc["output_subdir"]
+        logger.info("Track '%s': %d steps, guidance %.1f → %s", args.track, _track_steps, _track_guidance, _track_output_subdir)
 
     # Load prompts
     prompts_path = Path(args.prompts) if args.prompts else (
@@ -156,8 +170,9 @@ def main() -> None:
 
     backend = RunPodServerlessBackend()
 
-    # Load generation log for resume
-    log_path = _log_path(args.video_id, args.output_root)
+    # generation log is per-track to avoid cross-track resume collisions
+    log_suffix = f"_{args.track}" if args.track else ""
+    log_path = Path(args.output_root) / args.video_id / f"generation_log{log_suffix}.json"
     gen_log = _load_log(log_path)
 
     t_start = time.time()
@@ -182,6 +197,8 @@ def main() -> None:
             negative_prompt=p.get("negative_prompt", ""),
             width=p.get("width", 1024),
             height=p.get("height", 576),
+            steps=_track_steps if _track_steps is not None else p.get("steps", 4),
+            guidance_scale=_track_guidance if _track_guidance is not None else p.get("guidance_scale", 1.0),
             candidate_seeds=seeds,
             output_mode="base64",
         )
@@ -196,6 +213,7 @@ def main() -> None:
                     video_id=args.video_id,
                     scene_id=scene_id,
                     output_root=args.output_root,
+                    images_subdir=_track_output_subdir,
                 )
 
             entry = {
@@ -251,7 +269,8 @@ def main() -> None:
         "total_seconds": round(time.time() - t_start, 1),
         "generated_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
     }
-    _save_log(_summary_path(args.video_id, args.output_root), summary)
+    summary_path = Path(args.output_root) / args.video_id / f"generation_summary{log_suffix}.json"
+    _save_log(summary_path, summary)
 
     logger.info("Done: %d ok, %d failed in %.0fs", total_ok, total_fail, time.time() - t_start)
     if total_fail:

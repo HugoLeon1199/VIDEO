@@ -5,7 +5,8 @@ WORKDIR /app
 RUN pip install --no-cache-dir \
     runpod \
     "diffusers==0.30.3" \
-    transformers accelerate sentencepiece \
+    "transformers==4.44.2" \
+    accelerate sentencepiece \
     Pillow
 
 ENV HF_HOME=/runpod-volume/hf-cache

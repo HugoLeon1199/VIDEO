@@ -26,12 +26,17 @@ def handler(job):
     pipe = load_model()
 
     prompt          = inp["prompt"]
-    negative_prompt = inp.get("negative_prompt", "extra limbs, deformed anatomy, blurry, text, watermark")
+    negative_prompt = inp.get("negative_prompt", "")
     seeds           = inp.get("candidate_seeds", [11001])
     steps           = inp.get("steps", 20)
     guidance_scale  = inp.get("guidance_scale", 3.5)
     width           = inp.get("width", 1024)
     height          = inp.get("height", 576)
+
+    # FLUX.1-dev does not support negative_prompt natively — embed it into the prompt
+    full_prompt = prompt
+    if negative_prompt:
+        full_prompt = f"{prompt}. Avoid: {negative_prompt}"
 
     images = []
     errors = []
@@ -42,8 +47,7 @@ def handler(job):
             generator = torch.Generator("cuda").manual_seed(seed)
             t1 = time.time()
             result = pipe(
-                prompt=prompt,
-                negative_prompt=negative_prompt,
+                prompt=full_prompt,
                 width=width,
                 height=height,
                 num_inference_steps=steps,

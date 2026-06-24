@@ -1,0 +1,143 @@
+TRACK: vi
+MODEL: FLUX.1-dev 12B (unified endpoint)
+ENDPOINT_ENV: RUNPOD_ENDPOINT_ID
+STEPS: 20
+GUIDANCE_SCALE: 3.5
+STYLE_VERSION: vi-2d-documentary-v1
+
+================================================================================
+STYLE LOCK — VN Track (Cinematic 2D Painted Documentary Illustration)
+================================================================================
+
+Every prompt MUST begin with this prefix:
+  cinematic 2D painted documentary illustration, semi-realistic prehistoric humans, mature historical animation, hand-painted texture, simplified anatomically correct bodies, clean separated silhouettes, warm golden-amber natural lighting, detailed prehistoric environment, serious educational documentary tone, cinematic composition, 16:9, no text, no watermark, [scene description]
+
+FORBIDDEN style words: photorealistic, photograph, hyperrealistic, Pixar, Disney,
+anime, chibi, cartoon, 3D render, CGI, clay, toy.
+
+The visual style target is: illustrated documentary — similar to how serious history
+and nature documentaries use 2D painted illustrations. Mature, detailed backgrounds,
+readable human figures, warm cinematic lighting. NOT a children's book.
+
+--------------------------------------------------------------------------------
+NEGATIVE PROMPT (always fill in image_prompts.json)
+--------------------------------------------------------------------------------
+extra arms, extra legs, extra limbs, duplicated body parts, fused limbs, overlapping bodies, malformed hands, extra fingers, missing fingers, twisted joints, disconnected limbs, duplicate people, merged faces, deformed anatomy, cropped head, cropped feet, photorealistic photography, 3D cartoon, anime, chibi, text, letters, subtitles, logo, watermark
+
+--------------------------------------------------------------------------------
+LIGHTING
+--------------------------------------------------------------------------------
+- Outdoor day: warm golden-amber light, long shadows, dappled sunlight
+- Cave / shelter: flickering firelight, orange glow, deep surrounding darkness
+- Night: cool moonlight, visible stars, blue-silver tones
+- Overcast: diffused grey-white light, muted tones
+
+--------------------------------------------------------------------------------
+CHARACTERS — derive from species, era, region, climate
+--------------------------------------------------------------------------------
+  Homo sapiens Africa ~300k-20k ya -> lean-to-muscular, dark brown skin,
+    hair ranging from tight coils to loose waves, minimal hide wrap
+  Homo sapiens Ice-Age Europe ~40k-10k ya -> medium build, lighter olive-brown
+    skin, fur wraps and sewn hides
+  Neanderthal ~400k-40k ya -> stocky, heavy brow ridge, pale-olive skin,
+    layered animal fur, broad nose
+  Homo erectus ~2M-100k ya -> lean, very prominent brow, no clothing
+
+  Props: ONLY what archaeological/fossil evidence supports for that era.
+    Safe for 50k+ ya: rough hide wraps, bone awls, stone flakes, wooden spears,
+    fire (hearth or torch), ochre pigment
+    FORBIDDEN: zippers, buttons, wristwatches, glasses, metal knives,
+    written symbols, pottery before neolithic, woven textiles
+
+NAMED CHARACTERS (visually consistent across all VN scenes):
+  Spark -- lean ancient human, calm observant posture, often slightly apart from
+    main action as witness or guide.
+  Elder -- older figure, slightly hunched, weathered face, grey-streaked hair,
+    often seated or gesturing in teaching posture.
+
+--------------------------------------------------------------------------------
+ANATOMY AND COMPOSITION RULES
+--------------------------------------------------------------------------------
+DEFAULT: 1-2 clearly visible foreground characters only.
+  - Exactly 1 foreground character if full-body shot.
+  - Max 2 if both are clearly separated with space between.
+  - All other characters -> distant background as small silhouettes.
+
+SHOT SELECTION to reduce anatomy errors:
+  - Waist-up or chest-up when hands/feet are not the focus.
+  - Full-body only when the full figure is essential to the scene.
+  - Extreme close-up (face or hands) for emotional or detail shots.
+  - Wide establishing shot when the landscape is the subject.
+
+POSE RULES:
+  - Simple, stable, natural poses only.
+  - One main action per character.
+  - Arms and legs clearly separated from torso.
+  - No overlapping bodies.
+  - No weapons/tools passing through bodies.
+  - Avoid: wrestling, hugging, fighting, crouching with limbs folded.
+
+ALWAYS ADD anatomy clause when humans are present:
+  "anatomically coherent human figures, exactly two arms and two legs per visible
+   person, natural human proportions, clean separated silhouettes, clearly readable
+   limbs, natural hands"
+
+GROUP SCENES:
+  - 1-2 foreground figures in detail.
+  - Remaining people = "small distant silhouettes in background" only.
+  - Never ask for 5+ detailed figures at the same distance.
+
+--------------------------------------------------------------------------------
+SCENE SANITIZATION GUIDE
+--------------------------------------------------------------------------------
+When the script calls for a difficult scene, simplify to a safe composition:
+
+  "7 people pulling an animal" ->
+    One person in foreground pulling with simple pose; one supporter visible
+    at mid-distance; rest = distant silhouettes. No bodies overlap.
+
+  "Two people wrestling on the ground" ->
+    Two figures standing facing each other at clear distance,
+    tense pre-confrontation moment, no body contact.
+
+  "Family embracing in cave" ->
+    Three figures seated near fire, bodies separated, each with own silhouette,
+    warm firelight, cave interior.
+
+  "Many hands working together" ->
+    One foreground figure doing the main action; describe the others
+    as "figures visible in the distance".
+
+--------------------------------------------------------------------------------
+ABSTRACT CONCEPTS -> VISUAL METAPHORS
+--------------------------------------------------------------------------------
+"Brain size / larger brain" ->
+  Two skulls side by side on stone surface, left one visibly larger,
+  warm firelight, extreme close-up, no text
+
+"Population growth" ->
+  Wide landscape, multiple thin smoke plumes rising from scattered camps,
+  golden hour light
+
+"Thinking / cognition" ->
+  Extreme close-up of ancient human eyes reflecting firelight
+
+"Division of labor" ->
+  One figure in foreground doing main task; two others far in background
+  doing different tasks, small and indistinct
+
+"Knowledge passing down" ->
+  Elder seated, gesturing toward younger figure who watches,
+  firelight, cave interior
+
+--------------------------------------------------------------------------------
+EXAMPLE -- complete VN prompt entry (vi-2d-documentary-v1)
+--------------------------------------------------------------------------------
+{
+  "index": 5,
+  "start": 15.18,
+  "end": 18.1,
+  "prompt": "cinematic 2D painted documentary illustration, semi-realistic prehistoric humans, mature historical animation, hand-painted texture, simplified anatomically correct bodies, clean separated silhouettes, warm golden-amber natural lighting, detailed prehistoric environment, serious educational documentary tone, cinematic composition, 16:9, no text, no watermark, lone ancient Homo sapiens woman kneeling waist-up beside a still river at golden hour, cupping water in both hands, dark brown skin, simple rough hide wrap, East African savanna background with acacia trees, anatomically coherent human figures, exactly two arms and two legs per visible person, natural human proportions, clean separated silhouettes",
+  "negative_prompt": "extra arms, extra legs, extra limbs, duplicated body parts, fused limbs, overlapping bodies, malformed hands, extra fingers, missing fingers, twisted joints, disconnected limbs, duplicate people, merged faces, deformed anatomy, cropped head, cropped feet, photorealistic photography, 3D cartoon, anime, chibi, text, letters, subtitles, logo, watermark",
+  "global_style": ""
+}

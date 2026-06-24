@@ -4,6 +4,19 @@ import os
 ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY", "")
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "")
 
+# Vision QA config — used by generate_images.py --qa
+IMAGE_QA_ENABLED = os.getenv("IMAGE_QA_ENABLED", "false").lower() == "true"
+IMAGE_QA_MIN_SCORE = int(os.getenv("IMAGE_QA_MIN_SCORE", "80"))
+IMAGE_QA_MAX_REGENERATIONS = int(os.getenv("IMAGE_QA_MAX_REGENERATIONS", "2"))
+IMAGE_QA_REGEN_CANDIDATES = int(os.getenv("IMAGE_QA_REGEN_CANDIDATES", "2"))
+IMAGE_QA_WORKERS = int(os.getenv("IMAGE_QA_WORKERS", "4"))
+IMAGE_QA_ALLOW_FALLBACK = os.getenv("IMAGE_QA_ALLOW_FALLBACK", "false").lower() == "true"
+IMAGE_QA_AUDIT_MIN_SCORE = int(os.getenv("IMAGE_QA_AUDIT_MIN_SCORE", "85"))
+
+# Versioning — bump when style/QA prompt changes to invalidate old cache
+IMAGE_STYLE_VERSION = "vi-2d-documentary-v1"
+IMAGE_QA_PROMPT_VERSION = "anatomy-qa-v1"
+
 # Models
 CLAUDE_MODEL = "claude-haiku-4-5-20251001"
 GEMINI_TEXT_MODEL = "gemini-2.5-flash"  # text only (step 4 image prompts)
@@ -46,8 +59,8 @@ IMAGE_WIDTH = 1024
 IMAGE_HEIGHT = 576
 IMAGE_STEPS = 20
 IMAGE_GUIDANCE_SCALE = 3.5
-IMAGE_CANDIDATES = 1
-IMAGE_CANDIDATE_SEEDS = [11001]
+IMAGE_CANDIDATES = 3
+IMAGE_CANDIDATE_SEEDS = [11001, 11002, 11003]
 IMAGE_OUTPUT_FORMAT = "WEBP"
 IMAGE_QUALITY = 92
 

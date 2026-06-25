@@ -42,7 +42,21 @@ RUNPOD_ENDPOINT_ID = os.getenv("RUNPOD_ENDPOINT_ID", "")          # unified endp
 RUNPOD_REQUEST_TIMEOUT = int(os.getenv("RUNPOD_REQUEST_TIMEOUT", "1800"))
 RUNPOD_POLL_INTERVAL = float(os.getenv("RUNPOD_POLL_INTERVAL", "3"))
 RUNPOD_MAX_RETRIES = int(os.getenv("RUNPOD_MAX_RETRIES", "3"))
-IMAGE_BACKEND = os.getenv("IMAGE_BACKEND", "runpod_serverless")
+IMAGE_BACKEND = os.getenv("IMAGE_BACKEND", "runpod_serverless")  # runpod_serverless | vast_instance
+
+# Vast.ai settings (only used when IMAGE_BACKEND=vast_instance)
+VAST_API_KEY = os.getenv("VAST_API_KEY", "")
+VAST_WORKER_PORT = int(os.getenv("VAST_WORKER_PORT", "8080"))
+VAST_MIN_VRAM_GB = int(os.getenv("VAST_MIN_VRAM_GB", "24"))
+VAST_MAX_PRICE_PER_HOUR = float(os.getenv("VAST_MAX_PRICE_PER_HOUR", "1.0"))
+VAST_GPU_NAME = os.getenv("VAST_GPU_NAME", "")             # e.g. "RTX 4090", "" = any
+VAST_WORKER_IMAGE = os.getenv("VAST_WORKER_IMAGE", "pytorch/pytorch:2.3.0-cuda12.1-cudnn8-runtime")
+VAST_INSTANCE_ID = os.getenv("VAST_INSTANCE_ID", "")       # set this to skip rent step
+VAST_INSTANCE_HOST = os.getenv("VAST_INSTANCE_HOST", "")   # set this + VAST_INSTANCE_ID to skip rent
+VAST_INSTANCE_PORT = int(os.getenv("VAST_INSTANCE_PORT", "0"))  # external port mapped to VAST_WORKER_PORT
+VAST_HF_TOKEN = os.getenv("VAST_HF_TOKEN", os.getenv("HF_TOKEN", ""))
+VAST_DISK_GB = float(os.getenv("VAST_DISK_GB", "60.0"))
+VAST_REQUEST_TIMEOUT = int(os.getenv("VAST_REQUEST_TIMEOUT", "600"))
 
 # Per-track config — used by scripts/generate_images.py --track vi|en
 # Both tracks share the same unified endpoint (FLUX.1-dev 12B, 24GB GPU)

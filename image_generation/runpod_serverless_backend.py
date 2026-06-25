@@ -33,6 +33,32 @@ logger = logging.getLogger(__name__)
 OUTPUT_ROOT = os.environ.get("IMAGE_OUTPUT_ROOT", "output")
 
 
+def promote_candidate_to_render_image(
+    candidate: CandidateResult,
+    video_id: str,
+    scene_id: str,
+    output_root: str | Path | None = None,
+    images_subdir: str = "images",
+) -> str:
+    """Convert the selected candidate into the canonical img_XXX.png render input."""
+    if not candidate.local_path:
+        raise ValueError(f"Candidate {candidate.candidate_index} has no local_path")
+
+    src = Path(candidate.local_path)
+    if not src.exists():
+        raise FileNotFoundError(f"Candidate image not found: {src}")
+
+    root = Path(output_root or OUTPUT_ROOT)
+    render_path = root / video_id / images_subdir / f"img_{int(scene_id):03d}.png"
+    render_path.parent.mkdir(parents=True, exist_ok=True)
+
+    with Image.open(src) as img:
+        img.convert("RGB").save(render_path, format="PNG", optimize=True)
+
+    logger.info("Promoted %s -> %s", src, render_path)
+    return str(render_path)
+
+
 class RunPodServerlessBackend(BaseImageBackend):
     def __init__(self, client: Optional[RunPodClient] = None):
         self._client = client or RunPodClient()
@@ -85,6 +111,9 @@ class RunPodServerlessBackend(BaseImageBackend):
 
         if request.output_mode == "base64":
             raw_b64 = img_info["base64"]
+            # Strip data URI prefix if present (e.g. "data:image/webp;base64,")
+            if "," in raw_b64:
+                raw_b64 = raw_b64.split(",", 1)[1]
             img_bytes = base64.b64decode(raw_b64)
 
             # Verify checksum

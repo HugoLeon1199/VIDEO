@@ -10,7 +10,7 @@ STYLE LOCK — VN Track (Cinematic 2D Painted Documentary Illustration)
 ================================================================================
 
 Every prompt MUST begin with this prefix:
-  cinematic 2D painted documentary illustration, semi-realistic prehistoric humans, mature historical animation, hand-painted texture, simplified anatomically correct bodies, clean separated silhouettes, warm golden-amber natural lighting, detailed prehistoric environment, serious educational documentary tone, cinematic composition, 16:9, no text, no watermark, [scene description]
+  cinematic 2D painted documentary illustration, semi-realistic prehistoric humans, painted in the style of a serious historical documentary, characters wearing thick full-coverage animal fur and hide clothing, fur pelts draped over both shoulders covering entire chest and torso, rough animal skin garments tied at waist, no exposed chest no exposed breasts no bare torso on any character, warm natural earthy lighting, detailed rocky prehistoric landscape, serious mature tone, cinematic 16:9 composition, no text, no watermark, [scene description]
 
 FORBIDDEN style words: photorealistic, photograph, hyperrealistic, Pixar, Disney,
 anime, chibi, cartoon, 3D render, CGI, clay, toy.
@@ -22,7 +22,7 @@ readable human figures, warm cinematic lighting. NOT a children's book.
 --------------------------------------------------------------------------------
 NEGATIVE PROMPT (always fill in image_prompts.json)
 --------------------------------------------------------------------------------
-extra arms, extra legs, extra limbs, duplicated body parts, fused limbs, overlapping bodies, malformed hands, extra fingers, missing fingers, twisted joints, disconnected limbs, duplicate people, merged faces, deformed anatomy, cropped head, cropped feet, photorealistic photography, 3D cartoon, anime, chibi, text, letters, subtitles, logo, watermark
+nudity, bare chest, bare breasts, topless, shirtless, exposed torso, exposed skin, cleavage, bikini top, revealing clothes, loincloth only, skimpy outfit, large breasts, oversized chest, sexualized body, sexual content, suggestive pose, Pixar, Disney, 3D cartoon, anime, chibi, cute style, extra limbs, extra arms, extra legs, fused limbs, malformed hands, deformed anatomy, duplicate people, merged faces, text, watermark, logo
 
 --------------------------------------------------------------------------------
 LIGHTING
@@ -138,6 +138,6 @@ EXAMPLE -- complete VN prompt entry (vi-2d-documentary-v1)
   "start": 15.18,
   "end": 18.1,
   "prompt": "cinematic 2D painted documentary illustration, semi-realistic prehistoric humans, mature historical animation, hand-painted texture, simplified anatomically correct bodies, clean separated silhouettes, warm golden-amber natural lighting, detailed prehistoric environment, serious educational documentary tone, cinematic composition, 16:9, no text, no watermark, lone ancient Homo sapiens woman kneeling waist-up beside a still river at golden hour, cupping water in both hands, dark brown skin, simple rough hide wrap, East African savanna background with acacia trees, anatomically coherent human figures, exactly two arms and two legs per visible person, natural human proportions, clean separated silhouettes",
-  "negative_prompt": "extra arms, extra legs, extra limbs, duplicated body parts, fused limbs, overlapping bodies, malformed hands, extra fingers, missing fingers, twisted joints, disconnected limbs, duplicate people, merged faces, deformed anatomy, cropped head, cropped feet, photorealistic photography, 3D cartoon, anime, chibi, text, letters, subtitles, logo, watermark",
+  "negative_prompt": "nudity, bare chest, bare breasts, topless, shirtless, exposed torso, exposed skin, cleavage, bikini top, revealing clothes, loincloth only, skimpy outfit, large breasts, oversized chest, sexualized body, sexual content, suggestive pose, Pixar, Disney, 3D cartoon, anime, chibi, cute style, extra limbs, extra arms, extra legs, fused limbs, malformed hands, deformed anatomy, duplicate people, merged faces, text, watermark, logo",
   "global_style": ""
 }

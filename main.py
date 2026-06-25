@@ -6,6 +6,15 @@ from pathlib import Path
 
 from loguru import logger
 
+# Load .env before importing config so all API keys are available
+_env_file = Path(__file__).parent / ".env"
+if _env_file.exists():
+    for _line in _env_file.read_text(encoding="utf-8").splitlines():
+        _line = _line.strip()
+        if _line and not _line.startswith("#") and "=" in _line:
+            _k, _v = _line.split("=", 1)
+            os.environ.setdefault(_k.strip(), _v.strip())
+
 import config
 
 
@@ -127,7 +136,9 @@ def detect_resume_step(video_dir: Path) -> int:
         if completed_images >= n_prompts > 0:
             if (video_dir / "final.mp4").exists():
                 if (video_dir / "metadata.json").exists():
-                    return 8
+                    return 9
+                return 8
+            if (video_dir / "soundscape.json").exists():
                 return 7
             return 6
         elif completed_images > 0:
@@ -164,9 +175,12 @@ def run_step(step_num: int, video_id: str, subtitles: bool = False, n_override: 
         from steps.generate_images import run as _run
         _run(video_id, n_override=n_override)
     elif step_num == 6:
+        from steps.design_soundscape import run as _run
+        _run(video_id)
+    elif step_num == 7:
         from steps.render_video import run as _run
         _run(video_id, subtitles=subtitles)
-    elif step_num == 7:
+    elif step_num == 8:
         from steps.metadata import run as _run
         _run(video_id)
     else:
@@ -193,8 +207,8 @@ def main() -> None:
         description="YouTube Autopilot Pipeline — Ancient Humans channel"
     )
     parser.add_argument("--video-id", required=True, help="Video slug (e.g. what-ancient-humans-did-all-day)")
-    parser.add_argument("--step", type=int, help="Run only this step (1–7)")
-    parser.add_argument("--from-step", type=int, help="Run from this step to step 7")
+    parser.add_argument("--step", type=int, help="Run only this step (1–8)")
+    parser.add_argument("--from-step", type=int, help="Run from this step to step 8")
     parser.add_argument("--resume", action="store_true", help="Auto-detect and resume from last completed step")
     parser.add_argument("--subtitles", action="store_true", help="Burn subtitles into video (step 6)")
     parser.add_argument(
@@ -203,7 +217,7 @@ def main() -> None:
         metavar="N",
         nargs="?",
         const=10,
-        help="Demo mode: run steps 4–6 in output/{video_id}_demo{N}/ (default N=10)",
+        help="Demo mode: run steps 4–7 in output/{video_id}_demo{N}/ (default N=10)",
     )
     args = parser.parse_args()
 
@@ -217,7 +231,7 @@ def main() -> None:
         demo_id = _setup_demo_dir(args.video_id, n)
         logger.info("Video ID (demo): {} ({} images)", demo_id, n)
         start_step = args.from_step or (args.step or 4)
-        steps = [args.step] if args.step else range(start_step, 7)  # steps 4,5,6 only
+        steps = [args.step] if args.step else range(start_step, 8)  # steps 4,5,6,7 only
         for step in steps:
             logger.info("--- Step {} ---", step)
             run_step(step, demo_id, subtitles=args.subtitles, n_override=n)
@@ -233,29 +247,29 @@ def main() -> None:
         run_step(args.step, args.video_id, subtitles=args.subtitles)
 
     elif args.from_step:
-        logger.info("Running from step {} to 7", args.from_step)
-        for step in range(args.from_step, 8):
+        logger.info("Running from step {} to 8", args.from_step)
+        for step in range(args.from_step, 9):
             logger.info("--- Step {} ---", step)
             run_step(step, args.video_id, subtitles=args.subtitles)
 
     elif args.resume:
         video_dir = get_video_dir(args.video_id)
         next_step = detect_resume_step(video_dir)
-        if next_step >= 8:
+        if next_step >= 9:
             logger.info("Pipeline already complete for: {}", args.video_id)
             return
         logger.info("Resuming from step {}", next_step)
-        for step in range(next_step, 8):
+        for step in range(next_step, 9):
             logger.info("--- Step {} ---", step)
             run_step(step, args.video_id, subtitles=args.subtitles)
 
     else:
-        logger.info("Running full pipeline (steps 2–7)")
+        logger.info("Running full pipeline (steps 2–8)")
         script_path = get_video_dir(args.video_id) / "script.txt"
         if not script_path.exists():
             logger.error("script.txt not found at: {}", script_path)
             sys.exit(1)
-        for step in range(2, 8):
+        for step in range(2, 9):
             logger.info("--- Step {} ---", step)
             run_step(step, args.video_id, subtitles=args.subtitles)
 

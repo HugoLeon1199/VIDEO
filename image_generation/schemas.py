@@ -21,12 +21,14 @@ class SceneRequest:
     output_format: str = "WEBP"
     quality: int = 92
     output_mode: str = "base64"
+    # img2img fields — None means text-to-image mode
+    img2img_base64: Optional[str] = None   # base64 of reference image
+    strength: float = 0.75                 # denoising strength (0.5-0.75 typical)
 
     def to_runpod_input(self) -> dict:
-        return {
+        payload: dict = {
             "video_id": self.video_id,
             "scene_id": self.scene_id,
-            "mode": "text_to_image",
             "prompt": self.prompt,
             "global_style": self.global_style,
             "negative_prompt": self.negative_prompt,
@@ -39,6 +41,10 @@ class SceneRequest:
             "quality": self.quality,
             "output_mode": self.output_mode,
         }
+        if self.img2img_base64 is not None:
+            payload["img2img_base64"] = self.img2img_base64
+            payload["strength"] = self.strength
+        return payload
 
 
 @dataclass

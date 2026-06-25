@@ -17,8 +17,19 @@ IMAGE_QA_AUDIT_MIN_SCORE = int(os.getenv("IMAGE_QA_AUDIT_MIN_SCORE", "85"))
 IMAGE_STYLE_VERSION = "vi-2d-documentary-v1"
 IMAGE_QA_PROMPT_VERSION = "anatomy-qa-v1"
 
+# Master seed library
+MASTER_SEED_DIR = os.getenv("MASTER_SEED_DIR", "master_style_seeds")
+MASTER_SEED_VERSION = "master-seeds-v1"
+
+# Anti-drift
+MAX_CHAIN_DEPTH = int(os.getenv("MAX_CHAIN_DEPTH", "4"))
+
+# Grain overlay
+GRAIN_ENABLED = os.getenv("GRAIN_ENABLED", "true").lower() == "true"
+GRAIN_OPACITY = float(os.getenv("GRAIN_OPACITY", "0.10"))
+
 # Models
-CLAUDE_MODEL = "claude-haiku-4-5-20251001"
+CLAUDE_MODEL = "claude-sonnet-4-6"
 GEMINI_TEXT_MODEL = "gemini-2.5-flash"  # text only (step 4 image prompts)
 
 # TTS Settings
@@ -39,18 +50,20 @@ TRACK_CONFIG = {
     "vi": {
         "endpoint_id_env": "RUNPOD_ENDPOINT_ID",
         "model": "black-forest-labs/FLUX.1-dev",
-        "steps": 20,
+        "steps": 22,
         "guidance_scale": 3.5,
         "system_prompt_file": "prompts/image_prompt_vi.txt",
         "output_subdir": "images_vi",
+        "style_version": "prehistoric-flat-vector-v1",
     },
     "en": {
         "endpoint_id_env": "RUNPOD_ENDPOINT_ID",
         "model": "black-forest-labs/FLUX.1-dev",
-        "steps": 20,
+        "steps": 22,
         "guidance_scale": 3.5,
         "system_prompt_file": "prompts/image_prompt_en.txt",
         "output_subdir": "images_en",
+        "style_version": "prehistoric-flat-vector-v1",
     },
 }
 

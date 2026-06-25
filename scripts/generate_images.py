@@ -332,6 +332,7 @@ def main() -> None:
     def _generate_candidates(p: dict, attempt_seeds: list[int]) -> tuple:
         """Submit one RunPod job and return (result, error_str)."""
         scene_id = f"{p['index']:03d}"
+
         req = SceneRequest(
             video_id=args.video_id,
             scene_id=scene_id,

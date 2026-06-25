@@ -1,7 +1,13 @@
-"""Step 4: Generate image prompts — 1 image per transcript sentence, exact timing match."""
+"""Step 4: Generate image prompts using Claude — smart scene segmentation.
+
+Claude reads the full script and groups sentences into ~100-120 scenes semantically,
+then writes one image prompt per scene. Timestamps are computed proportionally
+by character count across total audio duration.
+"""
 
 import json
 import re
+import subprocess
 import sys
 import time
 from pathlib import Path
@@ -10,33 +16,213 @@ from loguru import logger
 
 import config
 
-STYLE_SUFFIX = "cave painting style, ochre and charcoal on stone, no text, 16:9"
-GEMINI_TEXT_MODEL = "gemini-2.5-flash"
+# Negative prompt used for all VI scenes
+VI_NEGATIVE_PROMPT = (
+    "nudity, bare chest, naked, nsfw, western cartoon style, anime, 3D render, "
+    "CGI, watermark, text, logo, signature, doodle, stick figure, flat 2D vector, "
+    "children, old people only, modern clothing, modern buildings, technology"
+)
+
+# Negative prompt for EN scenes
+EN_NEGATIVE_PROMPT = (
+    "nudity, bare chest, naked, nsfw, anime, 3D render, CGI, watermark, text, logo, signature"
+)
+
+# ── System prompt sent to Claude ─────────────────────────────────────────────
+
+VI_SYSTEM_PROMPT = """Bạn là chuyên gia tạo storyboard cho video YouTube lịch sử tiền sử.
+
+Tôi sẽ gửi cho bạn một script tiếng Việt và danh sách các câu đã được đánh số (1-based).
+Nhiệm vụ của bạn: chia toàn bộ script thành các SCENES — mỗi scene = 1 ảnh.
+
+NGUYÊN TẮC GOM CÂU:
+- Câu ngắn (<6 từ) cùng chủ đề liệt kê → gom lại 1 scene (VD: "Họ chơi. Họ hát. Họ nhảy." → 1 scene)
+- Câu dài có ý nghĩa độc lập → 1 scene riêng
+- Câu trích dẫn số liệu + câu giải thích liền sau → gom 1 scene
+- Câu chuyển đoạn (dấu hỏi rhetorical) → 1 scene riêng
+- Target: ~100-120 scenes cho script ~8-10 phút
+
+CÁCH VIẾT PROMPT ẢNH:
+Style bắt buộc: "cinematic 2D painted documentary illustration, semi-realistic prehistoric humans, warm ochre earth tones, firelight atmosphere"
+- Mô tả cảnh cụ thể: người, hành động, bối cảnh
+- KHÔNG dùng text/chữ trong ảnh
+- Câu về số liệu (1960, mười hai tiếng...): thêm chi tiết môi trường, đừng cố render số
+- Câu về địa danh (Kalahari, Tanzania): thêm cảnh thiên nhiên đặc trưng
+
+ICON OVERLAYS (chỉ dùng khi thực sự cần):
+- Câu liệt kê hành động hiện đại đối lập (email, ca làm việc, deadline): dùng icon
+- Format: [{"icon": "email", "position": "center", "label": "Không có email chưa đọc"}]
+- Icon hợp lệ: email, calendar, clock, phone, laptop, checkmark, x-mark, fire, leaf, wheat, skull, heart, star, sun, moon, mountain, river, tree, person, group
+
+TEXT OVERLAYS: để trống [] — subtitle .srt xử lý text
+
+OUTPUT: JSON array thuần, không có markdown, không có giải thích.
+Mỗi phần tử:
+{
+  "index": 1,
+  "sentences": [1, 2],
+  "scene_text": "nội dung gộp",
+  "prompt": "cinematic 2D painted...",
+  "icon_overlays": [],
+  "text_overlays": []
+}
+
+QUAN TRỌNG: Phủ kín tất cả câu từ 1 đến N. Không bỏ sót câu nào."""
+
+EN_SYSTEM_PROMPT = """You are a storyboard expert for a prehistoric history YouTube channel.
+
+I will send you an English script and a numbered list of sentences (1-based).
+Your task: group the script into SCENES — one image per scene.
+
+GROUPING RULES:
+- Short sentences (<6 words) on the same theme → group into 1 scene
+- Long independent sentences → 1 scene each
+- Stat/quote + following explanation → group together
+- Target: ~100-120 scenes for an ~8-10 minute script
+
+IMAGE PROMPT STYLE:
+Required style: "cinematic wide shot, photorealistic, natural lighting, shallow depth of field, 16:9, no text"
+- Describe specific scene: people, action, environment
+- No text/numbers rendered in the image
+- For stat sentences: describe the environment context instead
+
+ICON OVERLAYS: only for modern-life-contrast listing sentences
+TEXT OVERLAYS: leave as [] — subtitle .srt handles all text
+
+OUTPUT: pure JSON array only, no markdown, no explanation.
+Each element:
+{
+  "index": 1,
+  "sentences": [1, 2],
+  "scene_text": "combined text",
+  "prompt": "cinematic wide shot...",
+  "icon_overlays": [],
+  "text_overlays": []
+}
+
+IMPORTANT: Cover all sentences from 1 to N. Miss none."""
 
 
-def _build_prompt(timestamps: list[dict], script: str, system_prompt: str) -> str:
-    n = len(timestamps)
-    transcript_lines = "\n".join(
-        f"[{seg['index']}] [{seg['start']:.2f}s–{seg['end']:.2f}s] {seg['text']}"
-        for seg in timestamps
+# ── Script parsing ────────────────────────────────────────────────────────────
+
+_SCRIPT_STOP_MARKERS = (
+    "COMMENT SEED:",
+    "RESEARCH NOTES:",
+    "Your script is ready",
+    "Save as:",
+    "Then: python",
+)
+
+
+def _load_script_text(script_path: Path) -> str:
+    text = script_path.read_text(encoding="utf-8").lstrip("﻿")
+    for marker in _SCRIPT_STOP_MARKERS:
+        idx = text.find(marker)
+        if idx != -1:
+            text = text[:idx]
+    return text.strip()
+
+
+def _split_sentences(script_text: str) -> list[str]:
+    """Split script into sentences for proportional timestamp mapping."""
+    paragraphs = re.split(r"\n{2,}", script_text)
+    sentences = []
+    first = True
+    for para in paragraphs:
+        para = para.strip()
+        if not para:
+            continue
+        if first:
+            first = False
+            if not re.search(r"[.!?]$", para) and len(para.split()) <= 12:
+                continue
+        for part in re.split(r"(?<=[.!?])\s+", para):
+            part = part.strip()
+            if part:
+                sentences.append(part)
+    return sentences
+
+
+# ── Timestamp computation ─────────────────────────────────────────────────────
+
+def _get_audio_duration(audio_path: Path) -> float:
+    result = subprocess.run(
+        ["ffprobe", "-v", "error", "-show_entries", "format=duration",
+         "-of", "default=noprint_wrappers=1:nokey=1", str(audio_path)],
+        capture_output=True, text=True,
     )
-    total_duration = timestamps[-1]["end"] if timestamps else 0.0
+    try:
+        return float(result.stdout.strip())
+    except ValueError:
+        return 0.0
 
-    return (
-        f"{system_prompt.replace('{N}', str(n))}\n\n"
-        f"The video has {n} sentences and is {total_duration:.1f} seconds long.\n"
-        f"You must return EXACTLY {n} JSON objects — one per sentence, using the EXACT index, start, and end from below.\n\n"
-        f"TRANSCRIPT (index, timing, text):\n{transcript_lines}\n\n"
-        f"FULL SCRIPT (for style context):\n{script[:3000]}\n\n"
-        f"Return a JSON array of exactly {n} objects:\n"
-        f'[{{"index": 1, "start": <exact>, "end": <exact>, "prompt": "..."}}, ...]\n'
-        f"Use the exact index/start/end values from the transcript above. Do not invent timings."
+
+def _compute_sentence_times(sentences: list[str], total_dur: float) -> list[dict]:
+    """Assign start/end to each sentence proportional to character count."""
+    total_chars = sum(len(s) for s in sentences)
+    if total_chars == 0:
+        return []
+    cursor = 0.0
+    result = []
+    for i, s in enumerate(sentences, 1):
+        dur = total_dur * len(s) / total_chars
+        result.append({
+            "index": i,
+            "start": round(cursor, 3),
+            "end": round(cursor + dur, 3),
+            "text": s,
+        })
+        cursor += dur
+    return result
+
+
+# ── Claude API ────────────────────────────────────────────────────────────────
+
+def _call_claude(script_text: str, sentences: list[str], system_prompt: str) -> list[dict]:
+    import anthropic
+
+    numbered = "\n".join(f"[{i}] {s}" for i, s in enumerate(sentences, 1))
+    user_message = (
+        f"Đây là toàn bộ script ({len(sentences)} câu):\n\n"
+        f"SCRIPT ĐẦY ĐỦ:\n{script_text}\n\n"
+        f"DANH SÁCH CÂU ĐÁNH SỐ:\n{numbered}\n\n"
+        f"Hãy tách thành scenes. Trả về JSON array thuần (không markdown)."
     )
+
+    client = anthropic.Anthropic(api_key=config.ANTHROPIC_API_KEY)
+    response = client.messages.create(
+        model="claude-sonnet-4-6",
+        max_tokens=16000,
+        system=system_prompt,
+        messages=[{"role": "user", "content": user_message}],
+    )
+    logger.info(
+        "Claude tokens: {} in / {} out",
+        response.usage.input_tokens, response.usage.output_tokens,
+    )
+    return _parse_json_response(response.content[0].text)
+
+
+def _call_gemini(script_text: str, sentences: list[str], system_prompt: str) -> list[dict]:
+    from google import genai
+
+    numbered = "\n".join(f"[{i}] {s}" for i, s in enumerate(sentences, 1))
+    full_prompt = (
+        f"{system_prompt}\n\n"
+        f"SCRIPT ĐẦY ĐỦ:\n{script_text}\n\n"
+        f"DANH SÁCH CÂU ĐÁNH SỐ:\n{numbered}\n\n"
+        f"Hãy tách thành scenes. Trả về JSON array thuần (không markdown)."
+    )
+    client = genai.Client(api_key=config.GEMINI_API_KEY)
+    response = client.models.generate_content(
+        model="gemini-2.5-flash",
+        contents=full_prompt,
+    )
+    return _parse_json_response(response.text)
 
 
 def _parse_json_response(text: str) -> list[dict]:
-    text = re.sub(r"```(?:json)?\s*", "", text).strip()
-    text = text.rstrip("`").strip()
+    text = re.sub(r"```(?:json)?\s*", "", text).strip().rstrip("`").strip()
     start = text.find("[")
     end = text.rfind("]") + 1
     if start == -1 or end == 0:
@@ -44,118 +230,95 @@ def _parse_json_response(text: str) -> list[dict]:
     return json.loads(text[start:end])
 
 
-_STRIP_PATTERNS = [
-    "ancient art style", "prehistoric", "minimalist", "warm earth tones",
-    "no text", "wide 16:9 landscape composition", "horizontal orientation",
-    "cave painting style", "ochre and charcoal on stone", "prehistoric rock art",
-    "16:9",
-]
+# ── Scene → timestamp mapping ─────────────────────────────────────────────────
 
-def _add_style_suffix(prompts: list[dict]) -> list[dict]:
-    for item in prompts:
-        p = item.get("prompt", "").rstrip(", ")
-        # Strip any existing style keywords to avoid duplication
-        for pattern in _STRIP_PATTERNS:
-            # Remove trailing occurrences only (AI tends to append them at end)
-            p = re.sub(r",?\s*" + re.escape(pattern) + r"\s*(?=,|$)", "", p, flags=re.IGNORECASE).strip().rstrip(",").strip()
-        item["prompt"] = f"{p}, {STYLE_SUFFIX}"
-    return prompts
-
-
-def _enforce_timings(prompts: list[dict], timestamps: list[dict]) -> list[dict]:
-    """Force each prompt's index/start/end to match the source timestamp exactly."""
-    ts_map = {t["index"]: t for t in timestamps}
+def _map_scene_times(scenes: list[dict], sentence_times: list[dict]) -> list[dict]:
+    """Map each scene's sentences[] to start/end timestamps."""
+    st_map = {s["index"]: s for s in sentence_times}
     result = []
-    for item in prompts:
-        idx = item.get("index")
-        if idx in ts_map:
-            item["index"] = ts_map[idx]["index"]
-            item["start"] = ts_map[idx]["start"]
-            item["end"] = ts_map[idx]["end"]
-        result.append(item)
+    for i, scene in enumerate(scenes, 1):
+        sent_indices = scene.get("sentences", [])
+        if not sent_indices:
+            logger.warning("Scene {} has no sentences", i)
+            continue
+        first_idx = min(sent_indices)
+        last_idx = max(sent_indices)
+        start = st_map.get(first_idx, {}).get("start", 0.0)
+        end = st_map.get(last_idx, {}).get("end", 0.0)
+        result.append({
+            "index": i,
+            "sentences": sent_indices,
+            "scene_text": scene.get("scene_text", ""),
+            "start": round(start, 3),
+            "end": round(end, 3),
+            "prompt": scene.get("prompt", ""),
+            "negative_prompt": VI_NEGATIVE_PROMPT,
+            "icon_overlays": scene.get("icon_overlays", []),
+            "text_overlays": scene.get("text_overlays", []),
+        })
     return result
 
 
-def _run_gemini(full_prompt: str) -> list[dict]:
-    from google import genai
-
-    client = genai.Client(api_key=config.GEMINI_API_KEY)
-    response = client.models.generate_content(
-        model=GEMINI_TEXT_MODEL,
-        contents=full_prompt,
-    )
-    return _parse_json_response(response.text)
-
-
-def _run_claude(timestamps: list[dict], script: str, system_prompt: str) -> tuple[list[dict], object]:
-    import anthropic
-
-    n = len(timestamps)
-    transcript_lines = "\n".join(
-        f"[{s['index']}] [{s['start']:.2f}s–{s['end']:.2f}s] {s['text']}"
-        for s in timestamps
-    )
-    user_message = (
-        f"Return exactly {n} image prompts, one per sentence. "
-        f"Use the exact index/start/end from each line.\n\n"
-        f"{transcript_lines}"
-    )
-    client = anthropic.Anthropic(api_key=config.ANTHROPIC_API_KEY)
-    response = client.messages.create(
-        model=config.CLAUDE_MODEL,
-        max_tokens=8192,
-        system=system_prompt.replace("{N}", str(n)),
-        messages=[{"role": "user", "content": user_message}],
-    )
-    return _parse_json_response(response.content[0].text), response
-
+# ── Main ──────────────────────────────────────────────────────────────────────
 
 def run(video_id: str, n_override: int | None = None) -> None:
     video_dir = Path(config.OUTPUT_DIR) / video_id
-    timestamps_path = video_dir / "timestamps.json"
     script_path = video_dir / "script.txt"
+    audio_path = video_dir / "audio.mp3"
     output_path = video_dir / "image_prompts.json"
 
-    if not timestamps_path.exists():
-        logger.error("timestamps.json not found: {}", timestamps_path)
-        sys.exit(1)
     if not script_path.exists():
         logger.error("script.txt not found: {}", script_path)
         sys.exit(1)
-
-    timestamps = json.loads(timestamps_path.read_text(encoding="utf-8"))
-    script = script_path.read_text(encoding="utf-8")
-    system_prompt = (Path(config.PROMPTS_DIR) / "system_prompt.txt").read_text(encoding="utf-8")
-
-    # Demo mode: trim to first n_override sentences
-    if n_override is not None:
-        timestamps = timestamps[:n_override]
-        logger.info("Demo mode: using first {} sentences", len(timestamps))
-
-    n = len(timestamps)
-    logger.info("Generating {} image prompts (1 per sentence)...", n)
-
-    use_gemini = bool(config.GEMINI_API_KEY)
-    use_claude = bool(config.ANTHROPIC_API_KEY)
-
-    if not use_gemini and not use_claude:
-        logger.error("Neither GEMINI_API_KEY nor ANTHROPIC_API_KEY is set")
+    if not audio_path.exists():
+        logger.error("audio.mp3 not found: {}", audio_path)
         sys.exit(1)
 
-    prompts = None
-    last_error = None
+    use_claude = bool(config.ANTHROPIC_API_KEY)
+    use_gemini = bool(config.GEMINI_API_KEY)
+    if not use_claude and not use_gemini:
+        logger.error("Neither ANTHROPIC_API_KEY nor GEMINI_API_KEY set. Add to .env file.")
+        sys.exit(1)
+    if use_claude:
+        logger.info("Using Claude claude-sonnet-4-6 for scene segmentation")
+    else:
+        logger.info("Falling back to Gemini (ANTHROPIC_API_KEY not set)")
 
+    script_text = _load_script_text(script_path)
+    sentences = _split_sentences(script_text)
+
+    if n_override is not None:
+        sentences = sentences[:n_override]
+        logger.info("Demo mode: using first {} sentences", len(sentences))
+
+    logger.info("Script: {} sentences detected", len(sentences))
+
+    total_dur = _get_audio_duration(audio_path)
+    if total_dur <= 0:
+        logger.error("Could not read audio duration from {}", audio_path)
+        sys.exit(1)
+    logger.info("Audio duration: {:.1f}s", total_dur)
+
+    # Prefer timestamps.json (from sentence-mode TTS or Whisper align) — exact timing
+    # Fallback: proportional by character count (less accurate)
+    timestamps_path = video_dir / "timestamps.json"
+    if timestamps_path.exists():
+        sentence_times = json.loads(timestamps_path.read_text(encoding="utf-8"))
+        logger.info("Using sentence timestamps from timestamps.json ({} entries)", len(sentence_times))
+    else:
+        sentence_times = _compute_sentence_times(sentences, total_dur)
+        logger.info("Using proportional timestamps (no timestamps.json found)")
+
+    logger.info("Calling Claude claude-sonnet-4-6 to generate scenes...")
+
+    scenes = None
+    last_error = None
     for attempt in range(1, config.CLAUDE_MAX_RETRIES + 2):
         try:
-            if use_gemini:
-                full_prompt = _build_prompt(timestamps, script, system_prompt)
-                prompts = _run_gemini(full_prompt)
+            if use_claude:
+                scenes = _call_claude(script_text, sentences, VI_SYSTEM_PROMPT)
             else:
-                prompts, response = _run_claude(timestamps, script, system_prompt)
-                logger.info(
-                    "Claude tokens: {} in / {} out",
-                    response.usage.input_tokens, response.usage.output_tokens,
-                )
+                scenes = _call_gemini(script_text, sentences, VI_SYSTEM_PROMPT)
             break
         except (json.JSONDecodeError, ValueError) as e:
             last_error = e
@@ -168,26 +331,17 @@ def run(video_id: str, n_override: int | None = None) -> None:
             if attempt <= config.CLAUDE_MAX_RETRIES:
                 time.sleep(config.CLAUDE_RETRY_SLEEP)
 
-    if prompts is None:
-        logger.error("All attempts failed: {}", last_error)
+    if scenes is None:
+        logger.error("All Claude attempts failed: {}", last_error)
         sys.exit(1)
 
-    # Trim if AI returned too many
-    prompts = prompts[:n]
+    logger.info("Claude returned {} scenes (from {} sentences)", len(scenes), len(sentences))
 
-    # Pad if AI returned too few (duplicate last)
-    while len(prompts) < n:
-        last = dict(prompts[-1])
-        prompts.append(last)
+    prompts = _map_scene_times(scenes, sentence_times)
 
-    # Force exact timings from timestamps (AI must not invent timings)
-    prompts = _enforce_timings(prompts, timestamps)
-
-    # Re-index sequentially
-    for i, item in enumerate(prompts, 1):
-        item["index"] = i
-
-    prompts = _add_style_suffix(prompts)
+    # Fix last entry end time to exactly match audio duration
+    if prompts:
+        prompts[-1]["end"] = round(total_dur, 3)
 
     output_path.write_text(json.dumps(prompts, ensure_ascii=False, indent=2), encoding="utf-8")
-    logger.info("Saved {} prompts → {}", len(prompts), output_path)
+    logger.info("Saved {} scenes → {}", len(prompts), output_path)

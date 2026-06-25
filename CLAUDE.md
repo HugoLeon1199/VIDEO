@@ -60,10 +60,12 @@ Core invariant: one prompt/image per timestamp entry. Demo mode is isolated and 
 
 ### Transcription
 - English: `faster_whisper` model `base`, CPU/int8, sentence-level segments
-- Vietnamese: requires per-video override `output/{video-id}/transcribe_config.json`:
+- Vietnamese: `stable_ts` forced alignment against `script.txt` — requires per-video override `output/{video-id}/transcribe_config.json`:
   ```json
-  {"model": "medium", "language": "vi"}
+  {"engine": "stable_ts", "model": "medium", "language": "vi", "mode": "align", "device": "cpu"}
   ```
+- `stable_ts` aligns audio to canonical script sentences (exact text, accurate timing, no ASR hallucination)
+- Fallback: omit `engine` field to use legacy `faster_whisper` greedy mode
 
 ### Image Prompts (Step 4)
 - Gemini text model `gemini-2.5-flash` generates one prompt per timestamp
@@ -115,7 +117,7 @@ $vid = "my-topic-vi"
 
 # 2. Create per-video config files
 '{"engine": "edge", "voice": "vi-VN-NamMinhNeural", "rate": "-8%"}' | Out-File "output/$vid/tts_config.json" -Encoding utf8
-'{"model": "medium", "language": "vi"}' | Out-File "output/$vid/transcribe_config.json" -Encoding utf8
+'{"engine": "stable_ts", "model": "medium", "language": "vi", "mode": "align", "device": "cpu"}' | Out-File "output/$vid/transcribe_config.json" -Encoding utf8
 
 # 3. TTS + Transcribe
 & $python main.py --video-id $vid --step 2

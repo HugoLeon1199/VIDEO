@@ -356,11 +356,21 @@ class TestRunPodServerlessBackend:
 
     def test_resume_skips_completed_scenes(self):
         """generate_images.py skips scenes already in gen_log with status=completed."""
-        log = {"001": {"status": "completed", "candidates_saved": 3}}
         from scripts.generate_images import _scene_done
+        selected = Path(os.environ["IMAGE_OUTPUT_ROOT"]) / "test-video" / "images" / "img_001.png"
+        selected.parent.mkdir(parents=True, exist_ok=True)
+        selected.write_bytes(_make_webp())
+
+        log = {"001": {"status": "completed", "candidates_saved": 3, "selected_image": str(selected)}}
         assert _scene_done(log, "001", 3) is True
         assert _scene_done(log, "001", 4) is False
         assert _scene_done(log, "002", 3) is False
+
+    def test_resume_requires_selected_image(self):
+        """Completed candidate folders alone are not enough for step 6 render."""
+        from scripts.generate_images import _scene_done
+        log = {"001": {"status": "completed", "candidates_saved": 3, "selected_image": "missing.png"}}
+        assert _scene_done(log, "001", 3) is False
 
     def test_sidecar_json_written(self):
         info, _ = _make_candidate_info(1, 11001)
@@ -374,3 +384,24 @@ class TestRunPodServerlessBackend:
         meta = json.loads(meta_path.read_text())
         assert meta["seed"] == 11001
         assert meta["scene_id"] == "001"
+
+    def test_promote_candidate_creates_render_png(self):
+        from image_generation.runpod_serverless_backend import promote_candidate_to_render_image
+
+        info, _ = _make_candidate_info(1, 11001)
+        client = self._mock_client([info])
+        backend = self._backend(client)
+        result = backend.generate(self._req())
+
+        selected = promote_candidate_to_render_image(
+            result.candidates[0],
+            video_id="test-video",
+            scene_id="001",
+            output_root=os.environ["IMAGE_OUTPUT_ROOT"],
+        )
+
+        selected_path = Path(selected)
+        assert selected_path.exists()
+        assert selected_path.name == "img_001.png"
+        with Image.open(selected_path) as img:
+            assert img.size == (64, 36)

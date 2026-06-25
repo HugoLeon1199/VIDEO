@@ -132,13 +132,22 @@ def main():
     if not jid:
         log("RESULT: SUBMIT_FAILED")
         return
-    status, res = watch(jid, deadline=420)
+    status, res = watch(jid, deadline=900)  # first run downloads 13GB model
     log(f"=== watch ended: {status} ===")
     if status == "COMPLETED":
         out = res.get("output", {})
-        log("RESULT: JOB_COMPLETED — serverless loop WORKS")
-        log("FULL OUTPUT:")
-        log(json.dumps(out, indent=2))
+        imgs = out.get("images", [])
+        errs = out.get("errors", [])
+        log(f"RESULT: JOB_COMPLETED — images={len(imgs)} duration={out.get('duration_seconds')}s errors={errs}")
+        if imgs and imgs[0].get("base64"):
+            data = base64.b64decode(imgs[0]["base64"])
+            p = ROOT / "test_scene001.webp"
+            p.write_bytes(data)
+            log(f">>> SAVED REAL IMAGE {p} ({len(data)} bytes) sha={imgs[0].get('sha256','')[:16]} <<<")
+            log("RESULT: SUCCESS — FLUX image generated!")
+        else:
+            log("FULL OUTPUT:")
+            log(json.dumps(out, indent=2)[:1500])
     elif status in ("FAILED", "TIMED_OUT", "CANCELLED"):
         log(f"RESULT: JOB_{status}")
         log(json.dumps(res, indent=2)[:1500])

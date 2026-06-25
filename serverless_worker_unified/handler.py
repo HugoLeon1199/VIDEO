@@ -4,10 +4,20 @@ import time
 import base64
 import hashlib
 import io
+import shutil
+from pathlib import Path
 from PIL import Image
 from diffusers import FluxPipeline, FluxImg2ImgPipeline
 
 print("Base model only. No LoRA or external adapter loaded.")
+
+# Remove the old corrupted cache on cold-start to free disk space before
+# downloading the clean model. Safe to delete: hf-cache-clean is the new path.
+_old_cache = Path("/runpod-volume/hf-cache")
+if _old_cache.exists():
+    print(f"Removing old cache at {_old_cache} to free disk space...")
+    shutil.rmtree(_old_cache, ignore_errors=True)
+    print("Old cache removed.")
 
 MODEL_ID = "black-forest-labs/FLUX.1-dev"
 _pipe_t2i = None

@@ -32,6 +32,26 @@ pipeline.log
 *.pt
 *.pth
 
+# Audio/video assets (large binary, not versioned)
+assets/sfx/
+assets/icons/*.png
+assets/icons/*.svg
+
+# Test output images and archives
+test_*.webp
+test_*.zip
+test_*/
+
+# Tool state — not source code
+.ai/
+.claude/
+.fresh_endpoint
+
+# Unprocessed video folders
+VIDEO/
+VIDEO-1/
+master_style_seeds/
+
 # Docker
 .dockerignore
 

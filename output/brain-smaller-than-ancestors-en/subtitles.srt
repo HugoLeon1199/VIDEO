@@ -1,0 +1,435 @@
+1
+00:00:00,000 --> 00:00:01,960
+Your brain is smaller than your ancestors.
+
+2
+00:00:02,960 --> 00:00:06,019
+Pick up a skull from twenty thousand years ago, hold it.
+
+3
+00:00:06,280 --> 00:00:07,660
+It is heavier than it looks.
+
+4
+00:00:08,400 --> 00:00:13,039
+Not the skull of some primitive creature still learning to use fire, the skull
+
+5
+00:00:13,039 --> 00:00:14,560
+of a fully modern human.
+
+6
+00:00:15,519 --> 00:00:18,820
+Someone who painted animals on cave walls in the dark.
+
+7
+00:00:19,320 --> 00:00:22,879
+Someone who navigated hundreds of miles to trade with strangers.
+
+8
+00:00:23,820 --> 00:00:28,399
+Someone whose brain had been shaped by hundreds of thousands of years of one
+
+9
+00:00:28,399 --> 00:00:32,799
+particular pressure, surviving in a world with no backup systems.
+
+10
+00:00:33,619 --> 00:00:35,079
+Their brain was bigger than yours.
+
+11
+00:00:35,859 --> 00:00:40,859
+This is not a provocation, it is one of the most consistently documented findings
+
+12
+00:00:40,859 --> 00:00:44,179
+in the fossil record and it leads somewhere strange.
+
+13
+00:00:44,960 --> 00:00:49,460
+We tend to assume evolution moves in one direction, more complex, more
+
+14
+00:00:49,460 --> 00:00:52,640
+capable, more refined, bigger brain means smarter.
+
+15
+00:00:53,520 --> 00:00:58,240
+That assumption is older than science, and the fossil record has been quietly
+
+16
+00:00:58,240 --> 00:00:59,859
+contradicting it for decades.
+
+17
+00:01:00,799 --> 00:01:05,359
+The human brain reached its largest average size somewhere between twenty and
+
+18
+00:01:05,359 --> 00:01:07,040
+thirty thousand years ago.
+
+19
+00:01:07,900 --> 00:01:12,400
+Skulls from that period consistently hold more volume than skulls of people living
+
+20
+00:01:12,400 --> 00:01:12,859
+today.
+
+21
+00:01:13,760 --> 00:01:18,700
+The reduction is roughly one hundred to one hundred fifty cubic centimeters, about
+
+22
+00:01:18,700 --> 00:01:21,840
+the volume of a tennis ball worth of brain tissue.
+
+23
+00:01:22,640 --> 00:01:25,420
+Gone gradually, over tens of thousands of years.
+
+24
+00:01:26,299 --> 00:01:31,219
+This pattern appears wherever researchers look, multiple populations, multiple
+
+25
+00:01:31,219 --> 00:01:33,579
+continents, thousands of years apart.
+
+26
+00:01:34,420 --> 00:01:39,299
+It is not a measurement error, it is not one unusual burial site, it
+
+27
+00:01:39,299 --> 00:01:41,480
+is the consistent direction of change.
+
+28
+00:01:42,359 --> 00:01:47,400
+Before this goes further one correction needs to land, brain size and intelligence
+
+29
+00:01:47,400 --> 00:01:48,780
+are not the same thing.
+
+30
+00:01:49,579 --> 00:01:54,379
+A sperm whale has a brain roughly six times larger than yours, elephants
+
+31
+00:01:54,379 --> 00:01:58,900
+carry brains three times larger, neither writes music or builds cities.
+
+32
+00:01:59,859 --> 00:02:04,420
+What matters is how tissue is organized, how densely it connects, how
+
+33
+00:02:04,420 --> 00:02:08,460
+efficiently signals travel, how specialized different regions become.
+
+34
+00:02:09,439 --> 00:02:14,060
+Some researchers argue the modern brain is simply more efficient, the same
+
+35
+00:02:14,060 --> 00:02:16,560
+cognitive work accomplished with less tissue.
+
+36
+00:02:17,460 --> 00:02:22,000
+That is entirely possible, but efficiency alone does not explain the
+
+37
+00:02:22,000 --> 00:02:23,020
+timing of the change.
+
+38
+00:02:23,860 --> 00:02:28,699
+There is also a simpler mechanical explanation worth naming, human body
+
+39
+00:02:28,699 --> 00:02:31,060
+size decreased over the same period.
+
+40
+00:02:32,000 --> 00:02:36,520
+Brains scale with bodies, a smaller frame generally carries a smaller
+
+41
+00:02:36,520 --> 00:02:41,300
+brain, some of the reduction may track leaner bodies rather than lost capacity.
+
+42
+00:02:42,080 --> 00:02:46,580
+But body size does not account for all of it, the brain shrank more than
+
+43
+00:02:46,580 --> 00:02:48,039
+the body alone would predict.
+
+44
+00:02:48,699 --> 00:02:53,259
+Which leaves a gap, and into that gap an unsettling hypothesis has walked.
+
+45
+00:02:54,020 --> 00:02:57,919
+You have probably never thought of yourself as a domesticated animal.
+
+46
+00:02:58,620 --> 00:03:02,000
+But look at what domestication consistently does to a brain.
+
+47
+00:03:02,860 --> 00:03:07,520
+A wolf and a domestic dog are genetically nearly identical, the same
+
+48
+00:03:07,520 --> 00:03:12,120
+species separated by roughly 15,000 years of living alongside
+
+49
+00:03:12,120 --> 00:03:12,740
+humans.
+
+50
+00:03:13,699 --> 00:03:18,479
+The dog's brain is significantly smaller than the wolf's when adjusted for body size.
+
+51
+00:03:19,120 --> 00:03:21,659
+The dog did not simply lose this, it traded.
+
+52
+00:03:22,520 --> 00:03:27,080
+A wolf solves problems alone, it reads a forest, tracks prey over
+
+53
+00:03:27,080 --> 00:03:30,120
+miles, makes every decision without any help arriving.
+
+54
+00:03:30,819 --> 00:03:35,860
+A dog reads a human face, it follows a pointing finger, tracks emotional
+
+55
+00:03:35,860 --> 00:03:40,139
+signals across a room, asks for help in ways a wolf never does.
+
+56
+00:03:41,060 --> 00:03:46,159
+The dog traded raw individual problem-solving capacity for social intelligence,
+
+57
+00:03:46,659 --> 00:03:51,300
+for the ability to function within a cooperative network rather than outside one.
+
+58
+00:03:52,139 --> 00:03:56,800
+The pattern holds across domesticated species, cattle compared to
+
+59
+00:03:56,800 --> 00:04:00,840
+wild ancestor the Aurochs, pigs compared to wild boar.
+
+60
+00:04:01,099 --> 00:04:05,680
+The brain that no longer needs to operate alone tends to shrink toward what the
+
+61
+00:04:05,680 --> 00:04:07,300
+social environment requires.
+
+62
+00:04:08,400 --> 00:04:13,479
+Some researchers now propose that humans underwent a parallel process, not
+
+63
+00:04:13,479 --> 00:04:18,220
+domesticated by another species, self-domesticated by the growth of
+
+64
+00:04:18,220 --> 00:04:19,480
+civilization itself.
+
+65
+00:04:20,279 --> 00:04:25,000
+As communities grew larger and more stable, individuals no longer needed
+
+66
+00:04:25,000 --> 00:04:26,600
+to carry everything alone.
+
+67
+00:04:27,439 --> 00:04:32,000
+You did not need to memorize every edible plant if someone in your group specialized
+
+68
+00:04:32,000 --> 00:04:33,079
+in that knowledge.
+
+69
+00:04:33,980 --> 00:04:38,439
+You did not need to track every animal if your community had a dedicated tracker.
+
+70
+00:04:39,339 --> 00:04:44,259
+You did not need to remember every star path if the elder navigator held that knowledge
+
+71
+00:04:44,259 --> 00:04:45,379
+and could be asked.
+
+72
+00:04:46,680 --> 00:04:51,439
+Cognitive work became distributed, stored across people, passed through language, embedded
+
+73
+00:04:51,439 --> 00:04:53,500
+in tools and ritual and story.
+
+74
+00:04:54,379 --> 00:04:58,939
+A brain operating inside a dense social network needs to hold less
+
+75
+00:04:58,939 --> 00:05:02,060
+individually, the network becomes part of the thinking.
+
+76
+00:05:02,879 --> 00:05:07,439
+This hypothesis is contested, other researchers point to other causes,
+
+77
+00:05:07,699 --> 00:05:09,560
+but the timing is hard to dismiss.
+
+78
+00:05:10,500 --> 00:05:15,279
+The brain reduction correlates with rising population density and the formation
+
+79
+00:05:15,279 --> 00:05:20,379
+of permanently settled communities, with the beginning of the world we now recognize.
+
+80
+00:05:21,459 --> 00:05:26,000
+After each generation living inside larger, more specialized, more
+
+81
+00:05:26,000 --> 00:05:30,639
+stable groups, the individual brain no longer needed to carry the full weight
+
+82
+00:05:30,639 --> 00:05:31,519
+it once did.
+
+83
+00:05:32,399 --> 00:05:37,000
+You now know the brain shrank, you know several possible reasons, but you still
+
+84
+00:05:37,000 --> 00:05:39,860
+do not know what, if anything, was actually lost.
+
+85
+00:05:40,620 --> 00:05:43,680
+That question is harder to cubic centimeters.
+
+86
+00:05:44,660 --> 00:05:49,259
+The person who held that larger skull 20,000 years ago lived differently,
+
+87
+00:05:49,699 --> 00:05:54,220
+no library, no written record, no specialist to call when knowledge
+
+88
+00:05:54,220 --> 00:05:54,939
+ran out.
+
+89
+00:05:55,740 --> 00:06:00,379
+Everything needed to survive had to live inside a single brain, fully loaded,
+
+90
+00:06:00,740 --> 00:06:01,740
+permanently available.
+
+91
+00:06:02,560 --> 00:06:04,279
+You live inside a different structure.
+
+92
+00:06:05,079 --> 00:06:09,899
+The smartphone in your pocket holds more navigational information than any ancient
+
+93
+00:06:09,899 --> 00:06:11,139
+human brain carried.
+
+94
+00:06:11,139 --> 00:06:16,019
+The books on your shelf hold more accumulated knowledge than any oral tradition
+
+95
+00:06:16,019 --> 00:06:17,220
+could fully preserve.
+
+96
+00:06:18,319 --> 00:06:23,160
+Your knowledge is distributed across the people around you, the devices in your hands,
+
+97
+00:06:23,439 --> 00:06:25,959
+the memory systems your civilization built.
+
+98
+00:06:26,879 --> 00:06:31,680
+Maybe nothing was lost, maybe the brain moved its storage outside of itself, the
+
+99
+00:06:31,680 --> 00:06:34,259
+extended mind, the network as the organ.
+
+100
+00:06:35,079 --> 00:06:39,879
+Or maybe something was lost, a quality of individual attention, a
+
+101
+00:06:39,879 --> 00:06:44,379
+depth of solo knowing, something that required the full weight of that heavier
+
+102
+00:06:44,379 --> 00:06:44,860
+skull.
+
+103
+00:06:45,779 --> 00:06:50,680
+The fossil record can tell us the size, it cannot tell us the value of what changed.
+
+104
+00:06:51,540 --> 00:06:56,040
+The skull from 20,000 years ago is heavier than yours, but the mind
+
+105
+00:06:56,040 --> 00:06:58,120
+inside it had no one else to ask.
+
+106
+00:06:58,939 --> 00:06:59,439
+You do.
+
+107
+00:07:00,399 --> 00:07:05,300
+Spark has watched every fire in this long story, the ones where a single mind
+
+108
+00:07:05,300 --> 00:07:10,000
+had to hold everything, the ones where the circle grew wide enough to share the weight.
+
+109
+00:07:10,899 --> 00:07:14,420
+Still watching, still wondering which arrangement we would choose to keep.

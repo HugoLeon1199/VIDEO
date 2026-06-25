@@ -1,0 +1,1397 @@
+{
+  "003": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi\\images\\img_003.png",
+    "errors": [],
+    "job_id": "0d29ddd0-7048-4304-b6e9-6e35ea721493-e1",
+    "duration_seconds": 4.2,
+    "saved_at": "2026-06-21T14:01:08Z"
+  },
+  "002": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi\\images\\img_002.png",
+    "errors": [],
+    "job_id": "8d9df4a5-0cd3-4158-b7d3-5655f4f33ad5-e1",
+    "duration_seconds": 4.2,
+    "saved_at": "2026-06-21T14:01:08Z"
+  },
+  "004": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi\\images\\img_004.png",
+    "errors": [],
+    "job_id": "f07cd525-3816-4a6f-a332-acad4a13f4ce-e2",
+    "duration_seconds": 4.2,
+    "saved_at": "2026-06-21T14:01:08Z"
+  },
+  "001": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi\\images\\img_001.png",
+    "errors": [],
+    "job_id": "8d3feb11-aff2-4af2-82d1-30e86f60d80e-e1",
+    "duration_seconds": 4.27,
+    "saved_at": "2026-06-21T14:01:08Z"
+  },
+  "006": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi\\images\\img_006.png",
+    "errors": [],
+    "job_id": "250434fc-b872-4e3f-a711-69bff2dcaca2-e2",
+    "duration_seconds": 3.94,
+    "saved_at": "2026-06-21T14:01:12Z"
+  },
+  "007": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi\\images\\img_007.png",
+    "errors": [],
+    "job_id": "0b6cbe05-340d-4f7a-9708-eb019cebcde0-e2",
+    "duration_seconds": 3.99,
+    "saved_at": "2026-06-21T14:01:12Z"
+  },
+  "009": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi\\images\\img_009.png",
+    "errors": [],
+    "job_id": "bcb12a5d-3f53-4f94-8224-c27e5f74411c-e1",
+    "duration_seconds": 3.99,
+    "saved_at": "2026-06-21T14:01:12Z"
+  },
+  "005": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi\\images\\img_005.png",
+    "errors": [],
+    "job_id": "3b6d7dcb-8bba-4c95-b600-4f5ed3b5bf88-e2",
+    "duration_seconds": 8.79,
+    "saved_at": "2026-06-21T14:01:12Z"
+  },
+  "011": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi\\images\\img_011.png",
+    "errors": [],
+    "job_id": "3e2f3a78-e1c3-4bf1-b8e6-5c0a49eada18-e1",
+    "duration_seconds": 3.87,
+    "saved_at": "2026-06-21T14:01:16Z"
+  },
+  "010": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi\\images\\img_010.png",
+    "errors": [],
+    "job_id": "48a32f84-7f14-450f-9e80-c53549c8f196-e2",
+    "duration_seconds": 3.91,
+    "saved_at": "2026-06-21T14:01:16Z"
+  },
+  "012": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi\\images\\img_012.png",
+    "errors": [],
+    "job_id": "a0ee8bd2-4f6e-4d35-b8d3-f36ad15d8761-e2",
+    "duration_seconds": 3.88,
+    "saved_at": "2026-06-21T14:01:16Z"
+  },
+  "008": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi\\images\\img_008.png",
+    "errors": [],
+    "job_id": "aa4aff64-7c33-48d1-89d9-f655e8a80694-e2",
+    "duration_seconds": 8.47,
+    "saved_at": "2026-06-21T14:01:16Z"
+  },
+  "013": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi\\images\\img_013.png",
+    "errors": [],
+    "job_id": "94fbf484-0825-4e27-805f-be81e61240e7-e2",
+    "duration_seconds": 4.02,
+    "saved_at": "2026-06-21T14:01:16Z"
+  },
+  "014": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi\\images\\img_014.png",
+    "errors": [],
+    "job_id": "69715566-b6b6-435e-bcae-52b091bda938-e1",
+    "duration_seconds": 3.88,
+    "saved_at": "2026-06-21T14:01:20Z"
+  },
+  "015": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi\\images\\img_015.png",
+    "errors": [],
+    "job_id": "b26ed897-e72a-4cc6-b30f-61a12a9a1ce3-e2",
+    "duration_seconds": 4.03,
+    "saved_at": "2026-06-21T14:01:20Z"
+  },
+  "016": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi\\images\\img_016.png",
+    "errors": [],
+    "job_id": "08431ca1-ec06-491e-a304-ab2cb58c358b-e1",
+    "duration_seconds": 4.01,
+    "saved_at": "2026-06-21T14:01:20Z"
+  },
+  "017": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi\\images\\img_017.png",
+    "errors": [],
+    "job_id": "4e2c81d2-fb72-4c0c-9f1b-ca394945a49c-e1",
+    "duration_seconds": 3.9,
+    "saved_at": "2026-06-21T14:01:20Z"
+  },
+  "020": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi\\images\\img_020.png",
+    "errors": [],
+    "job_id": "b4b4699b-cff7-4e30-8589-87e53317135b-e2",
+    "duration_seconds": 3.9,
+    "saved_at": "2026-06-21T14:01:24Z"
+  },
+  "019": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi\\images\\img_019.png",
+    "errors": [],
+    "job_id": "6e478905-2836-468d-b431-44e8c3a544f0-e1",
+    "duration_seconds": 4.03,
+    "saved_at": "2026-06-21T14:01:24Z"
+  },
+  "021": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi\\images\\img_021.png",
+    "errors": [],
+    "job_id": "b6146752-b79a-4286-af73-b01a2d6ec86b-e2",
+    "duration_seconds": 3.93,
+    "saved_at": "2026-06-21T14:01:24Z"
+  },
+  "022": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi\\images\\img_022.png",
+    "errors": [],
+    "job_id": "1a81da31-b82f-4aa5-a42e-645f0e873ef7-e1",
+    "duration_seconds": 4.03,
+    "saved_at": "2026-06-21T14:01:24Z"
+  },
+  "018": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi\\images\\img_018.png",
+    "errors": [],
+    "job_id": "0e1783a6-3cf7-4b5e-979a-ca1af5f8e552-e1",
+    "duration_seconds": 8.47,
+    "saved_at": "2026-06-21T14:01:25Z"
+  },
+  "023": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi\\images\\img_023.png",
+    "errors": [],
+    "job_id": "9d86c0ec-6a42-41bb-aeb5-1b6162f70e86-e1",
+    "duration_seconds": 3.99,
+    "saved_at": "2026-06-21T14:01:28Z"
+  },
+  "024": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi\\images\\img_024.png",
+    "errors": [],
+    "job_id": "f04f0106-bfbf-4b3e-b664-8c2bf04925d7-e2",
+    "duration_seconds": 4.05,
+    "saved_at": "2026-06-21T14:01:28Z"
+  },
+  "025": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi\\images\\img_025.png",
+    "errors": [],
+    "job_id": "4ed5cf02-097a-4d7a-8003-60834de2ec5b-e2",
+    "duration_seconds": 4.03,
+    "saved_at": "2026-06-21T14:01:28Z"
+  },
+  "026": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi\\images\\img_026.png",
+    "errors": [],
+    "job_id": "1d5b2463-90e4-4abc-88cc-bf610d3f4293-e2",
+    "duration_seconds": 4.02,
+    "saved_at": "2026-06-21T14:01:29Z"
+  },
+  "029": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi\\images\\img_029.png",
+    "errors": [],
+    "job_id": "c341fe0d-3c02-4a73-aaf3-235fbcd68ce3-e2",
+    "duration_seconds": 3.89,
+    "saved_at": "2026-06-21T14:01:32Z"
+  },
+  "030": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi\\images\\img_030.png",
+    "errors": [],
+    "job_id": "ee32d9c4-c03a-45fa-8a31-97cb7cfecd1c-e1",
+    "duration_seconds": 3.88,
+    "saved_at": "2026-06-21T14:01:32Z"
+  },
+  "028": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi\\images\\img_028.png",
+    "errors": [],
+    "job_id": "0db2ace5-bb18-4604-800b-ff07f5e9cd7b-e1",
+    "duration_seconds": 3.98,
+    "saved_at": "2026-06-21T14:01:32Z"
+  },
+  "031": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi\\images\\img_031.png",
+    "errors": [],
+    "job_id": "ab34a773-cb73-4f6f-b2fd-e698edabf9ff-e1",
+    "duration_seconds": 4.07,
+    "saved_at": "2026-06-21T14:01:33Z"
+  },
+  "027": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi\\images\\img_027.png",
+    "errors": [],
+    "job_id": "039a8178-14d7-4422-83d0-cae47010050b-e2",
+    "duration_seconds": 8.5,
+    "saved_at": "2026-06-21T14:01:34Z"
+  },
+  "032": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi\\images\\img_032.png",
+    "errors": [],
+    "job_id": "aa277d3b-f35e-4fa5-b28f-cc89528a7d3f-e2",
+    "duration_seconds": 3.89,
+    "saved_at": "2026-06-21T14:01:36Z"
+  },
+  "033": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi\\images\\img_033.png",
+    "errors": [],
+    "job_id": "235cdf6c-ff41-4683-ab85-14a3faad3180-e2",
+    "duration_seconds": 3.96,
+    "saved_at": "2026-06-21T14:01:36Z"
+  },
+  "034": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi\\images\\img_034.png",
+    "errors": [],
+    "job_id": "a86e8301-5dd8-464d-ab6b-c461ade2aa71-e1",
+    "duration_seconds": 4.04,
+    "saved_at": "2026-06-21T14:01:36Z"
+  },
+  "035": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi\\images\\img_035.png",
+    "errors": [],
+    "job_id": "920f1765-cc04-466e-ab12-a7c687f91da1-e2",
+    "duration_seconds": 3.9,
+    "saved_at": "2026-06-21T14:01:37Z"
+  },
+  "036": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi\\images\\img_036.png",
+    "errors": [],
+    "job_id": "7d622ea6-bc00-4fc3-ab86-4526b6b3daf1-e1",
+    "duration_seconds": 3.87,
+    "saved_at": "2026-06-21T14:01:38Z"
+  },
+  "037": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi\\images\\img_037.png",
+    "errors": [],
+    "job_id": "796d80ee-ab91-4c9e-b0a4-de0c07af95d3-e1",
+    "duration_seconds": 3.99,
+    "saved_at": "2026-06-21T14:01:40Z"
+  },
+  "038": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi\\images\\img_038.png",
+    "errors": [],
+    "job_id": "3ea0b681-f10f-470a-92be-f4c69eb7975f-e1",
+    "duration_seconds": 3.92,
+    "saved_at": "2026-06-21T14:01:40Z"
+  },
+  "039": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi\\images\\img_039.png",
+    "errors": [],
+    "job_id": "8bf1cfaa-9ac9-42a3-8976-959ce9bd1e02-e1",
+    "duration_seconds": 3.91,
+    "saved_at": "2026-06-21T14:01:40Z"
+  },
+  "040": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi\\images\\img_040.png",
+    "errors": [],
+    "job_id": "1e56d69b-61d3-4931-b918-3230563e3700-e1",
+    "duration_seconds": 3.99,
+    "saved_at": "2026-06-21T14:01:41Z"
+  },
+  "041": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi\\images\\img_041.png",
+    "errors": [],
+    "job_id": "c4bd4810-b40f-4b4d-b1ba-a84ab8e4b591-e1",
+    "duration_seconds": 4.12,
+    "saved_at": "2026-06-21T14:01:42Z"
+  },
+  "042": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi\\images\\img_042.png",
+    "errors": [],
+    "job_id": "b2fbbdd0-41e0-45c9-8bea-dcf3710dd98a-e1",
+    "duration_seconds": 3.97,
+    "saved_at": "2026-06-21T14:01:44Z"
+  },
+  "043": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi\\images\\img_043.png",
+    "errors": [],
+    "job_id": "4a5e77f6-915d-43bc-ad7d-5c4b6bc8e930-e1",
+    "duration_seconds": 4.0,
+    "saved_at": "2026-06-21T14:01:44Z"
+  },
+  "044": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi\\images\\img_044.png",
+    "errors": [],
+    "job_id": "d8f13dc7-fbb9-4dcd-996f-372b3b27e201-e2",
+    "duration_seconds": 3.91,
+    "saved_at": "2026-06-21T14:01:44Z"
+  },
+  "045": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi\\images\\img_045.png",
+    "errors": [],
+    "job_id": "69d3c25b-fe51-4d6a-afd3-915060522f71-e2",
+    "duration_seconds": 4.01,
+    "saved_at": "2026-06-21T14:01:45Z"
+  },
+  "046": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi\\images\\img_046.png",
+    "errors": [],
+    "job_id": "185c6a29-5993-4c57-a986-ec7b179bd657-e1",
+    "duration_seconds": 3.87,
+    "saved_at": "2026-06-21T14:01:46Z"
+  },
+  "047": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi\\images\\img_047.png",
+    "errors": [],
+    "job_id": "cefa729c-3f99-41dc-8216-ac5b74da1805-e1",
+    "duration_seconds": 3.9,
+    "saved_at": "2026-06-21T14:01:48Z"
+  },
+  "048": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi\\images\\img_048.png",
+    "errors": [],
+    "job_id": "462eba69-ae6c-4fc0-99ff-b6ec454bcdb3-e1",
+    "duration_seconds": 3.87,
+    "saved_at": "2026-06-21T14:01:48Z"
+  },
+  "049": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi\\images\\img_049.png",
+    "errors": [],
+    "job_id": "2bac1558-8a24-4907-987c-4569dfc66ee2-e2",
+    "duration_seconds": 4.15,
+    "saved_at": "2026-06-21T14:01:49Z"
+  },
+  "050": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi\\images\\img_050.png",
+    "errors": [],
+    "job_id": "ad4e6cfc-636f-4100-81a6-b7f93197da90-e2",
+    "duration_seconds": 3.89,
+    "saved_at": "2026-06-21T14:01:49Z"
+  },
+  "051": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi\\images\\img_051.png",
+    "errors": [],
+    "job_id": "d211fdd0-b0a8-47c4-87e5-d13e9e37a2b5-e2",
+    "duration_seconds": 3.95,
+    "saved_at": "2026-06-21T14:01:50Z"
+  },
+  "053": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi\\images\\img_053.png",
+    "errors": [],
+    "job_id": "ee236c06-34cd-4222-9ff8-32bba9e219c8-e2",
+    "duration_seconds": 3.95,
+    "saved_at": "2026-06-21T14:01:52Z"
+  },
+  "052": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi\\images\\img_052.png",
+    "errors": [],
+    "job_id": "400f1c1e-97a3-4cfc-8c47-f5a2cf6d8a46-e2",
+    "duration_seconds": 3.95,
+    "saved_at": "2026-06-21T14:01:52Z"
+  },
+  "054": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi\\images\\img_054.png",
+    "errors": [],
+    "job_id": "a855e65f-e663-41c7-81a3-fb5c011bf23d-e1",
+    "duration_seconds": 3.9,
+    "saved_at": "2026-06-21T14:01:53Z"
+  },
+  "055": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi\\images\\img_055.png",
+    "errors": [],
+    "job_id": "6b554824-0848-430f-846c-99ed6238dba1-e1",
+    "duration_seconds": 3.91,
+    "saved_at": "2026-06-21T14:01:53Z"
+  },
+  "056": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi\\images\\img_056.png",
+    "errors": [],
+    "job_id": "4f6e82eb-bff1-4159-a7bd-19b340ca79d4-e1",
+    "duration_seconds": 3.95,
+    "saved_at": "2026-06-21T14:01:54Z"
+  },
+  "058": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi\\images\\img_058.png",
+    "errors": [],
+    "job_id": "fba617b5-adaa-499f-9e84-08377da24605-e1",
+    "duration_seconds": 4.03,
+    "saved_at": "2026-06-21T14:01:57Z"
+  },
+  "057": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi\\images\\img_057.png",
+    "errors": [],
+    "job_id": "748cdb41-bf70-443d-a779-1f5b3291f1de-e1",
+    "duration_seconds": 3.98,
+    "saved_at": "2026-06-21T14:01:57Z"
+  },
+  "059": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi\\images\\img_059.png",
+    "errors": [],
+    "job_id": "6b5ba2f0-04c7-43b9-a93d-eb6e111b8cb3-e1",
+    "duration_seconds": 3.93,
+    "saved_at": "2026-06-21T14:01:57Z"
+  },
+  "060": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi\\images\\img_060.png",
+    "errors": [],
+    "job_id": "dee608e1-a836-4ce1-8262-266f4796044c-e2",
+    "duration_seconds": 3.91,
+    "saved_at": "2026-06-21T14:01:57Z"
+  },
+  "063": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi\\images\\img_063.png",
+    "errors": [],
+    "job_id": "b9103ae2-a4f2-465c-aed4-71372c074fa9-e2",
+    "duration_seconds": 3.88,
+    "saved_at": "2026-06-21T14:02:01Z"
+  },
+  "062": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi\\images\\img_062.png",
+    "errors": [],
+    "job_id": "34fced58-df5c-4eaa-ab5d-9ec71889be2f-e1",
+    "duration_seconds": 4.01,
+    "saved_at": "2026-06-21T14:02:01Z"
+  },
+  "065": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi\\images\\img_065.png",
+    "errors": [],
+    "job_id": "6bfb8b04-8b52-4769-8e4b-8a224012547d-e2",
+    "duration_seconds": 3.87,
+    "saved_at": "2026-06-21T14:02:01Z"
+  },
+  "064": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi\\images\\img_064.png",
+    "errors": [],
+    "job_id": "cedef205-a3c7-4650-b9a9-97af7a8d284f-e1",
+    "duration_seconds": 4.0,
+    "saved_at": "2026-06-21T14:02:01Z"
+  },
+  "061": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi\\images\\img_061.png",
+    "errors": [],
+    "job_id": "47286dc0-201c-49f4-b6d6-8f6ae628c01d-e2",
+    "duration_seconds": 8.68,
+    "saved_at": "2026-06-21T14:02:03Z"
+  },
+  "066": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi\\images\\img_066.png",
+    "errors": [],
+    "job_id": "632b0daa-b17a-41ad-a55e-2f428f9c6a4b-e1",
+    "duration_seconds": 3.92,
+    "saved_at": "2026-06-21T14:02:05Z"
+  },
+  "069": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi\\images\\img_069.png",
+    "errors": [],
+    "job_id": "3762f712-1390-4d4f-803d-1d11f4a4fdff-e2",
+    "duration_seconds": 3.93,
+    "saved_at": "2026-06-21T14:02:05Z"
+  },
+  "068": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi\\images\\img_068.png",
+    "errors": [],
+    "job_id": "d5199385-e16a-4366-bb77-0ffd68cbb451-e2",
+    "duration_seconds": 3.97,
+    "saved_at": "2026-06-21T14:02:05Z"
+  },
+  "067": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi\\images\\img_067.png",
+    "errors": [],
+    "job_id": "af75d2de-7b86-46d8-818e-2a436ebaa6ac-e2",
+    "duration_seconds": 4.08,
+    "saved_at": "2026-06-21T14:02:05Z"
+  },
+  "070": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi\\images\\img_070.png",
+    "errors": [],
+    "job_id": "c9551bc8-f240-409c-b28e-7dffb79bde62-e2",
+    "duration_seconds": 4.01,
+    "saved_at": "2026-06-21T14:02:07Z"
+  },
+  "071": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi\\images\\img_071.png",
+    "errors": [],
+    "job_id": "5954c063-c971-4357-9d12-1071144b2ee7-e2",
+    "duration_seconds": 3.93,
+    "saved_at": "2026-06-21T14:02:09Z"
+  },
+  "072": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi\\images\\img_072.png",
+    "errors": [],
+    "job_id": "d248062f-cf15-4c11-8944-eba6e97cbdc8-e1",
+    "duration_seconds": 3.88,
+    "saved_at": "2026-06-21T14:02:09Z"
+  },
+  "073": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi\\images\\img_073.png",
+    "errors": [],
+    "job_id": "742224c9-bafc-4dbc-8866-b18272e851dc-e1",
+    "duration_seconds": 3.98,
+    "saved_at": "2026-06-21T14:02:09Z"
+  },
+  "075": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi\\images\\img_075.png",
+    "errors": [],
+    "job_id": "4a0d4482-be21-482e-a003-ba76fd3d5fb2-e2",
+    "duration_seconds": 4.03,
+    "saved_at": "2026-06-21T14:02:11Z"
+  },
+  "077": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi\\images\\img_077.png",
+    "errors": [],
+    "job_id": "1784536a-3b09-49fe-a1c2-6020fa0a227b-e1",
+    "duration_seconds": 3.9,
+    "saved_at": "2026-06-21T14:02:13Z"
+  },
+  "076": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi\\images\\img_076.png",
+    "errors": [],
+    "job_id": "2ed5ac9d-453d-4c07-ac1c-2e990456fc08-e2",
+    "duration_seconds": 4.01,
+    "saved_at": "2026-06-21T14:02:13Z"
+  },
+  "078": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi\\images\\img_078.png",
+    "errors": [],
+    "job_id": "3ff23007-5905-43af-92fa-a75b05569691-e1",
+    "duration_seconds": 3.89,
+    "saved_at": "2026-06-21T14:02:13Z"
+  },
+  "074": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi\\images\\img_074.png",
+    "errors": [],
+    "job_id": "3ad96b93-2d59-4a68-b8b4-d35498b1823f-e2",
+    "duration_seconds": 8.46,
+    "saved_at": "2026-06-21T14:02:13Z"
+  },
+  "079": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi\\images\\img_079.png",
+    "errors": [],
+    "job_id": "3e938b5e-815d-4c31-847f-04dbae5605a7-e1",
+    "duration_seconds": 4.01,
+    "saved_at": "2026-06-21T14:02:15Z"
+  },
+  "080": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi\\images\\img_080.png",
+    "errors": [],
+    "job_id": "e9aab037-8db7-4bd1-9955-667457b37063-e1",
+    "duration_seconds": 3.98,
+    "saved_at": "2026-06-21T14:02:17Z"
+  },
+  "081": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi\\images\\img_081.png",
+    "errors": [],
+    "job_id": "df766c15-3b01-4a62-943e-8165a70911f2-e1",
+    "duration_seconds": 3.94,
+    "saved_at": "2026-06-21T14:02:17Z"
+  },
+  "082": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi\\images\\img_082.png",
+    "errors": [],
+    "job_id": "bd017bda-13d8-45cf-8732-ac845d9bdfdb-e2",
+    "duration_seconds": 4.0,
+    "saved_at": "2026-06-21T14:02:17Z"
+  },
+  "083": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi\\images\\img_083.png",
+    "errors": [],
+    "job_id": "c5185d1d-7b5b-4442-8bf9-bbe448d17e7b-e2",
+    "duration_seconds": 3.88,
+    "saved_at": "2026-06-21T14:02:17Z"
+  },
+  "084": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi\\images\\img_084.png",
+    "errors": [],
+    "job_id": "a7682c62-71a2-4fae-b4dd-074f04c4df0d-e2",
+    "duration_seconds": 3.89,
+    "saved_at": "2026-06-21T14:02:19Z"
+  },
+  "086": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi\\images\\img_086.png",
+    "errors": [],
+    "job_id": "c56769ba-41cd-4465-86fd-f2d245d691eb-e1",
+    "duration_seconds": 3.88,
+    "saved_at": "2026-06-21T14:02:21Z"
+  },
+  "087": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi\\images\\img_087.png",
+    "errors": [],
+    "job_id": "57b75fe2-1b18-480c-987f-cf19efff39dd-e1",
+    "duration_seconds": 3.86,
+    "saved_at": "2026-06-21T14:02:21Z"
+  },
+  "085": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi\\images\\img_085.png",
+    "errors": [],
+    "job_id": "ad1b8494-561e-4b22-a1bc-2b5aada32ed7-e2",
+    "duration_seconds": 4.06,
+    "saved_at": "2026-06-21T14:02:21Z"
+  },
+  "088": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi\\images\\img_088.png",
+    "errors": [],
+    "job_id": "a894e0ae-401b-402f-88a5-e1d4dfff2661-e1",
+    "duration_seconds": 3.88,
+    "saved_at": "2026-06-21T14:02:21Z"
+  },
+  "089": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi\\images\\img_089.png",
+    "errors": [],
+    "job_id": "420914bb-265a-4d44-8b7b-b950b0c39f0d-e2",
+    "duration_seconds": 3.9,
+    "saved_at": "2026-06-21T14:02:23Z"
+  },
+  "090": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi\\images\\img_090.png",
+    "errors": [],
+    "job_id": "f566c602-eb29-4c8b-9138-6b5882c81c4c-e1",
+    "duration_seconds": 3.9,
+    "saved_at": "2026-06-21T14:02:25Z"
+  },
+  "092": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi\\images\\img_092.png",
+    "errors": [],
+    "job_id": "f4efe977-71ff-4de9-98cc-53a85ad1e40e-e2",
+    "duration_seconds": 3.89,
+    "saved_at": "2026-06-21T14:02:25Z"
+  },
+  "091": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi\\images\\img_091.png",
+    "errors": [],
+    "job_id": "c432cb51-8c10-4043-bde3-9b5502b77db7-e1",
+    "duration_seconds": 4.06,
+    "saved_at": "2026-06-21T14:02:25Z"
+  },
+  "093": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi\\images\\img_093.png",
+    "errors": [],
+    "job_id": "b98ec82c-ae3a-47c3-8545-3c30fa293bde-e2",
+    "duration_seconds": 3.97,
+    "saved_at": "2026-06-21T14:02:25Z"
+  },
+  "094": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi\\images\\img_094.png",
+    "errors": [],
+    "job_id": "71840e80-db99-4494-a5ee-d882d67cf21c-e2",
+    "duration_seconds": 4.01,
+    "saved_at": "2026-06-21T14:02:27Z"
+  },
+  "095": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi\\images\\img_095.png",
+    "errors": [],
+    "job_id": "5aa4ece4-770c-4136-b4fe-35ef4f2d138d-e1",
+    "duration_seconds": 3.88,
+    "saved_at": "2026-06-21T14:02:29Z"
+  },
+  "096": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi\\images\\img_096.png",
+    "errors": [],
+    "job_id": "ed179112-f449-498d-b0b2-e7d90413dbbb-e2",
+    "duration_seconds": 3.92,
+    "saved_at": "2026-06-21T14:02:29Z"
+  },
+  "097": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi\\images\\img_097.png",
+    "errors": [],
+    "job_id": "269e528d-287a-4465-8158-980aa612ab6d-e2",
+    "duration_seconds": 4.05,
+    "saved_at": "2026-06-21T14:02:29Z"
+  },
+  "098": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi\\images\\img_098.png",
+    "errors": [],
+    "job_id": "f4a0a3de-efd7-45ec-8daa-1d1ea72e5830-e2",
+    "duration_seconds": 3.91,
+    "saved_at": "2026-06-21T14:02:29Z"
+  },
+  "099": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi\\images\\img_099.png",
+    "errors": [],
+    "job_id": "1395a31c-79df-426f-9a5b-5feb85776e8c-e1",
+    "duration_seconds": 3.91,
+    "saved_at": "2026-06-21T14:02:31Z"
+  },
+  "100": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi\\images\\img_100.png",
+    "errors": [],
+    "job_id": "e194c19d-389d-45ff-a3f5-45f19a2c4328-e2",
+    "duration_seconds": 4.09,
+    "saved_at": "2026-06-21T14:02:33Z"
+  },
+  "101": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi\\images\\img_101.png",
+    "errors": [],
+    "job_id": "f8d959a3-aa19-4399-98d2-c01cc883b6fb-e2",
+    "duration_seconds": 4.12,
+    "saved_at": "2026-06-21T14:02:33Z"
+  },
+  "102": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi\\images\\img_102.png",
+    "errors": [],
+    "job_id": "c2830d46-c2da-4208-b08d-f350a967ae3b-e1",
+    "duration_seconds": 3.96,
+    "saved_at": "2026-06-21T14:02:33Z"
+  },
+  "103": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi\\images\\img_103.png",
+    "errors": [],
+    "job_id": "c98c4c37-3c7f-46ed-be8d-963c602c273c-e1",
+    "duration_seconds": 4.01,
+    "saved_at": "2026-06-21T14:02:34Z"
+  },
+  "104": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi\\images\\img_104.png",
+    "errors": [],
+    "job_id": "da70e6a8-23e8-4b4a-8370-d36bb553bd50-e2",
+    "duration_seconds": 3.91,
+    "saved_at": "2026-06-21T14:02:35Z"
+  },
+  "105": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi\\images\\img_105.png",
+    "errors": [],
+    "job_id": "178fe319-280a-42ee-bd70-14eb0496ce76-e1",
+    "duration_seconds": 3.91,
+    "saved_at": "2026-06-21T14:02:37Z"
+  },
+  "107": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi\\images\\img_107.png",
+    "errors": [],
+    "job_id": "c50234ff-3670-4057-a4fd-2c7c84b59af0-e2",
+    "duration_seconds": 3.9,
+    "saved_at": "2026-06-21T14:02:37Z"
+  },
+  "106": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi\\images\\img_106.png",
+    "errors": [],
+    "job_id": "449fe902-a9d4-479c-a2e3-7f3c32aed223-e1",
+    "duration_seconds": 4.04,
+    "saved_at": "2026-06-21T14:02:37Z"
+  },
+  "108": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi\\images\\img_108.png",
+    "errors": [],
+    "job_id": "23720e7b-4d65-41f1-82af-5c0ca09d63ea-e2",
+    "duration_seconds": 3.96,
+    "saved_at": "2026-06-21T14:02:38Z"
+  },
+  "109": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi\\images\\img_109.png",
+    "errors": [],
+    "job_id": "7df2fd82-70d0-4ec9-9e75-dde3849ddfa2-e1",
+    "duration_seconds": 4.0,
+    "saved_at": "2026-06-21T14:02:39Z"
+  },
+  "111": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi\\images\\img_111.png",
+    "errors": [],
+    "job_id": "d4455a47-a49e-4a69-8d2e-69b5f503071d-e1",
+    "duration_seconds": 3.96,
+    "saved_at": "2026-06-21T14:02:41Z"
+  },
+  "110": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi\\images\\img_110.png",
+    "errors": [],
+    "job_id": "3b1ec400-8e4e-4be2-a301-def7f8fdb829-e1",
+    "duration_seconds": 4.05,
+    "saved_at": "2026-06-21T14:02:41Z"
+  },
+  "112": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi\\images\\img_112.png",
+    "errors": [],
+    "job_id": "035f90b7-0b65-40b4-9091-395a8fed5aa5-e1",
+    "duration_seconds": 3.96,
+    "saved_at": "2026-06-21T14:02:41Z"
+  },
+  "113": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi\\images\\img_113.png",
+    "errors": [],
+    "job_id": "ab0d0c0d-a734-4494-b7c5-43153ef178c5-e1",
+    "duration_seconds": 3.91,
+    "saved_at": "2026-06-21T14:02:42Z"
+  },
+  "114": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi\\images\\img_114.png",
+    "errors": [],
+    "job_id": "90aafaf0-7322-4129-9503-9da71158ffbb-e2",
+    "duration_seconds": 3.89,
+    "saved_at": "2026-06-21T14:02:43Z"
+  },
+  "116": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi\\images\\img_116.png",
+    "errors": [],
+    "job_id": "5c520789-e357-4d8a-a12c-faee85ea1fba-e1",
+    "duration_seconds": 3.88,
+    "saved_at": "2026-06-21T14:02:45Z"
+  },
+  "117": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi\\images\\img_117.png",
+    "errors": [],
+    "job_id": "b1758962-66db-49e4-8e4e-6ab98e7cbe01-e2",
+    "duration_seconds": 3.9,
+    "saved_at": "2026-06-21T14:02:45Z"
+  },
+  "115": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi\\images\\img_115.png",
+    "errors": [],
+    "job_id": "2ac3a180-317c-41f4-9f6d-f3dee8682ef0-e2",
+    "duration_seconds": 4.07,
+    "saved_at": "2026-06-21T14:02:46Z"
+  },
+  "118": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi\\images\\img_118.png",
+    "errors": [],
+    "job_id": "33b7f10f-8ef3-42b2-ac4f-db8adf2ee2e9-e2",
+    "duration_seconds": 4.01,
+    "saved_at": "2026-06-21T14:02:46Z"
+  },
+  "119": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi\\images\\img_119.png",
+    "errors": [],
+    "job_id": "406202e8-6452-4e77-b21c-8356382891fe-e1",
+    "duration_seconds": 3.93,
+    "saved_at": "2026-06-21T14:02:47Z"
+  },
+  "120": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi\\images\\img_120.png",
+    "errors": [],
+    "job_id": "d9e4495c-89aa-4f6e-9fd5-5ee16e334ef3-e2",
+    "duration_seconds": 3.97,
+    "saved_at": "2026-06-21T14:02:49Z"
+  },
+  "121": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi\\images\\img_121.png",
+    "errors": [],
+    "job_id": "e0742268-4a68-4a92-bdb7-465281262f66-e1",
+    "duration_seconds": 4.01,
+    "saved_at": "2026-06-21T14:02:50Z"
+  },
+  "122": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi\\images\\img_122.png",
+    "errors": [],
+    "job_id": "06665da1-4001-4cc3-8b38-450f8103f9bf-e2",
+    "duration_seconds": 3.95,
+    "saved_at": "2026-06-21T14:02:50Z"
+  },
+  "124": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi\\images\\img_124.png",
+    "errors": [],
+    "job_id": "e71ec2d7-c22d-4930-b303-90e6ff358b08-e2",
+    "duration_seconds": 4.02,
+    "saved_at": "2026-06-21T14:02:52Z"
+  },
+  "125": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi\\images\\img_125.png",
+    "errors": [],
+    "job_id": "23ea9c3e-a8a4-4ec0-a263-69ce1229cbc3-e2",
+    "duration_seconds": 3.94,
+    "saved_at": "2026-06-21T14:02:53Z"
+  },
+  "126": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi\\images\\img_126.png",
+    "errors": [],
+    "job_id": "3512699d-1eab-49ec-83e4-19e886eca4f6-e2",
+    "duration_seconds": 3.94,
+    "saved_at": "2026-06-21T14:02:54Z"
+  },
+  "127": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi\\images\\img_127.png",
+    "errors": [],
+    "job_id": "56f0da92-82d1-46fa-b23f-f98282a6027d-e1",
+    "duration_seconds": 3.94,
+    "saved_at": "2026-06-21T14:02:54Z"
+  },
+  "123": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi\\images\\img_123.png",
+    "errors": [],
+    "job_id": "bd866fcf-f655-48c8-a087-b65305a619c9-e2",
+    "duration_seconds": 8.58,
+    "saved_at": "2026-06-21T14:02:54Z"
+  },
+  "128": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi\\images\\img_128.png",
+    "errors": [],
+    "job_id": "e5e7594f-812f-4130-8550-06270df01813-e1",
+    "duration_seconds": 3.92,
+    "saved_at": "2026-06-21T14:02:56Z"
+  },
+  "129": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi\\images\\img_129.png",
+    "errors": [],
+    "job_id": "7256fbca-6a4d-41c8-9c3d-b74792cf2d02-e1",
+    "duration_seconds": 3.99,
+    "saved_at": "2026-06-21T14:02:58Z"
+  },
+  "131": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi\\images\\img_131.png",
+    "errors": [],
+    "job_id": "7fba0937-34d0-4f26-89c2-e06be9f18838-e1",
+    "duration_seconds": 4.0,
+    "saved_at": "2026-06-21T14:02:58Z"
+  },
+  "130": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi\\images\\img_130.png",
+    "errors": [],
+    "job_id": "48f5e801-43af-4d0c-95d0-567506292979-e2",
+    "duration_seconds": 4.1,
+    "saved_at": "2026-06-21T14:02:58Z"
+  },
+  "132": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi\\images\\img_132.png",
+    "errors": [],
+    "job_id": "ee09358d-aaa3-4838-839b-f60adc9e691e-e2",
+    "duration_seconds": 3.76,
+    "saved_at": "2026-06-21T14:02:58Z"
+  },
+  "133": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi\\images\\img_133.png",
+    "errors": [],
+    "job_id": "f49d4037-7d23-4bff-904f-c16fd3c36de6-e2",
+    "duration_seconds": 4.0,
+    "saved_at": "2026-06-21T14:03:00Z"
+  },
+  "134": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi\\images\\img_134.png",
+    "errors": [],
+    "job_id": "fcd689ac-e48d-4daf-a234-eb73adfdb58e-e1",
+    "duration_seconds": 4.0,
+    "saved_at": "2026-06-21T14:03:02Z"
+  },
+  "135": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi\\images\\img_135.png",
+    "errors": [],
+    "job_id": "582579f2-766c-4f1e-b324-8b0d9e618a10-e1",
+    "duration_seconds": 3.94,
+    "saved_at": "2026-06-21T14:03:02Z"
+  },
+  "136": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi\\images\\img_136.png",
+    "errors": [],
+    "job_id": "57890b37-6745-4aab-9ac6-3314e9fac225-e1",
+    "duration_seconds": 4.0,
+    "saved_at": "2026-06-21T14:03:02Z"
+  },
+  "137": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi\\images\\img_137.png",
+    "errors": [],
+    "job_id": "194b4b53-b6d5-4049-9655-5ffbac252406-e1",
+    "duration_seconds": 3.87,
+    "saved_at": "2026-06-21T14:03:02Z"
+  },
+  "138": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi\\images\\img_138.png",
+    "errors": [],
+    "job_id": "6684d749-9ce3-4571-b064-698755582409-e1",
+    "duration_seconds": 3.9,
+    "saved_at": "2026-06-21T14:03:04Z"
+  },
+  "140": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi\\images\\img_140.png",
+    "errors": [],
+    "job_id": "bdb6e221-5afc-4727-8305-402bd7591be2-e1",
+    "duration_seconds": 3.94,
+    "saved_at": "2026-06-21T14:03:06Z"
+  },
+  "139": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi\\images\\img_139.png",
+    "errors": [],
+    "job_id": "c5acbfce-034a-4eb1-99d7-2fa052d9d834-e1",
+    "duration_seconds": 4.06,
+    "saved_at": "2026-06-21T14:03:06Z"
+  },
+  "141": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi\\images\\img_141.png",
+    "errors": [],
+    "job_id": "2cad957a-e01b-4b69-bd1f-188207f704f8-e2",
+    "duration_seconds": 3.91,
+    "saved_at": "2026-06-21T14:03:06Z"
+  },
+  "142": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi\\images\\img_142.png",
+    "errors": [],
+    "job_id": "cdb6ec9a-4f1d-48b6-92a6-33f5c41ba779-e2",
+    "duration_seconds": 3.97,
+    "saved_at": "2026-06-21T14:03:06Z"
+  },
+  "143": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi\\images\\img_143.png",
+    "errors": [],
+    "job_id": "d8a837cc-b9e7-428b-8690-7441b607ef55-e1",
+    "duration_seconds": 3.97,
+    "saved_at": "2026-06-21T14:03:08Z"
+  },
+  "144": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi\\images\\img_144.png",
+    "errors": [],
+    "job_id": "efa8fee7-cd06-471b-8d07-3d597974f299-e2",
+    "duration_seconds": 3.92,
+    "saved_at": "2026-06-21T14:03:10Z"
+  },
+  "146": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi\\images\\img_146.png",
+    "errors": [],
+    "job_id": "dc478f90-3f6b-49b0-8122-88cc92f65798-e1",
+    "duration_seconds": 3.87,
+    "saved_at": "2026-06-21T14:03:10Z"
+  },
+  "145": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi\\images\\img_145.png",
+    "errors": [],
+    "job_id": "6aece581-4710-4cb0-ae2a-c805a66a2f43-e2",
+    "duration_seconds": 4.07,
+    "saved_at": "2026-06-21T14:03:10Z"
+  },
+  "147": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi\\images\\img_147.png",
+    "errors": [],
+    "job_id": "06d3e969-a355-4b18-8428-47e90ffeb13b-e1",
+    "duration_seconds": 4.0,
+    "saved_at": "2026-06-21T14:03:10Z"
+  },
+  "148": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi\\images\\img_148.png",
+    "errors": [],
+    "job_id": "c96dd365-cac6-4db7-9750-77ecfeb63b23-e2",
+    "duration_seconds": 4.0,
+    "saved_at": "2026-06-21T14:03:12Z"
+  },
+  "150": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi\\images\\img_150.png",
+    "errors": [],
+    "job_id": "29a833f4-df4e-4fef-b33b-d1923fa51fb8-e2",
+    "duration_seconds": 3.85,
+    "saved_at": "2026-06-21T14:03:14Z"
+  },
+  "149": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi\\images\\img_149.png",
+    "errors": [],
+    "job_id": "bd1ee4bb-5215-46a7-87c8-10e0eba3ce7d-e2",
+    "duration_seconds": 3.99,
+    "saved_at": "2026-06-21T14:03:14Z"
+  },
+  "151": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi\\images\\img_151.png",
+    "errors": [],
+    "job_id": "9cd5950e-0bd8-41cc-947d-989645f6e958-e1",
+    "duration_seconds": 4.03,
+    "saved_at": "2026-06-21T14:03:14Z"
+  },
+  "152": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi\\images\\img_152.png",
+    "errors": [],
+    "job_id": "685f5f11-136b-4d91-864f-ea4cdb44d5ce-e1",
+    "duration_seconds": 3.9,
+    "saved_at": "2026-06-21T14:03:14Z"
+  },
+  "153": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi\\images\\img_153.png",
+    "errors": [],
+    "job_id": "76352226-bd27-44cd-9f80-7b8d9a41bfa4-e1",
+    "duration_seconds": 3.97,
+    "saved_at": "2026-06-21T14:03:16Z"
+  },
+  "154": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi\\images\\img_154.png",
+    "errors": [],
+    "job_id": "90fba353-f04c-488e-be6f-b1bfe9fef8c3-e1",
+    "duration_seconds": 4.02,
+    "saved_at": "2026-06-21T14:03:18Z"
+  },
+  "155": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi\\images\\img_155.png",
+    "errors": [],
+    "job_id": "0b600974-3937-4d92-8c7c-1a89b255d0ac-e2",
+    "duration_seconds": 4.01,
+    "saved_at": "2026-06-21T14:03:18Z"
+  }
+}

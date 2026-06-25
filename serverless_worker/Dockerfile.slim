@@ -1,0 +1,30 @@
+# PLAN B — official RunPod serverless pattern (docs: create-dockerfile)
+# Clean python base with SYSTEM python (no venv) so exec-form CMD works.
+# torch wheel bundles CUDA runtime; GPU driver comes from the RunPod host.
+# Swap into place with: copy this over Dockerfile, then push.
+
+FROM python:3.11.1-slim
+
+ENV PYTHONUNBUFFERED=1 \
+    PIP_NO_CACHE_DIR=1 \
+    PIP_DISABLE_PIP_VERSION_CHECK=1
+
+ENV MODEL_ID=black-forest-labs/FLUX.2-klein-4B \
+    HF_HOME=/runpod-volume/hf-cache \
+    HF_HUB_CACHE=/runpod-volume/hf-cache \
+    RUNPOD_VOLUME_PATH=/runpod-volume
+
+WORKDIR /
+
+# git/build tools sometimes needed by diffusers/transformers deps
+RUN apt-get update && apt-get install -y --no-install-recommends git && rm -rf /var/lib/apt/lists/*
+
+COPY requirements.txt /requirements.txt
+RUN pip install --no-cache-dir -r /requirements.txt
+
+COPY handler.py /handler.py
+COPY model_loader.py /model_loader.py
+COPY schemas.py /schemas.py
+COPY image_utils.py /image_utils.py
+
+CMD ["python", "-u", "/handler.py"]

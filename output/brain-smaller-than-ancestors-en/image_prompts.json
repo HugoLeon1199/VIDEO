@@ -1,0 +1,874 @@
+[
+  {
+    "index": 1,
+    "start": 0.0,
+    "end": 1.96,
+    "prompt": "Ink sketch illustration on aged parchment paper, hand-drawn, educational diagram style, large ancient skull drawn in fine sepia ink, centered on the page, cross-section lines suggesting volume, parchment grain texture visible, no color fill, 16:9, no text. Simple clean lines, correct human anatomy, no extra limbs, no photorealism.",
+    "negative_prompt": "extra limbs, extra fingers, extra arms, extra legs, three legs, four arms, deformed hands, fused fingers, mutated anatomy, disfigured, blurry, low quality, text, watermark, photorealism, color photograph",
+    "global_style": ""
+  },
+  {
+    "index": 2,
+    "start": 2.96,
+    "end": 6.02,
+    "prompt": "Ink sketch illustration on aged parchment paper, hand-drawn, educational diagram style, two hands lifting a large skull from below, fingers wrapped around the bone, sepia ink on parchment, minimal background strokes, no color fill, 16:9, no text. Simple clean lines, correct human anatomy, no extra limbs, no photorealism.",
+    "negative_prompt": "extra limbs, extra fingers, extra arms, extra legs, three legs, four arms, deformed hands, fused fingers, mutated anatomy, disfigured, blurry, low quality, text, watermark, photorealism, color photograph",
+    "global_style": ""
+  },
+  {
+    "index": 3,
+    "start": 6.28,
+    "end": 7.66,
+    "prompt": "Ink sketch illustration on aged parchment paper, hand-drawn, educational diagram style, a scale or balance with a skull on one side weighing heavily down, simple sepia ink strokes, parchment background, no color fill, 16:9, no text. Simple clean lines, correct human anatomy, no extra limbs, no photorealism.",
+    "negative_prompt": "extra limbs, extra fingers, extra arms, extra legs, three legs, four arms, deformed hands, fused fingers, mutated anatomy, disfigured, blurry, low quality, text, watermark, photorealism, color photograph",
+    "global_style": ""
+  },
+  {
+    "index": 4,
+    "start": 8.4,
+    "end": 13.04,
+    "prompt": "Ink sketch illustration on aged parchment paper, hand-drawn, educational diagram style, ancient human skull with fine hatching showing depth and volume, sketched on parchment with surrounding empty space emphasizing it is a complete modern skull, sepia ink, no color fill, 16:9, no text. Simple clean lines, correct human anatomy, no extra limbs, no photorealism.",
+    "negative_prompt": "extra limbs, extra fingers, extra arms, extra legs, three legs, four arms, deformed hands, fused fingers, mutated anatomy, disfigured, blurry, low quality, text, watermark, photorealism, color photograph",
+    "global_style": ""
+  },
+  {
+    "index": 5,
+    "start": 13.04,
+    "end": 14.56,
+    "prompt": "Ink sketch illustration on aged parchment paper, hand-drawn, educational diagram style, upright ancient human figure drawn simply from the side, fully human proportions, walking posture, sepia ink minimal strokes, parchment background, no color fill, 16:9, no text. Simple clean lines, correct human anatomy, no extra limbs, no photorealism.",
+    "negative_prompt": "extra limbs, extra fingers, extra arms, extra legs, three legs, four arms, deformed hands, fused fingers, mutated anatomy, disfigured, blurry, low quality, text, watermark, photorealism, color photograph",
+    "global_style": ""
+  },
+  {
+    "index": 6,
+    "start": 15.52,
+    "end": 18.82,
+    "prompt": "Ink sketch illustration on aged parchment paper, hand-drawn, educational diagram style, ancient human figure pressing hand to cave wall painting an animal in simple outline, torch shape in other hand with Spark's small orange-yellow flame glow, minimal background cave lines, sepia ink, no color fill except flame accent, 16:9, no text. Simple clean lines, correct human anatomy, no extra limbs, no photorealism.",
+    "negative_prompt": "extra limbs, extra fingers, extra arms, extra legs, three legs, four arms, deformed hands, fused fingers, mutated anatomy, disfigured, blurry, low quality, text, watermark, photorealism, color photograph",
+    "global_style": ""
+  },
+  {
+    "index": 7,
+    "start": 19.32,
+    "end": 22.88,
+    "prompt": "Ink sketch illustration on aged parchment paper, hand-drawn, educational diagram style, lone ancient human figure walking along a path with simple horizon line and distance marks suggesting long journey, a bundle over one shoulder, sepia ink strokes, parchment background, no color fill, 16:9, no text. Simple clean lines, correct human anatomy, no extra limbs, no photorealism.",
+    "negative_prompt": "extra limbs, extra fingers, extra arms, extra legs, three legs, four arms, deformed hands, fused fingers, mutated anatomy, disfigured, blurry, low quality, text, watermark, photorealism, color photograph",
+    "global_style": ""
+  },
+  {
+    "index": 8,
+    "start": 23.82,
+    "end": 28.4,
+    "prompt": "Ink sketch illustration on aged parchment paper, hand-drawn, educational diagram style, ancient human figure standing alone in open space, simple horizon line, no shelter visible in any direction, sepia ink, parchment texture, no color fill, 16:9, no text. Simple clean lines, correct human anatomy, no extra limbs, no photorealism.",
+    "negative_prompt": "extra limbs, extra fingers, extra arms, extra legs, three legs, four arms, deformed hands, fused fingers, mutated anatomy, disfigured, blurry, low quality, text, watermark, photorealism, color photograph",
+    "global_style": ""
+  },
+  {
+    "index": 9,
+    "start": 28.4,
+    "end": 32.8,
+    "prompt": "Ink sketch illustration on aged parchment paper, hand-drawn, educational diagram style, ancient human figure standing alert with spear, surrounded by empty space suggesting a world with no safety net, simple sepia ink strokes on parchment, no color fill, 16:9, no text. Simple clean lines, correct human anatomy, no extra limbs, no photorealism.",
+    "negative_prompt": "extra limbs, extra fingers, extra arms, extra legs, three legs, four arms, deformed hands, fused fingers, mutated anatomy, disfigured, blurry, low quality, text, watermark, photorealism, color photograph",
+    "global_style": ""
+  },
+  {
+    "index": 10,
+    "start": 33.62,
+    "end": 35.08,
+    "prompt": "Ink sketch illustration on aged parchment paper, hand-drawn, educational diagram style, two skulls side by side — left one clearly larger drawn with heavier ink strokes — right one smaller with lighter strokes, simple comparison, sepia ink on parchment, no color fill, 16:9, no text. Simple clean lines, no extra limbs, no photorealism.",
+    "negative_prompt": "extra limbs, extra fingers, extra arms, extra legs, three legs, four arms, deformed hands, fused fingers, mutated anatomy, disfigured, blurry, low quality, text, watermark, photorealism, color photograph",
+    "global_style": ""
+  },
+  {
+    "index": 11,
+    "start": 35.86,
+    "end": 40.86,
+    "prompt": "Ink sketch illustration on aged parchment paper, hand-drawn, educational diagram style, Spark figure seated at left with small orange-yellow flame beside him, holding a large skull and examining it, simple sepia ink strokes, parchment background, flame as only color accent, no color fill elsewhere, 16:9, no text. Simple clean lines, correct human anatomy, no extra limbs, no photorealism.",
+    "negative_prompt": "extra limbs, extra fingers, extra arms, extra legs, three legs, four arms, deformed hands, fused fingers, mutated anatomy, disfigured, blurry, low quality, text, watermark, photorealism, color photograph",
+    "global_style": ""
+  },
+  {
+    "index": 12,
+    "start": 40.86,
+    "end": 44.18,
+    "prompt": "Ink sketch illustration on aged parchment paper, hand-drawn, educational diagram style, fossil skull half-emerging from diagonal ground lines suggesting buried in earth, sepia ink hatching for soil texture, parchment background, no color fill, 16:9, no text. Simple clean lines, no extra limbs, no photorealism.",
+    "negative_prompt": "extra limbs, extra fingers, extra arms, extra legs, three legs, four arms, deformed hands, fused fingers, mutated anatomy, disfigured, blurry, low quality, text, watermark, photorealism, color photograph",
+    "global_style": ""
+  },
+  {
+    "index": 13,
+    "start": 44.96,
+    "end": 49.46,
+    "prompt": "Ink sketch illustration on aged parchment paper, hand-drawn, educational diagram style, upward-pointing arrow with increasing complexity symbols along it — simple circle to more complex branching shape — suggesting assumed direction of evolution, sepia ink, parchment background, no color fill, 16:9, no text. Simple clean lines, no photorealism.",
+    "negative_prompt": "extra limbs, extra fingers, extra arms, extra legs, three legs, four arms, deformed hands, fused fingers, mutated anatomy, disfigured, blurry, low quality, text, watermark, photorealism, color photograph",
+    "global_style": ""
+  },
+  {
+    "index": 14,
+    "start": 49.46,
+    "end": 52.64,
+    "prompt": "Ink sketch illustration on aged parchment paper, hand-drawn, educational diagram style, three skulls in a row left to right each slightly larger than the last, an upward arrow beneath suggesting assumed progression, sepia ink on parchment, no color fill, 16:9, no text. Simple clean lines, no photorealism.",
+    "negative_prompt": "extra limbs, extra fingers, extra arms, extra legs, three legs, four arms, deformed hands, fused fingers, mutated anatomy, disfigured, blurry, low quality, text, watermark, photorealism, color photograph",
+    "global_style": ""
+  },
+  {
+    "index": 15,
+    "start": 53.52,
+    "end": 58.24,
+    "prompt": "Ink sketch illustration on aged parchment paper, hand-drawn, educational diagram style, elderly figure seated at a desk with quill — representing science — and a fossil skull on the desk, sepia ink, parchment background, no color fill, 16:9, no text. Simple clean lines, correct human anatomy, no extra limbs, no photorealism.",
+    "negative_prompt": "extra limbs, extra fingers, extra arms, extra legs, three legs, four arms, deformed hands, fused fingers, mutated anatomy, disfigured, blurry, low quality, text, watermark, photorealism, color photograph",
+    "global_style": ""
+  },
+  {
+    "index": 16,
+    "start": 58.24,
+    "end": 59.86,
+    "prompt": "Ink sketch illustration on aged parchment paper, hand-drawn, educational diagram style, row of fossil skulls with a gentle downward arrow beneath them — quietly contradicting assumed upward trend — sepia ink on parchment, no color fill, 16:9, no text. Simple clean lines, no photorealism.",
+    "negative_prompt": "extra limbs, extra fingers, extra arms, extra legs, three legs, four arms, deformed hands, fused fingers, mutated anatomy, disfigured, blurry, low quality, text, watermark, photorealism, color photograph",
+    "global_style": ""
+  },
+  {
+    "index": 17,
+    "start": 60.8,
+    "end": 65.36,
+    "prompt": "Ink sketch illustration on aged parchment paper, hand-drawn, educational diagram style, timeline line with a peak marked at the center — brain size peaking 20-30k years ago — skulls sketched above and below the line at different points, sepia ink, parchment, no color fill, 16:9, no text. Simple clean lines, no photorealism.",
+    "negative_prompt": "extra limbs, extra fingers, extra arms, extra legs, three legs, four arms, deformed hands, fused fingers, mutated anatomy, disfigured, blurry, low quality, text, watermark, photorealism, color photograph",
+    "global_style": ""
+  },
+  {
+    "index": 18,
+    "start": 65.36,
+    "end": 67.04,
+    "prompt": "Ink sketch illustration on aged parchment paper, hand-drawn, educational diagram style, horizontal timeline with a peak at left-center and gradual descent toward right, a small skull icon at the peak and a slightly smaller one at the right end, sepia ink, parchment, no color fill, 16:9, no text. Simple clean lines, no photorealism.",
+    "negative_prompt": "extra limbs, extra fingers, extra arms, extra legs, three legs, four arms, deformed hands, fused fingers, mutated anatomy, disfigured, blurry, low quality, text, watermark, photorealism, color photograph",
+    "global_style": ""
+  },
+  {
+    "index": 19,
+    "start": 67.9,
+    "end": 72.4,
+    "prompt": "Ink sketch illustration on aged parchment paper, hand-drawn, educational diagram style, two rows of skulls — top row labeled past period with larger skulls, bottom row modern with slightly smaller — simple comparison diagram, sepia ink, parchment, no color fill, 16:9, no text. Simple clean lines, no photorealism.",
+    "negative_prompt": "extra limbs, extra fingers, extra arms, extra legs, three legs, four arms, deformed hands, fused fingers, mutated anatomy, disfigured, blurry, low quality, text, watermark, photorealism, color photograph",
+    "global_style": ""
+  },
+  {
+    "index": 20,
+    "start": 72.4,
+    "end": 72.86,
+    "prompt": "Ink sketch illustration on aged parchment paper, hand-drawn, educational diagram style, close-up of two skull outlines overlaid — larger outer outline, smaller inner outline — showing the reduction within the same shape, sepia ink on parchment, no color fill, 16:9, no text. Simple clean lines, no photorealism.",
+    "negative_prompt": "extra limbs, extra fingers, extra arms, extra legs, three legs, four arms, deformed hands, fused fingers, mutated anatomy, disfigured, blurry, low quality, text, watermark, photorealism, color photograph",
+    "global_style": ""
+  },
+  {
+    "index": 21,
+    "start": 73.76,
+    "end": 78.7,
+    "prompt": "Ink sketch illustration on aged parchment paper, hand-drawn, educational diagram style, skull outline with a shaded region inside representing removed volume — roughly tennis-ball sized gap — downward arrow pointing to the gap, sepia ink, parchment, no color fill, 16:9, no text. Simple clean lines, no photorealism.",
+    "negative_prompt": "extra limbs, extra fingers, extra arms, extra legs, three legs, four arms, deformed hands, fused fingers, mutated anatomy, disfigured, blurry, low quality, text, watermark, photorealism, color photograph",
+    "global_style": ""
+  },
+  {
+    "index": 22,
+    "start": 78.7,
+    "end": 81.84,
+    "prompt": "Ink sketch illustration on aged parchment paper, hand-drawn, educational diagram style, tennis ball sketch beside a skull cross-section with an equal-size void inside the skull, simple visual comparison, sepia ink, parchment, no color fill, 16:9, no text. Simple clean lines, no photorealism.",
+    "negative_prompt": "extra limbs, extra fingers, extra arms, extra legs, three legs, four arms, deformed hands, fused fingers, mutated anatomy, disfigured, blurry, low quality, text, watermark, photorealism, color photograph",
+    "global_style": ""
+  },
+  {
+    "index": 23,
+    "start": 82.64,
+    "end": 85.42,
+    "prompt": "Ink sketch illustration on aged parchment paper, hand-drawn, educational diagram style, long horizontal timeline with small skull icons at regular intervals each very slightly smaller than the last, a gentle slope downward from left to right, sepia ink, parchment, no color fill, 16:9, no text. Simple clean lines, no photorealism.",
+    "negative_prompt": "extra limbs, extra fingers, extra arms, extra legs, three legs, four arms, deformed hands, fused fingers, mutated anatomy, disfigured, blurry, low quality, text, watermark, photorealism, color photograph",
+    "global_style": ""
+  },
+  {
+    "index": 24,
+    "start": 86.3,
+    "end": 91.22,
+    "prompt": "Ink sketch illustration on aged parchment paper, hand-drawn, educational diagram style, world map outline in simple sepia ink strokes with small skull icons placed on Africa, Europe, and Asia each showing the same downward trend, parchment background, no color fill, 16:9, no text. Simple clean lines, no photorealism.",
+    "negative_prompt": "extra limbs, extra fingers, extra arms, extra legs, three legs, four arms, deformed hands, fused fingers, mutated anatomy, disfigured, blurry, low quality, text, watermark, photorealism, color photograph",
+    "global_style": ""
+  },
+  {
+    "index": 25,
+    "start": 91.22,
+    "end": 93.58,
+    "prompt": "Ink sketch illustration on aged parchment paper, hand-drawn, educational diagram style, three separate small charts on parchment — each from a different continent — all showing the same downward skull-size trend with arrows, sepia ink, no color fill, 16:9, no text. Simple clean lines, no photorealism.",
+    "negative_prompt": "extra limbs, extra fingers, extra arms, extra legs, three legs, four arms, deformed hands, fused fingers, mutated anatomy, disfigured, blurry, low quality, text, watermark, photorealism, color photograph",
+    "global_style": ""
+  },
+  {
+    "index": 26,
+    "start": 94.42,
+    "end": 99.3,
+    "prompt": "Ink sketch illustration on aged parchment paper, hand-drawn, educational diagram style, a crossed-out error symbol beside a small skull, then a checkmark beside a row of consistent skulls, indicating it is not a measurement error but a real pattern, sepia ink, parchment, no color fill, 16:9, no text. Simple clean lines, no photorealism.",
+    "negative_prompt": "extra limbs, extra fingers, extra arms, extra legs, three legs, four arms, deformed hands, fused fingers, mutated anatomy, disfigured, blurry, low quality, text, watermark, photorealism, color photograph",
+    "global_style": ""
+  },
+  {
+    "index": 27,
+    "start": 99.3,
+    "end": 101.48,
+    "prompt": "Ink sketch illustration on aged parchment paper, hand-drawn, educational diagram style, long downward-sloping arrow labeled with small skull icons, the direction clear and consistent, sepia ink on parchment, no color fill, 16:9, no text. Simple clean lines, no photorealism.",
+    "negative_prompt": "extra limbs, extra fingers, extra arms, extra legs, three legs, four arms, deformed hands, fused fingers, mutated anatomy, disfigured, blurry, low quality, text, watermark, photorealism, color photograph",
+    "global_style": ""
+  },
+  {
+    "index": 28,
+    "start": 102.36,
+    "end": 107.4,
+    "prompt": "Ink sketch illustration on aged parchment paper, hand-drawn, educational diagram style, Spark figure with raised open palm in a stopping gesture, other hand pointing to two separate objects — skull and a lightbulb — indicating they are not the same, small orange-yellow flame nearby, sepia ink, parchment, no color fill except flame, 16:9, no text. Simple clean lines, correct human anatomy, no extra limbs, no photorealism.",
+    "negative_prompt": "extra limbs, extra fingers, extra arms, extra legs, three legs, four arms, deformed hands, fused fingers, mutated anatomy, disfigured, blurry, low quality, text, watermark, photorealism, color photograph",
+    "global_style": ""
+  },
+  {
+    "index": 29,
+    "start": 107.4,
+    "end": 108.78,
+    "prompt": "Ink sketch illustration on aged parchment paper, hand-drawn, educational diagram style, large skull outline on left connected by an equals-sign-with-slash (≠) to a lightbulb outline on right, clearly showing they are not equivalent, sepia ink, parchment, no color fill, 16:9, no text. Simple clean lines, no photorealism.",
+    "negative_prompt": "extra limbs, extra fingers, extra arms, extra legs, three legs, four arms, deformed hands, fused fingers, mutated anatomy, disfigured, blurry, low quality, text, watermark, photorealism, color photograph",
+    "global_style": ""
+  },
+  {
+    "index": 30,
+    "start": 109.58,
+    "end": 114.38,
+    "prompt": "Ink sketch illustration on aged parchment paper, hand-drawn, educational diagram style, sperm whale outline sketched large filling most of the frame, tiny human figure sketch beside it for scale comparison, sepia ink, parchment, no color fill, 16:9, no text. Simple clean lines, correct proportions, no extra limbs, no photorealism.",
+    "negative_prompt": "extra limbs, extra fingers, extra arms, extra legs, three legs, four arms, deformed hands, fused fingers, mutated anatomy, disfigured, blurry, low quality, text, watermark, photorealism, color photograph",
+    "global_style": ""
+  },
+  {
+    "index": 31,
+    "start": 114.38,
+    "end": 118.9,
+    "prompt": "Ink sketch illustration on aged parchment paper, hand-drawn, educational diagram style, elephant outline and human figure sketched side by side for brain size comparison, an arrow pointing from elephant brain sketch to human brain sketch with a x3 ratio symbol, sepia ink, parchment, no color fill, 16:9, no text. Simple clean lines, no extra limbs, no photorealism.",
+    "negative_prompt": "extra limbs, extra fingers, extra arms, extra legs, three legs, four arms, deformed hands, fused fingers, mutated anatomy, disfigured, blurry, low quality, text, watermark, photorealism, color photograph",
+    "global_style": ""
+  },
+  {
+    "index": 32,
+    "start": 119.86,
+    "end": 124.42,
+    "prompt": "Ink sketch illustration on aged parchment paper, hand-drawn, educational diagram style, brain outline with dense hatching in some regions and sparse hatching in others, arrows indicating connectivity between regions, suggesting organization matters more than size, sepia ink, parchment, no color fill, 16:9, no text. Simple clean lines, no photorealism.",
+    "negative_prompt": "extra limbs, extra fingers, extra arms, extra legs, three legs, four arms, deformed hands, fused fingers, mutated anatomy, disfigured, blurry, low quality, text, watermark, photorealism, color photograph",
+    "global_style": ""
+  },
+  {
+    "index": 33,
+    "start": 124.42,
+    "end": 128.46,
+    "prompt": "Ink sketch illustration on aged parchment paper, hand-drawn, educational diagram style, brain cross-section sketch with fine network of connecting lines inside — a web of connections — arrows showing signal direction, sepia ink on parchment, no color fill, 16:9, no text. Simple clean lines, no photorealism.",
+    "negative_prompt": "extra limbs, extra fingers, extra arms, extra legs, three legs, four arms, deformed hands, fused fingers, mutated anatomy, disfigured, blurry, low quality, text, watermark, photorealism, color photograph",
+    "global_style": ""
+  },
+  {
+    "index": 34,
+    "start": 129.44,
+    "end": 134.06,
+    "prompt": "Ink sketch illustration on aged parchment paper, hand-drawn, educational diagram style, two brain outlines same size — left with many scattered marks inside (inefficient), right with organized compact network (efficient) — arrows showing same input-output, sepia ink, parchment, no color fill, 16:9, no text. Simple clean lines, no photorealism.",
+    "negative_prompt": "extra limbs, extra fingers, extra arms, extra legs, three legs, four arms, deformed hands, fused fingers, mutated anatomy, disfigured, blurry, low quality, text, watermark, photorealism, color photograph",
+    "global_style": ""
+  },
+  {
+    "index": 35,
+    "start": 134.06,
+    "end": 136.56,
+    "prompt": "Ink sketch illustration on aged parchment paper, hand-drawn, educational diagram style, smaller compact brain outline with the same number of output arrows as a larger looser brain outline beside it, efficiency comparison, sepia ink, parchment, no color fill, 16:9, no text. Simple clean lines, no photorealism.",
+    "negative_prompt": "extra limbs, extra fingers, extra arms, extra legs, three legs, four arms, deformed hands, fused fingers, mutated anatomy, disfigured, blurry, low quality, text, watermark, photorealism, color photograph",
+    "global_style": ""
+  },
+  {
+    "index": 36,
+    "start": 137.46,
+    "end": 142.0,
+    "prompt": "Ink sketch illustration on aged parchment paper, hand-drawn, educational diagram style, Spark figure with hand raised to chin in thinking posture, small orange-yellow flame beside him, a question mark drawn above his head in sepia ink, parchment background, no color fill except flame, 16:9, no text. Simple clean lines, correct human anatomy, no extra limbs, no photorealism.",
+    "negative_prompt": "extra limbs, extra fingers, extra arms, extra legs, three legs, four arms, deformed hands, fused fingers, mutated anatomy, disfigured, blurry, low quality, text, watermark, photorealism, color photograph",
+    "global_style": ""
+  },
+  {
+    "index": 37,
+    "start": 142.0,
+    "end": 143.02,
+    "prompt": "Ink sketch illustration on aged parchment paper, hand-drawn, educational diagram style, timeline diagram with efficiency label and a clock symbol showing when the change began — the timing as a question mark beside the efficiency arrow — sepia ink, parchment, no color fill, 16:9, no text. Simple clean lines, no photorealism.",
+    "negative_prompt": "extra limbs, extra fingers, extra arms, extra legs, three legs, four arms, deformed hands, fused fingers, mutated anatomy, disfigured, blurry, low quality, text, watermark, photorealism, color photograph",
+    "global_style": ""
+  },
+  {
+    "index": 38,
+    "start": 143.86,
+    "end": 148.7,
+    "prompt": "Ink sketch illustration on aged parchment paper, hand-drawn, educational diagram style, two human figure outlines side by side — left one taller and broader, right one shorter and leaner — simple body size comparison in sepia ink, parchment, no color fill, 16:9, no text. Simple clean lines, correct human anatomy, no extra limbs, no photorealism.",
+    "negative_prompt": "extra limbs, extra fingers, extra arms, extra legs, three legs, four arms, deformed hands, fused fingers, mutated anatomy, disfigured, blurry, low quality, text, watermark, photorealism, color photograph",
+    "global_style": ""
+  },
+  {
+    "index": 39,
+    "start": 148.7,
+    "end": 151.06,
+    "prompt": "Ink sketch illustration on aged parchment paper, hand-drawn, educational diagram style, downward arrow showing body size over time beside a parallel downward arrow showing brain size, both declining together on the same timeline, sepia ink, parchment, no color fill, 16:9, no text. Simple clean lines, no photorealism.",
+    "negative_prompt": "extra limbs, extra fingers, extra arms, extra legs, three legs, four arms, deformed hands, fused fingers, mutated anatomy, disfigured, blurry, low quality, text, watermark, photorealism, color photograph",
+    "global_style": ""
+  },
+  {
+    "index": 40,
+    "start": 152.0,
+    "end": 156.52,
+    "prompt": "Ink sketch illustration on aged parchment paper, hand-drawn, educational diagram style, a larger human figure with a larger brain circle above it and a smaller human figure with a smaller brain circle above it, both connected by arrows showing body-brain correlation, sepia ink, parchment, no color fill, 16:9, no text. Simple clean lines, correct proportions, no extra limbs, no photorealism.",
+    "negative_prompt": "extra limbs, extra fingers, extra arms, extra legs, three legs, four arms, deformed hands, fused fingers, mutated anatomy, disfigured, blurry, low quality, text, watermark, photorealism, color photograph",
+    "global_style": ""
+  },
+  {
+    "index": 41,
+    "start": 156.52,
+    "end": 161.3,
+    "prompt": "Ink sketch illustration on aged parchment paper, hand-drawn, educational diagram style, body size arrow and brain size arrow in parallel — body arrow shorter, brain arrow longer — showing brain shrank more than body alone predicts, a gap symbol between the two arrows, sepia ink, parchment, no color fill, 16:9, no text. Simple clean lines, no photorealism.",
+    "negative_prompt": "extra limbs, extra fingers, extra arms, extra legs, three legs, four arms, deformed hands, fused fingers, mutated anatomy, disfigured, blurry, low quality, text, watermark, photorealism, color photograph",
+    "global_style": ""
+  },
+  {
+    "index": 42,
+    "start": 162.08,
+    "end": 166.58,
+    "prompt": "Ink sketch illustration on aged parchment paper, hand-drawn, educational diagram style, two downward arrows — body size and brain size — body arrow is short, brain arrow extends further down, a bracket showing the unexplained gap between them, sepia ink, parchment, no color fill, 16:9, no text. Simple clean lines, no photorealism.",
+    "negative_prompt": "extra limbs, extra fingers, extra arms, extra legs, three legs, four arms, deformed hands, fused fingers, mutated anatomy, disfigured, blurry, low quality, text, watermark, photorealism, color photograph",
+    "global_style": ""
+  },
+  {
+    "index": 43,
+    "start": 166.58,
+    "end": 168.04,
+    "prompt": "Ink sketch illustration on aged parchment paper, hand-drawn, educational diagram style, body outline with brain circle above — body shrinks to predicted size but brain circle shrinks further than the body arrow would predict — a question mark in the gap, sepia ink, parchment, no color fill, 16:9, no text. Simple clean lines, no photorealism.",
+    "negative_prompt": "extra limbs, extra fingers, extra arms, extra legs, three legs, four arms, deformed hands, fused fingers, mutated anatomy, disfigured, blurry, low quality, text, watermark, photorealism, color photograph",
+    "global_style": ""
+  },
+  {
+    "index": 44,
+    "start": 168.7,
+    "end": 173.26,
+    "prompt": "Ink sketch illustration on aged parchment paper, hand-drawn, educational diagram style, a gap drawn between two sets of facts with a dark shadowed doorway shape in the gap — unsettling hypothesis about to enter — a small figure approaching the doorway, sepia ink, parchment, no color fill, 16:9, no text. Simple clean lines, correct human anatomy, no extra limbs, no photorealism.",
+    "negative_prompt": "extra limbs, extra fingers, extra arms, extra legs, three legs, four arms, deformed hands, fused fingers, mutated anatomy, disfigured, blurry, low quality, text, watermark, photorealism, color photograph",
+    "global_style": ""
+  },
+  {
+    "index": 45,
+    "start": 174.02,
+    "end": 177.92,
+    "prompt": "Ink sketch illustration on aged parchment paper, hand-drawn, educational diagram style, human figure with a question mark above and a dog and wolf sketched beside them — parallel — suggesting humans may be domesticated animals, sepia ink, parchment, no color fill, 16:9, no text. Simple clean lines, correct human anatomy, no extra limbs, no photorealism.",
+    "negative_prompt": "extra limbs, extra fingers, extra arms, extra legs, three legs, four arms, deformed hands, fused fingers, mutated anatomy, disfigured, blurry, low quality, text, watermark, photorealism, color photograph",
+    "global_style": ""
+  },
+  {
+    "index": 46,
+    "start": 178.62,
+    "end": 182.0,
+    "prompt": "Ink sketch illustration on aged parchment paper, hand-drawn, educational diagram style, brain outline with a downward arrow inside it labeled with a small house or community symbol — domestication reduces brain — sepia ink, parchment, no color fill, 16:9, no text. Simple clean lines, no photorealism.",
+    "negative_prompt": "extra limbs, extra fingers, extra arms, extra legs, three legs, four arms, deformed hands, fused fingers, mutated anatomy, disfigured, blurry, low quality, text, watermark, photorealism, color photograph",
+    "global_style": ""
+  },
+  {
+    "index": 47,
+    "start": 182.86,
+    "end": 187.52,
+    "prompt": "Ink sketch illustration on aged parchment paper, hand-drawn, educational diagram style, wolf outline and dog outline side by side — nearly identical body shape and size — sepia ink, parchment, no color fill, 16:9, no text. Simple clean lines, no extra limbs, no photorealism.",
+    "negative_prompt": "extra limbs, extra fingers, extra arms, extra legs, three legs, four arms, deformed hands, fused fingers, mutated anatomy, disfigured, blurry, low quality, text, watermark, photorealism, color photograph",
+    "global_style": ""
+  },
+  {
+    "index": 48,
+    "start": 187.52,
+    "end": 192.12,
+    "prompt": "Ink sketch illustration on aged parchment paper, hand-drawn, educational diagram style, timeline with wolf at left and dog at right, human figure appearing alongside over time, the 15000-year separation shown as a bracket on the timeline, sepia ink, parchment, no color fill, 16:9, no text. Simple clean lines, no extra limbs, no photorealism.",
+    "negative_prompt": "extra limbs, extra fingers, extra arms, extra legs, three legs, four arms, deformed hands, fused fingers, mutated anatomy, disfigured, blurry, low quality, text, watermark, photorealism, color photograph",
+    "global_style": ""
+  },
+  {
+    "index": 49,
+    "start": 192.12,
+    "end": 192.74,
+    "prompt": "Ink sketch illustration on aged parchment paper, hand-drawn, educational diagram style, small human figure sketched beside a dog at a campfire, the companionship implied by proximity and the dog facing the human, sepia ink, parchment, no color fill, 16:9, no text. Simple clean lines, correct human anatomy, no extra limbs, no photorealism.",
+    "negative_prompt": "extra limbs, extra fingers, extra arms, extra legs, three legs, four arms, deformed hands, fused fingers, mutated anatomy, disfigured, blurry, low quality, text, watermark, photorealism, color photograph",
+    "global_style": ""
+  },
+  {
+    "index": 50,
+    "start": 193.7,
+    "end": 198.48,
+    "prompt": "Ink sketch illustration on aged parchment paper, hand-drawn, educational diagram style, two skull outlines — wolf skull larger on left, dog skull smaller on right — with equal body-size icons below each showing the brain-to-body adjustment, sepia ink, parchment, no color fill, 16:9, no text. Simple clean lines, no extra limbs, no photorealism.",
+    "negative_prompt": "extra limbs, extra fingers, extra arms, extra legs, three legs, four arms, deformed hands, fused fingers, mutated anatomy, disfigured, blurry, low quality, text, watermark, photorealism, color photograph",
+    "global_style": ""
+  },
+  {
+    "index": 51,
+    "start": 199.12,
+    "end": 201.66,
+    "prompt": "Ink sketch illustration on aged parchment paper, hand-drawn, educational diagram style, a trade symbol — two arrows crossing — between a large brain circle labeled SOLO and a smaller brain circle labeled SOCIAL, sepia ink, parchment, no color fill, 16:9, no text. Simple clean lines, no photorealism.",
+    "negative_prompt": "extra limbs, extra fingers, extra arms, extra legs, three legs, four arms, deformed hands, fused fingers, mutated anatomy, disfigured, blurry, low quality, text, watermark, photorealism, color photograph",
+    "global_style": ""
+  },
+  {
+    "index": 52,
+    "start": 202.52,
+    "end": 207.08,
+    "prompt": "Ink sketch illustration on aged parchment paper, hand-drawn, educational diagram style, lone wolf figure navigating through tree shapes alone, no other figures, head low tracking, sepia ink, parchment, no color fill, 16:9, no text. Simple clean lines, no extra limbs, no photorealism.",
+    "negative_prompt": "extra limbs, extra fingers, extra arms, extra legs, three legs, four arms, deformed hands, fused fingers, mutated anatomy, disfigured, blurry, low quality, text, watermark, photorealism, color photograph",
+    "global_style": ""
+  },
+  {
+    "index": 53,
+    "start": 207.08,
+    "end": 210.12,
+    "prompt": "Ink sketch illustration on aged parchment paper, hand-drawn, educational diagram style, wolf figure in mid-stride tracking prey silhouette in the distance, no other figures, conveying independent problem-solving, sepia ink, parchment, no color fill, 16:9, no text. Simple clean lines, no extra limbs, no photorealism.",
+    "negative_prompt": "extra limbs, extra fingers, extra arms, extra legs, three legs, four arms, deformed hands, fused fingers, mutated anatomy, disfigured, blurry, low quality, text, watermark, photorealism, color photograph",
+    "global_style": ""
+  },
+  {
+    "index": 54,
+    "start": 210.82,
+    "end": 215.86,
+    "prompt": "Ink sketch illustration on aged parchment paper, hand-drawn, educational diagram style, dog figure looking up at human face, human arm extended with pointing finger, dog's gaze following the direction, sepia ink, parchment, no color fill, 16:9, no text. Simple clean lines, correct human anatomy, no extra limbs, no photorealism.",
+    "negative_prompt": "extra limbs, extra fingers, extra arms, extra legs, three legs, four arms, deformed hands, fused fingers, mutated anatomy, disfigured, blurry, low quality, text, watermark, photorealism, color photograph",
+    "global_style": ""
+  },
+  {
+    "index": 55,
+    "start": 215.86,
+    "end": 220.14,
+    "prompt": "Ink sketch illustration on aged parchment paper, hand-drawn, educational diagram style, dog raising a paw toward a seated human figure — asking for help gesture — human hand reaching down, sepia ink, parchment, no color fill, 16:9, no text. Simple clean lines, correct human anatomy, no extra limbs, no photorealism.",
+    "negative_prompt": "extra limbs, extra fingers, extra arms, extra legs, three legs, four arms, deformed hands, fused fingers, mutated anatomy, disfigured, blurry, low quality, text, watermark, photorealism, color photograph",
+    "global_style": ""
+  },
+  {
+    "index": 56,
+    "start": 221.06,
+    "end": 226.16,
+    "prompt": "Ink sketch illustration on aged parchment paper, hand-drawn, educational diagram style, trade diagram: large brain circle with SOLO arrow giving way to smaller brain circle plus NETWORK circle — the trade shown as a balance scale — sepia ink, parchment, no color fill, 16:9, no text. Simple clean lines, no photorealism.",
+    "negative_prompt": "extra limbs, extra fingers, extra arms, extra legs, three legs, four arms, deformed hands, fused fingers, mutated anatomy, disfigured, blurry, low quality, text, watermark, photorealism, color photograph",
+    "global_style": ""
+  },
+  {
+    "index": 57,
+    "start": 226.66,
+    "end": 231.3,
+    "prompt": "Ink sketch illustration on aged parchment paper, hand-drawn, educational diagram style, dog figure inside a circle of human figures — the cooperative network — connected by lines to each figure, sepia ink, parchment, no color fill, 16:9, no text. Simple clean lines, correct human anatomy, no extra limbs, no photorealism.",
+    "negative_prompt": "extra limbs, extra fingers, extra arms, extra legs, three legs, four arms, deformed hands, fused fingers, mutated anatomy, disfigured, blurry, low quality, text, watermark, photorealism, color photograph",
+    "global_style": ""
+  },
+  {
+    "index": 58,
+    "start": 232.14,
+    "end": 236.8,
+    "prompt": "Ink sketch illustration on aged parchment paper, hand-drawn, educational diagram style, three animal pairs sketched — wolf and dog, aurochs and cow, boar and pig — each pair with a downward brain-size arrow between them, sepia ink, parchment, no color fill, 16:9, no text. Simple clean lines, no extra limbs, no photorealism.",
+    "negative_prompt": "extra limbs, extra fingers, extra arms, extra legs, three legs, four arms, deformed hands, fused fingers, mutated anatomy, disfigured, blurry, low quality, text, watermark, photorealism, color photograph",
+    "global_style": ""
+  },
+  {
+    "index": 59,
+    "start": 236.8,
+    "end": 240.84,
+    "prompt": "Ink sketch illustration on aged parchment paper, hand-drawn, educational diagram style, large horned aurochs outline on left and smaller domestic cow outline on right, skull comparison above each showing the reduction, sepia ink, parchment, no color fill, 16:9, no text. Simple clean lines, no extra limbs, no photorealism.",
+    "negative_prompt": "extra limbs, extra fingers, extra arms, extra legs, three legs, four arms, deformed hands, fused fingers, mutated anatomy, disfigured, blurry, low quality, text, watermark, photorealism, color photograph",
+    "global_style": ""
+  },
+  {
+    "index": 60,
+    "start": 241.1,
+    "end": 245.68,
+    "prompt": "Ink sketch illustration on aged parchment paper, hand-drawn, educational diagram style, brain circle with downward arrow inside labeled SOLO → SOCIAL, the brain adjusting toward what the environment requires, sepia ink, parchment, no color fill, 16:9, no text. Simple clean lines, no photorealism.",
+    "negative_prompt": "extra limbs, extra fingers, extra arms, extra legs, three legs, four arms, deformed hands, fused fingers, mutated anatomy, disfigured, blurry, low quality, text, watermark, photorealism, color photograph",
+    "global_style": ""
+  },
+  {
+    "index": 61,
+    "start": 245.68,
+    "end": 247.3,
+    "prompt": "Ink sketch illustration on aged parchment paper, hand-drawn, educational diagram style, community circle with brain shrinking inward — the social environment as container shaping the brain to fit — sepia ink, parchment, no color fill, 16:9, no text. Simple clean lines, no photorealism.",
+    "negative_prompt": "extra limbs, extra fingers, extra arms, extra legs, three legs, four arms, deformed hands, fused fingers, mutated anatomy, disfigured, blurry, low quality, text, watermark, photorealism, color photograph",
+    "global_style": ""
+  },
+  {
+    "index": 62,
+    "start": 248.4,
+    "end": 253.48,
+    "prompt": "Ink sketch illustration on aged parchment paper, hand-drawn, educational diagram style, Spark figure pointing to a diagram showing human and domesticated animal on parallel tracks, small orange-yellow flame beside Spark, sepia ink, parchment, no color fill except flame, 16:9, no text. Simple clean lines, correct human anatomy, no extra limbs, no photorealism.",
+    "negative_prompt": "extra limbs, extra fingers, extra arms, extra legs, three legs, four arms, deformed hands, fused fingers, mutated anatomy, disfigured, blurry, low quality, text, watermark, photorealism, color photograph",
+    "global_style": ""
+  },
+  {
+    "index": 63,
+    "start": 253.48,
+    "end": 258.22,
+    "prompt": "Ink sketch illustration on aged parchment paper, hand-drawn, educational diagram style, human figure with crossed-out arrow pointing from another species — NOT domesticated by another species — then an arrow from the human pointing back to itself labeled SELF, sepia ink, parchment, no color fill, 16:9, no text. Simple clean lines, correct human anatomy, no extra limbs, no photorealism.",
+    "negative_prompt": "extra limbs, extra fingers, extra arms, extra legs, three legs, four arms, deformed hands, fused fingers, mutated anatomy, disfigured, blurry, low quality, text, watermark, photorealism, color photograph",
+    "global_style": ""
+  },
+  {
+    "index": 64,
+    "start": 258.22,
+    "end": 259.48,
+    "prompt": "Ink sketch illustration on aged parchment paper, hand-drawn, educational diagram style, small settlement sketch — cluster of hut shapes — with an arrow pointing to a human brain circle that is slightly smaller than one beside a lone figure, sepia ink, parchment, no color fill, 16:9, no text. Simple clean lines, no photorealism.",
+    "negative_prompt": "extra limbs, extra fingers, extra arms, extra legs, three legs, four arms, deformed hands, fused fingers, mutated anatomy, disfigured, blurry, low quality, text, watermark, photorealism, color photograph",
+    "global_style": ""
+  },
+  {
+    "index": 65,
+    "start": 260.28,
+    "end": 265.0,
+    "prompt": "Ink sketch illustration on aged parchment paper, hand-drawn, educational diagram style, community of growing size — small circle of figures at left growing to large circle at right — lone figure in center with brain circle that shrinks as community grows, sepia ink, parchment, no color fill, 16:9, no text. Simple clean lines, correct human anatomy, no extra limbs, no photorealism.",
+    "negative_prompt": "extra limbs, extra fingers, extra arms, extra legs, three legs, four arms, deformed hands, fused fingers, mutated anatomy, disfigured, blurry, low quality, text, watermark, photorealism, color photograph",
+    "global_style": ""
+  },
+  {
+    "index": 66,
+    "start": 265.0,
+    "end": 266.6,
+    "prompt": "Ink sketch illustration on aged parchment paper, hand-drawn, educational diagram style, lone ancient human figure with a heavy burden shape on back transforming into a community carrying the same burden across multiple figures — the load distributed — sepia ink, parchment, no color fill, 16:9, no text. Simple clean lines, correct human anatomy, no extra limbs, no photorealism.",
+    "negative_prompt": "extra limbs, extra fingers, extra arms, extra legs, three legs, four arms, deformed hands, fused fingers, mutated anatomy, disfigured, blurry, low quality, text, watermark, photorealism, color photograph",
+    "global_style": ""
+  },
+  {
+    "index": 67,
+    "start": 267.44,
+    "end": 272.0,
+    "prompt": "Ink sketch illustration on aged parchment paper, hand-drawn, educational diagram style, ancient human figure examining plant leaves, another figure in background with other plants — specialist division implied — simple sepia ink, parchment, no color fill, 16:9, no text. Simple clean lines, correct human anatomy, no extra limbs, no photorealism.",
+    "negative_prompt": "extra limbs, extra fingers, extra arms, extra legs, three legs, four arms, deformed hands, fused fingers, mutated anatomy, disfigured, blurry, low quality, text, watermark, photorealism, color photograph",
+    "global_style": ""
+  },
+  {
+    "index": 68,
+    "start": 272.0,
+    "end": 273.08,
+    "prompt": "Ink sketch illustration on aged parchment paper, hand-drawn, educational diagram style, figure holding up one plant with a check arrow, pointing to another figure holding different plants — the specialist knows, others do not need to — sepia ink, parchment, no color fill, 16:9, no text. Simple clean lines, correct human anatomy, no extra limbs, no photorealism.",
+    "negative_prompt": "extra limbs, extra fingers, extra arms, extra legs, three legs, four arms, deformed hands, fused fingers, mutated anatomy, disfigured, blurry, low quality, text, watermark, photorealism, color photograph",
+    "global_style": ""
+  },
+  {
+    "index": 69,
+    "start": 273.98,
+    "end": 278.44,
+    "prompt": "Ink sketch illustration on aged parchment paper, hand-drawn, educational diagram style, tracker figure crouching with magnifier-shape over animal tracks, another figure standing back pointing — the dedicated tracker — sepia ink, parchment, no color fill, 16:9, no text. Simple clean lines, correct human anatomy, no extra limbs, no photorealism.",
+    "negative_prompt": "extra limbs, extra fingers, extra arms, extra legs, three legs, four arms, deformed hands, fused fingers, mutated anatomy, disfigured, blurry, low quality, text, watermark, photorealism, color photograph",
+    "global_style": ""
+  },
+  {
+    "index": 70,
+    "start": 279.34,
+    "end": 284.26,
+    "prompt": "Ink sketch illustration on aged parchment paper, hand-drawn, educational diagram style, elder figure pointing to stars above while younger figures watch — the star-path navigator holding knowledge — star dots above in sepia ink, parchment, no color fill, 16:9, no text. Simple clean lines, correct human anatomy, no extra limbs, no photorealism.",
+    "negative_prompt": "extra limbs, extra fingers, extra arms, extra legs, three legs, four arms, deformed hands, fused fingers, mutated anatomy, disfigured, blurry, low quality, text, watermark, photorealism, color photograph",
+    "global_style": ""
+  },
+  {
+    "index": 71,
+    "start": 284.26,
+    "end": 285.38,
+    "prompt": "Ink sketch illustration on aged parchment paper, hand-drawn, educational diagram style, elder figure seated with younger figure approaching to ask — the asking gesture clear — sepia ink, parchment, no color fill, 16:9, no text. Simple clean lines, correct human anatomy, no extra limbs, no photorealism.",
+    "negative_prompt": "extra limbs, extra fingers, extra arms, extra legs, three legs, four arms, deformed hands, fused fingers, mutated anatomy, disfigured, blurry, low quality, text, watermark, photorealism, color photograph",
+    "global_style": ""
+  },
+  {
+    "index": 72,
+    "start": 286.68,
+    "end": 291.44,
+    "prompt": "Ink sketch illustration on aged parchment paper, hand-drawn, educational diagram style, network diagram: multiple figures connected by lines, knowledge nodes distributed between them — the distributed cognition — sepia ink, parchment, no color fill, 16:9, no text. Simple clean lines, correct human anatomy, no extra limbs, no photorealism.",
+    "negative_prompt": "extra limbs, extra fingers, extra arms, extra legs, three legs, four arms, deformed hands, fused fingers, mutated anatomy, disfigured, blurry, low quality, text, watermark, photorealism, color photograph",
+    "global_style": ""
+  },
+  {
+    "index": 73,
+    "start": 291.44,
+    "end": 293.5,
+    "prompt": "Ink sketch illustration on aged parchment paper, hand-drawn, educational diagram style, tool shape, ritual symbol, and speech bubble connected by arrows passing between three figures — knowledge embedded in tools and story — sepia ink, parchment, no color fill, 16:9, no text. Simple clean lines, correct human anatomy, no extra limbs, no photorealism.",
+    "negative_prompt": "extra limbs, extra fingers, extra arms, extra legs, three legs, four arms, deformed hands, fused fingers, mutated anatomy, disfigured, blurry, low quality, text, watermark, photorealism, color photograph",
+    "global_style": ""
+  },
+  {
+    "index": 74,
+    "start": 294.38,
+    "end": 298.94,
+    "prompt": "Ink sketch illustration on aged parchment paper, hand-drawn, educational diagram style, single brain circle at center with lines radiating outward to many figures around it — the network as external memory — sepia ink, parchment, no color fill, 16:9, no text. Simple clean lines, correct human anatomy, no extra limbs, no photorealism.",
+    "negative_prompt": "extra limbs, extra fingers, extra arms, extra legs, three legs, four arms, deformed hands, fused fingers, mutated anatomy, disfigured, blurry, low quality, text, watermark, photorealism, color photograph",
+    "global_style": ""
+  },
+  {
+    "index": 75,
+    "start": 298.94,
+    "end": 302.06,
+    "prompt": "Ink sketch illustration on aged parchment paper, hand-drawn, educational diagram style, brain circle merged with network diagram — the boundary between individual brain and social network blurred — sepia ink, parchment, no color fill, 16:9, no text. Simple clean lines, no photorealism.",
+    "negative_prompt": "extra limbs, extra fingers, extra arms, extra legs, three legs, four arms, deformed hands, fused fingers, mutated anatomy, disfigured, blurry, low quality, text, watermark, photorealism, color photograph",
+    "global_style": ""
+  },
+  {
+    "index": 76,
+    "start": 302.88,
+    "end": 307.44,
+    "prompt": "Ink sketch illustration on aged parchment paper, hand-drawn, educational diagram style, Spark figure with open hands — acknowledging uncertainty — question mark on one side, multiple hypothesis arrows on other side, small orange-yellow flame beside him, sepia ink, parchment, no color fill except flame, 16:9, no text. Simple clean lines, correct human anatomy, no extra limbs, no photorealism.",
+    "negative_prompt": "extra limbs, extra fingers, extra arms, extra legs, three legs, four arms, deformed hands, fused fingers, mutated anatomy, disfigured, blurry, low quality, text, watermark, photorealism, color photograph",
+    "global_style": ""
+  },
+  {
+    "index": 77,
+    "start": 307.7,
+    "end": 309.56,
+    "prompt": "Ink sketch illustration on aged parchment paper, hand-drawn, educational diagram style, a clock symbol overlaid on a brain-size downward arrow — timing hard to ignore — sepia ink, parchment, no color fill, 16:9, no text. Simple clean lines, no photorealism.",
+    "negative_prompt": "extra limbs, extra fingers, extra arms, extra legs, three legs, four arms, deformed hands, fused fingers, mutated anatomy, disfigured, blurry, low quality, text, watermark, photorealism, color photograph",
+    "global_style": ""
+  },
+  {
+    "index": 78,
+    "start": 310.5,
+    "end": 315.28,
+    "prompt": "Ink sketch illustration on aged parchment paper, hand-drawn, educational diagram style, density graph of population — rising curve — mirrored below by brain-size declining curve, both on the same timeline, correlation visible, sepia ink, parchment, no color fill, 16:9, no text. Simple clean lines, no photorealism.",
+    "negative_prompt": "extra limbs, extra fingers, extra arms, extra legs, three legs, four arms, deformed hands, fused fingers, mutated anatomy, disfigured, blurry, low quality, text, watermark, photorealism, color photograph",
+    "global_style": ""
+  },
+  {
+    "index": 79,
+    "start": 315.28,
+    "end": 320.38,
+    "prompt": "Ink sketch illustration on aged parchment paper, hand-drawn, educational diagram style, cluster of hut shapes growing into a settlement visible across the parchment, figures visible at different points, the recognized world we know beginning to appear, sepia ink, no color fill, 16:9, no text. Simple clean lines, correct human anatomy, no extra limbs, no photorealism.",
+    "negative_prompt": "extra limbs, extra fingers, extra arms, extra legs, three legs, four arms, deformed hands, fused fingers, mutated anatomy, disfigured, blurry, low quality, text, watermark, photorealism, color photograph",
+    "global_style": ""
+  },
+  {
+    "index": 80,
+    "start": 321.46,
+    "end": 326.0,
+    "prompt": "Ink sketch illustration on aged parchment paper, hand-drawn, educational diagram style, generations timeline — small family circle at left growing to large community at right — individual brain circle above each getting slightly smaller as community grows, sepia ink, parchment, no color fill, 16:9, no text. Simple clean lines, no photorealism.",
+    "negative_prompt": "extra limbs, extra fingers, extra arms, extra legs, three legs, four arms, deformed hands, fused fingers, mutated anatomy, disfigured, blurry, low quality, text, watermark, photorealism, color photograph",
+    "global_style": ""
+  },
+  {
+    "index": 81,
+    "start": 326.0,
+    "end": 330.64,
+    "prompt": "Ink sketch illustration on aged parchment paper, hand-drawn, educational diagram style, heavy burden weight shape above lone figure, same weight distributed across many figures in community — the individual no longer carries full weight — sepia ink, parchment, no color fill, 16:9, no text. Simple clean lines, correct human anatomy, no extra limbs, no photorealism.",
+    "negative_prompt": "extra limbs, extra fingers, extra arms, extra legs, three legs, four arms, deformed hands, fused fingers, mutated anatomy, disfigured, blurry, low quality, text, watermark, photorealism, color photograph",
+    "global_style": ""
+  },
+  {
+    "index": 82,
+    "start": 330.64,
+    "end": 331.52,
+    "prompt": "Ink sketch illustration on aged parchment paper, hand-drawn, educational diagram style, single figure with empty hands — the burden gone — community circle visible behind, sepia ink, parchment, no color fill, 16:9, no text. Simple clean lines, correct human anatomy, no extra limbs, no photorealism.",
+    "negative_prompt": "extra limbs, extra fingers, extra arms, extra legs, three legs, four arms, deformed hands, fused fingers, mutated anatomy, disfigured, blurry, low quality, text, watermark, photorealism, color photograph",
+    "global_style": ""
+  },
+  {
+    "index": 83,
+    "start": 332.4,
+    "end": 337.0,
+    "prompt": "Ink sketch illustration on aged parchment paper, hand-drawn, educational diagram style, Spark figure with checkmarks beside skull diagram and several cause arrows — you now know these facts — small orange-yellow flame beside him, sepia ink, parchment, no color fill except flame, 16:9, no text. Simple clean lines, correct human anatomy, no extra limbs, no photorealism.",
+    "negative_prompt": "extra limbs, extra fingers, extra arms, extra legs, three legs, four arms, deformed hands, fused fingers, mutated anatomy, disfigured, blurry, low quality, text, watermark, photorealism, color photograph",
+    "global_style": ""
+  },
+  {
+    "index": 84,
+    "start": 337.0,
+    "end": 339.86,
+    "prompt": "Ink sketch illustration on aged parchment paper, hand-drawn, educational diagram style, skull outline with a large question mark inside where the brain would be — what was actually lost unknown — sepia ink, parchment, no color fill, 16:9, no text. Simple clean lines, no photorealism.",
+    "negative_prompt": "extra limbs, extra fingers, extra arms, extra legs, three legs, four arms, deformed hands, fused fingers, mutated anatomy, disfigured, blurry, low quality, text, watermark, photorealism, color photograph",
+    "global_style": ""
+  },
+  {
+    "index": 85,
+    "start": 340.62,
+    "end": 343.68,
+    "prompt": "Ink sketch illustration on aged parchment paper, hand-drawn, educational diagram style, measuring ruler stopping short of a question mark — the question harder to measure — sepia ink, parchment, no color fill, 16:9, no text. Simple clean lines, no photorealism.",
+    "negative_prompt": "extra limbs, extra fingers, extra arms, extra legs, three legs, four arms, deformed hands, fused fingers, mutated anatomy, disfigured, blurry, low quality, text, watermark, photorealism, color photograph",
+    "global_style": ""
+  },
+  {
+    "index": 86,
+    "start": 344.66,
+    "end": 349.26,
+    "prompt": "Ink sketch illustration on aged parchment paper, hand-drawn, educational diagram style, lone ancient human figure standing with large skull beside them, nothing else in frame — no library, no tools, no community — sepia ink, parchment, no color fill, 16:9, no text. Simple clean lines, correct human anatomy, no extra limbs, no photorealism.",
+    "negative_prompt": "extra limbs, extra fingers, extra arms, extra legs, three legs, four arms, deformed hands, fused fingers, mutated anatomy, disfigured, blurry, low quality, text, watermark, photorealism, color photograph",
+    "global_style": ""
+  },
+  {
+    "index": 87,
+    "start": 349.7,
+    "end": 354.22,
+    "prompt": "Ink sketch illustration on aged parchment paper, hand-drawn, educational diagram style, crossed-out book, crossed-out scroll, crossed-out figure-asking-question — none of these available — lone figure standing alone with only their brain circle above, sepia ink, parchment, no color fill, 16:9, no text. Simple clean lines, correct human anatomy, no extra limbs, no photorealism.",
+    "negative_prompt": "extra limbs, extra fingers, extra arms, extra legs, three legs, four arms, deformed hands, fused fingers, mutated anatomy, disfigured, blurry, low quality, text, watermark, photorealism, color photograph",
+    "global_style": ""
+  },
+  {
+    "index": 88,
+    "start": 354.22,
+    "end": 354.94,
+    "prompt": "Ink sketch illustration on aged parchment paper, hand-drawn, educational diagram style, empty horizon line with a single small figure at center and nothing beyond — knowledge ran out at the edge of one mind — sepia ink, parchment, no color fill, 16:9, no text. Simple clean lines, correct human anatomy, no extra limbs, no photorealism.",
+    "negative_prompt": "extra limbs, extra fingers, extra arms, extra legs, three legs, four arms, deformed hands, fused fingers, mutated anatomy, disfigured, blurry, low quality, text, watermark, photorealism, color photograph",
+    "global_style": ""
+  },
+  {
+    "index": 89,
+    "start": 355.74,
+    "end": 360.38,
+    "prompt": "Ink sketch illustration on aged parchment paper, hand-drawn, educational diagram style, large skull outline completely filled with dense fine hatching — fully loaded, everything inside — sepia ink, parchment, no color fill, 16:9, no text. Simple clean lines, no photorealism.",
+    "negative_prompt": "extra limbs, extra fingers, extra arms, extra legs, three legs, four arms, deformed hands, fused fingers, mutated anatomy, disfigured, blurry, low quality, text, watermark, photorealism, color photograph",
+    "global_style": ""
+  },
+  {
+    "index": 90,
+    "start": 360.74,
+    "end": 361.74,
+    "prompt": "Ink sketch illustration on aged parchment paper, hand-drawn, educational diagram style, brain circle with 24-hour clock symbol beside it — permanently available, always on — sepia ink, parchment, no color fill, 16:9, no text. Simple clean lines, no photorealism.",
+    "negative_prompt": "extra limbs, extra fingers, extra arms, extra legs, three legs, four arms, deformed hands, fused fingers, mutated anatomy, disfigured, blurry, low quality, text, watermark, photorealism, color photograph",
+    "global_style": ""
+  },
+  {
+    "index": 91,
+    "start": 362.56,
+    "end": 364.28,
+    "prompt": "Ink sketch illustration on aged parchment paper, hand-drawn, educational diagram style, two contrasting structures: lone figure with skull above on left vs figure within network on right — different cognitive architectures — sepia ink, parchment, no color fill, 16:9, no text. Simple clean lines, correct human anatomy, no extra limbs, no photorealism.",
+    "negative_prompt": "extra limbs, extra fingers, extra arms, extra legs, three legs, four arms, deformed hands, fused fingers, mutated anatomy, disfigured, blurry, low quality, text, watermark, photorealism, color photograph",
+    "global_style": ""
+  },
+  {
+    "index": 92,
+    "start": 365.08,
+    "end": 369.9,
+    "prompt": "Ink sketch illustration on aged parchment paper, hand-drawn, educational diagram style, simple smartphone rectangle with map lines inside — more information than any brain — small ancient human figure sketched beside it for scale comparison, sepia ink, parchment, no color fill, 16:9, no text. Simple clean lines, correct human anatomy, no extra limbs, no photorealism.",
+    "negative_prompt": "extra limbs, extra fingers, extra arms, extra legs, three legs, four arms, deformed hands, fused fingers, mutated anatomy, disfigured, blurry, low quality, text, watermark, photorealism, color photograph",
+    "global_style": ""
+  },
+  {
+    "index": 93,
+    "start": 369.9,
+    "end": 371.14,
+    "prompt": "Ink sketch illustration on aged parchment paper, hand-drawn, educational diagram style, smartphone rectangle with navigation map inside compared to brain circle — device holds more — sepia ink, parchment, no color fill, 16:9, no text. Simple clean lines, no photorealism.",
+    "negative_prompt": "extra limbs, extra fingers, extra arms, extra legs, three legs, four arms, deformed hands, fused fingers, mutated anatomy, disfigured, blurry, low quality, text, watermark, photorealism, color photograph",
+    "global_style": ""
+  },
+  {
+    "index": 94,
+    "start": 371.14,
+    "end": 376.02,
+    "prompt": "Ink sketch illustration on aged parchment paper, hand-drawn, educational diagram style, row of book outlines on a shelf compared to a speaking-mouth symbol of oral tradition — books hold more — sepia ink, parchment, no color fill, 16:9, no text. Simple clean lines, no photorealism.",
+    "negative_prompt": "extra limbs, extra fingers, extra arms, extra legs, three legs, four arms, deformed hands, fused fingers, mutated anatomy, disfigured, blurry, low quality, text, watermark, photorealism, color photograph",
+    "global_style": ""
+  },
+  {
+    "index": 95,
+    "start": 376.02,
+    "end": 377.22,
+    "prompt": "Ink sketch illustration on aged parchment paper, hand-drawn, educational diagram style, oral tradition chain of three figures speaking to each other — knowledge degrading along the chain — versus books retaining full fidelity, comparison diagram, sepia ink, parchment, no color fill, 16:9, no text. Simple clean lines, correct human anatomy, no extra limbs, no photorealism.",
+    "negative_prompt": "extra limbs, extra fingers, extra arms, extra legs, three legs, four arms, deformed hands, fused fingers, mutated anatomy, disfigured, blurry, low quality, text, watermark, photorealism, color photograph",
+    "global_style": ""
+  },
+  {
+    "index": 96,
+    "start": 378.32,
+    "end": 383.16,
+    "prompt": "Ink sketch illustration on aged parchment paper, hand-drawn, educational diagram style, figure at center with lines radiating outward to other figures, a device, a book, a building — knowledge distributed across all of these — sepia ink, parchment, no color fill, 16:9, no text. Simple clean lines, correct human anatomy, no extra limbs, no photorealism.",
+    "negative_prompt": "extra limbs, extra fingers, extra arms, extra legs, three legs, four arms, deformed hands, fused fingers, mutated anatomy, disfigured, blurry, low quality, text, watermark, photorealism, color photograph",
+    "global_style": ""
+  },
+  {
+    "index": 97,
+    "start": 383.44,
+    "end": 385.96,
+    "prompt": "Ink sketch illustration on aged parchment paper, hand-drawn, educational diagram style, civilization structure diagram: person at center connected by lines to memory systems — tools, records, networks — the infrastructure of distributed memory, sepia ink, parchment, no color fill, 16:9, no text. Simple clean lines, no photorealism.",
+    "negative_prompt": "extra limbs, extra fingers, extra arms, extra legs, three legs, four arms, deformed hands, fused fingers, mutated anatomy, disfigured, blurry, low quality, text, watermark, photorealism, color photograph",
+    "global_style": ""
+  },
+  {
+    "index": 98,
+    "start": 386.88,
+    "end": 391.68,
+    "prompt": "Ink sketch illustration on aged parchment paper, hand-drawn, educational diagram style, brain circle with arrow pointing outward to a network — storage moved outside — labeled extended mind, the boundary expanded, sepia ink, parchment, no color fill, 16:9, no text. Simple clean lines, no photorealism.",
+    "negative_prompt": "extra limbs, extra fingers, extra arms, extra legs, three legs, four arms, deformed hands, fused fingers, mutated anatomy, disfigured, blurry, low quality, text, watermark, photorealism, color photograph",
+    "global_style": ""
+  },
+  {
+    "index": 99,
+    "start": 391.68,
+    "end": 394.26,
+    "prompt": "Ink sketch illustration on aged parchment paper, hand-drawn, educational diagram style, large circle labeled NETWORK with brain circle inside it — the network as the organ — sepia ink, parchment, no color fill, 16:9, no text. Simple clean lines, no photorealism.",
+    "negative_prompt": "extra limbs, extra fingers, extra arms, extra legs, three legs, four arms, deformed hands, fused fingers, mutated anatomy, disfigured, blurry, low quality, text, watermark, photorealism, color photograph",
+    "global_style": ""
+  },
+  {
+    "index": 100,
+    "start": 395.08,
+    "end": 399.88,
+    "prompt": "Ink sketch illustration on aged parchment paper, hand-drawn, educational diagram style, lone figure with spotlight circle around only themselves — individual attention, solo knowing — versus networked figure with distributed connections, the contrast between two modes, sepia ink, parchment, no color fill, 16:9, no text. Simple clean lines, correct human anatomy, no extra limbs, no photorealism.",
+    "negative_prompt": "extra limbs, extra fingers, extra arms, extra legs, three legs, four arms, deformed hands, fused fingers, mutated anatomy, disfigured, blurry, low quality, text, watermark, photorealism, color photograph",
+    "global_style": ""
+  },
+  {
+    "index": 101,
+    "start": 399.88,
+    "end": 404.38,
+    "prompt": "Ink sketch illustration on aged parchment paper, hand-drawn, educational diagram style, single figure in deep focus posture — eyes closed, hands on knees — radiating concentrated attention lines, the depth of solo knowing, sepia ink, parchment, no color fill, 16:9, no text. Simple clean lines, correct human anatomy, no extra limbs, no photorealism.",
+    "negative_prompt": "extra limbs, extra fingers, extra arms, extra legs, three legs, four arms, deformed hands, fused fingers, mutated anatomy, disfigured, blurry, low quality, text, watermark, photorealism, color photograph",
+    "global_style": ""
+  },
+  {
+    "index": 102,
+    "start": 404.38,
+    "end": 404.86,
+    "prompt": "Ink sketch illustration on aged parchment paper, hand-drawn, educational diagram style, large heavy skull centered on the parchment with weight marks suggesting heaviness — the full weight of that heavier skull — sepia ink, no color fill, 16:9, no text. Simple clean lines, no photorealism.",
+    "negative_prompt": "extra limbs, extra fingers, extra arms, extra legs, three legs, four arms, deformed hands, fused fingers, mutated anatomy, disfigured, blurry, low quality, text, watermark, photorealism, color photograph",
+    "global_style": ""
+  },
+  {
+    "index": 103,
+    "start": 405.78,
+    "end": 410.68,
+    "prompt": "Ink sketch illustration on aged parchment paper, hand-drawn, educational diagram style, fossil skull with SIZE label beside it and a VALUE label with a large question mark — the fossil record tells size not value — sepia ink, parchment, no color fill, 16:9, no text. Simple clean lines, no photorealism.",
+    "negative_prompt": "extra limbs, extra fingers, extra arms, extra legs, three legs, four arms, deformed hands, fused fingers, mutated anatomy, disfigured, blurry, low quality, text, watermark, photorealism, color photograph",
+    "global_style": ""
+  },
+  {
+    "index": 104,
+    "start": 411.54,
+    "end": 416.04,
+    "prompt": "Ink sketch illustration on aged parchment paper, hand-drawn, educational diagram style, large ancient skull on left outweighing smaller modern skull on right on a scale — heavier — lone ancient figure beside it with no speech bubbles, no one to ask, sepia ink, parchment, no color fill, 16:9, no text. Simple clean lines, correct human anatomy, no extra limbs, no photorealism.",
+    "negative_prompt": "extra limbs, extra fingers, extra arms, extra legs, three legs, four arms, deformed hands, fused fingers, mutated anatomy, disfigured, blurry, low quality, text, watermark, photorealism, color photograph",
+    "global_style": ""
+  },
+  {
+    "index": 105,
+    "start": 416.04,
+    "end": 418.12,
+    "prompt": "Ink sketch illustration on aged parchment paper, hand-drawn, educational diagram style, ancient figure with question mark and no other figures around — no one else to ask — isolated within an empty circle, sepia ink, parchment, no color fill, 16:9, no text. Simple clean lines, correct human anatomy, no extra limbs, no photorealism.",
+    "negative_prompt": "extra limbs, extra fingers, extra arms, extra legs, three legs, four arms, deformed hands, fused fingers, mutated anatomy, disfigured, blurry, low quality, text, watermark, photorealism, color photograph",
+    "global_style": ""
+  },
+  {
+    "index": 106,
+    "start": 418.94,
+    "end": 419.44,
+    "prompt": "Ink sketch illustration on aged parchment paper, hand-drawn, educational diagram style, modern figure at center of a web of connections — many figures, devices, books — YOU DO with arrows pointing to all resources, sepia ink, parchment, no color fill, 16:9, no text. Simple clean lines, correct human anatomy, no extra limbs, no photorealism.",
+    "negative_prompt": "extra limbs, extra fingers, extra arms, extra legs, three legs, four arms, deformed hands, fused fingers, mutated anatomy, disfigured, blurry, low quality, text, watermark, photorealism, color photograph",
+    "global_style": ""
+  },
+  {
+    "index": 107,
+    "start": 420.4,
+    "end": 425.3,
+    "prompt": "Ink sketch illustration on aged parchment paper, hand-drawn, educational diagram style, Spark figure seated beside a long series of fire dots stretching across the parchment — every fire in this long story — small orange-yellow flame accent beside Spark, sepia ink, parchment, no color fill except flame, 16:9, no text. Simple clean lines, correct human anatomy, no extra limbs, no photorealism.",
+    "negative_prompt": "extra limbs, extra fingers, extra arms, extra legs, three legs, four arms, deformed hands, fused fingers, mutated anatomy, disfigured, blurry, low quality, text, watermark, photorealism, color photograph",
+    "global_style": ""
+  },
+  {
+    "index": 108,
+    "start": 425.3,
+    "end": 430.0,
+    "prompt": "Ink sketch illustration on aged parchment paper, hand-drawn, educational diagram style, two contrasting fire scenes: left — single figure alone at one fire; right — many figures around many fires sharing the weight — the two arrangements of the same story, sepia ink, parchment, no color fill, 16:9, no text. Simple clean lines, correct human anatomy, no extra limbs, no photorealism.",
+    "negative_prompt": "extra limbs, extra fingers, extra arms, extra legs, three legs, four arms, deformed hands, fused fingers, mutated anatomy, disfigured, blurry, low quality, text, watermark, photorealism, color photograph",
+    "global_style": ""
+  },
+  {
+    "index": 109,
+    "start": 430.9,
+    "end": 434.42,
+    "prompt": "Ink sketch illustration on aged parchment paper, hand-drawn, educational diagram style, Spark figure watching both arrangements — the solo fire and the shared fire — from a slight distance, small orange-yellow flame beside him, open posture of wondering, sepia ink, parchment, no color fill except flame, 16:9, no text. Simple clean lines, correct human anatomy, no extra limbs, no photorealism.",
+    "negative_prompt": "extra limbs, extra fingers, extra arms, extra legs, three legs, four arms, deformed hands, fused fingers, mutated anatomy, disfigured, blurry, low quality, text, watermark, photorealism, color photograph",
+    "global_style": ""
+  }
+]

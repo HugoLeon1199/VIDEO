@@ -1,0 +1,1138 @@
+[
+  {
+    "index": 1,
+    "start": 0.0,
+    "end": 3.52,
+    "prompt": "Cinematic paleo art, photorealistic, Neanderthal group gathered around a low fire in a limestone cave entrance, one figure seated apart leaning against the cave wall with a withered arm folded against his chest, others nearby sharing food, warm flickering orange firelight, Zagros mountain stone setting, shallow depth of field, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, pottery",
+    "global_style": ""
+  },
+  {
+    "index": 2,
+    "start": 3.74,
+    "end": 8.36,
+    "prompt": "Cinematic paleo art, photorealistic, aerial wide shot of rugged Zagros mountain landscape at dusk, deep river valley below, scattered cedar trees on limestone slopes, ancient terrain stretching to horizon, dramatic golden-amber light, no human figures, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, pottery",
+    "global_style": ""
+  },
+  {
+    "index": 3,
+    "start": 8.36,
+    "end": 9.18,
+    "prompt": "Cinematic paleo art, photorealistic, lone aged Neanderthal man seated at the cave mouth, silhouetted against the last light of the mountain valley, still alive, heavy brow ridge, one arm resting uselessly, calm expression, warm amber backlight, shallow depth of field, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, pottery",
+    "global_style": ""
+  },
+  {
+    "index": 4,
+    "start": 9.44,
+    "end": 12.18,
+    "prompt": "Cinematic paleo art, photorealistic, close-up of Neanderthal man's face, mid-forties, deep-set eyes under prominent brow ridge, old healed scar across one side of skull, gaunt but present, flickering firelight from below, cave wall behind, shallow depth of field, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, pottery",
+    "global_style": ""
+  },
+  {
+    "index": 5,
+    "start": 13.18,
+    "end": 15.46,
+    "prompt": "Cinematic paleo art, photorealistic, close-up of a withered Neanderthal arm resting across a knee, muscle atrophied, elbow slightly misaligned from old fracture, hide wrap draped over shoulder, warm side light revealing texture of skin and bone, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, pottery",
+    "global_style": ""
+  },
+  {
+    "index": 6,
+    "start": 16.44,
+    "end": 18.56,
+    "prompt": "Cinematic paleo art, photorealistic, macro close-up of an ancient joint — knee or elbow — showing swollen arthritic knuckle, weathered skin, surrounded by earth and ash, warm amber firelight from one side, blurred cave background, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, pottery",
+    "global_style": ""
+  },
+  {
+    "index": 7,
+    "start": 19.24,
+    "end": 24.02,
+    "prompt": "Cinematic paleo art, photorealistic, Neanderthal man seated at cave wall while group of three hunters depart into forest in the distance, man watches them go from his resting place, he cannot follow, morning light, Zagros foothills beyond cave entrance, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, pottery",
+    "global_style": ""
+  },
+  {
+    "index": 8,
+    "start": 24.32,
+    "end": 27.28,
+    "prompt": "Cinematic paleo art, photorealistic, archaeological excavation style — large ancient bones laid out on limestone floor of cave, ribcage and arm bones visible, one arm clearly atrophied and misaligned, natural cave light from above, no living figures, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, pottery",
+    "global_style": ""
+  },
+  {
+    "index": 9,
+    "start": 28.18,
+    "end": 32.8,
+    "prompt": "Cinematic paleo art, photorealistic, Shanidar cave interior in Zagros mountains — wide limestone cavern with natural light shaft from opening above, earth floor, ancient rock formations, no human figures, atmosphere of ancient site, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, pottery",
+    "global_style": ""
+  },
+  {
+    "index": 10,
+    "start": 32.8,
+    "end": 36.22,
+    "prompt": "Cinematic paleo art, photorealistic, modern archaeologist's hands carefully brushing soil from ancient skull in limestone cave, natural diffuse light, earth tones, no anachronistic tools, shallow depth of field, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, pottery",
+    "global_style": ""
+  },
+  {
+    "index": 11,
+    "start": 37.32,
+    "end": 40.4,
+    "prompt": "Cinematic paleo art, photorealistic, ancient Neanderthal skull resting on cave floor, prominent brow ridge, evidence of healed trauma on one side, natural light from above, earth and limestone surround, somber atmosphere, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, pottery",
+    "global_style": ""
+  },
+  {
+    "index": 12,
+    "start": 41.42,
+    "end": 45.18,
+    "prompt": "Cinematic paleo art, photorealistic, close-up of a Neanderthal skull showing clear healed impact trauma on the right side, thick bone, heavy brow arch, resting on cave soil, cool diffuse light, museum-quality realism, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, pottery",
+    "global_style": ""
+  },
+  {
+    "index": 13,
+    "start": 46.18,
+    "end": 50.5,
+    "prompt": "Cinematic paleo art, photorealistic, ancient arm bones laid side by side — left arm clearly atrophied and shorter with misaligned fracture callus, right arm normal — resting on limestone cave floor, diffuse natural light, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, pottery",
+    "global_style": ""
+  },
+  {
+    "index": 14,
+    "start": 51.38,
+    "end": 54.3,
+    "prompt": "Cinematic paleo art, photorealistic, archaeological close-up of ancient spinal vertebrae showing arthritic bone growths, earth-encrusted, lying in cave sediment, cool natural light, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, pottery",
+    "global_style": ""
+  },
+  {
+    "index": 15,
+    "start": 54.44,
+    "end": 56.92,
+    "prompt": "Cinematic paleo art, photorealistic, elderly Neanderthal man walking slowly with a wooden staff along a rocky cave-mouth path, body stooped, movement painful but deliberate, soft morning light from outside, Zagros foothills in background, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, pottery",
+    "global_style": ""
+  },
+  {
+    "index": 16,
+    "start": 57.1,
+    "end": 59.7,
+    "prompt": "Cinematic paleo art, photorealistic, timeline montage — three scenes layered: young Neanderthal with strong arm, same figure with healing fracture, elder with withered arm — all in cave setting with warm amber light, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, pottery",
+    "global_style": ""
+  },
+  {
+    "index": 17,
+    "start": 59.98,
+    "end": 64.5,
+    "prompt": "Cinematic paleo art, photorealistic, Neanderthal group gathered around fire, older injured man in center, others looking toward him with calm attentive expressions, a younger figure handing food, evening firelight, cave interior Zagros, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, pottery",
+    "global_style": ""
+  },
+  {
+    "index": 18,
+    "start": 64.5,
+    "end": 65.6,
+    "prompt": "Cinematic paleo art, photorealistic, younger Neanderthal placing hand on shoulder of elder seated figure with withered arm, firelight from behind, cave wall texture visible, intimate moment of group support, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, pottery",
+    "global_style": ""
+  },
+  {
+    "index": 19,
+    "start": 66.36,
+    "end": 69.08,
+    "prompt": "Cinematic paleo art, photorealistic, Neanderthal figure appearing at cave mouth in the night, returning with game over shoulder, fire burning inside cave visible in background, group members still awake and waiting, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, pottery",
+    "global_style": ""
+  },
+  {
+    "index": 20,
+    "start": 69.32,
+    "end": 71.48,
+    "prompt": "Cinematic paleo art, photorealistic, Neanderthal group around evening fire, the injured elder present and included in the circle, no one walking away, warm orange firelight, cave interior, sense of belonging and continuity, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, pottery",
+    "global_style": ""
+  },
+  {
+    "index": 21,
+    "start": 72.32,
+    "end": 74.84,
+    "prompt": "Cinematic paleo art, photorealistic, portrait of aged Neanderthal man — deep wrinkles, grey-streaked hair, heavy brow ridge, calm steady eyes — firelight from one side, cave wall behind, the oldest in the group, dignified expression, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, pottery",
+    "global_style": ""
+  },
+  {
+    "index": 22,
+    "start": 75.1,
+    "end": 77.18,
+    "prompt": "Cinematic paleo art, photorealistic, Neanderthal elder seated in place of respect within the group circle around fire, others eating nearby, age visible in his posture, accepted presence, warm amber firelight, Zagros cave, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, pottery",
+    "global_style": ""
+  },
+  {
+    "index": 23,
+    "start": 78.08,
+    "end": 81.0,
+    "prompt": "Cinematic paleo art, photorealistic, several ancient Neanderthal skulls arranged on limestone, varying sizes and ages, some showing healed injuries, natural diffuse cave light, still life of the ancient dead, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, pottery",
+    "global_style": ""
+  },
+  {
+    "index": 24,
+    "start": 82.0,
+    "end": 84.28,
+    "prompt": "Cinematic paleo art, photorealistic, Neanderthal elder seated alone at cave wall at night, the group asleep around him, fire down to embers, quiet and contemplative, one good arm resting on knee, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, pottery",
+    "global_style": ""
+  },
+  {
+    "index": 25,
+    "start": 84.9,
+    "end": 89.16,
+    "prompt": "Cinematic paleo art, photorealistic, younger female Neanderthal handing a piece of cooked meat to the older injured man, careful transfer, both seated near fire, firelight illuminating the exchange, cave interior Zagros, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, pottery",
+    "global_style": ""
+  },
+  {
+    "index": 26,
+    "start": 89.92,
+    "end": 92.72,
+    "prompt": "Cinematic paleo art, photorealistic, Neanderthal figure carrying large animal limb over rocky terrain toward a cave entrance visible ahead, late afternoon light, mountain path, deliberate purposeful walk, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, pottery",
+    "global_style": ""
+  },
+  {
+    "index": 27,
+    "start": 93.5,
+    "end": 96.7,
+    "prompt": "Cinematic paleo art, photorealistic, Neanderthal group returning to cave at evening, game over shoulders, the injured elder visible at cave entrance waiting, warm firelight from inside illuminating the reunion, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, pottery",
+    "global_style": ""
+  },
+  {
+    "index": 28,
+    "start": 97.72,
+    "end": 101.3,
+    "prompt": "Cinematic paleo art, photorealistic, wide shot of Neanderthal hunting group departing at dawn along mountain ridge, four figures walking away into mist, the injured elder figure visible small at cave mouth watching them go, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, pottery",
+    "global_style": ""
+  },
+  {
+    "index": 29,
+    "start": 102.02,
+    "end": 103.3,
+    "prompt": "Cinematic paleo art, photorealistic, hunter returning to cave at dusk carrying additional portion of food beyond his own share, figure approaching cave entrance, warm fire glow from inside, deliberate act of bringing back extra, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, pottery",
+    "global_style": ""
+  },
+  {
+    "index": 30,
+    "start": 104.16,
+    "end": 107.94,
+    "prompt": "Cinematic paleo art, photorealistic, dramatic composite image: on one side a snarling brutish caveman stereotype, on other side actual photorealistic Neanderthal family in warm firelight — contrast between myth and reality, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, pottery",
+    "global_style": ""
+  },
+  {
+    "index": 31,
+    "start": 108.1,
+    "end": 112.22,
+    "prompt": "Cinematic paleo art, photorealistic, two Neanderthal hunters facing each other aggressively with spears raised, muscular and intimidating, rocky terrain background, overcast sky, the brutal survival image people imagine, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, pottery",
+    "global_style": ""
+  },
+  {
+    "index": 32,
+    "start": 112.34,
+    "end": 113.92,
+    "prompt": "Cinematic paleo art, photorealistic, Neanderthal elder with withered arm sitting alone at edge of group — but not abandoned — others visible just beyond, firelight, the idea that weakness has no place, subverted by his continued presence, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, pottery",
+    "global_style": ""
+  },
+  {
+    "index": 33,
+    "start": 114.66,
+    "end": 116.94,
+    "prompt": "Cinematic paleo art, photorealistic, archaeological display of Neanderthal fossils — multiple skeletons with visible healed injuries and old age — museum-quality lighting, no living figures, the evidence contradicting brutish stereotype, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, pottery",
+    "global_style": ""
+  },
+  {
+    "index": 34,
+    "start": 117.68,
+    "end": 119.96,
+    "prompt": "Cinematic paleo art, photorealistic, wide shot of French Dordogne valley landscape — green rolling hills, limestone cliffs, river below — ancient European territory, overcast morning light, no human figures, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, pottery",
+    "global_style": ""
+  },
+  {
+    "index": 35,
+    "start": 120.56,
+    "end": 125.12,
+    "prompt": "Cinematic paleo art, photorealistic, early 20th century archaeological excavation of La Chapelle-aux-Saints cave France — two human figures carefully exposing a skeleton in limestone earth, diffuse cave light, period-accurate clothing on archaeologists, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, pottery",
+    "global_style": ""
+  },
+  {
+    "index": 36,
+    "start": 125.12,
+    "end": 127.14,
+    "prompt": "Cinematic paleo art, photorealistic, ancient Neanderthal skull with severe dental wear — most teeth absent — heavy brow ridge, older individual, resting on archaeological earth in French cave, diffuse cool light, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, pottery",
+    "global_style": ""
+  },
+  {
+    "index": 37,
+    "start": 128.02,
+    "end": 130.3,
+    "prompt": "Cinematic paleo art, photorealistic, close-up of ancient jaw bone showing empty tooth sockets, some healed over with bone, evidence of long-term edentulism in an old Neanderthal, cave light, archaeological context, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, pottery",
+    "global_style": ""
+  },
+  {
+    "index": 38,
+    "start": 130.8,
+    "end": 134.94,
+    "prompt": "Cinematic paleo art, photorealistic, ancient bones showing arthritic damage — jaw, spinal vertebrae, hip joint, foot bones — arranged on cave floor, natural diffuse light, evidence of severe arthritis throughout the body, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, pottery",
+    "global_style": ""
+  },
+  {
+    "index": 39,
+    "start": 135.16,
+    "end": 136.98,
+    "prompt": "Cinematic paleo art, photorealistic, elderly Neanderthal man attempting to stand from cave floor, body bent with arthritic pain, one hand pressed to stone wall for support, firelight from behind, effort visible in posture, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, pottery",
+    "global_style": ""
+  },
+  {
+    "index": 40,
+    "start": 137.24,
+    "end": 139.04,
+    "prompt": "Cinematic paleo art, photorealistic, elderly Neanderthal man's face close-up as he attempts to chew tough food — jaw muscles straining, few teeth remaining, difficulty visible — another figure watching with concern, firelight, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, pottery",
+    "global_style": ""
+  },
+  {
+    "index": 41,
+    "start": 139.96,
+    "end": 143.94,
+    "prompt": "Cinematic paleo art, photorealistic, Neanderthal woman preparing softened food near fire — crushing plant matter and soft cooked tissue between stones — the preparation work required to feed the toothless elder, warm firelight, cave interior, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, pottery",
+    "global_style": ""
+  },
+  {
+    "index": 42,
+    "start": 144.92,
+    "end": 148.7,
+    "prompt": "Cinematic paleo art, photorealistic, Neanderthal woman chewing food then carefully transferring it to the elder's cupped hands, intimate and gentle act, firelight between them, others in background, necessary care made tangible, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, pottery",
+    "global_style": ""
+  },
+  {
+    "index": 43,
+    "start": 149.5,
+    "end": 152.44,
+    "prompt": "Cinematic paleo art, photorealistic, seasons changing across a mountain valley — leaves falling, snow on peaks, spring growth — the elder Neanderthal present through each season at cave mouth, time passing while he continues to live, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, pottery",
+    "global_style": ""
+  },
+  {
+    "index": 44,
+    "start": 153.36,
+    "end": 156.44,
+    "prompt": "Cinematic paleo art, photorealistic, single Neanderthal figure collapsed against a rock on a hillside, alone, no group visible, suggesting what survival without support would look like, overcast sky, rocky terrain, desolate, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, pottery",
+    "global_style": ""
+  },
+  {
+    "index": 45,
+    "start": 156.6,
+    "end": 160.66,
+    "prompt": "Cinematic paleo art, photorealistic, exceptionally strong and resilient Neanderthal man climbing steep rocky slope alone, powerful build, determined expression, one man surviving by sheer individual strength, dramatic mountain backdrop, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, pottery",
+    "global_style": ""
+  },
+  {
+    "index": 46,
+    "start": 160.86,
+    "end": 165.46,
+    "prompt": "Cinematic paleo art, photorealistic, French limestone landscape — La Chapelle-aux-Saints region — green rolling hills, ancient cave entrance in cliff face, early morning mist in valley, archaeological discovery site, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, pottery",
+    "global_style": ""
+  },
+  {
+    "index": 47,
+    "start": 165.46,
+    "end": 167.58,
+    "prompt": "Cinematic paleo art, photorealistic, ancient bones in French cave soil — La Chapelle skeleton — showing accumulated arthritic damage and age, long life lived with disability, diffuse cave light, no living figures, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, pottery",
+    "global_style": ""
+  },
+  {
+    "index": 48,
+    "start": 168.46,
+    "end": 173.08,
+    "prompt": "Cinematic paleo art, photorealistic, Neanderthal figure resting against cave wall with visible wound bandaged with hide on chest, another group member tending to him, firelight, Shanidar 3 care scenario, supportive group dynamic, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, pottery",
+    "global_style": ""
+  },
+  {
+    "index": 49,
+    "start": 173.08,
+    "end": 173.8,
+    "prompt": "Cinematic paleo art, photorealistic, close-up of ancient rib bone with healed fracture callus clearly visible, warm amber light from one side, cave earth background, evidence of survival from serious chest wound, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, pottery",
+    "global_style": ""
+  },
+  {
+    "index": 50,
+    "start": 173.98,
+    "end": 178.0,
+    "prompt": "Cinematic paleo art, photorealistic, map view of Europe and Middle East as ancient terrain — no borders, no cities — with cave sites marked by small fire glows at Shanidar Iraq, La Chapelle France, Dmanisi Georgia, connecting dots of care across ancient geography, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, pottery",
+    "global_style": ""
+  },
+  {
+    "index": 51,
+    "start": 178.2,
+    "end": 187.32,
+    "prompt": "Cinematic paleo art, photorealistic, three separate Neanderthal cave groups across a wide mountain panorama — each group visible with a fire, each group including a figure who cannot move freely — the pattern repeated across space, warm amber dusk, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, pottery",
+    "global_style": ""
+  },
+  {
+    "index": 52,
+    "start": 187.32,
+    "end": 201.94,
+    "prompt": "Cinematic paleo art, photorealistic, Spark figure as ancient human observer seated on a rock above a Neanderthal valley, watching multiple groups below, contemplative witness to this repeated pattern of care, warm dusk light, vast landscape, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, pottery",
+    "global_style": ""
+  },
+  {
+    "index": 53,
+    "start": 201.94,
+    "end": 202.92,
+    "prompt": "Cinematic paleo art, photorealistic, close-up of a question forming — two Neanderthal faces, one strong and one old and frail, both looking at each other, the weight of what this means visible in the scene, cave firelight, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, pottery",
+    "global_style": ""
+  },
+  {
+    "index": 54,
+    "start": 203.2,
+    "end": 206.5,
+    "prompt": "Cinematic paleo art, photorealistic, frail elderly Neanderthal reaching out hand toward a younger group member, the younger figure accepting food from the elder's good hand — the act of giving and receiving, not a neutral transaction, warm firelight, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, pottery",
+    "global_style": ""
+  },
+  {
+    "index": 55,
+    "start": 206.76,
+    "end": 208.82,
+    "prompt": "Cinematic paleo art, photorealistic, Neanderthal group dividing game meat at evening — one portion set aside for the elder who cannot hunt — visible allocation of scarce resource, cave firelight, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, pottery",
+    "global_style": ""
+  },
+  {
+    "index": 56,
+    "start": 209.22,
+    "end": 211.9,
+    "prompt": "Cinematic paleo art, photorealistic, Neanderthal forager pausing to gather extra roots and berries beyond her own needs, mountain meadow, early morning light, deliberate extra effort for someone back at camp, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, pottery",
+    "global_style": ""
+  },
+  {
+    "index": 57,
+    "start": 212.22,
+    "end": 214.68,
+    "prompt": "Cinematic paleo art, photorealistic, Neanderthal group eating together — counting the mouths visible — elder with withered arm included in the count, food being distributed to everyone, the extra mouth accepted, warm cave fire, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, pottery",
+    "global_style": ""
+  },
+  {
+    "index": 58,
+    "start": 215.56,
+    "end": 218.54,
+    "prompt": "Cinematic paleo art, photorealistic, injured Neanderthal elder alive and present in the group at evening fire, others around him, the evidence of his survival visible in his aged body, warmth of inclusion, cave setting, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, pottery",
+    "global_style": ""
+  },
+  {
+    "index": 59,
+    "start": 218.9,
+    "end": 222.66,
+    "prompt": "Cinematic paleo art, photorealistic, wide shot of Neanderthal camp — hunters visible preparing to depart at left, elder seated at right — the cost of care implied in the gap between the mobile and the immobile, early morning light, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, pottery",
+    "global_style": ""
+  },
+  {
+    "index": 60,
+    "start": 223.4,
+    "end": 225.24,
+    "prompt": "Cinematic paleo art, photorealistic, Neanderthal elder's face close-up showing emotion — not grief, not gratitude performed — simply being present, the quiet reality of dependence, firelight, cave wall behind, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, pottery",
+    "global_style": ""
+  },
+  {
+    "index": 61,
+    "start": 225.6,
+    "end": 226.8,
+    "prompt": "Cinematic paleo art, photorealistic, practical resource allocation scene — two Neanderthal hunters dividing game in front of cave, carefully counting portions including one extra for the elder inside — practical reality, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, pottery",
+    "global_style": ""
+  },
+  {
+    "index": 62,
+    "start": 227.52,
+    "end": 232.2,
+    "prompt": "Cinematic paleo art, photorealistic, overhead view of Neanderthal group of about twenty-five individuals camped on a mountain ledge, food visible at center being shared, terrain beyond showing the limit of available land, late afternoon light, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, pottery",
+    "global_style": ""
+  },
+  {
+    "index": 63,
+    "start": 232.2,
+    "end": 234.86,
+    "prompt": "Cinematic paleo art, photorealistic, single Neanderthal woman feeding the elder while her own meal waits — the direct cost of care on one individual visible — quiet moment near evening fire, cave interior, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, pottery",
+    "global_style": ""
+  },
+  {
+    "index": 64,
+    "start": 235.36,
+    "end": 237.24,
+    "prompt": "Cinematic paleo art, photorealistic, Neanderthal group members exchanging glances around the fire — the shared awareness of cost visible in expressions — elder present among them, no one speaking this truth aloud, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, pottery",
+    "global_style": ""
+  },
+  {
+    "index": 65,
+    "start": 237.78,
+    "end": 240.54,
+    "prompt": "Cinematic paleo art, photorealistic, sunrise over Zagros mountains — another day beginning, the same choice must be made again — Neanderthal camp below with one figure already awake and preparing food for the elder, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, pottery",
+    "global_style": ""
+  },
+  {
+    "index": 66,
+    "start": 240.72,
+    "end": 242.48,
+    "prompt": "Cinematic paleo art, photorealistic, Neanderthal hunter awake before dawn, gathering food from yesterday's surplus before others wake, taking it to the elder in the corner of the cave — the daily renewal of care, soft pre-dawn light, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, pottery",
+    "global_style": ""
+  },
+  {
+    "index": 67,
+    "start": 243.22,
+    "end": 245.64,
+    "prompt": "Cinematic paleo art, photorealistic, hunting group heading out across mountain terrain without the elder — four figures moving efficiently through forest, elder's absence implied by the empty spot in the formation, morning mist, Zagros, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, pottery",
+    "global_style": ""
+  },
+  {
+    "index": 68,
+    "start": 246.58,
+    "end": 249.3,
+    "prompt": "Cinematic paleo art, photorealistic, hunters returning at evening to cave, one carries extra — the portion set aside for the one who stayed — elder visible waiting at cave mouth, warm orange fire glow from inside, moment of return, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, pottery",
+    "global_style": ""
+  },
+  {
+    "index": 69,
+    "start": 249.98,
+    "end": 251.28,
+    "prompt": "Cinematic paleo art, photorealistic, Neanderthal group at firelight continuing this scene — the elder fed, the group eating together, the act complete — repeated evening of care, warm amber, cave interior, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, pottery",
+    "global_style": ""
+  },
+  {
+    "index": 70,
+    "start": 251.96,
+    "end": 253.42,
+    "prompt": "Cinematic paleo art, photorealistic, montage of three different Neanderthal individuals with various disabilities — withered arm, missing teeth, leg injury — each in a group setting, the pattern across individuals made visual, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, pottery",
+    "global_style": ""
+  },
+  {
+    "index": 71,
+    "start": 254.12,
+    "end": 255.12,
+    "prompt": "Cinematic paleo art, photorealistic, wide view of multiple cave sites across a mountain range at dusk, each with a small fire glow, each containing a group with a vulnerable member, the same care repeated across geography, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, pottery",
+    "global_style": ""
+  },
+  {
+    "index": 72,
+    "start": 255.98,
+    "end": 257.04,
+    "prompt": "Cinematic paleo art, photorealistic, long timeline implied — summer camp to winter cave to spring meadow — same elder alive through it all, the persistence of the care across thousands of years suggested through seasons, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, pottery",
+    "global_style": ""
+  },
+  {
+    "index": 73,
+    "start": 257.86,
+    "end": 259.26,
+    "prompt": "Cinematic paleo art, photorealistic, Neanderthal group around fire at night, sense of unnamed force binding them — not law, not religion — just the quiet fact that they continue to bring the food back, warm amber firelight, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, pottery",
+    "global_style": ""
+  },
+  {
+    "index": 74,
+    "start": 260.18,
+    "end": 262.16,
+    "prompt": "Cinematic paleo art, photorealistic, hunter setting down extra food portion in front of elder — the visible price willingly paid, face calm, no display — the worth of this act evident only in its repetition, evening fire, cave, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, pottery",
+    "global_style": ""
+  },
+  {
+    "index": 75,
+    "start": 262.96,
+    "end": 264.06,
+    "prompt": "Cinematic paleo art, photorealistic, single Neanderthal hunter placing food before the elder — not first time, evident from both their postures, a practiced familiar motion repeated many times before, quiet ritual of care, firelight, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, pottery",
+    "global_style": ""
+  },
+  {
+    "index": 76,
+    "start": 264.18,
+    "end": 265.18,
+    "prompt": "Cinematic paleo art, photorealistic, two Neanderthal hunters exchanging glances on the path — they could leave extra behind, not carry it back — but they turn back toward the cave with the food, deliberate choice visible in posture, mountain trail, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, pottery",
+    "global_style": ""
+  },
+  {
+    "index": 77,
+    "start": 265.26,
+    "end": 267.92,
+    "prompt": "Cinematic paleo art, photorealistic, pattern of care across generations — young Neanderthal tending to elder, middle-aged tending to the young — the cycle of care as living pattern of the group, cave interior with multiple scenes layered in warm light, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, pottery",
+    "global_style": ""
+  },
+  {
+    "index": 78,
+    "start": 268.82,
+    "end": 271.22,
+    "prompt": "Cinematic paleo art, photorealistic, Neanderthal elder sitting alone at night, the unknowable inner world visible only in his still face, flickering fire, what this all felt like from inside — forever inaccessible to us, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, pottery",
+    "global_style": ""
+  },
+  {
+    "index": 79,
+    "start": 272.14,
+    "end": 274.9,
+    "prompt": "Cinematic paleo art, photorealistic, Neanderthal group in cave — no written marks on walls, no scrolls, no signs of recorded language — just the fire and the people and the bones of their care, the silence of a world without writing, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, pottery",
+    "global_style": ""
+  },
+  {
+    "index": 80,
+    "start": 275.4,
+    "end": 277.26,
+    "prompt": "Cinematic paleo art, photorealistic, empty Neanderthal cave — fire ashes, stone tools, no text anywhere on walls — the absence of written record made visible, no scripts, no language markers, only the physical remnants, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, pottery",
+    "global_style": ""
+  },
+  {
+    "index": 81,
+    "start": 278.14,
+    "end": 279.52,
+    "prompt": "Cinematic paleo art, photorealistic, excavated Neanderthal bones in cave sediment — the physical evidence, all that remains — arthritic and healed injuries visible in the bones, natural cave light, nothing else left to read, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, pottery",
+    "global_style": ""
+  },
+  {
+    "index": 82,
+    "start": 280.34,
+    "end": 282.78,
+    "prompt": "Cinematic paleo art, photorealistic, archaeological study of Neanderthal arm bone — the atrophied left arm of Shanidar 1, clearly smaller and misaligned — a bone that speaks precisely of a life with disability and care, cool diffuse light, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, pottery",
+    "global_style": ""
+  },
+  {
+    "index": 83,
+    "start": 283.82,
+    "end": 286.1,
+    "prompt": "Cinematic paleo art, photorealistic, close-up of Neanderthal elder's expressionless face at rest — no emotion readable, just a face that was there, that lived — the bones cannot tell us what he felt, only that he continued, firelight from side, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, pottery",
+    "global_style": ""
+  },
+  {
+    "index": 84,
+    "start": 286.52,
+    "end": 288.36,
+    "prompt": "Cinematic paleo art, photorealistic, sequence of behavioral moments — food given, support offered, physical assistance provided — each moment visible in the body positions of Neanderthal figures around the injured elder, cave firelight, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, pottery",
+    "global_style": ""
+  },
+  {
+    "index": 85,
+    "start": 289.18,
+    "end": 292.74,
+    "prompt": "Cinematic paleo art, photorealistic, Neanderthal hunter handing meat to the injured elder — this one act repeated — tells the entire story of what happened, the physical behavior is the record, warm fire, cave interior, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, pottery",
+    "global_style": ""
+  },
+  {
+    "index": 86,
+    "start": 293.26,
+    "end": 297.88,
+    "prompt": "Cinematic paleo art, photorealistic, Spark figure as researcher studying ancient bones under natural cave light, examining the healed fractures with careful hands, quiet scholarly attention, limestone cave setting, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, pottery",
+    "global_style": ""
+  },
+  {
+    "index": 87,
+    "start": 297.88,
+    "end": 299.46,
+    "prompt": "Cinematic paleo art, photorealistic, woman researcher figure with ancient bones spread before her, thoughtful expression, the concept of compassion made visible in prehistoric bone evidence, cave light, serious academic moment, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, pottery",
+    "global_style": ""
+  },
+  {
+    "index": 88,
+    "start": 300.36,
+    "end": 304.82,
+    "prompt": "Cinematic paleo art, photorealistic, Neanderthal group caring for injured elder set against background suggestion of modern hospital scene blurred beyond — ancient care predating all institutions of care, temporal depth, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, pottery",
+    "global_style": ""
+  },
+  {
+    "index": 89,
+    "start": 305.66,
+    "end": 307.86,
+    "prompt": "Cinematic paleo art, photorealistic, ancient place of worship hinted in shadow — no specific religion — contrasted with Neanderthal care scene that predates all known religious practice, the care older than any doctrine, cave atmosphere, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, pottery",
+    "global_style": ""
+  },
+  {
+    "index": 90,
+    "start": 308.46,
+    "end": 310.6,
+    "prompt": "Cinematic paleo art, photorealistic, ancient stone tools and physical objects — no philosophical texts, no written values — the Neanderthal world where ethics existed only as action, cave floor, natural light, material culture without abstraction, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, pottery",
+    "global_style": ""
+  },
+  {
+    "index": 91,
+    "start": 311.56,
+    "end": 313.78,
+    "prompt": "Cinematic paleo art, photorealistic, geological deep time visualization — layers of sediment in cave wall representing tens of thousands of years — the care behavior predating all human cultural institutions shown in this deep time, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, pottery",
+    "global_style": ""
+  },
+  {
+    "index": 92,
+    "start": 314.6,
+    "end": 317.06,
+    "prompt": "Cinematic paleo art, photorealistic, Neanderthal group caring for elder beneath an open sky at dusk — predating civilization entirely — ancient mountains beyond, the act of care existing before any human institution of care was ever built, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, pottery",
+    "global_style": ""
+  },
+  {
+    "index": 93,
+    "start": 317.38,
+    "end": 320.98,
+    "prompt": "Cinematic paleo art, photorealistic, Neanderthal group moving across landscape carrying a disabled member with them — not leaving him behind — mountains in background, the group in motion together, dawn light, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, pottery",
+    "global_style": ""
+  },
+  {
+    "index": 94,
+    "start": 321.7,
+    "end": 325.74,
+    "prompt": "Cinematic paleo art, photorealistic, Neanderthal figure behaving ethically — caring for the injured — without any visible structure of ethics around him, no laws, no society, no philosophy — just the action in the ancient landscape, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, pottery",
+    "global_style": ""
+  },
+  {
+    "index": 95,
+    "start": 326.62,
+    "end": 331.2,
+    "prompt": "Cinematic paleo art, photorealistic, Dmanisi Georgia landscape — ancient volcanic terrain, river gorge, dramatic cliff formations — the place where near-two-million-year-old hominin fossils were found, no human figures, geological grandeur, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, pottery",
+    "global_style": ""
+  },
+  {
+    "index": 96,
+    "start": 331.2,
+    "end": 332.2,
+    "prompt": "Cinematic paleo art, photorealistic, ancient hominin skull from Dmanisi — nearly two million years old — small cranium, completely toothless jaw with fully healed sockets, resting on ancient volcanic rock, cool diffuse light, the oldest evidence, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, pottery",
+    "global_style": ""
+  },
+  {
+    "index": 97,
+    "start": 332.94,
+    "end": 335.42,
+    "prompt": "Cinematic paleo art, photorealistic, close-up of ancient Dmanisi skull jaw — all tooth sockets empty and fully healed over with bone — evidence of years survived without teeth, volcanic rock background, cool natural light, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, pottery",
+    "global_style": ""
+  },
+  {
+    "index": 98,
+    "start": 336.08,
+    "end": 338.66,
+    "prompt": "Cinematic paleo art, photorealistic, ancient Homo erectus individual — nearly two million years ago — toothless, living, being fed soft food by a group member at a fire, the earliest known instance of this care, primordial African savanna setting, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, pottery",
+    "global_style": ""
+  },
+  {
+    "index": 99,
+    "start": 339.56,
+    "end": 343.12,
+    "prompt": "Cinematic paleo art, photorealistic, early hominin group at fire preparing soft mashed food, one figure without teeth receives it gratefully, 1.8 million years ago African grassland setting, warm amber firelight, stark ancient landscape beyond, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, pottery",
+    "global_style": ""
+  },
+  {
+    "index": 100,
+    "start": 343.96,
+    "end": 346.02,
+    "prompt": "Cinematic paleo art, photorealistic, deep geological timeline — from early African hominin group to Neanderthal cave to modern human settlement — a continuous chain of the same behavior across nearly two million years, ancient to less ancient, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, pottery",
+    "global_style": ""
+  },
+  {
+    "index": 101,
+    "start": 347.08,
+    "end": 349.72,
+    "prompt": "Cinematic paleo art, photorealistic, deep excavation trench showing geological layers going down — each layer representing hundreds of thousands of years — the care behavior present at every level implied by bones found throughout, archaeological realism, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, pottery",
+    "global_style": ""
+  },
+  {
+    "index": 102,
+    "start": 349.72,
+    "end": 354.22,
+    "prompt": "Cinematic paleo art, photorealistic, ancient human mother instinctively caring for child — pre-conscious impulse, not learned — the inherited nature of this care visible in its spontaneity, cave setting, warm firelight, the impulse older than thought, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, pottery",
+    "global_style": ""
+  },
+  {
+    "index": 103,
+    "start": 355.02,
+    "end": 356.74,
+    "prompt": "Cinematic paleo art, photorealistic, ancient hominin group with the disabled elder at center — something inherited across species lines — the behavior passed through genetics not culture, ancient African landscape, dawn light, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, pottery",
+    "global_style": ""
+  },
+  {
+    "index": 104,
+    "start": 357.64,
+    "end": 360.9,
+    "prompt": "Cinematic paleo art, photorealistic, Neanderthal elder at Shanidar cave — this scene already known, already established — but now seen as part of something requiring careful treatment, the flower burial debate overhead as visual tension, cave setting, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, pottery",
+    "global_style": ""
+  },
+  {
+    "index": 105,
+    "start": 361.56,
+    "end": 366.12,
+    "prompt": "Cinematic paleo art, photorealistic, Shanidar cave burial scene — flowers scattered around a body laid in earth — the famous interpretation, atmospheric and moving, Zagros cave, warm natural light through opening, emotional visual, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, pottery",
+    "global_style": ""
+  },
+  {
+    "index": 106,
+    "start": 366.12,
+    "end": 367.88,
+    "prompt": "Cinematic paleo art, photorealistic, scientific debate scene — two researchers examining pollen evidence near cave burial site — the flower narrative being questioned, careful scientific scrutiny, cave interior, diffuse natural light, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, pottery",
+    "global_style": ""
+  },
+  {
+    "index": 107,
+    "start": 368.48,
+    "end": 373.44,
+    "prompt": "Cinematic paleo art, photorealistic, close-up of a burrowing rodent near Shanidar cave floor — the likely carrier of pollen seeds that confused the original interpretation — small creature among ancient soil, natural cave light, scientific realism, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, pottery",
+    "global_style": ""
+  },
+  {
+    "index": 108,
+    "start": 373.44,
+    "end": 377.7,
+    "prompt": "Cinematic paleo art, photorealistic, flower-covered burial scene with a question mark atmosphere — beautiful image but disputed — Neanderthal body surrounded by flowers in cave, the story under scrutiny, Zagros cave setting, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, pottery",
+    "global_style": ""
+  },
+  {
+    "index": 109,
+    "start": 378.22,
+    "end": 382.22,
+    "prompt": "Cinematic paleo art, photorealistic, close-up of Shanidar 1 skeleton in cave earth — atrophied left arm clearly visible beside normal right arm, healed skull trauma, arthritic joints — the solid evidence that does not depend on flowers, cool diffuse light, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, pottery",
+    "global_style": ""
+  },
+  {
+    "index": 110,
+    "start": 382.38,
+    "end": 385.96,
+    "prompt": "Cinematic paleo art, photorealistic, Shanidar 1 arm bone close-up — the atrophied left arm — this is the evidence that stands regardless of pollen controversy, ancient bone, cool diffuse cave light, geological precision, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, pottery",
+    "global_style": ""
+  },
+  {
+    "index": 111,
+    "start": 386.5,
+    "end": 391.02,
+    "prompt": "Cinematic paleo art, photorealistic, portrait of Shanidar 1 in life — mid-forties, heavy brow, one eye clouded from old injury, withered left arm, arthritic posture — but alive, alert, present, firelight, Zagros cave, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, pottery",
+    "global_style": ""
+  },
+  {
+    "index": 112,
+    "start": 391.02,
+    "end": 392.66,
+    "prompt": "Cinematic paleo art, photorealistic, close-up of aged Neanderthal hands — arthritic, one slightly withered — resting in lap, the evidence of years of pain lived through, warm side light, cave floor beneath, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, pottery",
+    "global_style": ""
+  },
+  {
+    "index": 113,
+    "start": 393.48,
+    "end": 397.66,
+    "prompt": "Cinematic paleo art, photorealistic, young Neanderthal woman looking directly at the elder — making the decision to bring food again — the act of seeing him and deciding, firelight between them, the moment of choice made visible, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, pottery",
+    "global_style": ""
+  },
+  {
+    "index": 114,
+    "start": 398.26,
+    "end": 401.64,
+    "prompt": "Cinematic paleo art, photorealistic, strategic calculation implied and rejected — Neanderthal hunter holding food, looking at elder, the group behind him, the calculation of survival cost visible and then set aside in his expression, evening fire, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, pottery",
+    "global_style": ""
+  },
+  {
+    "index": 115,
+    "start": 401.86,
+    "end": 405.44,
+    "prompt": "Cinematic paleo art, photorealistic, Neanderthal group composition showing no visible survival advantage from the elder — he cannot hunt, cannot fight, cannot forage efficiently — yet the group surrounds him in care, the math that does not add up but happens anyway, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, pottery",
+    "global_style": ""
+  },
+  {
+    "index": 116,
+    "start": 406.24,
+    "end": 407.66,
+    "prompt": "Cinematic paleo art, photorealistic, Neanderthal elder simply present in the cave — there, existing, his presence the reason — another figure bringing food, no words, no explanation needed, cave firelight, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, pottery",
+    "global_style": ""
+  },
+  {
+    "index": 117,
+    "start": 408.58,
+    "end": 410.16,
+    "prompt": "Cinematic paleo art, photorealistic, Neanderthal elder at the fire surrounded by the group — his people — the simple fact of belonging made visible in the circle, warm amber light, cave interior, no further explanation needed, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, pottery",
+    "global_style": ""
+  },
+  {
+    "index": 118,
+    "start": 410.98,
+    "end": 415.68,
+    "prompt": "Cinematic paleo art, photorealistic, wide panoramic view of ancient Neanderthal landscape across tens of thousands of years — multiple seasons, multiple camps, multiple generations — every group containing injured or aged members, the continuity of care across deep time, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, pottery",
+    "global_style": ""
+  },
+  {
+    "index": 119,
+    "start": 415.68,
+    "end": 416.86,
+    "prompt": "Cinematic paleo art, photorealistic, Neanderthal group members of all ages — young hunters, middle-aged caregivers, old elders — the intergenerational web visible in one scene, cave firelight, mountain shelter, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, pottery",
+    "global_style": ""
+  },
+  {
+    "index": 120,
+    "start": 417.3,
+    "end": 419.48,
+    "prompt": "Cinematic paleo art, photorealistic, elderly, wounded, and sick Neanderthal figures seated near fire, cared for by younger members — old age, injury, illness all present in one group — the full range of vulnerability accepted, warm firelight, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, pottery",
+    "global_style": ""
+  },
+  {
+    "index": 121,
+    "start": 420.08,
+    "end": 423.1,
+    "prompt": "Cinematic paleo art, photorealistic, Neanderthal group bringing food back to cave, including portions for those who could not go out — the pattern continuing — multiple vulnerable members in the cave receiving care from hunters returning, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, pottery",
+    "global_style": ""
+  },
+  {
+    "index": 122,
+    "start": 423.82,
+    "end": 426.48,
+    "prompt": "Cinematic paleo art, photorealistic, ancient figure with plant medicines arranged before an injured person — no knowledge of what works, just the impulse to try — the first healer acting on instinct alone, cave or forest setting, firelight, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, pottery",
+    "global_style": ""
+  },
+  {
+    "index": 123,
+    "start": 426.76,
+    "end": 428.82,
+    "prompt": "Cinematic paleo art, photorealistic, ancient figure examining sick group member — no medicine, no diagnosis possible — only attention and presence offered, cave setting, the limit of ancient capacity made visible, firelight from behind, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, pottery",
+    "global_style": ""
+  },
+  {
+    "index": 124,
+    "start": 429.12,
+    "end": 430.7,
+    "prompt": "Cinematic paleo art, photorealistic, ancient healer figure alone with injured person — no training, no tradition to follow, nothing but the recognition of need — the impulse to help without tools or knowledge, cave or open shelter, firelight, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, pottery",
+    "global_style": ""
+  },
+  {
+    "index": 125,
+    "start": 431.6,
+    "end": 435.78,
+    "prompt": "Cinematic paleo art, photorealistic, Neanderthal figure recognizing need in the injured elder — the moment of seeing and understanding — then acting, the entire chain of care compressed into one quiet moment of recognition at the fire, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, pottery",
+    "global_style": ""
+  },
+  {
+    "index": 126,
+    "start": 436.48,
+    "end": 438.22,
+    "prompt": "Cinematic paleo art, photorealistic, Neanderthal figure handing food to elder — providing — the decision made and acted upon, the care delivered, firelight between them, cave interior, complete and simple act, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, pottery",
+    "global_style": ""
+  },
+  {
+    "index": 127,
+    "start": 439.08,
+    "end": 442.08,
+    "prompt": "Cinematic paleo art, photorealistic, wide abstract landscape contemplating what separates humanity from animals — language, tools implied in small details — but the central image is a Neanderthal passing food to the weak, cave setting, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, pottery",
+    "global_style": ""
+  },
+  {
+    "index": 128,
+    "start": 442.92,
+    "end": 446.22,
+    "prompt": "Cinematic paleo art, photorealistic, Neanderthal pointing to the sky — an ancient human gesture toward meaning — stone tools in hand, abstract thought beginning — but the food is already being passed to the injured elder in the background, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, pottery",
+    "global_style": ""
+  },
+  {
+    "index": 129,
+    "start": 447.02,
+    "end": 450.2,
+    "prompt": "Cinematic paleo art, photorealistic, collection of ancient cave bones — arm bones with fractures, jaw bones without teeth, arthritic joints — the physical record suggesting something simpler than language or art, the bones themselves the message, cool cave light, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, pottery",
+    "global_style": ""
+  },
+  {
+    "index": 130,
+    "start": 450.84,
+    "end": 455.48,
+    "prompt": "Cinematic paleo art, photorealistic, ancient figure carrying food across a distance toward a cave where someone waits — before language was complex, before art existed, before culture — just this single act, open mountain landscape, dawn, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, pottery",
+    "global_style": ""
+  },
+  {
+    "index": 131,
+    "start": 455.48,
+    "end": 456.84,
+    "prompt": "Cinematic paleo art, photorealistic, injured ancient human at cave mouth unable to go out, watching the world beyond, the food bearer approaching in the distance with provisions — unable to self-supply, the dependency made physical, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, pottery",
+    "global_style": ""
+  },
+  {
+    "index": 132,
+    "start": 457.64,
+    "end": 462.14,
+    "prompt": "Cinematic paleo art, photorealistic, primordial landscape before language, before art — just terrain and sky and fire — the act of care the only cultural artifact that exists, Neanderthal figure with food moving toward the fire, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, pottery",
+    "global_style": ""
+  },
+  {
+    "index": 133,
+    "start": 462.14,
+    "end": 462.94,
+    "prompt": "Cinematic paleo art, photorealistic, ancient landscape before culture — pure terrain, ancient sky — the care behavior the only cultural act visible, a figure at cave mouth with food, the first act of civilization before civilization had a name, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, pottery",
+    "global_style": ""
+  },
+  {
+    "index": 134,
+    "start": 463.24,
+    "end": 466.4,
+    "prompt": "Cinematic paleo art, photorealistic, ancient Neanderthal looking at injured companion — the moment of decision — choosing not to walk away, choosing to stay and help, the impulse older than any named value, cave entrance, morning light, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, pottery",
+    "global_style": ""
+  },
+  {
+    "index": 135,
+    "start": 467.08,
+    "end": 471.72,
+    "prompt": "Cinematic paleo art, photorealistic, visual bridge from ancient cave to implied modern hospital — Neanderthal care scene at left blending into stone architecture at right — the direct lineage of care across sixty thousand years, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, pottery",
+    "global_style": ""
+  },
+  {
+    "index": 136,
+    "start": 471.72,
+    "end": 473.7,
+    "prompt": "Cinematic paleo art, photorealistic, ancient Neanderthal group scene — one weak member supported by others — the seed of every institution of social care that would follow across human history, mountain cave, warm firelight, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, pottery",
+    "global_style": ""
+  },
+  {
+    "index": 137,
+    "start": 473.94,
+    "end": 477.78,
+    "prompt": "Cinematic paleo art, photorealistic, Neanderthal figure acting alone on the impulse to care — no law, no book, no society requiring it — the original act, pure and ancient, food placed before the elder in a cave, orange firelight, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, pottery",
+    "global_style": ""
+  },
+  {
+    "index": 138,
+    "start": 478.6,
+    "end": 483.14,
+    "prompt": "Cinematic paleo art, photorealistic, Spark figure seated at ancient fire in Neanderthal cave, watching a hunter return with food for the injured elder, the series narrator witnessing this ancient scene, firelight on all faces, Zagros cave setting, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, pottery",
+    "global_style": ""
+  },
+  {
+    "index": 139,
+    "start": 483.78,
+    "end": 485.66,
+    "prompt": "Cinematic paleo art, photorealistic, Spark observing multiple ancient fires across mountainous landscape — each one the same scene repeated — a hand reaching out with food, the same act across all time, warm amber dusk, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, pottery",
+    "global_style": ""
+  },
+  {
+    "index": 140,
+    "start": 485.98,
+    "end": 487.98,
+    "prompt": "Cinematic paleo art, photorealistic, close-up of a Neanderthal hand extended forward with food in palm, the fingers open, the gesture of offering, warm firelight from below, cave darkness behind, the single essential act, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, pottery",
+    "global_style": ""
+  },
+  {
+    "index": 141,
+    "start": 488.8,
+    "end": 489.98,
+    "prompt": "Cinematic paleo art, photorealistic, the extended hand and the receiving hand — two Neanderthal hands meeting in the act of giving food — no words, no explanation exchanged, only the silent transaction of care, firelight, cave, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, pottery",
+    "global_style": ""
+  },
+  {
+    "index": 142,
+    "start": 490.62,
+    "end": 491.5,
+    "prompt": "Cinematic paleo art, photorealistic, final wide shot — Neanderthal cave at night with one fire burning, two figures visible — one offering, one receiving — the simplest image, the oldest reason, firelight against cave darkness, Zagros mountains, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, pottery",
+    "global_style": ""
+  }
+]

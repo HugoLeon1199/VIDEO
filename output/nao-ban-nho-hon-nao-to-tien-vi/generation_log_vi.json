@@ -1,0 +1,92 @@
+{
+  "005": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\nao-ban-nho-hon-nao-to-tien-vi\\images_vi\\img_005.png",
+    "errors": [],
+    "job_id": "b39f80f5-22b0-4a9c-96eb-113ba56fe5a8-e1",
+    "duration_seconds": 95.82,
+    "saved_at": "2026-06-22T12:38:26Z"
+  },
+  "006": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\nao-ban-nho-hon-nao-to-tien-vi\\images_vi\\img_006.png",
+    "errors": [],
+    "job_id": "d411ea24-f2d7-497d-984d-86122f1865a3-e2",
+    "duration_seconds": 26.18,
+    "saved_at": "2026-06-22T12:38:52Z"
+  },
+  "003": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\nao-ban-nho-hon-nao-to-tien-vi\\images_vi\\img_003.png",
+    "errors": [],
+    "job_id": "99a5544e-c979-4b08-a03c-1f3377f9f183-e2",
+    "duration_seconds": 125.95,
+    "saved_at": "2026-06-22T12:38:56Z"
+  },
+  "008": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\nao-ban-nho-hon-nao-to-tien-vi\\images_vi\\img_008.png",
+    "errors": [],
+    "job_id": "81da5191-d5b1-4823-85df-d0fd3eff5bd3-e1",
+    "duration_seconds": 41.89,
+    "saved_at": "2026-06-22T12:39:38Z"
+  },
+  "009": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\nao-ban-nho-hon-nao-to-tien-vi\\images_vi\\img_009.png",
+    "errors": [],
+    "job_id": "9db14bf9-1772-4351-bfd3-2449b42fc0fd-e2",
+    "duration_seconds": 16.5,
+    "saved_at": "2026-06-22T12:39:55Z"
+  },
+  "010": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\nao-ban-nho-hon-nao-to-tien-vi\\images_vi\\img_010.png",
+    "errors": [],
+    "job_id": "16553cfc-1fc9-438b-9958-dcda54f3e916-e2",
+    "duration_seconds": 16.22,
+    "saved_at": "2026-06-22T12:40:11Z"
+  },
+  "001": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\nao-ban-nho-hon-nao-to-tien-vi\\images_vi\\img_001.png",
+    "errors": [],
+    "job_id": "1fc26030-0790-49b7-b9e7-a40aa4eb3471-e1",
+    "duration_seconds": 217.07,
+    "saved_at": "2026-06-22T12:40:27Z"
+  },
+  "004": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\nao-ban-nho-hon-nao-to-tien-vi\\images_vi\\img_004.png",
+    "errors": [],
+    "job_id": "20b363a7-7345-4042-a3e3-c1e00170afdc-e2",
+    "duration_seconds": 217.52,
+    "saved_at": "2026-06-22T12:40:27Z"
+  },
+  "002": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\nao-ban-nho-hon-nao-to-tien-vi\\images_vi\\img_002.png",
+    "errors": [],
+    "job_id": "ac1cb4db-d50b-4e49-9395-9f587f6030ae-e2",
+    "duration_seconds": 217.79,
+    "saved_at": "2026-06-22T12:40:28Z"
+  },
+  "007": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\nao-ban-nho-hon-nao-to-tien-vi\\images_vi\\img_007.png",
+    "errors": [],
+    "job_id": "fadc2dbf-8c40-40c9-9809-361abbdc3913-e1",
+    "duration_seconds": 95.54,
+    "saved_at": "2026-06-22T12:40:28Z"
+  }
+}

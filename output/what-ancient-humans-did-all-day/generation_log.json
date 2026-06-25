@@ -1,0 +1,263 @@
+{
+  "001": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\what-ancient-humans-did-all-day\\images\\img_001.png",
+    "errors": [],
+    "job_id": "6816143d-bfec-43c4-be03-83a9013a7ae0-e2",
+    "duration_seconds": 4.11,
+    "saved_at": "2026-06-21T06:55:30Z"
+  },
+  "002": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\what-ancient-humans-did-all-day\\images\\img_002.png",
+    "errors": [],
+    "job_id": "b81ddf52-37f9-4ffb-908f-6e45e8c08ab7-e2",
+    "duration_seconds": 9.14,
+    "saved_at": "2026-06-21T06:55:35Z"
+  },
+  "003": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\what-ancient-humans-did-all-day\\images\\img_003.png",
+    "errors": [],
+    "job_id": "d011d728-f142-4aa9-982c-bc80ce8f2c1a-e2",
+    "duration_seconds": 9.13,
+    "saved_at": "2026-06-21T06:55:35Z"
+  },
+  "004": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\what-ancient-humans-did-all-day\\images\\img_004.png",
+    "errors": [],
+    "job_id": "c357a447-5996-42f0-a0d8-347e3fe8ccf5-e1",
+    "duration_seconds": 4.12,
+    "saved_at": "2026-06-21T06:55:30Z"
+  },
+  "005": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\what-ancient-humans-did-all-day\\images\\img_005.png",
+    "errors": [],
+    "job_id": "d547adbc-c0f6-4091-b786-51b09ba91629-e2",
+    "duration_seconds": 4.26,
+    "saved_at": "2026-06-21T06:55:30Z"
+  },
+  "006": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\what-ancient-humans-did-all-day\\images\\img_006.png",
+    "errors": [],
+    "job_id": "37db9f1a-7bd1-433f-b296-11004b83d269-e2",
+    "duration_seconds": 4.03,
+    "saved_at": "2026-06-21T06:55:34Z"
+  },
+  "007": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\what-ancient-humans-did-all-day\\images\\img_007.png",
+    "errors": [],
+    "job_id": "3840d568-c4d2-44a0-96f8-b4d23693d689-e2",
+    "duration_seconds": 8.68,
+    "saved_at": "2026-06-21T06:55:38Z"
+  },
+  "008": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\what-ancient-humans-did-all-day\\images\\img_008.png",
+    "errors": [],
+    "job_id": "0e0c071f-b744-49f1-90f9-358de63cc0dd-e1",
+    "duration_seconds": 8.73,
+    "saved_at": "2026-06-21T06:55:39Z"
+  },
+  "009": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\what-ancient-humans-did-all-day\\images\\img_009.png",
+    "errors": [],
+    "job_id": "d312a8e7-c9a1-4065-9115-d83689aae0ef-e1",
+    "duration_seconds": 4.29,
+    "saved_at": "2026-06-21T06:55:38Z"
+  },
+  "010": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\what-ancient-humans-did-all-day\\images\\img_010.png",
+    "errors": [],
+    "job_id": "8587d000-10c4-44ac-b5e7-96383db81f10-e1",
+    "duration_seconds": 4.07,
+    "saved_at": "2026-06-21T06:55:39Z"
+  },
+  "011": {
+    "status": "completed",
+    "candidates_saved": 3,
+    "selected_image": "output\\what-ancient-humans-did-all-day\\images\\img_011.png",
+    "errors": [],
+    "job_id": "35c2fa2e-ffa5-45b7-941a-70aa3115b3cc-e1",
+    "duration_seconds": 8.86,
+    "saved_at": "2026-06-21T05:32:11Z"
+  },
+  "012": {
+    "status": "completed",
+    "candidates_saved": 3,
+    "selected_image": "output\\what-ancient-humans-did-all-day\\images\\img_012.png",
+    "errors": [],
+    "job_id": "a9f125ae-13d1-4f79-aa42-b6a49cf04487-e1",
+    "duration_seconds": 9.0,
+    "saved_at": "2026-06-21T05:32:20Z"
+  },
+  "013": {
+    "status": "completed",
+    "candidates_saved": 3,
+    "selected_image": "output\\what-ancient-humans-did-all-day\\images\\img_013.png",
+    "errors": [],
+    "job_id": "c1d67563-b320-47ac-bc8a-8d814db4510e-e2",
+    "duration_seconds": 8.99,
+    "saved_at": "2026-06-21T05:32:29Z"
+  },
+  "014": {
+    "status": "completed",
+    "candidates_saved": 3,
+    "selected_image": "output\\what-ancient-humans-did-all-day\\images\\img_014.png",
+    "errors": [],
+    "job_id": "9966d36e-96f4-48dd-a45f-1de4d5216b16-e1",
+    "duration_seconds": 8.94,
+    "saved_at": "2026-06-21T05:32:38Z"
+  },
+  "015": {
+    "status": "completed",
+    "candidates_saved": 3,
+    "selected_image": "output\\what-ancient-humans-did-all-day\\images\\img_015.png",
+    "errors": [],
+    "job_id": "e17109b7-edc8-4e37-a838-7a840d753447-e2",
+    "duration_seconds": 9.01,
+    "saved_at": "2026-06-21T05:32:47Z"
+  },
+  "016": {
+    "status": "completed",
+    "candidates_saved": 3,
+    "selected_image": "output\\what-ancient-humans-did-all-day\\images\\img_016.png",
+    "errors": [],
+    "job_id": "2ecd001f-adb7-4547-8f98-b52b0cf9c6fc-e1",
+    "duration_seconds": 9.0,
+    "saved_at": "2026-06-21T05:32:56Z"
+  },
+  "017": {
+    "status": "completed",
+    "candidates_saved": 3,
+    "selected_image": "output\\what-ancient-humans-did-all-day\\images\\img_017.png",
+    "errors": [],
+    "job_id": "f365626a-d8fd-4046-95a6-a60ba622e249-e1",
+    "duration_seconds": 8.79,
+    "saved_at": "2026-06-21T05:33:05Z"
+  },
+  "018": {
+    "status": "completed",
+    "candidates_saved": 3,
+    "selected_image": "output\\what-ancient-humans-did-all-day\\images\\img_018.png",
+    "errors": [],
+    "job_id": "5d99bfd9-50a6-4dee-8a4a-5a179e96d24e-e1",
+    "duration_seconds": 8.98,
+    "saved_at": "2026-06-21T05:33:14Z"
+  },
+  "019": {
+    "status": "completed",
+    "candidates_saved": 3,
+    "selected_image": "output\\what-ancient-humans-did-all-day\\images\\img_019.png",
+    "errors": [],
+    "job_id": "00baffa3-1e7f-401e-897b-4482e4333424-e1",
+    "duration_seconds": 8.99,
+    "saved_at": "2026-06-21T05:33:24Z"
+  },
+  "020": {
+    "status": "completed",
+    "candidates_saved": 3,
+    "selected_image": "output\\what-ancient-humans-did-all-day\\images\\img_020.png",
+    "errors": [],
+    "job_id": "4f03fff5-c367-4c2f-99b1-c1a7d057ae1c-e2",
+    "duration_seconds": 8.88,
+    "saved_at": "2026-06-21T05:33:33Z"
+  },
+  "021": {
+    "status": "completed",
+    "candidates_saved": 3,
+    "selected_image": "output\\what-ancient-humans-did-all-day\\images\\img_021.png",
+    "errors": [],
+    "job_id": "d0901140-23a3-4d9f-85bb-77da955e739f-e2",
+    "duration_seconds": 9.0,
+    "saved_at": "2026-06-21T05:33:42Z"
+  },
+  "022": {
+    "status": "completed",
+    "candidates_saved": 3,
+    "selected_image": "output\\what-ancient-humans-did-all-day\\images\\img_022.png",
+    "errors": [],
+    "job_id": "2ddca979-fa0b-42a1-aa61-cdc5bd155d86-e2",
+    "duration_seconds": 9.03,
+    "saved_at": "2026-06-21T05:33:51Z"
+  },
+  "023": {
+    "status": "completed",
+    "candidates_saved": 3,
+    "selected_image": "output\\what-ancient-humans-did-all-day\\images\\img_023.png",
+    "errors": [],
+    "job_id": "61be78c9-382f-465a-9e46-3456baf8c280-e2",
+    "duration_seconds": 9.09,
+    "saved_at": "2026-06-21T05:34:00Z"
+  },
+  "024": {
+    "status": "completed",
+    "candidates_saved": 3,
+    "selected_image": "output\\what-ancient-humans-did-all-day\\images\\img_024.png",
+    "errors": [],
+    "job_id": "98c25260-a9cf-48e7-80d7-b18af4f91b1d-e1",
+    "duration_seconds": 8.86,
+    "saved_at": "2026-06-21T05:34:09Z"
+  },
+  "025": {
+    "status": "completed",
+    "candidates_saved": 3,
+    "selected_image": "output\\what-ancient-humans-did-all-day\\images\\img_025.png",
+    "errors": [],
+    "job_id": "d7343316-9966-4c50-b74c-d060fe1ee39c-e1",
+    "duration_seconds": 8.87,
+    "saved_at": "2026-06-21T05:34:18Z"
+  },
+  "026": {
+    "status": "completed",
+    "candidates_saved": 3,
+    "selected_image": "output\\what-ancient-humans-did-all-day\\images\\img_026.png",
+    "errors": [],
+    "job_id": "af15638f-7914-4834-bb3e-099e28d5533d-e2",
+    "duration_seconds": 8.85,
+    "saved_at": "2026-06-21T05:34:27Z"
+  },
+  "027": {
+    "status": "completed",
+    "candidates_saved": 3,
+    "selected_image": "output\\what-ancient-humans-did-all-day\\images\\img_027.png",
+    "errors": [],
+    "job_id": "79587560-945c-4654-820a-23aff3114f46-e1",
+    "duration_seconds": 8.86,
+    "saved_at": "2026-06-21T05:34:36Z"
+  },
+  "028": {
+    "status": "completed",
+    "candidates_saved": 3,
+    "selected_image": "output\\what-ancient-humans-did-all-day\\images\\img_028.png",
+    "errors": [],
+    "job_id": "c2ebaf3b-b6df-4e4f-965c-5da17f5d07bf-e2",
+    "duration_seconds": 8.94,
+    "saved_at": "2026-06-21T05:34:45Z"
+  },
+  "029": {
+    "status": "completed",
+    "candidates_saved": 3,
+    "selected_image": "output\\what-ancient-humans-did-all-day\\images\\img_029.png",
+    "errors": [],
+    "job_id": "cfdf740c-8c50-4d9f-a1a9-62935896a0a2-e1",
+    "duration_seconds": 9.05,
+    "saved_at": "2026-06-21T05:34:55Z"
+  }
+}

@@ -1,0 +1,830 @@
+{
+  "001": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\ancient-child-surgery-31000-years\\images\\img_001.png",
+    "errors": [],
+    "job_id": "58c1054a-ba6b-4465-9fb5-ae99b9fe4ec7-e1",
+    "duration_seconds": 4.21,
+    "saved_at": "2026-06-21T08:28:45Z"
+  },
+  "004": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\ancient-child-surgery-31000-years\\images\\img_004.png",
+    "errors": [],
+    "job_id": "d4516d2e-017d-41c1-8a2b-25ed3d9bee08-e2",
+    "duration_seconds": 4.28,
+    "saved_at": "2026-06-21T08:28:45Z"
+  },
+  "002": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\ancient-child-surgery-31000-years\\images\\img_002.png",
+    "errors": [],
+    "job_id": "e8861b3a-7170-4abe-8380-25b1cfee3d9e-e2",
+    "duration_seconds": 4.29,
+    "saved_at": "2026-06-21T08:28:45Z"
+  },
+  "008": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\ancient-child-surgery-31000-years\\images\\img_008.png",
+    "errors": [],
+    "job_id": "4ef6b90e-9553-4046-90a7-7a11159379a3-e1",
+    "duration_seconds": 3.92,
+    "saved_at": "2026-06-21T08:28:50Z"
+  },
+  "003": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\ancient-child-surgery-31000-years\\images\\img_003.png",
+    "errors": [],
+    "job_id": "017f6f02-06eb-4ce9-af2b-1acc46b09ca8-e2",
+    "duration_seconds": 9.0,
+    "saved_at": "2026-06-21T08:28:50Z"
+  },
+  "005": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\ancient-child-surgery-31000-years\\images\\img_005.png",
+    "errors": [],
+    "job_id": "df497ba6-6ebd-4de4-b812-1f9850f94c4a-e2",
+    "duration_seconds": 9.0,
+    "saved_at": "2026-06-21T08:28:50Z"
+  },
+  "009": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\ancient-child-surgery-31000-years\\images\\img_009.png",
+    "errors": [],
+    "job_id": "76d6e1b0-fd9c-4160-a95d-a658c2beb6cc-e1",
+    "duration_seconds": 3.98,
+    "saved_at": "2026-06-21T08:28:54Z"
+  },
+  "006": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\ancient-child-surgery-31000-years\\images\\img_006.png",
+    "errors": [],
+    "job_id": "1142ddf0-c2f9-4c84-b24e-e4651860eff0-e2",
+    "duration_seconds": 8.71,
+    "saved_at": "2026-06-21T08:28:54Z"
+  },
+  "007": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\ancient-child-surgery-31000-years\\images\\img_007.png",
+    "errors": [],
+    "job_id": "b1185c46-c147-4fea-8017-975c25e2eddd-e1",
+    "duration_seconds": 8.73,
+    "saved_at": "2026-06-21T08:28:54Z"
+  },
+  "010": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\ancient-child-surgery-31000-years\\images\\img_010.png",
+    "errors": [],
+    "job_id": "5b79e83c-29d1-42d4-b861-9fca8cb9fee2-e2",
+    "duration_seconds": 4.04,
+    "saved_at": "2026-06-21T08:28:54Z"
+  },
+  "011": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\ancient-child-surgery-31000-years\\images\\img_011.png",
+    "errors": [],
+    "job_id": "24c64b45-5270-451e-bae2-fa3fde75646e-e1",
+    "duration_seconds": 4.06,
+    "saved_at": "2026-06-21T08:28:54Z"
+  },
+  "012": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\ancient-child-surgery-31000-years\\images\\img_012.png",
+    "errors": [],
+    "job_id": "cb9480c2-8cc2-4b53-b4c6-ad47535cd2bc-e1",
+    "duration_seconds": 3.99,
+    "saved_at": "2026-06-21T08:28:58Z"
+  },
+  "013": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\ancient-child-surgery-31000-years\\images\\img_013.png",
+    "errors": [],
+    "job_id": "dc3d45b1-b76d-41fa-a0c1-b1ccdc85be2f-e1",
+    "duration_seconds": 4.05,
+    "saved_at": "2026-06-21T08:28:59Z"
+  },
+  "014": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\ancient-child-surgery-31000-years\\images\\img_014.png",
+    "errors": [],
+    "job_id": "31f0d706-a191-4b49-aaa1-c96986985f2b-e1",
+    "duration_seconds": 4.03,
+    "saved_at": "2026-06-21T08:28:59Z"
+  },
+  "017": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\ancient-child-surgery-31000-years\\images\\img_017.png",
+    "errors": [],
+    "job_id": "07724722-6b3f-4292-b8e4-aca4833598fd-e2",
+    "duration_seconds": 3.99,
+    "saved_at": "2026-06-21T08:29:02Z"
+  },
+  "018": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\ancient-child-surgery-31000-years\\images\\img_018.png",
+    "errors": [],
+    "job_id": "f9497a1c-7814-436f-94f7-8acd254f0a60-e1",
+    "duration_seconds": 3.98,
+    "saved_at": "2026-06-21T08:29:03Z"
+  },
+  "016": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\ancient-child-surgery-31000-years\\images\\img_016.png",
+    "errors": [],
+    "job_id": "1c9fcbf3-275c-4790-aad5-d4524f332bb9-e1",
+    "duration_seconds": 8.68,
+    "saved_at": "2026-06-21T08:29:03Z"
+  },
+  "015": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\ancient-child-surgery-31000-years\\images\\img_015.png",
+    "errors": [],
+    "job_id": "bd455fd0-3b67-4b32-8129-395fa1f702d0-e2",
+    "duration_seconds": 8.73,
+    "saved_at": "2026-06-21T08:29:03Z"
+  },
+  "020": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\ancient-child-surgery-31000-years\\images\\img_020.png",
+    "errors": [],
+    "job_id": "638fbf85-0253-4f01-a0e0-50bbecc6dfcd-e1",
+    "duration_seconds": 4.01,
+    "saved_at": "2026-06-21T08:29:06Z"
+  },
+  "021": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\ancient-child-surgery-31000-years\\images\\img_021.png",
+    "errors": [],
+    "job_id": "4f29cad1-a49d-448f-9fdb-98733e650eca-e2",
+    "duration_seconds": 4.07,
+    "saved_at": "2026-06-21T08:29:07Z"
+  },
+  "019": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\ancient-child-surgery-31000-years\\images\\img_019.png",
+    "errors": [],
+    "job_id": "68d0967c-5e8f-4698-907e-dd725b8f6d80-e2",
+    "duration_seconds": 8.66,
+    "saved_at": "2026-06-21T08:29:07Z"
+  },
+  "022": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\ancient-child-surgery-31000-years\\images\\img_022.png",
+    "errors": [],
+    "job_id": "b0642be5-b237-4c0c-80d2-f7fe451c0f15-e2",
+    "duration_seconds": 4.03,
+    "saved_at": "2026-06-21T08:29:07Z"
+  },
+  "024": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\ancient-child-surgery-31000-years\\images\\img_024.png",
+    "errors": [],
+    "job_id": "5868257c-1bab-419d-945f-df6b4d49656f-e1",
+    "duration_seconds": 4.09,
+    "saved_at": "2026-06-21T08:29:11Z"
+  },
+  "025": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\ancient-child-surgery-31000-years\\images\\img_025.png",
+    "errors": [],
+    "job_id": "c912c331-c247-4d94-bdff-a8dceec5b5d1-e1",
+    "duration_seconds": 3.98,
+    "saved_at": "2026-06-21T08:29:11Z"
+  },
+  "026": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\ancient-child-surgery-31000-years\\images\\img_026.png",
+    "errors": [],
+    "job_id": "edf99b4b-6014-4138-abd9-074d0bce8a5c-e1",
+    "duration_seconds": 4.0,
+    "saved_at": "2026-06-21T08:29:12Z"
+  },
+  "023": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\ancient-child-surgery-31000-years\\images\\img_023.png",
+    "errors": [],
+    "job_id": "acb0aecb-05e1-4c74-b210-3032db27985e-e2",
+    "duration_seconds": 8.67,
+    "saved_at": "2026-06-21T08:29:12Z"
+  },
+  "028": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\ancient-child-surgery-31000-years\\images\\img_028.png",
+    "errors": [],
+    "job_id": "b1a6f482-00ee-4afc-964d-ba0434a3edda-e1",
+    "duration_seconds": 3.92,
+    "saved_at": "2026-06-21T08:29:15Z"
+  },
+  "029": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\ancient-child-surgery-31000-years\\images\\img_029.png",
+    "errors": [],
+    "job_id": "743372e6-c76e-4d71-bf14-d3a8214e3200-e1",
+    "duration_seconds": 4.02,
+    "saved_at": "2026-06-21T08:29:15Z"
+  },
+  "030": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\ancient-child-surgery-31000-years\\images\\img_030.png",
+    "errors": [],
+    "job_id": "fd0416aa-7d1c-463a-a748-a585e9a22254-e1",
+    "duration_seconds": 3.98,
+    "saved_at": "2026-06-21T08:29:16Z"
+  },
+  "027": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\ancient-child-surgery-31000-years\\images\\img_027.png",
+    "errors": [],
+    "job_id": "ee1beb20-73b5-4a18-9d8a-d1ba9e0d5fab-e1",
+    "duration_seconds": 8.35,
+    "saved_at": "2026-06-21T08:29:16Z"
+  },
+  "032": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\ancient-child-surgery-31000-years\\images\\img_032.png",
+    "errors": [],
+    "job_id": "fef2030f-f2e6-453d-b49c-ea5bfd2848fc-e1",
+    "duration_seconds": 4.03,
+    "saved_at": "2026-06-21T08:29:19Z"
+  },
+  "033": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\ancient-child-surgery-31000-years\\images\\img_033.png",
+    "errors": [],
+    "job_id": "5649d548-36a9-4ffb-b3e1-f5d0b80d8668-e1",
+    "duration_seconds": 4.01,
+    "saved_at": "2026-06-21T08:29:20Z"
+  },
+  "034": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\ancient-child-surgery-31000-years\\images\\img_034.png",
+    "errors": [],
+    "job_id": "f720933a-038f-4e9a-8ca3-16169ed920d4-e2",
+    "duration_seconds": 3.98,
+    "saved_at": "2026-06-21T08:29:20Z"
+  },
+  "031": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\ancient-child-surgery-31000-years\\images\\img_031.png",
+    "errors": [],
+    "job_id": "1e7dc38a-a936-432e-8864-ca0e3550e4bf-e2",
+    "duration_seconds": 8.63,
+    "saved_at": "2026-06-21T08:29:21Z"
+  },
+  "036": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\ancient-child-surgery-31000-years\\images\\img_036.png",
+    "errors": [],
+    "job_id": "f27fd267-96ed-4e03-a9ab-eebecd62b2a5-e1",
+    "duration_seconds": 4.01,
+    "saved_at": "2026-06-21T08:29:24Z"
+  },
+  "037": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\ancient-child-surgery-31000-years\\images\\img_037.png",
+    "errors": [],
+    "job_id": "789eb539-cc6c-464d-a894-cd164bc46919-e1",
+    "duration_seconds": 4.01,
+    "saved_at": "2026-06-21T08:29:24Z"
+  },
+  "038": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\ancient-child-surgery-31000-years\\images\\img_038.png",
+    "errors": [],
+    "job_id": "023d36d1-76a3-4db6-9e11-708dca599116-e1",
+    "duration_seconds": 3.97,
+    "saved_at": "2026-06-21T08:29:24Z"
+  },
+  "035": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\ancient-child-surgery-31000-years\\images\\img_035.png",
+    "errors": [],
+    "job_id": "403e987f-a5ca-4818-8ece-98191a8b1689-e2",
+    "duration_seconds": 8.59,
+    "saved_at": "2026-06-21T08:29:25Z"
+  },
+  "039": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\ancient-child-surgery-31000-years\\images\\img_039.png",
+    "errors": [],
+    "job_id": "2222b2a7-822b-4cea-acc3-eb888648e208-e2",
+    "duration_seconds": 3.86,
+    "saved_at": "2026-06-21T08:29:25Z"
+  },
+  "040": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\ancient-child-surgery-31000-years\\images\\img_040.png",
+    "errors": [],
+    "job_id": "e3e4e916-758c-4bb8-ad28-8415ff32e3e0-e2",
+    "duration_seconds": 4.0,
+    "saved_at": "2026-06-21T08:29:28Z"
+  },
+  "041": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\ancient-child-surgery-31000-years\\images\\img_041.png",
+    "errors": [],
+    "job_id": "6d3950de-83c2-4d29-b886-4517d6671fe7-e1",
+    "duration_seconds": 4.03,
+    "saved_at": "2026-06-21T08:29:28Z"
+  },
+  "042": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\ancient-child-surgery-31000-years\\images\\img_042.png",
+    "errors": [],
+    "job_id": "6135c2e1-a22e-49af-914d-78e7e31f6372-e2",
+    "duration_seconds": 4.1,
+    "saved_at": "2026-06-21T08:29:29Z"
+  },
+  "045": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\ancient-child-surgery-31000-years\\images\\img_045.png",
+    "errors": [],
+    "job_id": "baff33f7-a3f9-4461-9ab0-ecec0a63b0a3-e2",
+    "duration_seconds": 4.03,
+    "saved_at": "2026-06-21T08:29:32Z"
+  },
+  "046": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\ancient-child-surgery-31000-years\\images\\img_046.png",
+    "errors": [],
+    "job_id": "203ae05f-067f-4a93-bc36-f9235ec64919-e2",
+    "duration_seconds": 4.07,
+    "saved_at": "2026-06-21T08:29:32Z"
+  },
+  "047": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\ancient-child-surgery-31000-years\\images\\img_047.png",
+    "errors": [],
+    "job_id": "2f3979b0-3d65-4054-a0c6-7a347ed5b592-e2",
+    "duration_seconds": 4.03,
+    "saved_at": "2026-06-21T08:29:33Z"
+  },
+  "043": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\ancient-child-surgery-31000-years\\images\\img_043.png",
+    "errors": [],
+    "job_id": "6681b3e5-d17f-4f3d-9b29-20c66fa0e7e7-e1",
+    "duration_seconds": 8.69,
+    "saved_at": "2026-06-21T08:29:34Z"
+  },
+  "044": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\ancient-child-surgery-31000-years\\images\\img_044.png",
+    "errors": [],
+    "job_id": "8e3e7a52-08cb-479c-a9a8-f5a005aae5b4-e2",
+    "duration_seconds": 8.68,
+    "saved_at": "2026-06-21T08:29:34Z"
+  },
+  "048": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\ancient-child-surgery-31000-years\\images\\img_048.png",
+    "errors": [],
+    "job_id": "9c048c93-18d6-46e5-a9bb-d11c817ed236-e2",
+    "duration_seconds": 3.99,
+    "saved_at": "2026-06-21T08:29:36Z"
+  },
+  "049": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\ancient-child-surgery-31000-years\\images\\img_049.png",
+    "errors": [],
+    "job_id": "afd8e186-5fa7-4bf0-be79-46d842c18ef3-e1",
+    "duration_seconds": 4.0,
+    "saved_at": "2026-06-21T08:29:37Z"
+  },
+  "050": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\ancient-child-surgery-31000-years\\images\\img_050.png",
+    "errors": [],
+    "job_id": "a4b4c84f-500c-4c1a-a9b1-e1101e8cd253-e1",
+    "duration_seconds": 3.89,
+    "saved_at": "2026-06-21T08:29:37Z"
+  },
+  "051": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\ancient-child-surgery-31000-years\\images\\img_051.png",
+    "errors": [],
+    "job_id": "85a2284b-776c-4887-b887-68a63481928e-e1",
+    "duration_seconds": 4.06,
+    "saved_at": "2026-06-21T08:29:38Z"
+  },
+  "052": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\ancient-child-surgery-31000-years\\images\\img_052.png",
+    "errors": [],
+    "job_id": "6178a0c0-8b09-4439-9454-f39eb11d13d4-e2",
+    "duration_seconds": 4.0,
+    "saved_at": "2026-06-21T08:29:38Z"
+  },
+  "053": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\ancient-child-surgery-31000-years\\images\\img_053.png",
+    "errors": [],
+    "job_id": "e53c33fb-5159-4397-a13c-540d44cb1920-e2",
+    "duration_seconds": 3.99,
+    "saved_at": "2026-06-21T08:29:40Z"
+  },
+  "054": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\ancient-child-surgery-31000-years\\images\\img_054.png",
+    "errors": [],
+    "job_id": "a92c915c-dddf-4fbc-b898-d33e30e9e675-e2",
+    "duration_seconds": 4.04,
+    "saved_at": "2026-06-21T08:29:41Z"
+  },
+  "055": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\ancient-child-surgery-31000-years\\images\\img_055.png",
+    "errors": [],
+    "job_id": "f27ac00f-524f-4380-b34a-ac6491a49758-e1",
+    "duration_seconds": 4.0,
+    "saved_at": "2026-06-21T08:29:41Z"
+  },
+  "056": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\ancient-child-surgery-31000-years\\images\\img_056.png",
+    "errors": [],
+    "job_id": "99826211-0208-4873-8f3c-1ad07501f619-e1",
+    "duration_seconds": 3.79,
+    "saved_at": "2026-06-21T08:29:42Z"
+  },
+  "058": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\ancient-child-surgery-31000-years\\images\\img_058.png",
+    "errors": [],
+    "job_id": "5e930ef6-5e10-458b-9c48-80037534d207-e2",
+    "duration_seconds": 4.02,
+    "saved_at": "2026-06-21T08:29:45Z"
+  },
+  "059": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\ancient-child-surgery-31000-years\\images\\img_059.png",
+    "errors": [],
+    "job_id": "397d93a6-f54b-4664-9761-a685df0cfe82-e2",
+    "duration_seconds": 3.99,
+    "saved_at": "2026-06-21T08:29:45Z"
+  },
+  "057": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\ancient-child-surgery-31000-years\\images\\img_057.png",
+    "errors": [],
+    "job_id": "c83bfba9-7e14-4d45-a0ed-e15d2d466059-e1",
+    "duration_seconds": 8.68,
+    "saved_at": "2026-06-21T08:29:47Z"
+  },
+  "062": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\ancient-child-surgery-31000-years\\images\\img_062.png",
+    "errors": [],
+    "job_id": "d2e7c05c-f44c-476f-8219-03b00bc5b20c-e1",
+    "duration_seconds": 3.92,
+    "saved_at": "2026-06-21T08:29:49Z"
+  },
+  "063": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\ancient-child-surgery-31000-years\\images\\img_063.png",
+    "errors": [],
+    "job_id": "f1fbc964-231c-4e56-8691-aada8735c9f8-e1",
+    "duration_seconds": 4.03,
+    "saved_at": "2026-06-21T08:29:49Z"
+  },
+  "060": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\ancient-child-surgery-31000-years\\images\\img_060.png",
+    "errors": [],
+    "job_id": "d02e11b4-f082-4a6a-b80d-65b9c5ae2cb6-e1",
+    "duration_seconds": 8.7,
+    "saved_at": "2026-06-21T08:29:50Z"
+  },
+  "061": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\ancient-child-surgery-31000-years\\images\\img_061.png",
+    "errors": [],
+    "job_id": "3fdd2b71-0ec4-4189-86c3-9af0570b39fe-e1",
+    "duration_seconds": 8.72,
+    "saved_at": "2026-06-21T08:29:51Z"
+  },
+  "064": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\ancient-child-surgery-31000-years\\images\\img_064.png",
+    "errors": [],
+    "job_id": "f1ae32a9-f4b5-45cc-9566-a0b21828afed-e1",
+    "duration_seconds": 4.07,
+    "saved_at": "2026-06-21T08:29:52Z"
+  },
+  "065": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\ancient-child-surgery-31000-years\\images\\img_065.png",
+    "errors": [],
+    "job_id": "66acc588-a742-4e40-af94-808fd406cb42-e1",
+    "duration_seconds": 4.02,
+    "saved_at": "2026-06-21T08:29:53Z"
+  },
+  "066": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\ancient-child-surgery-31000-years\\images\\img_066.png",
+    "errors": [],
+    "job_id": "27c88424-c3a6-4604-8124-224bc9bcc469-e2",
+    "duration_seconds": 4.01,
+    "saved_at": "2026-06-21T08:29:54Z"
+  },
+  "067": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\ancient-child-surgery-31000-years\\images\\img_067.png",
+    "errors": [],
+    "job_id": "34dacf79-0e6a-4e9b-a3b7-4c633fe84883-e1",
+    "duration_seconds": 4.02,
+    "saved_at": "2026-06-21T08:29:54Z"
+  },
+  "068": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\ancient-child-surgery-31000-years\\images\\img_068.png",
+    "errors": [],
+    "job_id": "37a70f6f-e0c2-4554-b384-63b548020f95-e2",
+    "duration_seconds": 3.95,
+    "saved_at": "2026-06-21T08:29:55Z"
+  },
+  "069": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\ancient-child-surgery-31000-years\\images\\img_069.png",
+    "errors": [],
+    "job_id": "7f5c17f1-403a-473f-aa3d-0ce4ee007849-e1",
+    "duration_seconds": 4.02,
+    "saved_at": "2026-06-21T08:29:56Z"
+  },
+  "070": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\ancient-child-surgery-31000-years\\images\\img_070.png",
+    "errors": [],
+    "job_id": "d7fdc339-4099-4cfd-b898-febda481cdd0-e1",
+    "duration_seconds": 4.03,
+    "saved_at": "2026-06-21T08:29:57Z"
+  },
+  "071": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\ancient-child-surgery-31000-years\\images\\img_071.png",
+    "errors": [],
+    "job_id": "9342f465-0617-4b7e-80ae-56b146ea21cc-e1",
+    "duration_seconds": 4.01,
+    "saved_at": "2026-06-21T08:29:58Z"
+  },
+  "072": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\ancient-child-surgery-31000-years\\images\\img_072.png",
+    "errors": [],
+    "job_id": "621be184-49d6-4184-8848-ff084b87346c-e2",
+    "duration_seconds": 3.97,
+    "saved_at": "2026-06-21T08:29:58Z"
+  },
+  "073": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\ancient-child-surgery-31000-years\\images\\img_073.png",
+    "errors": [],
+    "job_id": "0ad4df95-9370-46c6-99de-4360b32335d0-e2",
+    "duration_seconds": 4.04,
+    "saved_at": "2026-06-21T08:29:59Z"
+  },
+  "075": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\ancient-child-surgery-31000-years\\images\\img_075.png",
+    "errors": [],
+    "job_id": "06418e5a-38fa-43a7-8b0c-1468883582c0-e1",
+    "duration_seconds": 3.95,
+    "saved_at": "2026-06-21T08:30:01Z"
+  },
+  "076": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\ancient-child-surgery-31000-years\\images\\img_076.png",
+    "errors": [],
+    "job_id": "76ec9695-4b5d-4a5e-bd9a-5fb0a46ceb47-e2",
+    "duration_seconds": 4.0,
+    "saved_at": "2026-06-21T08:30:02Z"
+  },
+  "074": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\ancient-child-surgery-31000-years\\images\\img_074.png",
+    "errors": [],
+    "job_id": "0ddce4a5-6910-4891-a5e3-0119d3734f31-e2",
+    "duration_seconds": 8.73,
+    "saved_at": "2026-06-21T08:30:05Z"
+  },
+  "079": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\ancient-child-surgery-31000-years\\images\\img_079.png",
+    "errors": [],
+    "job_id": "88341c6c-a676-408c-8ddc-cf834244eac8-e1",
+    "duration_seconds": 4.06,
+    "saved_at": "2026-06-21T08:30:06Z"
+  },
+  "080": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\ancient-child-surgery-31000-years\\images\\img_080.png",
+    "errors": [],
+    "job_id": "36ac6b68-e6b0-456a-8082-3ed86ac9eaa6-e1",
+    "duration_seconds": 3.88,
+    "saved_at": "2026-06-21T08:30:06Z"
+  },
+  "077": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\ancient-child-surgery-31000-years\\images\\img_077.png",
+    "errors": [],
+    "job_id": "bb8406b4-8f94-417b-add4-5dcec4479a72-e1",
+    "duration_seconds": 8.62,
+    "saved_at": "2026-06-21T08:30:07Z"
+  },
+  "078": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\ancient-child-surgery-31000-years\\images\\img_078.png",
+    "errors": [],
+    "job_id": "beb9474a-2358-424f-82ad-241d9b0c5142-e2",
+    "duration_seconds": 8.7,
+    "saved_at": "2026-06-21T08:30:08Z"
+  },
+  "081": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\ancient-child-surgery-31000-years\\images\\img_081.png",
+    "errors": [],
+    "job_id": "71da15c1-9155-4a6b-a678-ff3cf65efb64-e1",
+    "duration_seconds": 4.08,
+    "saved_at": "2026-06-21T08:30:09Z"
+  },
+  "082": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\ancient-child-surgery-31000-years\\images\\img_082.png",
+    "errors": [],
+    "job_id": "04a42fef-b61c-40ab-873b-2e5aef6da6ff-e2",
+    "duration_seconds": 4.06,
+    "saved_at": "2026-06-21T08:30:10Z"
+  },
+  "083": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\ancient-child-surgery-31000-years\\images\\img_083.png",
+    "errors": [],
+    "job_id": "6094f5a7-fe63-466d-9d01-eb56c6afdf61-e2",
+    "duration_seconds": 3.87,
+    "saved_at": "2026-06-21T08:30:10Z"
+  },
+  "084": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\ancient-child-surgery-31000-years\\images\\img_084.png",
+    "errors": [],
+    "job_id": "129288b8-298e-46b4-bf24-c2c15e0ada0f-e2",
+    "duration_seconds": 3.78,
+    "saved_at": "2026-06-21T08:30:11Z"
+  },
+  "085": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\ancient-child-surgery-31000-years\\images\\img_085.png",
+    "errors": [],
+    "job_id": "56c85d40-5e26-4ff4-8cc3-8c0996a71329-e2",
+    "duration_seconds": 3.95,
+    "saved_at": "2026-06-21T08:30:12Z"
+  },
+  "086": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\ancient-child-surgery-31000-years\\images\\img_086.png",
+    "errors": [],
+    "job_id": "d043da66-c363-426f-96b4-0134de12597c-e1",
+    "duration_seconds": 4.01,
+    "saved_at": "2026-06-21T08:30:13Z"
+  },
+  "087": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\ancient-child-surgery-31000-years\\images\\img_087.png",
+    "errors": [],
+    "job_id": "def99bc7-1cf2-41b3-b208-cf20b62a3bf4-e1",
+    "duration_seconds": 3.9,
+    "saved_at": "2026-06-21T08:30:14Z"
+  },
+  "088": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\ancient-child-surgery-31000-years\\images\\img_088.png",
+    "errors": [],
+    "job_id": "00e3a000-e732-4289-9207-a3b8f702ae1c-e1",
+    "duration_seconds": 4.01,
+    "saved_at": "2026-06-21T08:30:14Z"
+  },
+  "089": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\ancient-child-surgery-31000-years\\images\\img_089.png",
+    "errors": [],
+    "job_id": "e0ab3903-3832-4abc-94dd-c3bff056dd92-e1",
+    "duration_seconds": 4.0,
+    "saved_at": "2026-06-21T08:30:15Z"
+  },
+  "090": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\ancient-child-surgery-31000-years\\images\\img_090.png",
+    "errors": [],
+    "job_id": "1cde216e-2a7e-4598-919c-65f3b9e4f44a-e2",
+    "duration_seconds": 4.03,
+    "saved_at": "2026-06-21T08:30:17Z"
+  },
+  "091": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\ancient-child-surgery-31000-years\\images\\img_091.png",
+    "errors": [],
+    "job_id": "9cea2ef9-bbdd-4915-aed5-297e0b7e04b1-e1",
+    "duration_seconds": 4.02,
+    "saved_at": "2026-06-21T08:30:17Z"
+  },
+  "092": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\ancient-child-surgery-31000-years\\images\\img_092.png",
+    "errors": [],
+    "job_id": "4bd049bd-bb97-4791-9dc0-1f133080fab6-e1",
+    "duration_seconds": 3.97,
+    "saved_at": "2026-06-21T08:30:18Z"
+  }
+}

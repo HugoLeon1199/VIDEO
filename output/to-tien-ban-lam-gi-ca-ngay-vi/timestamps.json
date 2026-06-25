@@ -1,0 +1,386 @@
+[
+  {
+    "index": 1,
+    "start": 0.22,
+    "end": 2.81,
+    "text": "Tổ tiên của bạn thức dậy khi cơ thể sẵn sàng."
+  },
+  {
+    "index": 2,
+    "start": 3.16,
+    "end": 11.54,
+    "text": "Không có chuông báo thức. Không có thông báo. Không có cuộc họp."
+  },
+  {
+    "index": 3,
+    "start": 13.45,
+    "end": 29.36,
+    "text": "Suốt khoảng ba trăm nghìn năm, đây là mỗi buổi sáng của tổ tiên bạn."
+  },
+  {
+    "index": 4,
+    "start": 29.36,
+    "end": 31.84,
+    "text": "Vậy họ thực sự làm gì với tất cả thời gian đó?"
+  },
+  {
+    "index": 5,
+    "start": 32.36,
+    "end": 34.88,
+    "text": "Câu trả lời có lẽ sẽ khiến bạn không thoải mái."
+  },
+  {
+    "index": 6,
+    "start": 35.32,
+    "end": 50.5,
+    "text": "Nhà nhân học Marshall Sahlins gọi người săn bắt hái lượm là xã hội sung túc nguyên thủy."
+  },
+  {
+    "index": 7,
+    "start": 50.5,
+    "end": 63.2,
+    "text": "Người Kung San ở sa mạc Kalahari chỉ làm việc 15-20 tiếng mỗi tuần để sinh tồn."
+  },
+  {
+    "index": 8,
+    "start": 63.2,
+    "end": 65.24,
+    "text": "Mười lăm đến hai mươi tiếng mỗi tuần."
+  },
+  {
+    "index": 9,
+    "start": 65.94,
+    "end": 68.3,
+    "text": "Bạn có lẽ còn mất nhiều hơn thế chỉ để đi làm về."
+  },
+  {
+    "index": 10,
+    "start": 68.8,
+    "end": 80.74,
+    "text": "Phần thời gian còn lại là thứ cổ xưa hơn năng suất."
+  },
+  {
+    "index": 11,
+    "start": 81.38,
+    "end": 83.32,
+    "text": "Hãy cùng dựng lại một buổi sáng."
+  },
+  {
+    "index": 12,
+    "start": 83.98,
+    "end": 89.24,
+    "text": "Bạn thức dậy cùng bốn hay năm người trong nhóm, khoảng một chục người đang cắm trại."
+  },
+  {
+    "index": 13,
+    "start": 90.04,
+    "end": 94.18,
+    "text": "Đống lửa từ đêm qua vẫn còn thở với vài than hồng. Ai đó bỏ thêm củi."
+  },
+  {
+    "index": 14,
+    "start": 98.1,
+    "end": 108.08,
+    "text": "Không có sự vội vã. Không có trật tự cụ thể. Trẻ em lang thang tự do."
+  },
+  {
+    "index": 15,
+    "start": 108.26,
+    "end": 119.54,
+    "text": "Nhà nhân học Peter Gray: trẻ em có gần như vô hạn thời gian tự do từ khi biết đi."
+  },
+  {
+    "index": 16,
+    "start": 120.32,
+    "end": 125.94,
+    "text": "Không có học tập có cấu trúc. Chỉ là khám phá tự định hướng không ngừng."
+  },
+  {
+    "index": 17,
+    "start": 127.2,
+    "end": 140.14,
+    "text": "Đến tuổi thiếu niên họ đã hấp thụ mọi thứ cần biết. Theo dấu vết. Nhóm lửa. Điều hướng xã hội."
+  },
+  {
+    "index": 18,
+    "start": 140.56,
+    "end": 142.96,
+    "text": "Bạn không được dạy dỗ. Bạn được nhúng chìm vào."
+  },
+  {
+    "index": 19,
+    "start": 143.62,
+    "end": 150.18,
+    "text": "Đến giữa buổi sáng, hoạt động chính bắt đầu. Tùy thuộc vào mùa và những gì vùng đất cung cấp."
+  },
+  {
+    "index": 20,
+    "start": 150.9,
+    "end": 159.1,
+    "text": "Nếu là ngày săn, hai hay ba người sẽ lên đường. Không bao giờ tất cả."
+  },
+  {
+    "index": 21,
+    "start": 159.54,
+    "end": 170.4,
+    "text": "Người Hadza ở Tanzania thường săn theo nhóm hai đến bốn người."
+  },
+  {
+    "index": 22,
+    "start": 170.98,
+    "end": 176.52,
+    "text": "Cuộc săn có thể kéo dài ba tiếng, có thể bảy tiếng. Có thể không có gì."
+  },
+  {
+    "index": 23,
+    "start": 177.06,
+    "end": 180.64,
+    "text": "Thất bại không phải là thảm họa. Đó chỉ là ngày thứ Ba bình thường."
+  },
+  {
+    "index": 24,
+    "start": 182.28,
+    "end": 189.02,
+    "text": "Ở trại, việc hái lượm tiếp tục. Phụ nữ và đàn ông lớn tuổi di chuyển qua vùng cảnh quan quen thuộc."
+  },
+  {
+    "index": 25,
+    "start": 189.64,
+    "end": 195.34,
+    "text": "Họ biết cây nào ăn được bây giờ và cây nào sẽ sẵn sàng sau ba tuần nữa."
+  },
+  {
+    "index": 26,
+    "start": 198.22,
+    "end": 202.4,
+    "text": "Họ biết lối mòn thú và tiếng chim và ý nghĩa khi đàn ong bay về hướng bắc."
+  },
+  {
+    "index": 27,
+    "start": 203.02,
+    "end": 207.16,
+    "text": "Kiến thức này không được viết ra đâu cả. Nó sống trong cơ thể và trong những câu chuyện."
+  },
+  {
+    "index": 28,
+    "start": 207.92,
+    "end": 232.96,
+    "text": "Polly Wiessner: ban ngày cuộc nói chuyện mang tính thực tế. Ban đêm hoàn toàn là những câu chuyện."
+  },
+  {
+    "index": 29,
+    "start": 233.82,
+    "end": 240.39,
+    "text": "Chuyện về những người thân ở xa. Về những cuộc săn. Về các vị thần và những hành trình."
+  },
+  {
+    "index": 30,
+    "start": 242.46,
+    "end": 249.92,
+    "text": "Wiessner gọi đây là mạng xã hội nguyên thủy. Đống lửa là nơi trí tưởng tượng mở rộng."
+  },
+  {
+    "index": 31,
+    "start": 252.24,
+    "end": 256.62,
+    "text": "Nơi văn hóa được truyền đi. Nơi bản sắc được duy trì qua các thế hệ."
+  },
+  {
+    "index": 32,
+    "start": 256.66,
+    "end": 265.38,
+    "text": "Bạn ngồi quanh lửa vào giữa buổi chiều. Những người hái lượm thành công trở về với hạt mongongo, củ, quả mọng."
+  },
+  {
+    "index": 33,
+    "start": 268.22,
+    "end": 276.71,
+    "text": "Thức ăn được chia sẻ không phải vì từ thiện mà vì chia sẻ theo yêu cầu."
+  },
+  {
+    "index": 34,
+    "start": 279.11,
+    "end": 285.18,
+    "text": "Tích trữ không chỉ bị coi là xấu. Nó còn nguy hiểm. Nó đánh dấu bạn là kẻ ngoài nhóm."
+  },
+  {
+    "index": 35,
+    "start": 288.24,
+    "end": 294.3,
+    "text": "Không có tủ lạnh, không có kho chứa. Những gì tìm được hôm nay được ăn hôm nay."
+  },
+  {
+    "index": 36,
+    "start": 296.1,
+    "end": 312.34,
+    "text": "Không ai đói khi có ai đó có thức ăn. Tích lũy là không thể."
+  },
+  {
+    "index": 37,
+    "start": 312.34,
+    "end": 322.9,
+    "text": "James Suzman mô tả điều này là chủ nghĩa bình đẳng mạnh mẽ, được thực thi tích cực."
+  },
+  {
+    "index": 38,
+    "start": 323.06,
+    "end": 332.26,
+    "text": "Bất kỳ ai tự cao hay đòi hỏi nhiều hơn đều bị phá vỡ xã hội. Thông qua trêu chọc, tin đồn."
+  },
+  {
+    "index": 39,
+    "start": 335.77,
+    "end": 338.88,
+    "text": "Cái đinh nổi lên đều bị đóng xuống. Mỗi lần."
+  },
+  {
+    "index": 40,
+    "start": 339.16,
+    "end": 343.4,
+    "text": "Tổ tiên của bạn không mơ về việc vươn lên trên. Họ mơ về việc ở lại bên trong."
+  },
+  {
+    "index": 41,
+    "start": 343.92,
+    "end": 352.74,
+    "text": "Khi mặt trời thấp hơn, ngày chậm lại. Trẻ em chạy nhảy, leo trèo. Người lớn ngủ trưa."
+  },
+  {
+    "index": 42,
+    "start": 352.82,
+    "end": 361.72,
+    "text": "Nghỉ ngơi không phải là lười biếng. Đó là sinh lý học. Giấc ngủ hai pha."
+  },
+  {
+    "index": 43,
+    "start": 365.52,
+    "end": 377.93,
+    "text": "Cơ thể bạn được tạo ra cho điều này, trước khi ai đó quyết định mười sáu giờ liên tục là nghiêm túc."
+  },
+  {
+    "index": 44,
+    "start": 378.74,
+    "end": 399.66,
+    "text": "Nghiên cứu Carol Worthman: các xã hội truyền thống có mô hình ngủ khác biệt so với phương Tây."
+  },
+  {
+    "index": 45,
+    "start": 399.66,
+    "end": 410.66,
+    "text": "Không ai ngủ một mình nếu có thể tránh được. Ngủ trong bóng tối một mình sẽ là điều đáng sợ."
+  },
+  {
+    "index": 46,
+    "start": 414.96,
+    "end": 418.86,
+    "text": "Buổi tối đến. Đống lửa được dựng lại. Những câu chuyện trong ngày bắt đầu."
+  },
+  {
+    "index": 47,
+    "start": 419.34,
+    "end": 424.02,
+    "text": "Ai đó kể lại cuộc săn với những cử chỉ kịch tính. Người khác bắt chước tiếng chim."
+  },
+  {
+    "index": 48,
+    "start": 424.7,
+    "end": 431.61,
+    "text": "Trẻ em vẫn thức, lắng nghe, góp chuyện, được chào đón vào cuộc trò chuyện người lớn."
+  },
+  {
+    "index": 49,
+    "start": 432.94,
+    "end": 437.26,
+    "text": "Người Hadza không có giờ đi ngủ. Giấc ngủ đến khi cơ thể yêu cầu."
+  },
+  {
+    "index": 50,
+    "start": 439.5,
+    "end": 445.68,
+    "text": "Và rồi lửa tàn."
+  },
+  {
+    "index": 51,
+    "start": 445.8,
+    "end": 446.82,
+    "text": "Và rồi im lặng."
+  },
+  {
+    "index": 52,
+    "start": 447.38,
+    "end": 449.28,
+    "text": "Bây giờ hãy nghĩ về ngày hôm qua của bạn."
+  },
+  {
+    "index": 53,
+    "start": 450.04,
+    "end": 453.46,
+    "text": "Lần cuối cùng bạn để cơ thể thức dậy không có chuông báo là khi nào."
+  },
+  {
+    "index": 54,
+    "start": 454.02,
+    "end": 457.72,
+    "text": "Lần cuối cùng bạn dành ba tiếng trong thời gian không có cấu trúc với người bạn yêu."
+  },
+  {
+    "index": 55,
+    "start": 461.13,
+    "end": 469.34,
+    "text": "Lần cuối cùng bạn ăn bữa ăn do ai đó thân thiết tự nấu, chia sẻ với tất cả mọi người."
+  },
+  {
+    "index": 56,
+    "start": 472.92,
+    "end": 487.7,
+    "text": "Steven Mithen: đời sống xã hội thời tiền sử là một loại nền văn minh khác, tối ưu hóa cho sự thuộc về."
+  },
+  {
+    "index": 57,
+    "start": 488.52,
+    "end": 490.18,
+    "text": "Tối ưu hóa không phải cho sản lượng mà cho sự thuộc về. Không phải cho tích lũy mà cho sự đủ đầy."
+  },
+  {
+    "index": 58,
+    "start": 493.89,
+    "end": 507.22,
+    "text": "Bạn vẫn mang sự tối ưu hóa đó trong cơ thể. Đó là lý do sự im lặng cảm thấy sai và giọng nói cảm thấy đúng."
+  },
+  {
+    "index": 59,
+    "start": 507.22,
+    "end": 514.04,
+    "text": "Não bạn giải phóng dopamine khi kể chuyện và oxytocin khi tiếp xúc mắt và serotonin khi bạn cảm thấy quan trọng."
+  },
+  {
+    "index": 60,
+    "start": 515.22,
+    "end": 518.66,
+    "text": "Bạn không được tạo ra cho văn phòng. Bạn được tạo ra cho đống lửa."
+  },
+  {
+    "index": 61,
+    "start": 519.06,
+    "end": 522.68,
+    "text": "Chuông báo thức reo. Bạn với tay lấy điện thoại trước khi mắt mở hoàn toàn."
+  },
+  {
+    "index": 62,
+    "start": 523.28,
+    "end": 526.2,
+    "text": "Tổ tiên của bạn sẽ không nhận ra bất kỳ điều gì trong số này."
+  },
+  {
+    "index": 63,
+    "start": 526.84,
+    "end": 535.26,
+    "text": "Nhưng hệ thần kinh của bạn vẫn biết chính xác một buổi sáng thực sự cảm giác như thế nào."
+  },
+  {
+    "index": 64,
+    "start": 535.7,
+    "end": 537.16,
+    "text": "Nó đang chờ bạn nhớ lại."
+  }
+]

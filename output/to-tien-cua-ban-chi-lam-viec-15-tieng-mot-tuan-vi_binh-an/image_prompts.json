@@ -1,0 +1,659 @@
+[
+  {
+    "index": 1,
+    "start": 0.0,
+    "end": 4.523,
+    "text": "Hãy tưởng tượng bạn vừa xong việc hôm nay lúc hai giờ chiều. Không có gì khác cần làm.",
+    "prompt": "all characters fully clothed, thick animal hide vest covering chest, long hide skirt or loincloth covering waist to knees, no bare torso, no bare chest, wide cinematic shot of African savanna at golden hour, small group of prehistoric humans resting as tiny silhouettes beneath a large acacia tree in the distance, vast golden grassland, elephants grazing far background, peaceful afternoon, watercolor illustration, soft amber ochre washes, National Geographic style, warm golden light, loose painterly brushwork, cinematic 16:9, no text, no watermark, simple clean figures, two arms two legs per person, no extra limbs, loose impressionistic anatomy",
+    "negative_prompt": "nudity, bare chest, bare skin, bare torso, topless, shirtless, exposed breasts, cleavage, bikini top, revealing clothes, loincloth only, skimpy outfit, large breasts, oversized chest, sexualized body, sexual content, suggestive pose, 3D render, anime, chibi, Pixar, Disney, flat vector, extra limbs, extra arms, extra legs, three arms, three legs, deformed anatomy, fused limbs, text, watermark, logo",
+    "global_style": ""
+  },
+  {
+    "index": 2,
+    "start": 4.523,
+    "end": 12.358,
+    "text": "Không có email chưa đọc. Không có ca tiếp theo. Mặt trời vẫn cao, và buổi chiều vẫn còn dài.",
+    "prompt": "all characters fully clothed, thick animal hide vest covering chest, long hide skirt or loincloth covering waist to knees, no bare torso, no bare chest, vast African savanna wide establishing shot at golden sunset, lone prehistoric human silhouette resting under a single acacia tree, enormous glowing sun on horizon, open endless grassland, warm amber sky, watercolor illustration, soft amber ochre washes, National Geographic style, warm golden light, loose painterly brushwork, cinematic 16:9, no text, no watermark, simple clean figures, two arms two legs per person, no extra limbs, loose impressionistic anatomy",
+    "negative_prompt": "nudity, bare chest, bare skin, bare torso, topless, shirtless, exposed breasts, cleavage, bikini top, revealing clothes, loincloth only, skimpy outfit, large breasts, oversized chest, sexualized body, sexual content, suggestive pose, 3D render, anime, chibi, Pixar, Disney, flat vector, extra limbs, extra arms, extra legs, three arms, three legs, deformed anatomy, fused limbs, text, watermark, logo",
+    "global_style": ""
+  },
+  {
+    "index": 3,
+    "start": 14.498,
+    "end": 18.261,
+    "text": "Bạn không phải là người đặc biệt may mắn. Đó chỉ là một ngày thứ Tư bình thường của tổ tiên bạn.",
+    "prompt": "all characters fully clothed, thick animal hide vest covering chest, long hide skirt or loincloth covering waist to knees, no bare torso, no bare chest, wide overhead view of prehistoric family group seated around a small fire in a dry riverbed canyon, figures small against the vast red rocky landscape, afternoon light casting long shadows, warm earthy tones, watercolor illustration, soft amber ochre washes, National Geographic style, warm golden light, loose painterly brushwork, cinematic 16:9, no text, no watermark, simple clean figures, two arms two legs per person, no extra limbs, loose impressionistic anatomy",
+    "negative_prompt": "nudity, bare chest, bare skin, bare torso, topless, shirtless, exposed breasts, cleavage, bikini top, revealing clothes, loincloth only, skimpy outfit, large breasts, oversized chest, sexualized body, sexual content, suggestive pose, 3D render, anime, chibi, Pixar, Disney, flat vector, extra limbs, extra arms, extra legs, three arms, three legs, deformed anatomy, fused limbs, text, watermark, logo",
+    "global_style": ""
+  },
+  {
+    "index": 4,
+    "start": 19.476,
+    "end": 25.845,
+    "text": "Chúng ta thường nghĩ người tiền sử phải vật lộn sinh tồn từ sáng đến tối mới sống qua được. Dữ liệu nhân học lại cho thấy điều ngược lại.",
+    "prompt": "all characters fully clothed, thick animal hide vest covering chest, long hide skirt or loincloth covering waist to knees, no bare torso, no bare chest, A prehistoric man crouching alert with a spear in dense African bush, tense survival moment, dramatic low light, ancient wilderness, watercolor illustration, soft amber ochre washes, National Geographic style, warm golden light, loose painterly brushwork, cinematic 16:9, no text, no watermark, simple clean figures, two arms two legs per person, no extra limbs, loose impressionistic anatomy",
+    "negative_prompt": "nudity, bare chest, bare skin, bare torso, topless, shirtless, exposed breasts, cleavage, bikini top, revealing clothes, loincloth only, skimpy outfit, large breasts, oversized chest, sexualized body, sexual content, suggestive pose, 3D render, anime, chibi, Pixar, Disney, flat vector, extra limbs, extra arms, extra legs, three arms, three legs, deformed anatomy, fused limbs, text, watermark, logo",
+    "global_style": ""
+  },
+  {
+    "index": 5,
+    "start": 26.408,
+    "end": 33.868,
+    "text": "Hình ảnh phổ biến nhất về người cổ đại là thế này. Nguy hiểm rình rập, thức ăn khan hiếm, sự tồn tại luôn treo trên sợi chỉ mỏng manh.",
+    "prompt": "all characters fully clothed, thick animal hide vest covering chest, long hide skirt or loincloth covering waist to knees, no bare torso, no bare chest, Ancient hunter-gatherer man scanning the horizon from a rocky outcrop, spear in hand, eyes watchful, dramatic stormy sky behind him, dry savanna below, survival atmosphere, watercolor illustration, soft amber ochre washes, National Geographic style, warm golden light, loose painterly brushwork, cinematic 16:9, no text, no watermark, simple clean figures, two arms two legs per person, no extra limbs, loose impressionistic anatomy",
+    "negative_prompt": "nudity, bare chest, bare skin, bare torso, topless, shirtless, exposed breasts, cleavage, bikini top, revealing clothes, loincloth only, skimpy outfit, large breasts, oversized chest, sexualized body, sexual content, suggestive pose, 3D render, anime, chibi, Pixar, Disney, flat vector, extra limbs, extra arms, extra legs, three arms, three legs, deformed anatomy, fused limbs, text, watermark, logo",
+    "global_style": ""
+  },
+  {
+    "index": 6,
+    "start": 36.107,
+    "end": 40.65,
+    "text": "Phim tài liệu và sách giáo khoa đều tô đậm hình ảnh đó. Người tiền sử mắt cảnh giác, không rời vũ khí, luôn trong tư thế sẵn sàng.",
+    "prompt": "all characters fully clothed, thick animal hide vest covering chest, long hide skirt or loincloth covering waist to knees, no bare torso, no bare chest, Close portrait of a prehistoric hunter, intense watchful eyes, weathered face, holding a stone-tipped spear, dense jungle behind him, dramatic side lighting, watercolor illustration, soft amber ochre washes, National Geographic style, warm golden light, loose painterly brushwork, cinematic 16:9, no text, no watermark, simple clean figures, two arms two legs per person, no extra limbs, loose impressionistic anatomy",
+    "negative_prompt": "nudity, bare chest, bare skin, bare torso, topless, shirtless, exposed breasts, cleavage, bikini top, revealing clothes, loincloth only, skimpy outfit, large breasts, oversized chest, sexualized body, sexual content, suggestive pose, 3D render, anime, chibi, Pixar, Disney, flat vector, extra limbs, extra arms, extra legs, three arms, three legs, deformed anatomy, fused limbs, text, watermark, logo",
+    "global_style": ""
+  },
+  {
+    "index": 7,
+    "start": 40.65,
+    "end": 47.603,
+    "text": "Nhưng đó là câu chuyện chúng ta kể cho nhau. Không phải những gì bằng chứng thực sự cho thấy.",
+    "prompt": "all characters fully clothed, thick animal hide vest covering chest, long hide skirt or loincloth covering waist to knees, no bare torso, no bare chest, A prehistoric elder sitting calmly by a dying fire in the early morning, peaceful expression, wrinkled hands resting on knees, soft dawn light, African bush, watercolor illustration, soft amber ochre washes, National Geographic style, warm golden light, loose painterly brushwork, cinematic 16:9, no text, no watermark, simple clean figures, two arms two legs per person, no extra limbs, loose impressionistic anatomy",
+    "negative_prompt": "nudity, bare chest, bare skin, bare torso, topless, shirtless, exposed breasts, cleavage, bikini top, revealing clothes, loincloth only, skimpy outfit, large breasts, oversized chest, sexualized body, sexual content, suggestive pose, 3D render, anime, chibi, Pixar, Disney, flat vector, extra limbs, extra arms, extra legs, three arms, three legs, deformed anatomy, fused limbs, text, watermark, logo",
+    "global_style": ""
+  },
+  {
+    "index": 8,
+    "start": 48.551,
+    "end": 55.57,
+    "text": "Vào thập niên 1960, nhà nhân học người Canada Richard Lee đến sống cùng người Ju hoansi ở sa mạc Kalahari, miền nam châu Phi.",
+    "prompt": "all characters fully clothed, thick animal hide vest covering chest, long hide skirt or loincloth covering waist to knees, no bare torso, no bare chest, The Kalahari desert landscape at golden hour, endless red sand dunes and sparse dry scrub, vast empty wilderness, warm amber light, no people, watercolor illustration, soft amber ochre washes, National Geographic style, warm golden light, loose painterly brushwork, cinematic 16:9, no text, no watermark, simple clean figures, two arms two legs per person, no extra limbs, loose impressionistic anatomy",
+    "negative_prompt": "nudity, bare chest, bare skin, bare torso, topless, shirtless, exposed breasts, cleavage, bikini top, revealing clothes, loincloth only, skimpy outfit, large breasts, oversized chest, sexualized body, sexual content, suggestive pose, 3D render, anime, chibi, Pixar, Disney, flat vector, extra limbs, extra arms, extra legs, three arms, three legs, deformed anatomy, fused limbs, text, watermark, logo",
+    "global_style": ""
+  },
+  {
+    "index": 9,
+    "start": 57.617,
+    "end": 62.891,
+    "text": "Người Ju hoansi là một trong những nhóm săn bắt hái lượm còn tồn tại đến thời hiện đại. Họ không trồng trọt, không chăn nuôi.",
+    "prompt": "all characters fully clothed, thick animal hide vest covering chest, long hide skirt or loincloth covering waist to knees, no bare torso, no bare chest, A lone hunter-gatherer man walking through Kalahari scrubland at dawn, carrying a simple spear and animal skin bag, vast dry landscape around him, cinematic documentary wide shot, watercolor illustration, soft amber ochre washes, National Geographic style, warm golden light, loose painterly brushwork, cinematic 16:9, no text, no watermark, simple clean figures, two arms two legs per person, no extra limbs, loose impressionistic anatomy",
+    "negative_prompt": "nudity, bare chest, bare skin, bare torso, topless, shirtless, exposed breasts, cleavage, bikini top, revealing clothes, loincloth only, skimpy outfit, large breasts, oversized chest, sexualized body, sexual content, suggestive pose, 3D render, anime, chibi, Pixar, Disney, flat vector, extra limbs, extra arms, extra legs, three arms, three legs, deformed anatomy, fused limbs, text, watermark, logo",
+    "global_style": ""
+  },
+  {
+    "index": 10,
+    "start": 62.891,
+    "end": 66.051,
+    "text": "Họ sống bằng những gì đất và rừng cho họ mỗi ngày.",
+    "prompt": "all characters fully clothed, thick animal hide vest covering chest, long hide skirt or loincloth covering waist to knees, no bare torso, no bare chest, Hunter-gatherer hands carefully harvesting wild roots and berries from dry red earth, close-up detail, natural bounty from the land, warm earthy cinematic tones, watercolor illustration, soft amber ochre washes, National Geographic style, warm golden light, loose painterly brushwork, cinematic 16:9, no text, no watermark, simple clean figures, two arms two legs per person, no extra limbs, loose impressionistic anatomy",
+    "negative_prompt": "nudity, bare chest, bare skin, bare torso, topless, shirtless, exposed breasts, cleavage, bikini top, revealing clothes, loincloth only, skimpy outfit, large breasts, oversized chest, sexualized body, sexual content, suggestive pose, 3D render, anime, chibi, Pixar, Disney, flat vector, extra limbs, extra arms, extra legs, three arms, three legs, deformed anatomy, fused limbs, text, watermark, logo",
+    "global_style": ""
+  },
+  {
+    "index": 11,
+    "start": 66.051,
+    "end": 73.414,
+    "text": "Lee ghi chép tỉ mỉ từng giờ mà họ dành để đi tìm thức ăn. Kết quả khiến ông phải kiểm tra lại nhiều lần trước khi công bố.",
+    "prompt": "all characters fully clothed, thick animal hide vest covering chest, long hide skirt or loincloth covering waist to knees, no bare torso, no bare chest, A Ju hoansi woman gathering wild tubers from sandy ground in the Kalahari, focused and methodical, morning light, simple digging stick in hand, watercolor illustration, soft amber ochre washes, National Geographic style, warm golden light, loose painterly brushwork, cinematic 16:9, no text, no watermark, simple clean figures, two arms two legs per person, no extra limbs, loose impressionistic anatomy",
+    "negative_prompt": "nudity, bare chest, bare skin, bare torso, topless, shirtless, exposed breasts, cleavage, bikini top, revealing clothes, loincloth only, skimpy outfit, large breasts, oversized chest, sexualized body, sexual content, suggestive pose, 3D render, anime, chibi, Pixar, Disney, flat vector, extra limbs, extra arms, extra legs, three arms, three legs, deformed anatomy, fused limbs, text, watermark, logo",
+    "global_style": ""
+  },
+  {
+    "index": 12,
+    "start": 74.051,
+    "end": 76.975,
+    "text": "Người Ju hoansi trung bình chỉ dành khoảng mười hai đến mười chín tiếng mỗi tuần để săn bắt và hái lượm.",
+    "prompt": "all characters fully clothed, thick animal hide vest covering chest, long hide skirt or loincloth covering waist to knees, no bare torso, no bare chest, Two Ju hoansi hunters returning to camp in the late morning with gathered food, relaxed posture, work already done for the day, dry Kalahari landscape, warm light, watercolor illustration, soft amber ochre washes, National Geographic style, warm golden light, loose painterly brushwork, cinematic 16:9, no text, no watermark, simple clean figures, two arms two legs per person, no extra limbs, loose impressionistic anatomy",
+    "negative_prompt": "nudity, bare chest, bare skin, bare torso, topless, shirtless, exposed breasts, cleavage, bikini top, revealing clothes, loincloth only, skimpy outfit, large breasts, oversized chest, sexualized body, sexual content, suggestive pose, 3D render, anime, chibi, Pixar, Disney, flat vector, extra limbs, extra arms, extra legs, three arms, three legs, deformed anatomy, fused limbs, text, watermark, logo",
+    "global_style": ""
+  },
+  {
+    "index": 13,
+    "start": 76.975,
+    "end": 81.873,
+    "text": "Mười hai đến mười chín tiếng. Mỗi tuần.",
+    "prompt": "all characters fully clothed, thick animal hide vest covering chest, long hide skirt or loincloth covering waist to knees, no bare torso, no bare chest, A prehistoric man lying back on warm red earth staring at the open sky, completely at rest, midday African sun, sparse acacia trees, nothing to do, peaceful, watercolor illustration, soft amber ochre washes, National Geographic style, warm golden light, loose painterly brushwork, cinematic 16:9, no text, no watermark, simple clean figures, two arms two legs per person, no extra limbs, loose impressionistic anatomy",
+    "negative_prompt": "nudity, bare chest, bare skin, bare torso, topless, shirtless, exposed breasts, cleavage, bikini top, revealing clothes, loincloth only, skimpy outfit, large breasts, oversized chest, sexualized body, sexual content, suggestive pose, 3D render, anime, chibi, Pixar, Disney, flat vector, extra limbs, extra arms, extra legs, three arms, three legs, deformed anatomy, fused limbs, text, watermark, logo",
+    "global_style": ""
+  },
+  {
+    "index": 14,
+    "start": 81.873,
+    "end": 85.172,
+    "text": "Phần còn lại của thời gian, họ dành cho chính mình.",
+    "prompt": "all characters fully clothed, thick animal hide vest covering chest, long hide skirt or loincloth covering waist to knees, no bare torso, no bare chest, A prehistoric woman sitting alone in the shade of a large acacia tree, relaxed and unhurried, golden afternoon light, African savanna stretching behind her, watercolor illustration, soft amber ochre washes, National Geographic style, warm golden light, loose painterly brushwork, cinematic 16:9, no text, no watermark, simple clean figures, two arms two legs per person, no extra limbs, loose impressionistic anatomy",
+    "negative_prompt": "nudity, bare chest, bare skin, bare torso, topless, shirtless, exposed breasts, cleavage, bikini top, revealing clothes, loincloth only, skimpy outfit, large breasts, oversized chest, sexualized body, sexual content, suggestive pose, 3D render, anime, chibi, Pixar, Disney, flat vector, extra limbs, extra arms, extra legs, three arms, three legs, deformed anatomy, fused limbs, text, watermark, logo",
+    "global_style": ""
+  },
+  {
+    "index": 15,
+    "start": 85.172,
+    "end": 90.403,
+    "text": "Kết quả này không phải là ngoại lệ của một nhóm may mắn sống ở vùng đất giàu có.",
+    "prompt": "all characters fully clothed, thick animal hide vest covering chest, long hide skirt or loincloth covering waist to knees, no bare torso, no bare chest, Wide shot of sparse African savanna stretching to the horizon, dry and difficult, not lush, a single ancient human figure barely visible resting beneath a lone tree, warm tones, watercolor illustration, soft amber ochre washes, National Geographic style, warm golden light, loose painterly brushwork, cinematic 16:9, no text, no watermark, simple clean figures, two arms two legs per person, no extra limbs, loose impressionistic anatomy",
+    "negative_prompt": "nudity, bare chest, bare skin, bare torso, topless, shirtless, exposed breasts, cleavage, bikini top, revealing clothes, loincloth only, skimpy outfit, large breasts, oversized chest, sexualized body, sexual content, suggestive pose, 3D render, anime, chibi, Pixar, Disney, flat vector, extra limbs, extra arms, extra legs, three arms, three legs, deformed anatomy, fused limbs, text, watermark, logo",
+    "global_style": ""
+  },
+  {
+    "index": 16,
+    "start": 91.196,
+    "end": 99.877,
+    "text": "Nhà nhân học James Woodburn cũng ghi nhận điều tương tự khi nghiên cứu người Hadza ở Tanzania, Đông Phi. Họ cũng dành ít thời gian hơn nhiều so với người hiện đại để kiếm sống.",
+    "prompt": "all characters fully clothed, thick animal hide vest covering chest, long hide skirt or loincloth covering waist to knees, no bare torso, no bare chest, A Hadza hunter resting under a large tree in the Tanzanian bush, leaning back against the trunk, eyes closed, dry African landscape around him, watercolor illustration, soft amber ochre washes, National Geographic style, warm golden light, loose painterly brushwork, cinematic 16:9, no text, no watermark, simple clean figures, two arms two legs per person, no extra limbs, loose impressionistic anatomy",
+    "negative_prompt": "nudity, bare chest, bare skin, bare torso, topless, shirtless, exposed breasts, cleavage, bikini top, revealing clothes, loincloth only, skimpy outfit, large breasts, oversized chest, sexualized body, sexual content, suggestive pose, 3D render, anime, chibi, Pixar, Disney, flat vector, extra limbs, extra arms, extra legs, three arms, three legs, deformed anatomy, fused limbs, text, watermark, logo",
+    "global_style": ""
+  },
+  {
+    "index": 17,
+    "start": 101.033,
+    "end": 104.444,
+    "text": "Người Hadza có thể kiếm đủ thức ăn cho một ngày chỉ trong vài tiếng đồng hồ buổi sáng.",
+    "prompt": "all characters fully clothed, thick animal hide vest covering chest, long hide skirt or loincloth covering waist to knees, no bare torso, no bare chest, A Hadza hunter returning to camp in the early morning carrying gathered honey and wild tubers, sun still low, work already finished for the day, wide cinematic African bush shot, watercolor illustration, soft amber ochre washes, National Geographic style, warm golden light, loose painterly brushwork, cinematic 16:9, no text, no watermark, simple clean figures, two arms two legs per person, no extra limbs, loose impressionistic anatomy",
+    "negative_prompt": "nudity, bare chest, bare skin, bare torso, topless, shirtless, exposed breasts, cleavage, bikini top, revealing clothes, loincloth only, skimpy outfit, large breasts, oversized chest, sexualized body, sexual content, suggestive pose, 3D render, anime, chibi, Pixar, Disney, flat vector, extra limbs, extra arms, extra legs, three arms, three legs, deformed anatomy, fused limbs, text, watermark, logo",
+    "global_style": ""
+  },
+  {
+    "index": 18,
+    "start": 105.359,
+    "end": 113.02,
+    "text": "Nhà nhân học Marshall Sahlins sau đó tổng hợp các nghiên cứu từ nhiều nhóm người khác nhau. Ông gọi người săn bắt hái lượm là xã hội sung túc nguyên thủy.",
+    "prompt": "all characters fully clothed, thick animal hide vest covering chest, long hide skirt or loincloth covering waist to knees, no bare torso, no bare chest, An ancient hunter-gatherer camp at dusk, wild food spread on the ground, a small fire burning, simple shelters visible, warm golden light, no people in focus, landscape and objects tell the story, watercolor illustration, soft amber ochre washes, National Geographic style, warm golden light, loose painterly brushwork, cinematic 16:9, no text, no watermark, simple clean figures, two arms two legs per person, no extra limbs, loose impressionistic anatomy",
+    "negative_prompt": "nudity, bare chest, bare skin, bare torso, topless, shirtless, exposed breasts, cleavage, bikini top, revealing clothes, loincloth only, skimpy outfit, large breasts, oversized chest, sexualized body, sexual content, suggestive pose, 3D render, anime, chibi, Pixar, Disney, flat vector, extra limbs, extra arms, extra legs, three arms, three legs, deformed anatomy, fused limbs, text, watermark, logo",
+    "global_style": ""
+  },
+  {
+    "index": 19,
+    "start": 115.313,
+    "end": 120.548,
+    "text": "Sahlins lập luận rằng người hiện đại, dù giàu đến đâu, vẫn thường cảm thấy thiếu. Người săn bắt hái lượm ít khi có cảm giác đó.",
+    "prompt": "all characters fully clothed, thick animal hide vest covering chest, long hide skirt or loincloth covering waist to knees, no bare torso, no bare chest, An ancient hunter-gatherer man sitting with deep contentment, surrounded by simple natural abundance, fruits roots and gathered plants, warm golden light, watercolor illustration, soft amber ochre washes, National Geographic style, warm golden light, loose painterly brushwork, cinematic 16:9, no text, no watermark, simple clean figures, two arms two legs per person, no extra limbs, loose impressionistic anatomy",
+    "negative_prompt": "nudity, bare chest, bare skin, bare torso, topless, shirtless, exposed breasts, cleavage, bikini top, revealing clothes, loincloth only, skimpy outfit, large breasts, oversized chest, sexualized body, sexual content, suggestive pose, 3D render, anime, chibi, Pixar, Disney, flat vector, extra limbs, extra arms, extra legs, three arms, three legs, deformed anatomy, fused limbs, text, watermark, logo",
+    "global_style": ""
+  },
+  {
+    "index": 20,
+    "start": 120.548,
+    "end": 127.405,
+    "text": "Không phải vì họ có nhiều hơn chúng ta. Mà vì ranh giới giữa đủ và thiếu của họ nằm ở một nơi khác.",
+    "prompt": "all characters fully clothed, thick animal hide vest covering chest, long hide skirt or loincloth covering waist to knees, no bare torso, no bare chest, Close-up of prehistoric hands holding a small amount of wild food, berries and roots, just enough for one meal, red earth below, soft natural light, simple sufficiency, watercolor illustration, soft amber ochre washes, National Geographic style, warm golden light, loose painterly brushwork, cinematic 16:9, no text, no watermark, simple clean figures, two arms two legs per person, no extra limbs, loose impressionistic anatomy",
+    "negative_prompt": "nudity, bare chest, bare skin, bare torso, topless, shirtless, exposed breasts, cleavage, bikini top, revealing clothes, loincloth only, skimpy outfit, large breasts, oversized chest, sexualized body, sexual content, suggestive pose, 3D render, anime, chibi, Pixar, Disney, flat vector, extra limbs, extra arms, extra legs, three arms, three legs, deformed anatomy, fused limbs, text, watermark, logo",
+    "global_style": ""
+  },
+  {
+    "index": 21,
+    "start": 128.784,
+    "end": 132.392,
+    "text": "Sung túc không có nghĩa là dư thừa. Sung túc có thể đơn giản là đủ.",
+    "prompt": "all characters fully clothed, thick animal hide vest covering chest, long hide skirt or loincloth covering waist to knees, no bare torso, no bare chest, A prehistoric woman wearing long wraparound hide skirt and hide top sitting peacefully beside a small pile of gathered food, calm satisfied expression, dry African landscape, late afternoon light, watercolor illustration, soft amber ochre washes, National Geographic style, warm golden light, loose painterly brushwork, cinematic 16:9, no text, no watermark, simple clean figures, two arms two legs per person, no extra limbs, loose impressionistic anatomy",
+    "negative_prompt": "nudity, bare chest, bare skin, bare torso, topless, shirtless, exposed breasts, cleavage, bikini top, revealing clothes, loincloth only, skimpy outfit, large breasts, oversized chest, sexualized body, sexual content, suggestive pose, 3D render, anime, chibi, Pixar, Disney, flat vector, extra limbs, extra arms, extra legs, three arms, three legs, deformed anatomy, fused limbs, text, watermark, logo",
+    "global_style": ""
+  },
+  {
+    "index": 22,
+    "start": 133.624,
+    "end": 135.046,
+    "text": "Vậy với phần còn lại của ngày, họ làm gì?",
+    "prompt": "all characters fully clothed, thick animal hide vest covering chest, long hide skirt or loincloth covering waist to knees, no bare torso, no bare chest, Wide open African afternoon, long shadows stretching across red earth, a lone ancient human figure barely visible resting in the distance, vast sky above, the whole long afternoon stretching ahead, watercolor illustration, soft amber ochre washes, National Geographic style, warm golden light, loose painterly brushwork, cinematic 16:9, no text, no watermark, simple clean figures, two arms two legs per person, no extra limbs, loose impressionistic anatomy",
+    "negative_prompt": "nudity, bare chest, bare skin, bare torso, topless, shirtless, exposed breasts, cleavage, bikini top, revealing clothes, loincloth only, skimpy outfit, large breasts, oversized chest, sexualized body, sexual content, suggestive pose, 3D render, anime, chibi, Pixar, Disney, flat vector, extra limbs, extra arms, extra legs, three arms, three legs, deformed anatomy, fused limbs, text, watermark, logo",
+    "global_style": ""
+  },
+  {
+    "index": 23,
+    "start": 135.046,
+    "end": 143.684,
+    "text": "Câu trả lời đầu tiên và đơn giản nhất là họ ngủ. Người Ju hoansi ngủ hơn tám tiếng mỗi đêm, và thường thêm giấc ngủ ngắn vào buổi chiều.",
+    "prompt": "all characters fully clothed, thick animal hide vest covering chest, long hide skirt or loincloth covering waist to knees, no bare torso, no bare chest, A prehistoric man napping deeply in the shade of an acacia tree at hot midday, body completely relaxed on dry red earth, dappled light filtering down through leaves, African savanna, watercolor illustration, soft amber ochre washes, National Geographic style, warm golden light, loose painterly brushwork, cinematic 16:9, no text, no watermark, simple clean figures, two arms two legs per person, no extra limbs, loose impressionistic anatomy",
+    "negative_prompt": "nudity, bare chest, bare skin, bare torso, topless, shirtless, exposed breasts, cleavage, bikini top, revealing clothes, loincloth only, skimpy outfit, large breasts, oversized chest, sexualized body, sexual content, suggestive pose, 3D render, anime, chibi, Pixar, Disney, flat vector, extra limbs, extra arms, extra legs, three arms, three legs, deformed anatomy, fused limbs, text, watermark, logo",
+    "global_style": ""
+  },
+  {
+    "index": 24,
+    "start": 145.159,
+    "end": 149.894,
+    "text": "Không phải vì họ lười. Mà vì cơ thể người được xây dựng để nghỉ ngơi nhiều hơn chúng ta đang cho phép.",
+    "prompt": "all characters fully clothed, thick animal hide vest covering chest, long hide skirt or loincloth covering waist to knees, no bare torso, no bare chest, An ancient man sleeping deeply on warm red earth under open sky, completely relaxed, natural resting pose, afternoon light casting long shadows, African wilderness, intimate and peaceful cinematic shot, watercolor illustration, soft amber ochre washes, National Geographic style, warm golden light, loose painterly brushwork, cinematic 16:9, no text, no watermark, simple clean figures, two arms two legs per person, no extra limbs, loose impressionistic anatomy",
+    "negative_prompt": "nudity, bare chest, bare skin, bare torso, topless, shirtless, exposed breasts, cleavage, bikini top, revealing clothes, loincloth only, skimpy outfit, large breasts, oversized chest, sexualized body, sexual content, suggestive pose, 3D render, anime, chibi, Pixar, Disney, flat vector, extra limbs, extra arms, extra legs, three arms, three legs, deformed anatomy, fused limbs, text, watermark, logo",
+    "global_style": ""
+  },
+  {
+    "index": 25,
+    "start": 150.077,
+    "end": 155.786,
+    "text": "Nhà nhân học Polly Wiessner ghi lại cuộc sống ban đêm của người Ju hoansi trong nhiều chuyến điền dã. Bà nhận thấy một điều đáng chú ý.",
+    "prompt": "all characters fully clothed, thick animal hide vest covering chest, long hide skirt or loincloth covering waist to knees, no bare torso, no bare chest, A large campfire burning at night in the Kalahari desert, warm orange flames against the dark, starry sky above, empty space around the fire waiting for people, intimate and atmospheric, watercolor illustration, soft amber ochre washes, National Geographic style, warm golden light, loose painterly brushwork, cinematic 16:9, no text, no watermark, simple clean figures, two arms two legs per person, no extra limbs, loose impressionistic anatomy",
+    "negative_prompt": "nudity, bare chest, bare skin, bare torso, topless, shirtless, exposed breasts, cleavage, bikini top, revealing clothes, loincloth only, skimpy outfit, large breasts, oversized chest, sexualized body, sexual content, suggestive pose, 3D render, anime, chibi, Pixar, Disney, flat vector, extra limbs, extra arms, extra legs, three arms, three legs, deformed anatomy, fused limbs, text, watermark, logo",
+    "global_style": ""
+  },
+  {
+    "index": 26,
+    "start": 155.786,
+    "end": 167.16,
+    "text": "Vào ban ngày, người ta nói về thức ăn, về công việc, về những việc cần làm ngay. Nhưng khi mặt trời lặn và lửa được nhóm lên, cuộc trò chuyện thay đổi hoàn toàn.",
+    "prompt": "all characters fully clothed, thick animal hide vest covering chest, long hide skirt or loincloth covering waist to knees, no bare torso, no bare chest, African sunset over the Kalahari desert, deep orange and red sky, a small campfire just beginning to glow in the foreground, the transition from day to night, no people, watercolor illustration, soft amber ochre washes, National Geographic style, warm golden light, loose painterly brushwork, cinematic 16:9, no text, no watermark, simple clean figures, two arms two legs per person, no extra limbs, loose impressionistic anatomy",
+    "negative_prompt": "nudity, bare chest, bare skin, bare torso, topless, shirtless, exposed breasts, cleavage, bikini top, revealing clothes, loincloth only, skimpy outfit, large breasts, oversized chest, sexualized body, sexual content, suggestive pose, 3D render, anime, chibi, Pixar, Disney, flat vector, extra limbs, extra arms, extra legs, three arms, three legs, deformed anatomy, fused limbs, text, watermark, logo",
+    "global_style": ""
+  },
+  {
+    "index": 27,
+    "start": 167.301,
+    "end": 172.93,
+    "text": "Hơn tám mươi phần trăm cuộc trò chuyện ban đêm bên lửa là câu chuyện về con người khác, về cảm xúc, về những nơi xa, về điều kỳ lạ từng xảy ra.",
+    "prompt": "all characters fully clothed, thick animal hide vest covering chest, long hide skirt or loincloth covering waist to knees, no bare torso, no bare chest, A prehistoric elder gesturing dramatically while telling a story by a large campfire at night, his face lit by warm firelight, one listener visible beside him leaning in, dark African wilderness behind, watercolor illustration, soft amber ochre washes, National Geographic style, warm golden light, loose painterly brushwork, cinematic 16:9, no text, no watermark, simple clean figures, two arms two legs per person, no extra limbs, loose impressionistic anatomy",
+    "negative_prompt": "nudity, bare chest, bare skin, bare torso, topless, shirtless, exposed breasts, cleavage, bikini top, revealing clothes, loincloth only, skimpy outfit, large breasts, oversized chest, sexualized body, sexual content, suggestive pose, 3D render, anime, chibi, Pixar, Disney, flat vector, extra limbs, extra arms, extra legs, three arms, three legs, deformed anatomy, fused limbs, text, watermark, logo",
+    "global_style": ""
+  },
+  {
+    "index": 28,
+    "start": 172.93,
+    "end": 181.187,
+    "text": "Đó là loại trò chuyện không có mục đích nào ngoài việc kể và nghe. Loại trò chuyện mà nhiều người hiện đại hiếm khi có đủ thời gian và không gian để có được.",
+    "prompt": "all characters fully clothed, thick animal hide vest covering chest, long hide skirt or loincloth covering waist to knees, no bare torso, no bare chest, Close portrait of an ancient woman listening intently to a story by firelight, eyes wide and fully engaged, warm orange glow on her face, night darkness behind her, cinematic intimate, watercolor illustration, soft amber ochre washes, National Geographic style, warm golden light, loose painterly brushwork, cinematic 16:9, no text, no watermark, simple clean figures, two arms two legs per person, no extra limbs, loose impressionistic anatomy",
+    "negative_prompt": "nudity, bare chest, bare skin, bare torso, topless, shirtless, exposed breasts, cleavage, bikini top, revealing clothes, loincloth only, skimpy outfit, large breasts, oversized chest, sexualized body, sexual content, suggestive pose, 3D render, anime, chibi, Pixar, Disney, flat vector, extra limbs, extra arms, extra legs, three arms, three legs, deformed anatomy, fused limbs, text, watermark, logo",
+    "global_style": ""
+  },
+  {
+    "index": 29,
+    "start": 181.187,
+    "end": 189.378,
+    "text": "Những câu chuyện đó không phải là giải trí thuần túy. Chúng là cách con người nhớ mình là ai, và mình thuộc về đâu.",
+    "prompt": "all characters fully clothed, thick animal hide vest covering chest, long hide skirt or loincloth covering waist to knees, no bare torso, no bare chest, A campfire burning at the center of a prehistoric camp at night, warm light radiating outward across the red earth, Kalahari desert stars above, sense of community and belonging in the empty space around the fire, watercolor illustration, soft amber ochre washes, National Geographic style, warm golden light, loose painterly brushwork, cinematic 16:9, no text, no watermark, simple clean figures, two arms two legs per person, no extra limbs, loose impressionistic anatomy",
+    "negative_prompt": "nudity, bare chest, bare skin, bare torso, topless, shirtless, exposed breasts, cleavage, bikini top, revealing clothes, loincloth only, skimpy outfit, large breasts, oversized chest, sexualized body, sexual content, suggestive pose, 3D render, anime, chibi, Pixar, Disney, flat vector, extra limbs, extra arms, extra legs, three arms, three legs, deformed anatomy, fused limbs, text, watermark, logo",
+    "global_style": ""
+  },
+  {
+    "index": 30,
+    "start": 189.621,
+    "end": 195.705,
+    "text": "Họ chơi. Họ hát. Họ nhảy những điệu múa gắn kết cộng đồng và kết nối người sống với những gì lớn hơn chính họ.",
+    "prompt": "all characters fully clothed, thick animal hide vest covering chest, long hide skirt or loincloth covering waist to knees, no bare torso, no bare chest, A lone prehistoric man dancing beside a large fire at night, silhouette against leaping orange flames, African wilderness, vast starry sky above, joyful movement, watercolor illustration, soft amber ochre washes, National Geographic style, warm golden light, loose painterly brushwork, cinematic 16:9, no text, no watermark, simple clean figures, two arms two legs per person, no extra limbs, loose impressionistic anatomy",
+    "negative_prompt": "nudity, bare chest, bare skin, bare torso, topless, shirtless, exposed breasts, cleavage, bikini top, revealing clothes, loincloth only, skimpy outfit, large breasts, oversized chest, sexualized body, sexual content, suggestive pose, 3D render, anime, chibi, Pixar, Disney, flat vector, extra limbs, extra arms, extra legs, three arms, three legs, deformed anatomy, fused limbs, text, watermark, logo",
+    "global_style": ""
+  },
+  {
+    "index": 31,
+    "start": 195.705,
+    "end": 203.095,
+    "text": "Họ làm và sửa công cụ theo nhịp của riêng mình. Không phải vì ai đặt thời hạn, mà vì họ muốn.",
+    "prompt": "all characters fully clothed, thick animal hide vest covering chest, long hide skirt or loincloth covering waist to knees, no bare torso, no bare chest, A prehistoric man carefully crafting a stone tool by firelight, focused hands chipping flint, slow deliberate work with no urgency, warm amber glow, African night, intimate cinematic close-up, watercolor illustration, soft amber ochre washes, National Geographic style, warm golden light, loose painterly brushwork, cinematic 16:9, no text, no watermark, simple clean figures, two arms two legs per person, no extra limbs, loose impressionistic anatomy",
+    "negative_prompt": "nudity, bare chest, bare skin, bare torso, topless, shirtless, exposed breasts, cleavage, bikini top, revealing clothes, loincloth only, skimpy outfit, large breasts, oversized chest, sexualized body, sexual content, suggestive pose, 3D render, anime, chibi, Pixar, Disney, flat vector, extra limbs, extra arms, extra legs, three arms, three legs, deformed anatomy, fused limbs, text, watermark, logo",
+    "global_style": ""
+  },
+  {
+    "index": 32,
+    "start": 203.467,
+    "end": 209.966,
+    "text": "Họ làm đồ trang sức từ vỏ sò và xương. Không phải để bán hay để khoe. Mà đơn giản là vì tay muốn làm ra một thứ gì đó đẹp.",
+    "prompt": "all characters fully clothed, thick animal hide vest covering chest, long hide skirt or loincloth covering waist to knees, no bare torso, no bare chest, Close-up of ancient hands stringing a necklace of shells and small bones by firelight, patient and creative work, simple beauty being made from nothing, warm cinematic tones, watercolor illustration, soft amber ochre washes, National Geographic style, warm golden light, loose painterly brushwork, cinematic 16:9, no text, no watermark, simple clean figures, two arms two legs per person, no extra limbs, loose impressionistic anatomy",
+    "negative_prompt": "nudity, bare chest, bare skin, bare torso, topless, shirtless, exposed breasts, cleavage, bikini top, revealing clothes, loincloth only, skimpy outfit, large breasts, oversized chest, sexualized body, sexual content, suggestive pose, 3D render, anime, chibi, Pixar, Disney, flat vector, extra limbs, extra arms, extra legs, three arms, three legs, deformed anatomy, fused limbs, text, watermark, logo",
+    "global_style": ""
+  },
+  {
+    "index": 33,
+    "start": 209.966,
+    "end": 217.096,
+    "text": "Một điều đặc biệt về lối sống này là không ai tích trữ một mình. Thức ăn được chia sẻ khắp cộng đồng mỗi ngày.",
+    "prompt": "all characters fully clothed, thick animal hide vest covering chest, long hide skirt or loincloth covering waist to knees, no bare torso, no bare chest, A prehistoric hunter kneeling beside fresh meat from a kill, carefully dividing it into portions on dry ground at dusk, African bush, warm evening light, watercolor illustration, soft amber ochre washes, National Geographic style, warm golden light, loose painterly brushwork, cinematic 16:9, no text, no watermark, simple clean figures, two arms two legs per person, no extra limbs, loose impressionistic anatomy",
+    "negative_prompt": "nudity, bare chest, bare skin, bare torso, topless, shirtless, exposed breasts, cleavage, bikini top, revealing clothes, loincloth only, skimpy outfit, large breasts, oversized chest, sexualized body, sexual content, suggestive pose, 3D render, anime, chibi, Pixar, Disney, flat vector, extra limbs, extra arms, extra legs, three arms, three legs, deformed anatomy, fused limbs, text, watermark, logo",
+    "global_style": ""
+  },
+  {
+    "index": 34,
+    "start": 217.096,
+    "end": 228.592,
+    "text": "Không phải vì họ tốt bụng hơn chúng ta. Mà vì trong thế giới không có tủ lạnh và kho chứa, chia sẻ chính là bảo hiểm. Người may mắn hôm nay có thể là người cần giúp đỡ vào ngày mai.",
+    "prompt": "Portions of wild meat and food laid out on flat stones around a campfire, ready to be shared, warm firelight, African bush at dusk, no storage containers, watercolor illustration, soft amber ochre washes, National Geographic style, warm golden light, loose painterly brushwork, cinematic 16:9, no text, no watermark",
+    "negative_prompt": "nudity, bare chest, bare skin, bare torso, topless, shirtless, exposed breasts, cleavage, bikini top, revealing clothes, loincloth only, skimpy outfit, large breasts, oversized chest, sexualized body, sexual content, suggestive pose, 3D render, anime, chibi, Pixar, Disney, flat vector, extra limbs, extra arms, extra legs, three arms, three legs, deformed anatomy, fused limbs, text, watermark, logo",
+    "global_style": ""
+  },
+  {
+    "index": 35,
+    "start": 228.592,
+    "end": 237.875,
+    "text": "Người Ju hoansi có quy tắc ngầm về việc nói về con thú vừa săn được. Khoe khoang bị coi là xấu hổ. Nói nhỏ về thành công là điều bình thường.",
+    "prompt": "all characters fully clothed, thick animal hide vest covering chest, long hide skirt or loincloth covering waist to knees, no bare torso, no bare chest, A Ju hoansi hunter returning to camp with a kill, head slightly bowed, speaking quietly rather than celebrating, humble posture, other community members receiving news calmly, Kalahari dusk, watercolor illustration, soft amber ochre washes, National Geographic style, warm golden light, loose painterly brushwork, cinematic 16:9, no text, no watermark, simple clean figures, two arms two legs per person, no extra limbs, loose impressionistic anatomy",
+    "negative_prompt": "nudity, bare chest, bare skin, bare torso, topless, shirtless, exposed breasts, cleavage, bikini top, revealing clothes, loincloth only, skimpy outfit, large breasts, oversized chest, sexualized body, sexual content, suggestive pose, 3D render, anime, chibi, Pixar, Disney, flat vector, extra limbs, extra arms, extra legs, three arms, three legs, deformed anatomy, fused limbs, text, watermark, logo",
+    "global_style": ""
+  },
+  {
+    "index": 36,
+    "start": 237.875,
+    "end": 244.591,
+    "text": "Điều đó tạo ra một loại kết nối khác. Không phải qua nghĩa vụ, mà qua sự phụ thuộc lẫn nhau thực sự.",
+    "prompt": "all characters fully clothed, thick animal hide vest covering chest, long hide skirt or loincloth covering waist to knees, no bare torso, no bare chest, Two ancient hunter-gatherers sitting close together, one helping the other treat a small wound, quiet mutual care, firelight, genuine human interdependence, watercolor illustration, soft amber ochre washes, National Geographic style, warm golden light, loose painterly brushwork, cinematic 16:9, no text, no watermark, simple clean figures, two arms two legs per person, no extra limbs, loose impressionistic anatomy",
+    "negative_prompt": "nudity, bare chest, bare skin, bare torso, topless, shirtless, exposed breasts, cleavage, bikini top, revealing clothes, loincloth only, skimpy outfit, large breasts, oversized chest, sexualized body, sexual content, suggestive pose, 3D render, anime, chibi, Pixar, Disney, flat vector, extra limbs, extra arms, extra legs, three arms, three legs, deformed anatomy, fused limbs, text, watermark, logo",
+    "global_style": ""
+  },
+  {
+    "index": 37,
+    "start": 244.591,
+    "end": 251.979,
+    "text": "Ngọn lửa ban đêm là trung tâm của tất cả. Không phải chỉ để sưởi ấm hay nấu chín thức ăn. Mà để người ta ngồi lại với nhau và là chính mình.",
+    "prompt": "all characters fully clothed, thick animal hide vest covering chest, long hide skirt or loincloth covering waist to knees, no bare torso, no bare chest, A large campfire burning at the center of a prehistoric camp at night, fire as the heart of the world, two silhouetted figures seated beside it, Kalahari stars above, warm glow spreading outward, watercolor illustration, soft amber ochre washes, National Geographic style, warm golden light, loose painterly brushwork, cinematic 16:9, no text, no watermark, simple clean figures, two arms two legs per person, no extra limbs, loose impressionistic anatomy",
+    "negative_prompt": "nudity, bare chest, bare skin, bare torso, topless, shirtless, exposed breasts, cleavage, bikini top, revealing clothes, loincloth only, skimpy outfit, large breasts, oversized chest, sexualized body, sexual content, suggestive pose, 3D render, anime, chibi, Pixar, Disney, flat vector, extra limbs, extra arms, extra legs, three arms, three legs, deformed anatomy, fused limbs, text, watermark, logo",
+    "global_style": ""
+  },
+  {
+    "index": 38,
+    "start": 251.979,
+    "end": 260.383,
+    "text": "Nhưng đây là câu hỏi cần đặt ra thẳng thắn. Con số mười lăm tiếng đó tính những gì, và bỏ qua những gì?",
+    "prompt": "all characters fully clothed, thick animal hide vest covering chest, long hide skirt or loincloth covering waist to knees, no bare torso, no bare chest, A prehistoric woman preparing food after a hunt, scraping animal hide with a stone tool, grinding seeds on a flat rock, hard work visible in her posture, African afternoon light, watercolor illustration, soft amber ochre washes, National Geographic style, warm golden light, loose painterly brushwork, cinematic 16:9, no text, no watermark, simple clean figures, two arms two legs per person, no extra limbs, loose impressionistic anatomy",
+    "negative_prompt": "nudity, bare chest, bare skin, bare torso, topless, shirtless, exposed breasts, cleavage, bikini top, revealing clothes, loincloth only, skimpy outfit, large breasts, oversized chest, sexualized body, sexual content, suggestive pose, 3D render, anime, chibi, Pixar, Disney, flat vector, extra limbs, extra arms, extra legs, three arms, three legs, deformed anatomy, fused limbs, text, watermark, logo",
+    "global_style": ""
+  },
+  {
+    "index": 39,
+    "start": 260.394,
+    "end": 267.413,
+    "text": "Nếu chỉ tính giờ đi săn và hái quả trong rừng, con số đó có thể đúng. Nhưng còn chế biến thức ăn thì sao?",
+    "prompt": "all characters fully clothed, thick animal hide vest covering chest, long hide skirt or loincloth covering waist to knees, no bare torso, no bare chest, A prehistoric hunter crouching low in the bush at dawn, reading animal footprints in the red dirt, spear in hand, focused and still, dry African savanna, cinematic documentary wide shot, watercolor illustration, soft amber ochre washes, National Geographic style, warm golden light, loose painterly brushwork, cinematic 16:9, no text, no watermark, simple clean figures, two arms two legs per person, no extra limbs, loose impressionistic anatomy",
+    "negative_prompt": "nudity, bare chest, bare skin, bare torso, topless, shirtless, exposed breasts, cleavage, bikini top, revealing clothes, loincloth only, skimpy outfit, large breasts, oversized chest, sexualized body, sexual content, suggestive pose, 3D render, anime, chibi, Pixar, Disney, flat vector, extra limbs, extra arms, extra legs, three arms, three legs, deformed anatomy, fused limbs, text, watermark, logo",
+    "global_style": ""
+  },
+  {
+    "index": 40,
+    "start": 268.373,
+    "end": 275.207,
+    "text": "Một con thú lớn không thể ăn ngay tại chỗ. Cần làm sạch, phân chia, và chế biến. Thêm nhiều giờ nữa.",
+    "prompt": "all characters fully clothed, thick animal hide vest covering chest, long hide skirt or loincloth covering waist to knees, no bare torso, no bare chest, A prehistoric man butchering a large animal on open ground with a stone tool, late afternoon sun, realistic and unglamorous process, dry red earth, watercolor illustration, soft amber ochre washes, National Geographic style, warm golden light, loose painterly brushwork, cinematic 16:9, no text, no watermark, simple clean figures, two arms two legs per person, no extra limbs, loose impressionistic anatomy",
+    "negative_prompt": "nudity, bare chest, bare skin, bare torso, topless, shirtless, exposed breasts, cleavage, bikini top, revealing clothes, loincloth only, skimpy outfit, large breasts, oversized chest, sexualized body, sexual content, suggestive pose, 3D render, anime, chibi, Pixar, Disney, flat vector, extra limbs, extra arms, extra legs, three arms, three legs, deformed anatomy, fused limbs, text, watermark, logo",
+    "global_style": ""
+  },
+  {
+    "index": 41,
+    "start": 275.207,
+    "end": 282.219,
+    "text": "Còn chăm trẻ nhỏ? Còn di chuyển trại khi vùng đất cạn kiệt? Còn vá lều, sửa công cụ, thu hái và giã hạt?",
+    "prompt": "all characters fully clothed, thick animal hide vest covering chest, long hide skirt or loincloth covering waist to knees, no bare torso, no bare chest, A prehistoric woman waist-up grinding grain on a flat stone, focused downward, hide wrap clothing, stone shelter entrance visible behind her, stone tools beside her, serious and occupied, watercolor illustration, soft amber ochre washes, National Geographic style, warm golden light, loose painterly brushwork, cinematic 16:9, no text, no watermark, simple clean figures, two arms two legs per person, no extra limbs, loose impressionistic anatomy",
+    "negative_prompt": "nudity, bare chest, bare skin, bare torso, topless, shirtless, exposed breasts, cleavage, bikini top, revealing clothes, loincloth only, skimpy outfit, large breasts, oversized chest, sexualized body, sexual content, suggestive pose, 3D render, anime, chibi, Pixar, Disney, flat vector, extra limbs, extra arms, extra legs, three arms, three legs, deformed anatomy, fused limbs, text, watermark, logo",
+    "global_style": ""
+  },
+  {
+    "index": 42,
+    "start": 282.219,
+    "end": 290.08,
+    "text": "Các nhà nghiên cứu vẫn tranh luận về cách tính chính xác. Không có một con số duy nhất áp dụng cho tất cả mọi nhóm và mọi vùng địa lý.",
+    "prompt": "all characters fully clothed, thick animal hide vest covering chest, long hide skirt or loincloth covering waist to knees, no bare torso, no bare chest, Panoramic view of diverse ancient landscapes side by side, African desert, dense jungle, coastal cliffs, each with a small group of hunter-gatherers living differently, watercolor illustration, soft amber ochre washes, National Geographic style, warm golden light, loose painterly brushwork, cinematic 16:9, no text, no watermark, simple clean figures, two arms two legs per person, no extra limbs, loose impressionistic anatomy",
+    "negative_prompt": "nudity, bare chest, bare skin, bare torso, topless, shirtless, exposed breasts, cleavage, bikini top, revealing clothes, loincloth only, skimpy outfit, large breasts, oversized chest, sexualized body, sexual content, suggestive pose, 3D render, anime, chibi, Pixar, Disney, flat vector, extra limbs, extra arms, extra legs, three arms, three legs, deformed anatomy, fused limbs, text, watermark, logo",
+    "global_style": ""
+  },
+  {
+    "index": 43,
+    "start": 290.08,
+    "end": 297.27,
+    "text": "Nhưng ngay cả khi tính thêm tất cả những việc đó, hầu hết ước tính vẫn đặt tổng thời gian lao động thấp hơn người đi làm công sở ngày nay.",
+    "prompt": "all characters fully clothed, thick animal hide vest covering chest, long hide skirt or loincloth covering waist to knees, no bare torso, no bare chest, A prehistoric man sitting idle in the afternoon shade, all work finished, relaxed and content, the long afternoon sun still hours from setting, wide African savanna, watercolor illustration, soft amber ochre washes, National Geographic style, warm golden light, loose painterly brushwork, cinematic 16:9, no text, no watermark, simple clean figures, two arms two legs per person, no extra limbs, loose impressionistic anatomy",
+    "negative_prompt": "nudity, bare chest, bare skin, bare torso, topless, shirtless, exposed breasts, cleavage, bikini top, revealing clothes, loincloth only, skimpy outfit, large breasts, oversized chest, sexualized body, sexual content, suggestive pose, 3D render, anime, chibi, Pixar, Disney, flat vector, extra limbs, extra arms, extra legs, three arms, three legs, deformed anatomy, fused limbs, text, watermark, logo",
+    "global_style": ""
+  },
+  {
+    "index": 44,
+    "start": 297.27,
+    "end": 306.651,
+    "text": "Điều đó không có nghĩa là cuộc sống của họ dễ dàng. Hạn hán, bệnh tật, và xung đột đều tồn tại. Cái chết đến sớm hơn bây giờ.",
+    "prompt": "all characters fully clothed, thick animal hide vest covering chest, long hide skirt or loincloth covering waist to knees, no bare torso, no bare chest, A cracked dry riverbed in the Kalahari during severe drought, dead vegetation, a small group of ancient humans looking exhausted searching for water, harsh reality of ancient life, watercolor illustration, soft amber ochre washes, National Geographic style, warm golden light, loose painterly brushwork, cinematic 16:9, no text, no watermark, simple clean figures, two arms two legs per person, no extra limbs, loose impressionistic anatomy",
+    "negative_prompt": "nudity, bare chest, bare skin, bare torso, topless, shirtless, exposed breasts, cleavage, bikini top, revealing clothes, loincloth only, skimpy outfit, large breasts, oversized chest, sexualized body, sexual content, suggestive pose, 3D render, anime, chibi, Pixar, Disney, flat vector, extra limbs, extra arms, extra legs, three arms, three legs, deformed anatomy, fused limbs, text, watermark, logo",
+    "global_style": ""
+  },
+  {
+    "index": 45,
+    "start": 307.462,
+    "end": 314.75,
+    "text": "Nhưng câu hỏi ở đây không phải là cuộc sống nào tốt hơn. Câu hỏi là tại sao chúng ta làm việc nhiều hơn họ, dù có công nghệ mà họ không có.",
+    "prompt": "all characters fully clothed, thick animal hide vest covering chest, long hide skirt or loincloth covering waist to knees, no bare torso, no bare chest, A prehistoric man and woman sitting together at sunset looking at the vast horizon, contemplative mood, open ancient landscape, the question of time and work in the warm evening air, watercolor illustration, soft amber ochre washes, National Geographic style, warm golden light, loose painterly brushwork, cinematic 16:9, no text, no watermark, simple clean figures, two arms two legs per person, no extra limbs, loose impressionistic anatomy",
+    "negative_prompt": "nudity, bare chest, bare skin, bare torso, topless, shirtless, exposed breasts, cleavage, bikini top, revealing clothes, loincloth only, skimpy outfit, large breasts, oversized chest, sexualized body, sexual content, suggestive pose, 3D render, anime, chibi, Pixar, Disney, flat vector, extra limbs, extra arms, extra legs, three arms, three legs, deformed anatomy, fused limbs, text, watermark, logo",
+    "global_style": ""
+  },
+  {
+    "index": 46,
+    "start": 315.265,
+    "end": 319.768,
+    "text": "Câu trả lời bắt đầu từ khoảng mười hai nghìn năm trước, khi con người ở nhiều nơi trên thế giới dần chuyển sang trồng trọt và chăn nuôi.",
+    "prompt": "all characters fully clothed, thick animal hide vest covering chest, long hide skirt or loincloth covering waist to knees, no bare torso, no bare chest, Ancient humans in the Fertile Crescent, early signs of crop cultivation, a man scratching the earth with a primitive digging stick, small planted rows visible in rich soil, dawn of agriculture, watercolor illustration, soft amber ochre washes, National Geographic style, warm golden light, loose painterly brushwork, cinematic 16:9, no text, no watermark, simple clean figures, two arms two legs per person, no extra limbs, loose impressionistic anatomy",
+    "negative_prompt": "nudity, bare chest, bare skin, bare torso, topless, shirtless, exposed breasts, cleavage, bikini top, revealing clothes, loincloth only, skimpy outfit, large breasts, oversized chest, sexualized body, sexual content, suggestive pose, 3D render, anime, chibi, Pixar, Disney, flat vector, extra limbs, extra arms, extra legs, three arms, three legs, deformed anatomy, fused limbs, text, watermark, logo",
+    "global_style": ""
+  },
+  {
+    "index": 47,
+    "start": 319.768,
+    "end": 327.392,
+    "text": "Đây không phải là một quyết định được đưa ra trong một ngày. Không ai họp lại và quyết định từ nay thay đổi cách sống.",
+    "prompt": "all characters fully clothed, thick animal hide vest covering chest, long hide skirt or loincloth covering waist to knees, no bare torso, no bare chest, A gradual transition scene, hunter-gatherers slowly settling near a fertile river, some planting seeds experimentally beside a temporary camp, ancient world at a crossroads, watercolor illustration, soft amber ochre washes, National Geographic style, warm golden light, loose painterly brushwork, cinematic 16:9, no text, no watermark, simple clean figures, two arms two legs per person, no extra limbs, loose impressionistic anatomy",
+    "negative_prompt": "nudity, bare chest, bare skin, bare torso, topless, shirtless, exposed breasts, cleavage, bikini top, revealing clothes, loincloth only, skimpy outfit, large breasts, oversized chest, sexualized body, sexual content, suggestive pose, 3D render, anime, chibi, Pixar, Disney, flat vector, extra limbs, extra arms, extra legs, three arms, three legs, deformed anatomy, fused limbs, text, watermark, logo",
+    "global_style": ""
+  },
+  {
+    "index": 48,
+    "start": 327.392,
+    "end": 333.415,
+    "text": "Nông nghiệp xuất hiện từ từ, qua hàng trăm thế hệ, như một chiều hướng chứ không phải một lựa chọn rõ ràng.",
+    "prompt": "all characters fully clothed, thick animal hide vest covering chest, long hide skirt or loincloth covering waist to knees, no bare torso, no bare chest, Aerial wide view of early human settlement beside a fertile river, small primitive fields beginning to appear alongside a hunter-gatherer camp, ancient landscape slowly in transition, watercolor illustration, soft amber ochre washes, National Geographic style, warm golden light, loose painterly brushwork, cinematic 16:9, no text, no watermark, simple clean figures, two arms two legs per person, no extra limbs, loose impressionistic anatomy",
+    "negative_prompt": "nudity, bare chest, bare skin, bare torso, topless, shirtless, exposed breasts, cleavage, bikini top, revealing clothes, loincloth only, skimpy outfit, large breasts, oversized chest, sexualized body, sexual content, suggestive pose, 3D render, anime, chibi, Pixar, Disney, flat vector, extra limbs, extra arms, extra legs, three arms, three legs, deformed anatomy, fused limbs, text, watermark, logo",
+    "global_style": ""
+  },
+  {
+    "index": 49,
+    "start": 334.207,
+    "end": 343.482,
+    "text": "Và nông nghiệp mang lại những thứ thực sự có giá trị. Sự ổn định qua từng mùa. Lương thực dự trữ. Khả năng nuôi sống nhiều người hơn trên cùng một vùng đất.",
+    "prompt": "all characters fully clothed, thick animal hide vest covering chest, long hide skirt or loincloth covering waist to knees, no bare torso, no bare chest, Early agricultural humans storing grain in clay pots, a growing ancient settlement visible behind, more people than a hunter-gatherer band, sense of new stability, ancient world, watercolor illustration, soft amber ochre washes, National Geographic style, warm golden light, loose painterly brushwork, cinematic 16:9, no text, no watermark, simple clean figures, two arms two legs per person, no extra limbs, loose impressionistic anatomy",
+    "negative_prompt": "nudity, bare chest, bare skin, bare torso, topless, shirtless, exposed breasts, cleavage, bikini top, revealing clothes, loincloth only, skimpy outfit, large breasts, oversized chest, sexualized body, sexual content, suggestive pose, 3D render, anime, chibi, Pixar, Disney, flat vector, extra limbs, extra arms, extra legs, three arms, three legs, deformed anatomy, fused limbs, text, watermark, logo",
+    "global_style": ""
+  },
+  {
+    "index": 50,
+    "start": 345.466,
+    "end": 350.147,
+    "text": "Dân số loài người tăng vọt sau khi nông nghiệp xuất hiện. Những thứ chúng ta gọi là văn minh, từ thành phố đến chữ viết, đều được xây dựng trên nền tảng đó.",
+    "prompt": "all characters fully clothed, thick animal hide vest covering chest, long hide skirt or loincloth covering waist to knees, no bare torso, no bare chest, A growing ancient settlement with many primitive dwellings, people working fields and tending animals, early civilization emerging from the earth, mud brick structures, ancient Mesopotamia, watercolor illustration, soft amber ochre washes, National Geographic style, warm golden light, loose painterly brushwork, cinematic 16:9, no text, no watermark, simple clean figures, two arms two legs per person, no extra limbs, loose impressionistic anatomy",
+    "negative_prompt": "nudity, bare chest, bare skin, bare torso, topless, shirtless, exposed breasts, cleavage, bikini top, revealing clothes, loincloth only, skimpy outfit, large breasts, oversized chest, sexualized body, sexual content, suggestive pose, 3D render, anime, chibi, Pixar, Disney, flat vector, extra limbs, extra arms, extra legs, three arms, three legs, deformed anatomy, fused limbs, text, watermark, logo",
+    "global_style": ""
+  },
+  {
+    "index": 51,
+    "start": 350.147,
+    "end": 358.706,
+    "text": "Nhưng nông nghiệp cũng đòi hỏi thứ mà người săn bắt hái lượm không phải trả. Đó là thời gian liên tục và có hệ thống.",
+    "prompt": "all characters fully clothed, thick animal hide vest covering chest, long hide skirt or loincloth covering waist to knees, no bare torso, no bare chest, An early farmer working in the field from dawn, bent over crops under a rising sun, endless repetitive labor, no rest visible in any direction, ancient agricultural world, watercolor illustration, soft amber ochre washes, National Geographic style, warm golden light, loose painterly brushwork, cinematic 16:9, no text, no watermark, simple clean figures, two arms two legs per person, no extra limbs, loose impressionistic anatomy",
+    "negative_prompt": "nudity, bare chest, bare skin, bare torso, topless, shirtless, exposed breasts, cleavage, bikini top, revealing clothes, loincloth only, skimpy outfit, large breasts, oversized chest, sexualized body, sexual content, suggestive pose, 3D render, anime, chibi, Pixar, Disney, flat vector, extra limbs, extra arms, extra legs, three arms, three legs, deformed anatomy, fused limbs, text, watermark, logo",
+    "global_style": ""
+  },
+  {
+    "index": 52,
+    "start": 359.075,
+    "end": 365.584,
+    "text": "Ruộng lúa không tự chăm sóc. Vật nuôi cần người mỗi ngày. Mùa vụ không chờ ai nghỉ ngơi.",
+    "prompt": "all characters fully clothed, thick animal hide vest covering chest, long hide skirt or loincloth covering waist to knees, no bare torso, no bare chest, Ancient farmers tending crops and animals simultaneously, goats needing care, fields needing water, always working, no afternoon rest, ancient Near East landscape, watercolor illustration, soft amber ochre washes, National Geographic style, warm golden light, loose painterly brushwork, cinematic 16:9, no text, no watermark, simple clean figures, two arms two legs per person, no extra limbs, loose impressionistic anatomy",
+    "negative_prompt": "nudity, bare chest, bare skin, bare torso, topless, shirtless, exposed breasts, cleavage, bikini top, revealing clothes, loincloth only, skimpy outfit, large breasts, oversized chest, sexualized body, sexual content, suggestive pose, 3D render, anime, chibi, Pixar, Disney, flat vector, extra limbs, extra arms, extra legs, three arms, three legs, deformed anatomy, fused limbs, text, watermark, logo",
+    "global_style": ""
+  },
+  {
+    "index": 53,
+    "start": 366.423,
+    "end": 373.238,
+    "text": "Bằng chứng từ xương người ở thời kỳ đầu nông nghiệp cho thấy dấu hiệu lao động nặng hơn. Xương đốt sống thoái hóa sớm. Khớp gối và vai mòn ở độ tuổi trẻ hơn.",
+    "prompt": "all characters fully clothed, thick animal hide vest covering chest, long hide skirt or loincloth covering waist to knees, no bare torso, no bare chest, A young ancient farmer stooped from heavy labor, hunched back and worn hands, exhaustion visible on his face, dusty field, harsh morning light, watercolor illustration, soft amber ochre washes, National Geographic style, warm golden light, loose painterly brushwork, cinematic 16:9, no text, no watermark, simple clean figures, two arms two legs per person, no extra limbs, loose impressionistic anatomy",
+    "negative_prompt": "nudity, bare chest, bare skin, bare torso, topless, shirtless, exposed breasts, cleavage, bikini top, revealing clothes, loincloth only, skimpy outfit, large breasts, oversized chest, sexualized body, sexual content, suggestive pose, 3D render, anime, chibi, Pixar, Disney, flat vector, extra limbs, extra arms, extra legs, three arms, three legs, deformed anatomy, fused limbs, text, watermark, logo",
+    "global_style": ""
+  },
+  {
+    "index": 54,
+    "start": 373.238,
+    "end": 381.268,
+    "text": "Răng cũng thay đổi. Sâu răng xuất hiện nhiều hơn sau khi con người chuyển sang chế độ ăn giàu ngũ cốc.",
+    "prompt": "all characters fully clothed, thick animal hide vest covering chest, long hide skirt or loincloth covering waist to knees, no bare torso, no bare chest, Close-up of ancient grain being ground on a rough stone quern, coarse flour and grit, primitive food processing, hard labor, soft ancient light, watercolor illustration, soft amber ochre washes, National Geographic style, warm golden light, loose painterly brushwork, cinematic 16:9, no text, no watermark, simple clean figures, two arms two legs per person, no extra limbs, loose impressionistic anatomy",
+    "negative_prompt": "nudity, bare chest, bare skin, bare torso, topless, shirtless, exposed breasts, cleavage, bikini top, revealing clothes, loincloth only, skimpy outfit, large breasts, oversized chest, sexualized body, sexual content, suggestive pose, 3D render, anime, chibi, Pixar, Disney, flat vector, extra limbs, extra arms, extra legs, three arms, three legs, deformed anatomy, fused limbs, text, watermark, logo",
+    "global_style": ""
+  },
+  {
+    "index": 55,
+    "start": 382.896,
+    "end": 387.755,
+    "text": "Dinh dưỡng cũng thay đổi. Người nông nghiệp ăn ít loại thực phẩm hơn người săn bắt hái lượm, dù ăn no hơn vào những mùa tốt.",
+    "prompt": "all characters fully clothed, thick animal hide vest covering chest, long hide skirt or loincloth covering waist to knees, no bare torso, no bare chest, A comparison of two ancient meals on stone surfaces, one diverse spread of wild berries, meat, nuts and roots beside a simple bowl of coarse grain porridge, earthy cinematic, watercolor illustration, soft amber ochre washes, National Geographic style, warm golden light, loose painterly brushwork, cinematic 16:9, no text, no watermark, simple clean figures, two arms two legs per person, no extra limbs, loose impressionistic anatomy",
+    "negative_prompt": "nudity, bare chest, bare skin, bare torso, topless, shirtless, exposed breasts, cleavage, bikini top, revealing clothes, loincloth only, skimpy outfit, large breasts, oversized chest, sexualized body, sexual content, suggestive pose, 3D render, anime, chibi, Pixar, Disney, flat vector, extra limbs, extra arms, extra legs, three arms, three legs, deformed anatomy, fused limbs, text, watermark, logo",
+    "global_style": ""
+  },
+  {
+    "index": 56,
+    "start": 387.755,
+    "end": 396.9,
+    "text": "Chiều cao trung bình của con người giảm sau khi nông nghiệp lan rộng. Và theo nhiều nghiên cứu, phải hàng nghìn năm sau chúng ta mới lấy lại chiều cao của tổ tiên săn bắt hái lượm.",
+    "prompt": "all characters fully clothed, thick animal hide vest covering chest, long hide skirt or loincloth covering waist to knees, no bare torso, no bare chest, A tall lean hunter-gatherer beside a shorter early farmer, physical toll of agricultural diet visible in body proportions, ancient world setting documentary style, watercolor illustration, soft amber ochre washes, National Geographic style, warm golden light, loose painterly brushwork, cinematic 16:9, no text, no watermark, simple clean figures, two arms two legs per person, no extra limbs, loose impressionistic anatomy",
+    "negative_prompt": "nudity, bare chest, bare skin, bare torso, topless, shirtless, exposed breasts, cleavage, bikini top, revealing clothes, loincloth only, skimpy outfit, large breasts, oversized chest, sexualized body, sexual content, suggestive pose, 3D render, anime, chibi, Pixar, Disney, flat vector, extra limbs, extra arms, extra legs, three arms, three legs, deformed anatomy, fused limbs, text, watermark, logo",
+    "global_style": ""
+  },
+  {
+    "index": 57,
+    "start": 396.9,
+    "end": 406.177,
+    "text": "Điều đó không có nghĩa là nông nghiệp là sai lầm. Không có nó, sẽ không có đủ người để xây dựng thành phố, y học, và văn minh như chúng ta biết.",
+    "prompt": "all characters fully clothed, thick animal hide vest covering chest, long hide skirt or loincloth covering waist to knees, no bare torso, no bare chest, An early ancient city emerging on the horizon above a river valley, thousands of people living together for the first time, primitive structures of mud and stone, civilization being born, watercolor illustration, soft amber ochre washes, National Geographic style, warm golden light, loose painterly brushwork, cinematic 16:9, no text, no watermark, simple clean figures, two arms two legs per person, no extra limbs, loose impressionistic anatomy",
+    "negative_prompt": "nudity, bare chest, bare skin, bare torso, topless, shirtless, exposed breasts, cleavage, bikini top, revealing clothes, loincloth only, skimpy outfit, large breasts, oversized chest, sexualized body, sexual content, suggestive pose, 3D render, anime, chibi, Pixar, Disney, flat vector, extra limbs, extra arms, extra legs, three arms, three legs, deformed anatomy, fused limbs, text, watermark, logo",
+    "global_style": ""
+  },
+  {
+    "index": 58,
+    "start": 407.23,
+    "end": 410.973,
+    "text": "Nhưng nông nghiệp không phải là sự giải phóng. Nó là một thỏa thuận.",
+    "prompt": "all characters fully clothed, thick animal hide vest covering chest, long hide skirt or loincloth covering waist to knees, no bare torso, no bare chest, An ancient farmer at the end of a long day, sitting exhausted at the edge of his field at sunset, hands calloused and dirty, not the peaceful rest of a hunter-gatherer, watercolor illustration, soft amber ochre washes, National Geographic style, warm golden light, loose painterly brushwork, cinematic 16:9, no text, no watermark, simple clean figures, two arms two legs per person, no extra limbs, loose impressionistic anatomy",
+    "negative_prompt": "nudity, bare chest, bare skin, bare torso, topless, shirtless, exposed breasts, cleavage, bikini top, revealing clothes, loincloth only, skimpy outfit, large breasts, oversized chest, sexualized body, sexual content, suggestive pose, 3D render, anime, chibi, Pixar, Disney, flat vector, extra limbs, extra arms, extra legs, three arms, three legs, deformed anatomy, fused limbs, text, watermark, logo",
+    "global_style": ""
+  },
+  {
+    "index": 59,
+    "start": 411.833,
+    "end": 417.147,
+    "text": "Chúng ta đổi thời gian lấy sự ổn định. Đổi buổi chiều rảnh rỗi lấy kho lương thực không bao giờ bị rỗng.",
+    "prompt": "all characters fully clothed, thick animal hide vest covering chest, long hide skirt or loincloth covering waist to knees, no bare torso, no bare chest, Ancient grain storage jars filled to the brim, clay pots stacked in a stone storehouse, security and abundance, but through the doorway a farmer is still working in the field beyond, watercolor illustration, soft amber ochre washes, National Geographic style, warm golden light, loose painterly brushwork, cinematic 16:9, no text, no watermark, simple clean figures, two arms two legs per person, no extra limbs, loose impressionistic anatomy",
+    "negative_prompt": "nudity, bare chest, bare skin, bare torso, topless, shirtless, exposed breasts, cleavage, bikini top, revealing clothes, loincloth only, skimpy outfit, large breasts, oversized chest, sexualized body, sexual content, suggestive pose, 3D render, anime, chibi, Pixar, Disney, flat vector, extra limbs, extra arms, extra legs, three arms, three legs, deformed anatomy, fused limbs, text, watermark, logo",
+    "global_style": ""
+  },
+  {
+    "index": 60,
+    "start": 417.147,
+    "end": 421.711,
+    "text": "Và rồi, theo từng thế hệ, chúng ta quên rằng mình từng có buổi chiều đó.",
+    "prompt": "all characters fully clothed, thick animal hide vest covering chest, long hide skirt or loincloth covering waist to knees, no bare torso, no bare chest, A child born into an ancient agricultural village, growing up surrounded only by fields and labor, the free afternoons of ancestors completely unknown to him, ancient world, watercolor illustration, soft amber ochre washes, National Geographic style, warm golden light, loose painterly brushwork, cinematic 16:9, no text, no watermark, simple clean figures, two arms two legs per person, no extra limbs, loose impressionistic anatomy",
+    "negative_prompt": "nudity, bare chest, bare skin, bare torso, topless, shirtless, exposed breasts, cleavage, bikini top, revealing clothes, loincloth only, skimpy outfit, large breasts, oversized chest, sexualized body, sexual content, suggestive pose, 3D render, anime, chibi, Pixar, Disney, flat vector, extra limbs, extra arms, extra legs, three arms, three legs, deformed anatomy, fused limbs, text, watermark, logo",
+    "global_style": ""
+  },
+  {
+    "index": 61,
+    "start": 423.23,
+    "end": 428.798,
+    "text": "Không ai bắt buộc chúng ta quên. Chúng ta quên vì mỗi thế hệ tiếp theo được sinh ra trong một thế giới đã có sẵn sự quên đó.",
+    "prompt": "all characters fully clothed, thick animal hide vest covering chest, long hide skirt or loincloth covering waist to knees, no bare torso, no bare chest, Generations of ancient farmers working the same land, grandfather father and son all bent over the same field under the same sun, memory of free time lost across generations, watercolor illustration, soft amber ochre washes, National Geographic style, warm golden light, loose painterly brushwork, cinematic 16:9, no text, no watermark, simple clean figures, two arms two legs per person, no extra limbs, loose impressionistic anatomy",
+    "negative_prompt": "nudity, bare chest, bare skin, bare torso, topless, shirtless, exposed breasts, cleavage, bikini top, revealing clothes, loincloth only, skimpy outfit, large breasts, oversized chest, sexualized body, sexual content, suggestive pose, 3D render, anime, chibi, Pixar, Disney, flat vector, extra limbs, extra arms, extra legs, three arms, three legs, deformed anatomy, fused limbs, text, watermark, logo",
+    "global_style": ""
+  },
+  {
+    "index": 62,
+    "start": 429.887,
+    "end": 433.156,
+    "text": "Đứa trẻ lớn lên trong cánh đồng không biết rằng tổ tiên mình từng có buổi chiều khác.",
+    "prompt": "all characters fully clothed, thick animal hide vest covering chest, long hide skirt or loincloth covering waist to knees, no bare torso, no bare chest, A young child working alongside adults in an ancient field, small hands helping with harvest, innocent eyes knowing nothing else, ancient agricultural world, warm cinematic, watercolor illustration, soft amber ochre washes, National Geographic style, warm golden light, loose painterly brushwork, cinematic 16:9, no text, no watermark, simple clean figures, two arms two legs per person, no extra limbs, loose impressionistic anatomy",
+    "negative_prompt": "nudity, bare chest, bare skin, bare torso, topless, shirtless, exposed breasts, cleavage, bikini top, revealing clothes, loincloth only, skimpy outfit, large breasts, oversized chest, sexualized body, sexual content, suggestive pose, 3D render, anime, chibi, Pixar, Disney, flat vector, extra limbs, extra arms, extra legs, three arms, three legs, deformed anatomy, fused limbs, text, watermark, logo",
+    "global_style": ""
+  },
+  {
+    "index": 63,
+    "start": 435.437,
+    "end": 438.391,
+    "text": "Đó không phải là sự lãng quên xấu xa. Đó chỉ là cách thời gian hoạt động.",
+    "prompt": "all characters fully clothed, thick animal hide vest covering chest, long hide skirt or loincloth covering waist to knees, no bare torso, no bare chest, Seasons changing over the same ancient valley, a hunter-gatherer camp slowly becoming a farming village across time, the land unchanged but humans transformed, watercolor illustration, soft amber ochre washes, National Geographic style, warm golden light, loose painterly brushwork, cinematic 16:9, no text, no watermark, simple clean figures, two arms two legs per person, no extra limbs, loose impressionistic anatomy",
+    "negative_prompt": "nudity, bare chest, bare skin, bare torso, topless, shirtless, exposed breasts, cleavage, bikini top, revealing clothes, loincloth only, skimpy outfit, large breasts, oversized chest, sexualized body, sexual content, suggestive pose, 3D render, anime, chibi, Pixar, Disney, flat vector, extra limbs, extra arms, extra legs, three arms, three legs, deformed anatomy, fused limbs, text, watermark, logo",
+    "global_style": ""
+  },
+  {
+    "index": 64,
+    "start": 439.625,
+    "end": 444.365,
+    "text": "Chúng ta thường nghĩ tiến bộ nghĩa là có nhiều hơn. Nhiều thứ, nhiều lựa chọn, nhiều tốc độ hơn.",
+    "prompt": "all characters fully clothed, thick animal hide vest covering chest, long hide skirt or loincloth covering waist to knees, no bare torso, no bare chest, An ancient bustling marketplace, people trading goods and animals, more complexity and abundance than a hunter-gatherer camp, but also more noise and obligation, ancient city, watercolor illustration, soft amber ochre washes, National Geographic style, warm golden light, loose painterly brushwork, cinematic 16:9, no text, no watermark, simple clean figures, two arms two legs per person, no extra limbs, loose impressionistic anatomy",
+    "negative_prompt": "nudity, bare chest, bare skin, bare torso, topless, shirtless, exposed breasts, cleavage, bikini top, revealing clothes, loincloth only, skimpy outfit, large breasts, oversized chest, sexualized body, sexual content, suggestive pose, 3D render, anime, chibi, Pixar, Disney, flat vector, extra limbs, extra arms, extra legs, three arms, three legs, deformed anatomy, fused limbs, text, watermark, logo",
+    "global_style": ""
+  },
+  {
+    "index": 65,
+    "start": 444.365,
+    "end": 449.797,
+    "text": "Nhưng trong phần lớn lịch sử loài người, tổ tiên của bạn định nghĩa sự sung túc theo một cách khác.",
+    "prompt": "all characters fully clothed, thick animal hide vest covering chest, long hide skirt or loincloth covering waist to knees, no bare torso, no bare chest, A lone prehistoric hunter-gatherer silhouetted against a vast open sunset sky, arms relaxed, no possessions, no obligations, the entire afternoon his own, watercolor illustration, soft amber ochre washes, National Geographic style, warm golden light, loose painterly brushwork, cinematic 16:9, no text, no watermark, simple clean figures, two arms two legs per person, no extra limbs, loose impressionistic anatomy",
+    "negative_prompt": "nudity, bare chest, bare skin, bare torso, topless, shirtless, exposed breasts, cleavage, bikini top, revealing clothes, loincloth only, skimpy outfit, large breasts, oversized chest, sexualized body, sexual content, suggestive pose, 3D render, anime, chibi, Pixar, Disney, flat vector, extra limbs, extra arms, extra legs, three arms, three legs, deformed anatomy, fused limbs, text, watermark, logo",
+    "global_style": ""
+  },
+  {
+    "index": 66,
+    "start": 451.239,
+    "end": 452.305,
+    "text": "Không phải có nhiều. Mà là cần ít.",
+    "prompt": "all characters fully clothed, thick animal hide vest covering chest, long hide skirt or loincloth covering waist to knees, no bare torso, no bare chest, Minimalist scene of ancient hands holding only a small amount of food and a simple stone tool, everything a person truly needs, red earth, soft natural light, cinematic close-up, watercolor illustration, soft amber ochre washes, National Geographic style, warm golden light, loose painterly brushwork, cinematic 16:9, no text, no watermark, simple clean figures, two arms two legs per person, no extra limbs, loose impressionistic anatomy",
+    "negative_prompt": "nudity, bare chest, bare skin, bare torso, topless, shirtless, exposed breasts, cleavage, bikini top, revealing clothes, loincloth only, skimpy outfit, large breasts, oversized chest, sexualized body, sexual content, suggestive pose, 3D render, anime, chibi, Pixar, Disney, flat vector, extra limbs, extra arms, extra legs, three arms, three legs, deformed anatomy, fused limbs, text, watermark, logo",
+    "global_style": ""
+  },
+  {
+    "index": 67,
+    "start": 452.305,
+    "end": 460.384,
+    "text": "Người đàn ông ngồi xuống bóng cây đó không đang trốn tránh điều gì. Ông đã xong việc. Và ông biết điều đó.",
+    "prompt": "all characters fully clothed, thick animal hide vest covering chest, long hide skirt or loincloth covering waist to knees, no bare torso, no bare chest, A prehistoric man sitting calmly in the deep shade of a large tree in the African afternoon, eyes calm and clear, no guilt, no worry, work done and he knows it, cinematic portrait, watercolor illustration, soft amber ochre washes, National Geographic style, warm golden light, loose painterly brushwork, cinematic 16:9, no text, no watermark, simple clean figures, two arms two legs per person, no extra limbs, loose impressionistic anatomy",
+    "negative_prompt": "nudity, bare chest, bare skin, bare torso, topless, shirtless, exposed breasts, cleavage, bikini top, revealing clothes, loincloth only, skimpy outfit, large breasts, oversized chest, sexualized body, sexual content, suggestive pose, 3D render, anime, chibi, Pixar, Disney, flat vector, extra limbs, extra arms, extra legs, three arms, three legs, deformed anatomy, fused limbs, text, watermark, logo",
+    "global_style": ""
+  },
+  {
+    "index": 68,
+    "start": 460.384,
+    "end": 465.617,
+    "text": "Không có cảm giác phải làm thêm. Không có danh sách đang chờ ở đâu đó.",
+    "prompt": "all characters fully clothed, thick animal hide vest covering chest, long hide skirt or loincloth covering waist to knees, no bare torso, no bare chest, A hunter-gatherer man lying back on warm earth, hands behind his head, staring up at blue sky through tree branches, completely free of obligation, perfect stillness, watercolor illustration, soft amber ochre washes, National Geographic style, warm golden light, loose painterly brushwork, cinematic 16:9, no text, no watermark, simple clean figures, two arms two legs per person, no extra limbs, loose impressionistic anatomy",
+    "negative_prompt": "nudity, bare chest, bare skin, bare torso, topless, shirtless, exposed breasts, cleavage, bikini top, revealing clothes, loincloth only, skimpy outfit, large breasts, oversized chest, sexualized body, sexual content, suggestive pose, 3D render, anime, chibi, Pixar, Disney, flat vector, extra limbs, extra arms, extra legs, three arms, three legs, deformed anatomy, fused limbs, text, watermark, logo",
+    "global_style": ""
+  },
+  {
+    "index": 69,
+    "start": 466.843,
+    "end": 470.967,
+    "text": "Buổi chiều rảnh rỗi không phải là khoảng trống giữa hai nhiệm vụ. Nó là điểm đến.",
+    "prompt": "all characters fully clothed, thick animal hide vest covering chest, long hide skirt or loincloth covering waist to knees, no bare torso, no bare chest, The long golden African afternoon stretching endlessly, a small group of ancient humans completely at ease in the landscape, the afternoon itself the destination, watercolor illustration, soft amber ochre washes, National Geographic style, warm golden light, loose painterly brushwork, cinematic 16:9, no text, no watermark, simple clean figures, two arms two legs per person, no extra limbs, loose impressionistic anatomy",
+    "negative_prompt": "nudity, bare chest, bare skin, bare torso, topless, shirtless, exposed breasts, cleavage, bikini top, revealing clothes, loincloth only, skimpy outfit, large breasts, oversized chest, sexualized body, sexual content, suggestive pose, 3D render, anime, chibi, Pixar, Disney, flat vector, extra limbs, extra arms, extra legs, three arms, three legs, deformed anatomy, fused limbs, text, watermark, logo",
+    "global_style": ""
+  },
+  {
+    "index": 70,
+    "start": 471.86,
+    "end": 478.121,
+    "text": "Tổ tiên của bạn có đủ. Và vì có đủ, họ có thừa thời gian để ngồi lại bên nhau, kể chuyện, và là chính mình.",
+    "prompt": "all characters fully clothed, thick animal hide vest covering chest, long hide skirt or loincloth covering waist to knees, no bare torso, no bare chest, A large campfire at night, the whole prehistoric community gathered around it, storytelling, laughter, and simple togetherness, starry Kalahari sky above, cinematic emotional wide shot, watercolor illustration, soft amber ochre washes, National Geographic style, warm golden light, loose painterly brushwork, cinematic 16:9, no text, no watermark, simple clean figures, two arms two legs per person, no extra limbs, loose impressionistic anatomy",
+    "negative_prompt": "nudity, bare chest, bare skin, bare torso, topless, shirtless, exposed breasts, cleavage, bikini top, revealing clothes, loincloth only, skimpy outfit, large breasts, oversized chest, sexualized body, sexual content, suggestive pose, 3D render, anime, chibi, Pixar, Disney, flat vector, extra limbs, extra arms, extra legs, three arms, three legs, deformed anatomy, fused limbs, text, watermark, logo",
+    "global_style": ""
+  },
+  {
+    "index": 71,
+    "start": 478.121,
+    "end": 484.797,
+    "text": "Bạn đến từ những người đó. Từ những người ngồi bên lửa và kể chuyện. Từ những người biết rằng ngày đã đủ dài.",
+    "prompt": "all characters fully clothed, thick animal hide vest covering chest, long hide skirt or loincloth covering waist to knees, no bare torso, no bare chest, Close portrait of an ancient elder's face lit by firelight, deep wrinkles, wise calm eyes, a storyteller who has lived fully, the fire reflected in both eyes, watercolor illustration, soft amber ochre washes, National Geographic style, warm golden light, loose painterly brushwork, cinematic 16:9, no text, no watermark, simple clean figures, two arms two legs per person, no extra limbs, loose impressionistic anatomy",
+    "negative_prompt": "nudity, bare chest, bare skin, bare torso, topless, shirtless, exposed breasts, cleavage, bikini top, revealing clothes, loincloth only, skimpy outfit, large breasts, oversized chest, sexualized body, sexual content, suggestive pose, 3D render, anime, chibi, Pixar, Disney, flat vector, extra limbs, extra arms, extra legs, three arms, three legs, deformed anatomy, fused limbs, text, watermark, logo",
+    "global_style": ""
+  },
+  {
+    "index": 72,
+    "start": 484.797,
+    "end": 491.771,
+    "text": "Spark nhìn vào ngọn lửa đó từ hàng chục nghìn năm trước và nhớ rõ. Buổi chiều đó dài lắm.",
+    "prompt": "all characters fully clothed, thick animal hide vest covering chest, long hide skirt or loincloth covering waist to knees, no bare torso, no bare chest, A single campfire burning in the vast African night, surrounding darkness, the fire small against the enormous ancient landscape, thousands of years of human memory in its glow, watercolor illustration, soft amber ochre washes, National Geographic style, warm golden light, loose painterly brushwork, cinematic 16:9, no text, no watermark, simple clean figures, two arms two legs per person, no extra limbs, loose impressionistic anatomy",
+    "negative_prompt": "nudity, bare chest, bare skin, bare torso, topless, shirtless, exposed breasts, cleavage, bikini top, revealing clothes, loincloth only, skimpy outfit, large breasts, oversized chest, sexualized body, sexual content, suggestive pose, 3D render, anime, chibi, Pixar, Disney, flat vector, extra limbs, extra arms, extra legs, three arms, three legs, deformed anatomy, fused limbs, text, watermark, logo",
+    "global_style": ""
+  },
+  {
+    "index": 73,
+    "start": 492.343,
+    "end": 494.18,
+    "text": "Và không ai muốn nó kết thúc.",
+    "prompt": "all characters fully clothed, thick animal hide vest covering chest, long hide skirt or loincloth covering waist to knees, no bare torso, no bare chest, The campfire slowly dying down at the end of the night, glowing embers, sleeping figures around it, a vast starry sky above, profound ancient peace, the long day finally ending, watercolor illustration, soft amber ochre washes, National Geographic style, warm golden light, loose painterly brushwork, cinematic 16:9, no text, no watermark, simple clean figures, two arms two legs per person, no extra limbs, loose impressionistic anatomy",
+    "negative_prompt": "nudity, bare chest, bare skin, bare torso, topless, shirtless, exposed breasts, cleavage, bikini top, revealing clothes, loincloth only, skimpy outfit, large breasts, oversized chest, sexualized body, sexual content, suggestive pose, 3D render, anime, chibi, Pixar, Disney, flat vector, extra limbs, extra arms, extra legs, three arms, three legs, deformed anatomy, fused limbs, text, watermark, logo",
+    "global_style": ""
+  }
+]

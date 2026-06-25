@@ -1,0 +1,908 @@
+[
+  {
+    "scene_index": 1,
+    "events": [
+      {
+        "type": "ambience",
+        "tag": "fire",
+        "offset": 0.0,
+        "duration_mode": "scene",
+        "volume": 0.18,
+        "fade_in": 0.8,
+        "fade_out": 1.0
+      },
+      {
+        "type": "oneshot",
+        "tag": "impact_soft",
+        "offset": 0.4,
+        "duration_mode": "oneshot",
+        "volume": 0.18
+      }
+    ]
+  },
+  {
+    "scene_index": 2,
+    "events": [
+      {
+        "type": "oneshot",
+        "tag": "ui_alert",
+        "offset": 0.2,
+        "duration_mode": "oneshot",
+        "volume": 0.3
+      },
+      {
+        "type": "ambience",
+        "tag": "wind",
+        "offset": 0.0,
+        "duration_mode": "scene",
+        "volume": 0.13,
+        "fade_in": 0.8,
+        "fade_out": 1.0
+      }
+    ]
+  },
+  {
+    "scene_index": 3,
+    "events": [
+      {
+        "type": "ambience",
+        "tag": "birds",
+        "offset": 0.0,
+        "duration_mode": "scene",
+        "volume": 0.16,
+        "fade_in": 0.8,
+        "fade_out": 1.0
+      }
+    ]
+  },
+  {
+    "scene_index": 4,
+    "events": [
+      {
+        "type": "ambience",
+        "tag": "night_insects",
+        "offset": 0.0,
+        "duration_mode": "scene",
+        "volume": 0.14,
+        "fade_in": 1.0,
+        "fade_out": 1.0
+      },
+      {
+        "type": "oneshot",
+        "tag": "impact_soft",
+        "offset": 0.4,
+        "duration_mode": "oneshot",
+        "volume": 0.18
+      }
+    ]
+  },
+  {
+    "scene_index": 5,
+    "events": [
+      {
+        "type": "ambience",
+        "tag": "wind",
+        "offset": 0.0,
+        "duration_mode": "scene",
+        "volume": 0.13,
+        "fade_in": 0.8,
+        "fade_out": 1.0
+      }
+    ]
+  },
+  {
+    "scene_index": 8,
+    "events": [
+      {
+        "type": "ambience",
+        "tag": "birds",
+        "offset": 0.0,
+        "duration_mode": "scene",
+        "volume": 0.16,
+        "fade_in": 0.8,
+        "fade_out": 1.0
+      }
+    ]
+  },
+  {
+    "scene_index": 9,
+    "events": [
+      {
+        "type": "ambience",
+        "tag": "wind",
+        "offset": 0.0,
+        "duration_mode": "scene",
+        "volume": 0.13,
+        "fade_in": 0.8,
+        "fade_out": 1.0
+      }
+    ]
+  },
+  {
+    "scene_index": 11,
+    "events": [
+      {
+        "type": "ambience",
+        "tag": "drone_tension",
+        "offset": 0.0,
+        "duration_mode": "scene",
+        "volume": 0.12,
+        "fade_in": 1.0,
+        "fade_out": 1.2
+      }
+    ]
+  },
+  {
+    "scene_index": 12,
+    "events": [
+      {
+        "type": "ambience",
+        "tag": "wind",
+        "offset": 0.0,
+        "duration_mode": "scene",
+        "volume": 0.13,
+        "fade_in": 0.8,
+        "fade_out": 1.0
+      }
+    ]
+  },
+  {
+    "scene_index": 13,
+    "events": [
+      {
+        "type": "ambience",
+        "tag": "birds",
+        "offset": 0.0,
+        "duration_mode": "scene",
+        "volume": 0.16,
+        "fade_in": 0.8,
+        "fade_out": 1.0
+      }
+    ]
+  },
+  {
+    "scene_index": 14,
+    "events": [
+      {
+        "type": "ambience",
+        "tag": "fire",
+        "offset": 0.0,
+        "duration_mode": "scene",
+        "volume": 0.18,
+        "fade_in": 0.8,
+        "fade_out": 1.0
+      }
+    ]
+  },
+  {
+    "scene_index": 15,
+    "events": [
+      {
+        "type": "ambience",
+        "tag": "water",
+        "offset": 0.0,
+        "duration_mode": "scene",
+        "volume": 0.16,
+        "fade_in": 0.8,
+        "fade_out": 1.0
+      }
+    ]
+  },
+  {
+    "scene_index": 16,
+    "events": [
+      {
+        "type": "ambience",
+        "tag": "drone_tension",
+        "offset": 0.0,
+        "duration_mode": "scene",
+        "volume": 0.12,
+        "fade_in": 1.0,
+        "fade_out": 1.2
+      }
+    ]
+  },
+  {
+    "scene_index": 17,
+    "events": [
+      {
+        "type": "ambience",
+        "tag": "fire",
+        "offset": 0.0,
+        "duration_mode": "scene",
+        "volume": 0.18,
+        "fade_in": 0.8,
+        "fade_out": 1.0
+      },
+      {
+        "type": "oneshot",
+        "tag": "impact_soft",
+        "offset": 0.4,
+        "duration_mode": "oneshot",
+        "volume": 0.18
+      }
+    ]
+  },
+  {
+    "scene_index": 19,
+    "events": [
+      {
+        "type": "ambience",
+        "tag": "fire",
+        "offset": 0.0,
+        "duration_mode": "scene",
+        "volume": 0.18,
+        "fade_in": 0.8,
+        "fade_out": 1.0
+      }
+    ]
+  },
+  {
+    "scene_index": 20,
+    "events": [
+      {
+        "type": "ambience",
+        "tag": "wind",
+        "offset": 0.0,
+        "duration_mode": "scene",
+        "volume": 0.13,
+        "fade_in": 0.8,
+        "fade_out": 1.0
+      }
+    ]
+  },
+  {
+    "scene_index": 21,
+    "events": [
+      {
+        "type": "ambience",
+        "tag": "night_insects",
+        "offset": 0.0,
+        "duration_mode": "scene",
+        "volume": 0.14,
+        "fade_in": 1.0,
+        "fade_out": 1.0
+      }
+    ]
+  },
+  {
+    "scene_index": 22,
+    "events": [
+      {
+        "type": "ambience",
+        "tag": "fire",
+        "offset": 0.0,
+        "duration_mode": "scene",
+        "volume": 0.18,
+        "fade_in": 0.8,
+        "fade_out": 1.0
+      },
+      {
+        "type": "oneshot",
+        "tag": "impact_soft",
+        "offset": 0.4,
+        "duration_mode": "oneshot",
+        "volume": 0.18
+      }
+    ]
+  },
+  {
+    "scene_index": 23,
+    "events": [
+      {
+        "type": "ambience",
+        "tag": "fire",
+        "offset": 0.0,
+        "duration_mode": "scene",
+        "volume": 0.18,
+        "fade_in": 0.8,
+        "fade_out": 1.0
+      }
+    ]
+  },
+  {
+    "scene_index": 24,
+    "events": [
+      {
+        "type": "ambience",
+        "tag": "fire",
+        "offset": 0.0,
+        "duration_mode": "scene",
+        "volume": 0.18,
+        "fade_in": 0.8,
+        "fade_out": 1.0
+      },
+      {
+        "type": "oneshot",
+        "tag": "impact_soft",
+        "offset": 0.4,
+        "duration_mode": "oneshot",
+        "volume": 0.18
+      }
+    ]
+  },
+  {
+    "scene_index": 25,
+    "events": [
+      {
+        "type": "ambience",
+        "tag": "fire",
+        "offset": 0.0,
+        "duration_mode": "scene",
+        "volume": 0.18,
+        "fade_in": 0.8,
+        "fade_out": 1.0
+      }
+    ]
+  },
+  {
+    "scene_index": 26,
+    "events": [
+      {
+        "type": "ambience",
+        "tag": "fire",
+        "offset": 0.0,
+        "duration_mode": "scene",
+        "volume": 0.18,
+        "fade_in": 0.8,
+        "fade_out": 1.0
+      }
+    ]
+  },
+  {
+    "scene_index": 27,
+    "events": [
+      {
+        "type": "ambience",
+        "tag": "fire",
+        "offset": 0.0,
+        "duration_mode": "scene",
+        "volume": 0.18,
+        "fade_in": 0.8,
+        "fade_out": 1.0
+      }
+    ]
+  },
+  {
+    "scene_index": 28,
+    "events": [
+      {
+        "type": "ambience",
+        "tag": "fire",
+        "offset": 0.0,
+        "duration_mode": "scene",
+        "volume": 0.18,
+        "fade_in": 0.8,
+        "fade_out": 1.0
+      }
+    ]
+  },
+  {
+    "scene_index": 29,
+    "events": [
+      {
+        "type": "ambience",
+        "tag": "fire",
+        "offset": 0.0,
+        "duration_mode": "scene",
+        "volume": 0.18,
+        "fade_in": 0.8,
+        "fade_out": 1.0
+      }
+    ]
+  },
+  {
+    "scene_index": 31,
+    "events": [
+      {
+        "type": "ambience",
+        "tag": "birds",
+        "offset": 0.0,
+        "duration_mode": "scene",
+        "volume": 0.16,
+        "fade_in": 0.8,
+        "fade_out": 1.0
+      }
+    ]
+  },
+  {
+    "scene_index": 32,
+    "events": [
+      {
+        "type": "ambience",
+        "tag": "fire",
+        "offset": 0.0,
+        "duration_mode": "scene",
+        "volume": 0.18,
+        "fade_in": 0.8,
+        "fade_out": 1.0
+      }
+    ]
+  },
+  {
+    "scene_index": 34,
+    "events": [
+      {
+        "type": "ambience",
+        "tag": "drone_tension",
+        "offset": 0.0,
+        "duration_mode": "scene",
+        "volume": 0.12,
+        "fade_in": 1.0,
+        "fade_out": 1.2
+      }
+    ]
+  },
+  {
+    "scene_index": 35,
+    "events": [
+      {
+        "type": "ambience",
+        "tag": "fire",
+        "offset": 0.0,
+        "duration_mode": "scene",
+        "volume": 0.18,
+        "fade_in": 0.8,
+        "fade_out": 1.0
+      }
+    ]
+  },
+  {
+    "scene_index": 36,
+    "events": [
+      {
+        "type": "ambience",
+        "tag": "fire",
+        "offset": 0.0,
+        "duration_mode": "scene",
+        "volume": 0.18,
+        "fade_in": 0.8,
+        "fade_out": 1.0
+      },
+      {
+        "type": "oneshot",
+        "tag": "impact_soft",
+        "offset": 0.4,
+        "duration_mode": "oneshot",
+        "volume": 0.18
+      }
+    ]
+  },
+  {
+    "scene_index": 38,
+    "events": [
+      {
+        "type": "ambience",
+        "tag": "night_insects",
+        "offset": 0.0,
+        "duration_mode": "scene",
+        "volume": 0.14,
+        "fade_in": 1.0,
+        "fade_out": 1.0
+      }
+    ]
+  },
+  {
+    "scene_index": 39,
+    "events": [
+      {
+        "type": "oneshot",
+        "tag": "footsteps",
+        "offset": 0.3,
+        "duration_mode": "oneshot",
+        "volume": 0.2
+      }
+    ]
+  },
+  {
+    "scene_index": 40,
+    "events": [
+      {
+        "type": "ambience",
+        "tag": "drone_tension",
+        "offset": 0.0,
+        "duration_mode": "scene",
+        "volume": 0.12,
+        "fade_in": 1.0,
+        "fade_out": 1.2
+      },
+      {
+        "type": "oneshot",
+        "tag": "impact_soft",
+        "offset": 0.4,
+        "duration_mode": "oneshot",
+        "volume": 0.18
+      }
+    ]
+  },
+  {
+    "scene_index": 41,
+    "events": [
+      {
+        "type": "ambience",
+        "tag": "wind",
+        "offset": 0.0,
+        "duration_mode": "scene",
+        "volume": 0.13,
+        "fade_in": 0.8,
+        "fade_out": 1.0
+      }
+    ]
+  },
+  {
+    "scene_index": 43,
+    "events": [
+      {
+        "type": "ambience",
+        "tag": "night_insects",
+        "offset": 0.0,
+        "duration_mode": "scene",
+        "volume": 0.14,
+        "fade_in": 1.0,
+        "fade_out": 1.0
+      },
+      {
+        "type": "oneshot",
+        "tag": "impact_soft",
+        "offset": 0.4,
+        "duration_mode": "oneshot",
+        "volume": 0.18
+      }
+    ]
+  },
+  {
+    "scene_index": 44,
+    "events": [
+      {
+        "type": "ambience",
+        "tag": "drone_tension",
+        "offset": 0.0,
+        "duration_mode": "scene",
+        "volume": 0.12,
+        "fade_in": 1.0,
+        "fade_out": 1.2
+      },
+      {
+        "type": "oneshot",
+        "tag": "impact_soft",
+        "offset": 0.4,
+        "duration_mode": "oneshot",
+        "volume": 0.18
+      }
+    ]
+  },
+  {
+    "scene_index": 45,
+    "events": [
+      {
+        "type": "ambience",
+        "tag": "drone_tension",
+        "offset": 0.0,
+        "duration_mode": "scene",
+        "volume": 0.12,
+        "fade_in": 1.0,
+        "fade_out": 1.2
+      }
+    ]
+  },
+  {
+    "scene_index": 49,
+    "events": [
+      {
+        "type": "ambience",
+        "tag": "drone_tension",
+        "offset": 0.0,
+        "duration_mode": "scene",
+        "volume": 0.12,
+        "fade_in": 1.0,
+        "fade_out": 1.2
+      }
+    ]
+  },
+  {
+    "scene_index": 51,
+    "events": [
+      {
+        "type": "ambience",
+        "tag": "drone_tension",
+        "offset": 0.0,
+        "duration_mode": "scene",
+        "volume": 0.12,
+        "fade_in": 1.0,
+        "fade_out": 1.2
+      },
+      {
+        "type": "oneshot",
+        "tag": "impact_soft",
+        "offset": 0.4,
+        "duration_mode": "oneshot",
+        "volume": 0.18
+      }
+    ]
+  },
+  {
+    "scene_index": 52,
+    "events": [
+      {
+        "type": "ambience",
+        "tag": "drone_tension",
+        "offset": 0.0,
+        "duration_mode": "scene",
+        "volume": 0.12,
+        "fade_in": 1.0,
+        "fade_out": 1.2
+      },
+      {
+        "type": "oneshot",
+        "tag": "impact_soft",
+        "offset": 0.4,
+        "duration_mode": "oneshot",
+        "volume": 0.18
+      }
+    ]
+  },
+  {
+    "scene_index": 53,
+    "events": [
+      {
+        "type": "ambience",
+        "tag": "drone_tension",
+        "offset": 0.0,
+        "duration_mode": "scene",
+        "volume": 0.12,
+        "fade_in": 1.0,
+        "fade_out": 1.2
+      }
+    ]
+  },
+  {
+    "scene_index": 55,
+    "events": [
+      {
+        "type": "ambience",
+        "tag": "birds",
+        "offset": 0.0,
+        "duration_mode": "scene",
+        "volume": 0.16,
+        "fade_in": 0.8,
+        "fade_out": 1.0
+      },
+      {
+        "type": "oneshot",
+        "tag": "whoosh",
+        "offset": 0.0,
+        "duration_mode": "oneshot",
+        "volume": 0.18
+      }
+    ]
+  },
+  {
+    "scene_index": 56,
+    "events": [
+      {
+        "type": "oneshot",
+        "tag": "whoosh",
+        "offset": 0.0,
+        "duration_mode": "oneshot",
+        "volume": 0.18
+      }
+    ]
+  },
+  {
+    "scene_index": 57,
+    "events": [
+      {
+        "type": "ambience",
+        "tag": "wind",
+        "offset": 0.0,
+        "duration_mode": "scene",
+        "volume": 0.13,
+        "fade_in": 0.8,
+        "fade_out": 1.0
+      }
+    ]
+  },
+  {
+    "scene_index": 58,
+    "events": [
+      {
+        "type": "ambience",
+        "tag": "drone_tension",
+        "offset": 0.0,
+        "duration_mode": "scene",
+        "volume": 0.12,
+        "fade_in": 1.0,
+        "fade_out": 1.2
+      }
+    ]
+  },
+  {
+    "scene_index": 59,
+    "events": [
+      {
+        "type": "ambience",
+        "tag": "night_insects",
+        "offset": 0.0,
+        "duration_mode": "scene",
+        "volume": 0.14,
+        "fade_in": 1.0,
+        "fade_out": 1.0
+      }
+    ]
+  },
+  {
+    "scene_index": 60,
+    "events": [
+      {
+        "type": "ambience",
+        "tag": "fire",
+        "offset": 0.0,
+        "duration_mode": "scene",
+        "volume": 0.18,
+        "fade_in": 0.8,
+        "fade_out": 1.0
+      }
+    ]
+  },
+  {
+    "scene_index": 62,
+    "events": [
+      {
+        "type": "oneshot",
+        "tag": "ui_alert",
+        "offset": 0.2,
+        "duration_mode": "oneshot",
+        "volume": 0.3
+      },
+      {
+        "type": "ambience",
+        "tag": "wind",
+        "offset": 0.0,
+        "duration_mode": "scene",
+        "volume": 0.13,
+        "fade_in": 0.8,
+        "fade_out": 1.0
+      }
+    ]
+  },
+  {
+    "scene_index": 63,
+    "events": [
+      {
+        "type": "ambience",
+        "tag": "wind",
+        "offset": 0.0,
+        "duration_mode": "scene",
+        "volume": 0.13,
+        "fade_in": 0.8,
+        "fade_out": 1.0
+      }
+    ]
+  },
+  {
+    "scene_index": 64,
+    "events": [
+      {
+        "type": "ambience",
+        "tag": "birds",
+        "offset": 0.0,
+        "duration_mode": "scene",
+        "volume": 0.16,
+        "fade_in": 0.8,
+        "fade_out": 1.0
+      },
+      {
+        "type": "oneshot",
+        "tag": "impact_soft",
+        "offset": 0.4,
+        "duration_mode": "oneshot",
+        "volume": 0.18
+      }
+    ]
+  },
+  {
+    "scene_index": 65,
+    "events": [
+      {
+        "type": "ambience",
+        "tag": "wind",
+        "offset": 0.0,
+        "duration_mode": "scene",
+        "volume": 0.13,
+        "fade_in": 0.8,
+        "fade_out": 1.0
+      }
+    ]
+  },
+  {
+    "scene_index": 66,
+    "events": [
+      {
+        "type": "ambience",
+        "tag": "water",
+        "offset": 0.0,
+        "duration_mode": "scene",
+        "volume": 0.16,
+        "fade_in": 0.8,
+        "fade_out": 1.0
+      },
+      {
+        "type": "oneshot",
+        "tag": "impact_soft",
+        "offset": 0.4,
+        "duration_mode": "oneshot",
+        "volume": 0.18
+      }
+    ]
+  },
+  {
+    "scene_index": 67,
+    "events": [
+      {
+        "type": "ambience",
+        "tag": "fire",
+        "offset": 0.0,
+        "duration_mode": "scene",
+        "volume": 0.18,
+        "fade_in": 0.8,
+        "fade_out": 1.0
+      },
+      {
+        "type": "oneshot",
+        "tag": "impact_soft",
+        "offset": 0.4,
+        "duration_mode": "oneshot",
+        "volume": 0.18
+      }
+    ]
+  },
+  {
+    "scene_index": 68,
+    "events": [
+      {
+        "type": "ambience",
+        "tag": "fire",
+        "offset": 0.0,
+        "duration_mode": "scene",
+        "volume": 0.18,
+        "fade_in": 0.8,
+        "fade_out": 1.0
+      },
+      {
+        "type": "oneshot",
+        "tag": "impact_soft",
+        "offset": 0.4,
+        "duration_mode": "oneshot",
+        "volume": 0.18
+      }
+    ]
+  },
+  {
+    "scene_index": 69,
+    "events": [
+      {
+        "type": "ambience",
+        "tag": "fire",
+        "offset": 0.0,
+        "duration_mode": "scene",
+        "volume": 0.18,
+        "fade_in": 0.8,
+        "fade_out": 1.0
+      }
+    ]
+  },
+  {
+    "scene_index": 70,
+    "events": [
+      {
+        "type": "ambience",
+        "tag": "fire",
+        "offset": 0.0,
+        "duration_mode": "scene",
+        "volume": 0.18,
+        "fade_in": 0.8,
+        "fade_out": 1.0
+      }
+    ]
+  }
+]

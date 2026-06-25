@@ -1,0 +1,105 @@
+TRACK: en
+MODEL: FLUX.2-klein 9B (VIDEO9B)
+ENDPOINT_ENV: RUNPOD_ENDPOINT_ID_EN
+STEPS: 4
+GUIDANCE_SCALE: 1.0
+
+================================================================================
+STYLE LOCK — EN Track (Ink Sketch on Parchment)
+================================================================================
+
+Every prompt MUST begin with this prefix:
+  Ink sketch illustration on aged parchment paper, hand-drawn, educational diagram style, [scene description], sepia ink tones, no color fill, 16:9, no text
+
+Every prompt MUST end with this suffix (anatomy workaround — 9B does not support negative_prompt):
+  Simple clean lines, correct human anatomy, no extra limbs, no photorealism.
+
+--------------------------------------------------------------------------------
+VISUAL STYLE
+--------------------------------------------------------------------------------
+- Medium: sepia/brown ink on aged parchment — NO color fill of any kind
+- Line weight: medium, consistent — not scratchy, not brush-thick
+- Background: minimal, suggested with a few strokes only
+- Figures: clear silhouette, anatomically simple but recognizable
+- Texture: slight parchment grain visible in background
+
+COLOR EXCEPTION — Spark accent:
+  Spark (the narrator figure) may carry a single orange-yellow color accent,
+  typically a small flame held in hand or a warm glow near the body.
+  This is the ONLY color allowed in EN track images.
+
+--------------------------------------------------------------------------------
+CHARACTERS (same identities as VN track, same scene IDs)
+--------------------------------------------------------------------------------
+  Spark — lean figure, calm observant posture, appears in ~1/3 of scenes
+    (same scenes where Spark appears in VN track).
+    Optional: small orange-yellow flame or glow as the one color accent.
+
+  Elder — older figure, slightly hunched, gesturing or seated, appears in
+    knowledge-transfer scenes.
+
+  Viewer stand-in — generic ancient human figure doing the narrated action.
+
+All EN characters correspond 1-to-1 with VN track characters per scene.
+
+--------------------------------------------------------------------------------
+ANATOMY RULE (9B — negative_prompt not supported)
+--------------------------------------------------------------------------------
+Always append the suffix: "Simple clean lines, correct human anatomy, no extra limbs, no photorealism."
+
+Group shots: maximum 2-3 figures in foreground detail.
+Background crowd: stick-figure level is fine — sketch style hides errors.
+If a scene still produces errors: replace with 1 foreground figure + minimal background strokes.
+
+--------------------------------------------------------------------------------
+SYMBOLS AND DIAGRAMS
+--------------------------------------------------------------------------------
+- Arrows (→ ↑ ↓) drawn as simple ink strokes: ALLOWED to illustrate concepts
+- Simple geometric symbols (circles, lines, dots, brackets): ALLOWED
+- NO written labels, letters, or numbers of any kind in the image
+- Diagram OK: e.g. two skull outlines with a downward arrow between them
+
+--------------------------------------------------------------------------------
+CONTINUITY RULES (same scene IDs as VN track)
+--------------------------------------------------------------------------------
+- Same characters, action, and location as the corresponding VN scene
+- Only the visual style changes (sketch vs cinematic photo)
+- Adjacent EN scenes must advance identically to adjacent VN scenes:
+  same progression of pose / expression / camera angle / action
+
+--------------------------------------------------------------------------------
+ABSTRACT CONCEPTS → SKETCH METAPHORS
+(mirror VN track interpretations, translated to ink-sketch style)
+--------------------------------------------------------------------------------
+"Brain size / larger brain" →
+  Two skull outlines side by side, left one larger, a downward arrow between them,
+  sepia ink on parchment, no labels
+
+"Population growth" →
+  Wide landscape sketch, multiple small campfire triangles scattered across
+  the plain, curved arrows spreading outward from center
+
+"Thinking / cognition" →
+  Single figure in profile, simple circle above the head with radiating lines
+  suggesting thought, no text in circle
+
+"Division of labor" →
+  Three simple figures at different spots on the page, each holding a different
+  tool (spear, scraper, gathered bundle), lines connecting them to suggest
+  cooperation, no labels
+
+"Knowledge transfer" →
+  Elder figure gesturing toward a seated younger figure, a simplified tree or
+  flame between them as a connecting symbol
+
+--------------------------------------------------------------------------------
+EXAMPLE — complete EN prompt entry
+--------------------------------------------------------------------------------
+{
+  "index": 5,
+  "start": 15.18,
+  "end": 18.1,
+  "prompt": "Ink sketch illustration on aged parchment paper, hand-drawn, educational diagram style, ancient human woman kneeling beside a river examining her reflection in the still water, wooden spear resting beside her, minimal background strokes suggesting savanna and distant trees, sepia ink tones, no color fill, 16:9, no text. Simple clean lines, correct human anatomy, no extra limbs, no photorealism.",
+  "negative_prompt": "",
+  "global_style": ""
+}

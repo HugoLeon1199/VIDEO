@@ -1,0 +1,57 @@
+{
+  "004": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\style_test\\images_vi\\img_004.png",
+    "errors": [],
+    "job_id": "7e5b3bc2-c420-4443-ac2f-02d8f120eeaf-e1",
+    "duration_seconds": 26.703882455825806,
+    "saved_at": "2026-06-24T04:31:00Z",
+    "selected_seed": 11001,
+    "style_version": "vi-2d-documentary-v1"
+  },
+  "002": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\style_test\\images_vi\\img_002.png",
+    "errors": [],
+    "job_id": "f967a31f-607b-432a-98df-343845db3f56-e2",
+    "duration_seconds": 26.704225778579712,
+    "saved_at": "2026-06-24T04:31:00Z",
+    "selected_seed": 11001,
+    "style_version": "vi-2d-documentary-v1"
+  },
+  "001": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\style_test\\images_vi\\img_001.png",
+    "errors": [],
+    "job_id": "5b97e8d3-24ad-4c9d-a04b-6de9e8c757e1-e1",
+    "duration_seconds": 41.84144330024719,
+    "saved_at": "2026-06-24T04:31:15Z",
+    "selected_seed": 11001,
+    "style_version": "vi-2d-documentary-v1"
+  },
+  "003": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\style_test\\images_vi\\img_003.png",
+    "errors": [],
+    "job_id": "0b6e536f-17a0-45c5-9474-c4e188858ab6-e1",
+    "duration_seconds": 41.95254564285278,
+    "saved_at": "2026-06-24T04:31:15Z",
+    "selected_seed": 11001,
+    "style_version": "vi-2d-documentary-v1"
+  },
+  "005": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\style_test\\images_vi\\img_005.png",
+    "errors": [],
+    "job_id": "b186ba73-2f24-4add-9d77-5d5b941a3b2c-e1",
+    "duration_seconds": 64.90552139282227,
+    "saved_at": "2026-06-24T04:31:38Z",
+    "selected_seed": 11001,
+    "style_version": "vi-2d-documentary-v1"
+  }
+}

@@ -1,0 +1,764 @@
+[
+  {
+    "index": 1,
+    "start": 0.0,
+    "end": 4.0,
+    "text": "Hãy tưởng tượng bạn đang cầm một chiếc hộp sọ 20.000 năm tuổi."
+  },
+  {
+    "index": 2,
+    "start": 4.92,
+    "end": 6.28,
+    "text": "Nó nặng hơn bạn nghĩ."
+  },
+  {
+    "index": 3,
+    "start": 7.4,
+    "end": 10.0,
+    "text": "Không phải sọ của một sinh vật chưa biết dùng lửa."
+  },
+  {
+    "index": 4,
+    "start": 11.08,
+    "end": 14.2,
+    "text": "Không phải sọ của tổ tiên ngây thơ hay kém cỏi hơn bạn."
+  },
+  {
+    "index": 5,
+    "start": 15.18,
+    "end": 18.1,
+    "text": "Đây là sọ của một người hiện đại hoàn toàn."
+  },
+  {
+    "index": 6,
+    "start": 18.64,
+    "end": 23.58,
+    "text": "Người đã vẽ thú vật lên vách đá trong bóng tối chỉ với ánh đuốc leo lắc."
+  },
+  {
+    "index": 7,
+    "start": 23.88,
+    "end": 28.3,
+    "text": "Người đã đi hàng trăm km để trao đổi hàng hóa với người lạ."
+  },
+  {
+    "index": 8,
+    "start": 28.3,
+    "end": 31.62,
+    "text": "Người sống trong một thế giới không có hệ thống dự phòng nào."
+  },
+  {
+    "index": 9,
+    "start": 32.76,
+    "end": 34.9,
+    "text": "Nạo của họ lớn hơn nạo của bạn."
+  },
+  {
+    "index": 10,
+    "start": 35.68,
+    "end": 37.42,
+    "text": "Đây không phải là lời xúc phạm."
+  },
+  {
+    "index": 11,
+    "start": 38.54,
+    "end": 42.98,
+    "text": "Đây là một trong những phát hiện được ghi chép nhất quán nhất trong hồ sơ hóa thạch của loài người."
+  },
+  {
+    "index": 12,
+    "start": 44.0,
+    "end": 47.68,
+    "text": "Chúng ta thường giả định tiến hóa chỉ đi theo một hướng."
+  },
+  {
+    "index": 13,
+    "start": 47.9,
+    "end": 51.2,
+    "text": "Phức tạp hơn, có năng lực hơn, tinh vi hơn."
+  },
+  {
+    "index": 14,
+    "start": 52.12,
+    "end": 54.66,
+    "text": "Nạo lớn hơn đồng nghĩa với trí tuệ cao hơn."
+  },
+  {
+    "index": 15,
+    "start": 55.66,
+    "end": 57.52,
+    "text": "Giả định đó củ hơn cả khoa học."
+  },
+  {
+    "index": 16,
+    "start": 58.3,
+    "end": 62.3,
+    "text": "Và hồ sơ hóa thạch đã âm thầm mâu thuẫn với nó suốt nhiều thập kỷ."
+  },
+  {
+    "index": 17,
+    "start": 63.6,
+    "end": 67.8,
+    "text": "Nạo người đã kích thước trung bình lớn nhất vào khoảng 20 đến 30 nghìn năm trước."
+  },
+  {
+    "index": 18,
+    "start": 68.8,
+    "end": 73.4,
+    "text": "Hột sọ từ thời kỳ đó tìm thấy ở Châu Âu, Châu Á và Châu Phi"
+  },
+  {
+    "index": 19,
+    "start": 73.4,
+    "end": 76.54,
+    "text": "đều chứa thể tích lớn hơn hột sọ của người ngày nay."
+  },
+  {
+    "index": 20,
+    "start": 77.7,
+    "end": 81.9,
+    "text": "Mức giảm khoảng 100 đến 150 cm khối."
+  },
+  {
+    "index": 21,
+    "start": 82.18,
+    "end": 84.46,
+    "text": "Tương đương thể tích của một quả bóng tennis."
+  },
+  {
+    "index": 22,
+    "start": 85.98,
+    "end": 90.52,
+    "text": "Dần dần, qua hàng chục nghìn năm, hình mẫu này xuất hiện"
+  },
+  {
+    "index": 23,
+    "start": 90.52,
+    "end": 92.74,
+    "text": "ở khắp nơi các nhà nghiên cứu tìm đến."
+  },
+  {
+    "index": 24,
+    "start": 93.64,
+    "end": 97.88,
+    "text": "Nhiều quần thể, nhiều châu lục, nhiều thế kỷ cách nhau."
+  },
+  {
+    "index": 25,
+    "start": 98.08,
+    "end": 100.02,
+    "text": "Đây không phải sai số đo lường."
+  },
+  {
+    "index": 26,
+    "start": 101.04,
+    "end": 102.74,
+    "text": "Không phải một di chỉ dị thường."
+  },
+  {
+    "index": 27,
+    "start": 103.8,
+    "end": 106.16,
+    "text": "Đây là chiều hướng nhất quán của sự thay đổi."
+  },
+  {
+    "index": 28,
+    "start": 107.14,
+    "end": 111.0,
+    "text": "Nhưng trước khi đi tiếp, một điều cần phải nói rõ ngay."
+  },
+  {
+    "index": 29,
+    "start": 111.18,
+    "end": 114.18,
+    "text": "Kích thước não và trí thông minh không phải là cùng một thứ."
+  },
+  {
+    "index": 30,
+    "start": 114.88,
+    "end": 118.98,
+    "text": "Cả nhà tán có não lớn hơn não bạn khoảng 6 lần."
+  },
+  {
+    "index": 31,
+    "start": 119.22,
+    "end": 121.56,
+    "text": "Vòi có não lớn hơn 3 lần."
+  },
+  {
+    "index": 32,
+    "start": 121.88,
+    "end": 125.6,
+    "text": "Cả hai đều không xây thành phố hay sáng tác âm nhạc."
+  },
+  {
+    "index": 33,
+    "start": 125.72,
+    "end": 128.7,
+    "text": "Điều quan trọng là cách não được tổ chức."
+  },
+  {
+    "index": 34,
+    "start": 128.9,
+    "end": 133.64,
+    "text": "Cách các kết nối hình thành, cách tín hiệu truyền đi, cách các vùng chuyên biệt hóa theo thời"
+  },
+  {
+    "index": 35,
+    "start": 133.64,
+    "end": 134.76,
+    "text": "gian."
+  },
+  {
+    "index": 36,
+    "start": 135.0,
+    "end": 139.22,
+    "text": "Một số nhà nghiên cứu lập luận rằng não người hiện đã đơn giản là hiệu quả hơn."
+  },
+  {
+    "index": 37,
+    "start": 140.12,
+    "end": 143.14,
+    "text": "Cùng một công việc nhận thức được thực hiện với ít mô não hơn."
+  },
+  {
+    "index": 38,
+    "start": 143.94,
+    "end": 146.12,
+    "text": "Đó là một khả năng thực sự."
+  },
+  {
+    "index": 39,
+    "start": 146.86,
+    "end": 150.44,
+    "text": "Nhưng hiệu quả đơn thuần không giải thích được thời điểm thay đổi bắt đầu."
+  },
+  {
+    "index": 40,
+    "start": 151.28,
+    "end": 154.16,
+    "text": "Cũng cần đặt tên cho một giải thích đơn giản hơn trước."
+  },
+  {
+    "index": 41,
+    "start": 154.96,
+    "end": 158.38,
+    "text": "Kích thước cơ thể người cũng đã giảm trong cùng thời kỳ."
+  },
+  {
+    "index": 42,
+    "start": 158.86,
+    "end": 160.42,
+    "text": "Não tương quan với cơ thể."
+  },
+  {
+    "index": 43,
+    "start": 161.46,
+    "end": 163.88,
+    "text": "Vóc gián nhỏ hơn thường mang não nhỏ hơn."
+  },
+  {
+    "index": 44,
+    "start": 164.98,
+    "end": 168.3,
+    "text": "Một phần sự giảm sút có thể chỉ phản ánh khung người gọn hơn."
+  },
+  {
+    "index": 45,
+    "start": 169.24,
+    "end": 171.4,
+    "text": "Nhưng kích thước cơ thể không giải thích hết."
+  },
+  {
+    "index": 46,
+    "start": 172.22,
+    "end": 176.96,
+    "text": "Não thu nhỏ nhiều hơn mức mà vóc gián đơn thuần có thể dự đoán."
+  },
+  {
+    "index": 47,
+    "start": 177.12,
+    "end": 178.8,
+    "text": "Điều đó để lại một khoảng trống."
+  },
+  {
+    "index": 48,
+    "start": 179.74,
+    "end": 183.76,
+    "text": "Và vào khoảng trống đó, một giả thuyết không thoải mái hơn đã bước vào."
+  },
+  {
+    "index": 49,
+    "start": 184.74,
+    "end": 188.82,
+    "text": "Bạn chưa bao giờ nghĩ bản thân là một con vật được thuần hóa."
+  },
+  {
+    "index": 50,
+    "start": 189.06,
+    "end": 192.36,
+    "text": "Nhưng hãy nhìn vào những gì quá trình thuần hóa luôn làm với não."
+  },
+  {
+    "index": 51,
+    "start": 193.56,
+    "end": 197.48,
+    "text": "Chó sói và chó nhà về mặt di truyền gần như giống hệt nhau."
+  },
+  {
+    "index": 52,
+    "start": 197.48,
+    "end": 202.38,
+    "text": "Cùng một loài, được tách biệt bởi khoảng 15.000 năm sống bên cạnh con người."
+  },
+  {
+    "index": 53,
+    "start": 203.34,
+    "end": 207.64,
+    "text": "Não chó nhà nhỏ hơn đáng kể so với chó sói khi điều chỉnh theo kích thước cơ thể."
+  },
+  {
+    "index": 54,
+    "start": 208.8,
+    "end": 210.88,
+    "text": "Chó không đơn giản là mất đi thứ đó."
+  },
+  {
+    "index": 55,
+    "start": 212.02,
+    "end": 213.08,
+    "text": "Nó đã đổi."
+  },
+  {
+    "index": 56,
+    "start": 214.14,
+    "end": 216.2,
+    "text": "Chó sói giải quyết vấn đề một mình."
+  },
+  {
+    "index": 57,
+    "start": 217.18,
+    "end": 221.72,
+    "text": "Đọc rừng, theo dõi con mồi qua nhiều km, đưa ra mọi quyết định mà không có"
+  },
+  {
+    "index": 58,
+    "start": 221.72,
+    "end": 222.74,
+    "text": "ai đến giúp."
+  },
+  {
+    "index": 59,
+    "start": 223.42,
+    "end": 224.62,
+    "text": "Chó đọc khuôn mặt người."
+  },
+  {
+    "index": 60,
+    "start": 225.54,
+    "end": 230.22,
+    "text": "Nó hiệu cử chỉ chỉ tay, theo dõi cảm xúc và xin sự giúp đỡ theo những"
+  },
+  {
+    "index": 61,
+    "start": 230.22,
+    "end": 232.24,
+    "text": "cách mà chó sói không bao giờ làm."
+  },
+  {
+    "index": 62,
+    "start": 233.16,
+    "end": 238.18,
+    "text": "Chó đánh đổi khả năng giải quyết vấn đề cá nhân thô để lấy trí thông minh xã hội."
+  },
+  {
+    "index": 63,
+    "start": 238.46,
+    "end": 241.94,
+    "text": "Khả năng hoạt động bên trong mạng lưới hợp tác thay vì bên ngoài nó."
+  },
+  {
+    "index": 64,
+    "start": 242.98,
+    "end": 246.1,
+    "text": "Ở nhiều loài được thuần hóa, hình mẫu này lập lại."
+  },
+  {
+    "index": 65,
+    "start": 247.06,
+    "end": 249.2,
+    "text": "Bò nhà so với tổ tiên hoang dã."
+  },
+  {
+    "index": 66,
+    "start": 250.34,
+    "end": 251.66,
+    "text": "Lận nhà so với lận rừng."
+  },
+  {
+    "index": 67,
+    "start": 252.48,
+    "end": 257.0,
+    "text": "Trong mỗi trường hợp, não không còn cần hoạt động một mình thường thu nhỏ về mức"
+  },
+  {
+    "index": 68,
+    "start": 257.0,
+    "end": 259.02,
+    "text": "mà môi trường xã hội đòi hỏi."
+  },
+  {
+    "index": 69,
+    "start": 259.8,
+    "end": 263.66,
+    "text": "Một số nhà nghiên cứu hiện đề xuất rằng con người đã trải qua điều tương tự."
+  },
+  {
+    "index": 70,
+    "start": 264.72,
+    "end": 266.74,
+    "text": "Không phải bị thuần hóa bởi loài khác."
+  },
+  {
+    "index": 71,
+    "start": 267.72,
+    "end": 270.88,
+    "text": "Mà từ thuần hóa bởi chính sự lớn lên của nền văn minh."
+  },
+  {
+    "index": 72,
+    "start": 271.94,
+    "end": 276.62,
+    "text": "Khi cộng đồng trở nên lớn hơn và ổn định hơn, cá nhân không còn cần mang tất cả một"
+  },
+  {
+    "index": 73,
+    "start": 276.62,
+    "end": 276.84,
+    "text": "mình."
+  },
+  {
+    "index": 74,
+    "start": 277.62,
+    "end": 282.54,
+    "text": "Bạn không cần ghi nhớ mọi loại cây ăn được nấu ai đó trong nhóm đã chuyên về điều đó."
+  },
+  {
+    "index": 75,
+    "start": 283.42,
+    "end": 286.9,
+    "text": "Bạn không cần theo dõi mọi con thú nếu cộng đồng có người chuyên trách."
+  },
+  {
+    "index": 76,
+    "start": 287.8,
+    "end": 292.34,
+    "text": "Bạn không cần nhớ mọi con đường theo sao nếu người già trong làn giữ kiến thức đó và có"
+  },
+  {
+    "index": 77,
+    "start": 292.34,
+    "end": 292.94,
+    "text": "thể được hỏi."
+  },
+  {
+    "index": 78,
+    "start": 294.08,
+    "end": 296.08,
+    "text": "Công việc nhận thức trở nên phân tán."
+  },
+  {
+    "index": 79,
+    "start": 297.26,
+    "end": 301.8,
+    "text": "Được lưu trữ qua nhiều người, truyền qua ngôn ngữ, nhúng trong công cụ và nghi"
+  },
+  {
+    "index": 80,
+    "start": 301.8,
+    "end": 302.84,
+    "text": "lễ và câu chuyện."
+  },
+  {
+    "index": 81,
+    "start": 303.66,
+    "end": 309.02,
+    "text": "Não hoạt động bên trong một màn xã hội dày đặt không cần giữ quá nhiều một mình."
+  },
+  {
+    "index": 82,
+    "start": 309.32,
+    "end": 311.24,
+    "text": "Mạng lưới trở thành một phần của tư duy."
+  },
+  {
+    "index": 83,
+    "start": 312.4,
+    "end": 314.08,
+    "text": "Giả thuyết này còn đang tranh luận."
+  },
+  {
+    "index": 84,
+    "start": 315.16,
+    "end": 317.68,
+    "text": "Chưa phải khoa học đã được định hình."
+  },
+  {
+    "index": 85,
+    "start": 318.02,
+    "end": 320.74,
+    "text": "Nhưng thời điểm xảy ra khó mà gạt sang một bên."
+  },
+  {
+    "index": 86,
+    "start": 321.78,
+    "end": 326.36,
+    "text": "Sự thu nhỏ của não tương quan với sự gia tăng mật độ dân số và sự hình thành các cộng"
+  },
+  {
+    "index": 87,
+    "start": 326.36,
+    "end": 327.68,
+    "text": "đồng định cư lâu dài."
+  },
+  {
+    "index": 88,
+    "start": 328.58,
+    "end": 331.8,
+    "text": "Với sự khởi đầu của chính thế giới mà chúng ta nhận ra ngày nay."
+  },
+  {
+    "index": 89,
+    "start": 332.56,
+    "end": 337.28,
+    "text": "Sau mỗi thế hệ sống trong cộng đồng lớn hơn, ổn định hơn và phân công lao"
+  },
+  {
+    "index": 90,
+    "start": 337.28,
+    "end": 340.8,
+    "text": "động nhiều hơn, bộ não cá nhân không còn mang gánh nặng như trước."
+  },
+  {
+    "index": 91,
+    "start": 341.72,
+    "end": 344.44,
+    "text": "Bạn bây giờ đã biết não thu nhỏ."
+  },
+  {
+    "index": 92,
+    "start": 344.78,
+    "end": 346.7,
+    "text": "Bạn biết một số lý do có thể."
+  },
+  {
+    "index": 93,
+    "start": 347.76,
+    "end": 351.34,
+    "text": "Nhưng bạn vẫn chưa biết điều gì thực sự đã mất, nếu có."
+  },
+  {
+    "index": 94,
+    "start": 352.24,
+    "end": 354.84,
+    "text": "Câu hỏi đó khó đo hơn cm khối nhiều."
+  },
+  {
+    "index": 95,
+    "start": 355.84,
+    "end": 359.86,
+    "text": "Người cầm chiếc hộp sọ lớn hơn đó 20.000 năm trước đã sống khác đi."
+  },
+  {
+    "index": 96,
+    "start": 360.4,
+    "end": 361.86,
+    "text": "Không có thư viện."
+  },
+  {
+    "index": 97,
+    "start": 362.92,
+    "end": 364.94,
+    "text": "Không có tài liệu thành văn."
+  },
+  {
+    "index": 98,
+    "start": 365.4,
+    "end": 367.72,
+    "text": "Không có chuyên gia để hỏi khi kiến thức cạn."
+  },
+  {
+    "index": 99,
+    "start": 368.88,
+    "end": 373.16,
+    "text": "Mọi thứ cần thiết để tồn tại phải sống bên trong một bộ não duy nhất."
+  },
+  {
+    "index": 100,
+    "start": 373.5,
+    "end": 374.04,
+    "text": "Đầy đủ."
+  },
+  {
+    "index": 101,
+    "start": 375.24,
+    "end": 376.16,
+    "text": "Luôn sẵn sang."
+  },
+  {
+    "index": 102,
+    "start": 377.2,
+    "end": 378.96,
+    "text": "Bạn sống trong một cấu trúc khác."
+  },
+  {
+    "index": 103,
+    "start": 379.94,
+    "end": 384.46,
+    "text": "Chiếc điện thoại trong túi bạn lưu trữ nhiều thông tin định hướng hơn bất kỳ bộ não cổ đại"
+  },
+  {
+    "index": 104,
+    "start": 384.46,
+    "end": 385.32,
+    "text": "nào từng mang."
+  },
+  {
+    "index": 105,
+    "start": 386.04,
+    "end": 390.66,
+    "text": "Những cuốn sách trên giá của bạn giữ nhiều kiến thức hơn bất kỳ truyền thống truyền miệng nào"
+  },
+  {
+    "index": 106,
+    "start": 390.66,
+    "end": 391.48,
+    "text": "có thể bảo tồn."
+  },
+  {
+    "index": 107,
+    "start": 392.58,
+    "end": 397.12,
+    "text": "Kiến thức của bạn được phân phối qua những người xung quanh, qua những thiết bị trong tay, qua"
+  },
+  {
+    "index": 108,
+    "start": 397.12,
+    "end": 399.94,
+    "text": "những hệ thống mà thế giới bạn đang sống đã xây lên."
+  },
+  {
+    "index": 109,
+    "start": 400.76,
+    "end": 402.4,
+    "text": "Có thể không có gì mất đi."
+  },
+  {
+    "index": 110,
+    "start": 403.32,
+    "end": 407.44,
+    "text": "Có thể não đơn giản đã chuyển kho lưu trữ của mình ra ngoài bản thân."
+  },
+  {
+    "index": 111,
+    "start": 407.96,
+    "end": 409.32,
+    "text": "Trí tuệ mở rộng."
+  },
+  {
+    "index": 112,
+    "start": 410.34,
+    "end": 412.42,
+    "text": "Mạng lưới như một cơ quan."
+  },
+  {
+    "index": 113,
+    "start": 412.86,
+    "end": 414.7,
+    "text": "Hoặc có thể đã có gì đó mất đi."
+  },
+  {
+    "index": 114,
+    "start": 415.58,
+    "end": 418.32,
+    "text": "Một phẩm chất của sự chú ý cá nhân."
+  },
+  {
+    "index": 115,
+    "start": 419.38,
+    "end": 421.32,
+    "text": "Một chiều sâu của việc biết một mình."
+  },
+  {
+    "index": 116,
+    "start": 422.34,
+    "end": 426.16,
+    "text": "Thứ gì đó đòi hỏi toàn bộ sức nặng của chiếc hột sọ nặng hơn đó."
+  },
+  {
+    "index": 117,
+    "start": 427.14,
+    "end": 429.62,
+    "text": "Hồ sơ Hóa Thạch nói với chúng ta về kích thước."
+  },
+  {
+    "index": 118,
+    "start": 430.78,
+    "end": 434.52,
+    "text": "Nó không nói với chúng ta về giá trị của những gì đã thay đổi."
+  },
+  {
+    "index": 119,
+    "start": 435.06,
+    "end": 437.94,
+    "text": "Chiếc hột sọ từ 20.000 năm trước nặng hơn của bạn."
+  },
+  {
+    "index": 120,
+    "start": 439.02,
+    "end": 442.36,
+    "text": "Nhưng tâm trí bên trong nó không có ai khác để hỏi."
+  },
+  {
+    "index": 121,
+    "start": 442.9,
+    "end": 443.66,
+    "text": "Bạn có."
+  },
+  {
+    "index": 122,
+    "start": 444.64,
+    "end": 447.84,
+    "text": "Spark đã ngồi bên mọi ngọn lửa trong câu chuyện dài này."
+  },
+  {
+    "index": 123,
+    "start": 448.8,
+    "end": 452.2,
+    "text": "Những ngọn lửa nơi một tâm trí duy nhất phải giữ tất cả mọi thứ."
+  },
+  {
+    "index": 124,
+    "start": 453.08,
+    "end": 457.7,
+    "text": "Và những ngọn lửa nơi vòng tròn dần mở rộng, gánh nặng được chia ra và một"
+  },
+  {
+    "index": 125,
+    "start": 457.7,
+    "end": 459.2,
+    "text": "thứ mới bắt đầu hình thành."
+  },
+  {
+    "index": 126,
+    "start": 460.16,
+    "end": 462.0,
+    "text": "Vẫn đang theo dõi."
+  },
+  {
+    "index": 127,
+    "start": 462.3,
+    "end": 465.5,
+    "text": "Vẫn đang tự hỏi liệu chúng ta thực sự muốn giữ lại cái nào hơn."
+  }
+]

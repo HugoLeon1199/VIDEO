@@ -1,0 +1,1280 @@
+{
+  "003": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\nguoi-neanderthal-cham-soc-vi\\images_vi\\img_003.png",
+    "errors": [],
+    "job_id": "433de132-904f-4903-a7b6-c50b44f9387e-e2",
+    "duration_seconds": 246.82,
+    "saved_at": "2026-06-22T13:52:58Z"
+  },
+  "004": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\nguoi-neanderthal-cham-soc-vi\\images_vi\\img_004.png",
+    "errors": [],
+    "job_id": "7990c0fe-a498-4387-bc06-0534e7312d6c-e2",
+    "duration_seconds": 247.0,
+    "saved_at": "2026-06-22T13:52:58Z"
+  },
+  "005": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\nguoi-neanderthal-cham-soc-vi\\images_vi\\img_005.png",
+    "errors": [],
+    "job_id": "7ac51e3a-4178-447d-95ea-c24b29fdb31a-e1",
+    "duration_seconds": 247.1,
+    "saved_at": "2026-06-22T13:52:58Z"
+  },
+  "001": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\nguoi-neanderthal-cham-soc-vi\\images_vi\\img_001.png",
+    "errors": [],
+    "job_id": "74ca7d87-a1e0-43f4-95b7-0e4d0958cfd6-e1",
+    "duration_seconds": 247.57,
+    "saved_at": "2026-06-22T13:52:58Z"
+  },
+  "002": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\nguoi-neanderthal-cham-soc-vi\\images_vi\\img_002.png",
+    "errors": [],
+    "job_id": "81e387e8-50e0-438c-be42-ee6581ac0230-e2",
+    "duration_seconds": 247.86,
+    "saved_at": "2026-06-22T13:52:59Z"
+  },
+  "007": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\nguoi-neanderthal-cham-soc-vi\\images_vi\\img_007.png",
+    "errors": [],
+    "job_id": "be935a56-a228-40e2-a613-a7ebb2c56906-e2",
+    "duration_seconds": 15.96,
+    "saved_at": "2026-06-22T13:53:14Z"
+  },
+  "006": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\nguoi-neanderthal-cham-soc-vi\\images_vi\\img_006.png",
+    "errors": [],
+    "job_id": "76914a9e-1960-49c8-b1ba-2c76b70a7532-e1",
+    "duration_seconds": 26.72,
+    "saved_at": "2026-06-22T13:53:24Z"
+  },
+  "008": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\nguoi-neanderthal-cham-soc-vi\\images_vi\\img_008.png",
+    "errors": [],
+    "job_id": "1cdf5907-af59-42b0-a810-d7059de21fde-e2",
+    "duration_seconds": 41.66,
+    "saved_at": "2026-06-22T13:53:40Z"
+  },
+  "011": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\nguoi-neanderthal-cham-soc-vi\\images_vi\\img_011.png",
+    "errors": [],
+    "job_id": "dc6a09bd-cc79-4b80-a7b9-cf6365e50e59-e1",
+    "duration_seconds": 26.43,
+    "saved_at": "2026-06-22T13:53:41Z"
+  },
+  "009": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\nguoi-neanderthal-cham-soc-vi\\images_vi\\img_009.png",
+    "errors": [],
+    "job_id": "432f4f69-1e1b-4c1c-b86b-cf264ef50354-e1",
+    "duration_seconds": 42.07,
+    "saved_at": "2026-06-22T13:53:41Z"
+  },
+  "012": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\nguoi-neanderthal-cham-soc-vi\\images_vi\\img_012.png",
+    "errors": [],
+    "job_id": "a900371d-32ac-48e0-ad19-f1d7f6332027-e1",
+    "duration_seconds": 26.94,
+    "saved_at": "2026-06-22T13:53:52Z"
+  },
+  "013": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\nguoi-neanderthal-cham-soc-vi\\images_vi\\img_013.png",
+    "errors": [],
+    "job_id": "65f210ef-8ef9-4102-8e1a-8e4e2eb149cb-e1",
+    "duration_seconds": 15.67,
+    "saved_at": "2026-06-22T13:53:56Z"
+  },
+  "014": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\nguoi-neanderthal-cham-soc-vi\\images_vi\\img_014.png",
+    "errors": [],
+    "job_id": "9eb9ba59-9664-47eb-805e-c8732c649219-e2",
+    "duration_seconds": 16.01,
+    "saved_at": "2026-06-22T13:53:57Z"
+  },
+  "015": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\nguoi-neanderthal-cham-soc-vi\\images_vi\\img_015.png",
+    "errors": [],
+    "job_id": "5b8414a8-909f-4071-b7ea-11f26769b7e2-e1",
+    "duration_seconds": 16.09,
+    "saved_at": "2026-06-22T13:53:57Z"
+  },
+  "010": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\nguoi-neanderthal-cham-soc-vi\\images_vi\\img_010.png",
+    "errors": [],
+    "job_id": "8e26e47d-a5a4-45a6-a1c7-168e6ff7b271-e2",
+    "duration_seconds": 64.93,
+    "saved_at": "2026-06-22T13:54:04Z"
+  },
+  "016": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\nguoi-neanderthal-cham-soc-vi\\images_vi\\img_016.png",
+    "errors": [],
+    "job_id": "4dedfeef-af54-4253-8175-70a24835f87a-e2",
+    "duration_seconds": 16.39,
+    "saved_at": "2026-06-22T13:54:08Z"
+  },
+  "017": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\nguoi-neanderthal-cham-soc-vi\\images_vi\\img_017.png",
+    "errors": [],
+    "job_id": "f43302b0-d93e-4bac-ac37-f8587afa1300-e2",
+    "duration_seconds": 15.94,
+    "saved_at": "2026-06-22T13:54:12Z"
+  },
+  "018": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\nguoi-neanderthal-cham-soc-vi\\images_vi\\img_018.png",
+    "errors": [],
+    "job_id": "d3eea5f2-af60-4603-9886-65d301fdbf95-e1",
+    "duration_seconds": 16.12,
+    "saved_at": "2026-06-22T13:54:13Z"
+  },
+  "020": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\nguoi-neanderthal-cham-soc-vi\\images_vi\\img_020.png",
+    "errors": [],
+    "job_id": "1f85743d-b62e-45c5-a586-ab09d82975fc-e1",
+    "duration_seconds": 16.0,
+    "saved_at": "2026-06-22T13:54:20Z"
+  },
+  "019": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\nguoi-neanderthal-cham-soc-vi\\images_vi\\img_019.png",
+    "errors": [],
+    "job_id": "4b0fce0e-8835-4ff9-b133-18b784a56b2c-e2",
+    "duration_seconds": 26.22,
+    "saved_at": "2026-06-22T13:54:23Z"
+  },
+  "021": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\nguoi-neanderthal-cham-soc-vi\\images_vi\\img_021.png",
+    "errors": [],
+    "job_id": "08f6566f-fb6d-45fa-86c9-dc90d9806ecc-e1",
+    "duration_seconds": 16.13,
+    "saved_at": "2026-06-22T13:54:24Z"
+  },
+  "023": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\nguoi-neanderthal-cham-soc-vi\\images_vi\\img_023.png",
+    "errors": [],
+    "job_id": "cd2e98bb-b483-4a9d-ab1e-c25982d8fc20-e2",
+    "duration_seconds": 15.81,
+    "saved_at": "2026-06-22T13:54:29Z"
+  },
+  "024": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\nguoi-neanderthal-cham-soc-vi\\images_vi\\img_024.png",
+    "errors": [],
+    "job_id": "6d521a59-0025-48a3-8602-4b7509bf3c82-e2",
+    "duration_seconds": 15.94,
+    "saved_at": "2026-06-22T13:54:36Z"
+  },
+  "022": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\nguoi-neanderthal-cham-soc-vi\\images_vi\\img_022.png",
+    "errors": [],
+    "job_id": "700f3bce-0455-4eaa-af0c-a6b9c3c0df13-e1",
+    "duration_seconds": 26.83,
+    "saved_at": "2026-06-22T13:54:39Z"
+  },
+  "025": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\nguoi-neanderthal-cham-soc-vi\\images_vi\\img_025.png",
+    "errors": [],
+    "job_id": "ca78d098-8f6e-4574-920a-fab4238875ef-e2",
+    "duration_seconds": 16.14,
+    "saved_at": "2026-06-22T13:54:40Z"
+  },
+  "026": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\nguoi-neanderthal-cham-soc-vi\\images_vi\\img_026.png",
+    "errors": [],
+    "job_id": "192743d0-3aee-481e-bfa2-a95a55addf5c-e2",
+    "duration_seconds": 16.24,
+    "saved_at": "2026-06-22T13:54:41Z"
+  },
+  "027": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\nguoi-neanderthal-cham-soc-vi\\images_vi\\img_027.png",
+    "errors": [],
+    "job_id": "21f00d92-583f-49b8-8494-e88c32549fa5-e2",
+    "duration_seconds": 16.0,
+    "saved_at": "2026-06-22T13:54:45Z"
+  },
+  "028": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\nguoi-neanderthal-cham-soc-vi\\images_vi\\img_028.png",
+    "errors": [],
+    "job_id": "8d1ed3ec-67f3-41ce-9a86-b2b2733beb2f-e1",
+    "duration_seconds": 16.08,
+    "saved_at": "2026-06-22T13:54:52Z"
+  },
+  "029": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\nguoi-neanderthal-cham-soc-vi\\images_vi\\img_029.png",
+    "errors": [],
+    "job_id": "37ef4884-112c-4880-8d6c-7459c1cf5732-e2",
+    "duration_seconds": 16.0,
+    "saved_at": "2026-06-22T13:54:55Z"
+  },
+  "030": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\nguoi-neanderthal-cham-soc-vi\\images_vi\\img_030.png",
+    "errors": [],
+    "job_id": "06efc43b-4f85-4e60-a632-4b597a0b49f1-e1",
+    "duration_seconds": 15.83,
+    "saved_at": "2026-06-22T13:54:56Z"
+  },
+  "031": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\nguoi-neanderthal-cham-soc-vi\\images_vi\\img_031.png",
+    "errors": [],
+    "job_id": "ddc5140b-2dab-425e-b54e-280a44337875-e2",
+    "duration_seconds": 16.21,
+    "saved_at": "2026-06-22T13:54:57Z"
+  },
+  "032": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\nguoi-neanderthal-cham-soc-vi\\images_vi\\img_032.png",
+    "errors": [],
+    "job_id": "f9e592ef-0cad-4c98-9428-d26309fbab43-e2",
+    "duration_seconds": 16.41,
+    "saved_at": "2026-06-22T13:55:02Z"
+  },
+  "033": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\nguoi-neanderthal-cham-soc-vi\\images_vi\\img_033.png",
+    "errors": [],
+    "job_id": "38b19b9a-64de-4849-8032-47ff0495b964-e1",
+    "duration_seconds": 15.83,
+    "saved_at": "2026-06-22T13:55:08Z"
+  },
+  "034": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\nguoi-neanderthal-cham-soc-vi\\images_vi\\img_034.png",
+    "errors": [],
+    "job_id": "9e96b3c2-47e9-493a-93f0-75fe437cb2fb-e1",
+    "duration_seconds": 16.27,
+    "saved_at": "2026-06-22T13:55:11Z"
+  },
+  "035": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\nguoi-neanderthal-cham-soc-vi\\images_vi\\img_035.png",
+    "errors": [],
+    "job_id": "3b9557e1-81ce-4e8c-87dd-9d0b04b62fb0-e1",
+    "duration_seconds": 16.03,
+    "saved_at": "2026-06-22T13:55:12Z"
+  },
+  "036": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\nguoi-neanderthal-cham-soc-vi\\images_vi\\img_036.png",
+    "errors": [],
+    "job_id": "bb4aeb08-2f0a-4e8a-b2d4-8f097a696ce4-e1",
+    "duration_seconds": 16.05,
+    "saved_at": "2026-06-22T13:55:13Z"
+  },
+  "037": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\nguoi-neanderthal-cham-soc-vi\\images_vi\\img_037.png",
+    "errors": [],
+    "job_id": "77ee5d7b-9616-4ec6-9161-aed1729b6de1-e1",
+    "duration_seconds": 16.13,
+    "saved_at": "2026-06-22T13:55:18Z"
+  },
+  "038": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\nguoi-neanderthal-cham-soc-vi\\images_vi\\img_038.png",
+    "errors": [],
+    "job_id": "763a4437-4cfa-46f4-9272-505451d3c222-e1",
+    "duration_seconds": 15.84,
+    "saved_at": "2026-06-22T13:55:24Z"
+  },
+  "039": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\nguoi-neanderthal-cham-soc-vi\\images_vi\\img_039.png",
+    "errors": [],
+    "job_id": "0ca82343-51b2-4613-9c2d-1e11310748c6-e2",
+    "duration_seconds": 16.07,
+    "saved_at": "2026-06-22T13:55:27Z"
+  },
+  "040": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\nguoi-neanderthal-cham-soc-vi\\images_vi\\img_040.png",
+    "errors": [],
+    "job_id": "ece8214f-9761-4b64-b5e2-004697cdde1a-e1",
+    "duration_seconds": 16.13,
+    "saved_at": "2026-06-22T13:55:28Z"
+  },
+  "041": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\nguoi-neanderthal-cham-soc-vi\\images_vi\\img_041.png",
+    "errors": [],
+    "job_id": "c03cc094-d622-42c0-b9d0-77be16843ad0-e2",
+    "duration_seconds": 15.97,
+    "saved_at": "2026-06-22T13:55:30Z"
+  },
+  "042": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\nguoi-neanderthal-cham-soc-vi\\images_vi\\img_042.png",
+    "errors": [],
+    "job_id": "628c965d-8668-485d-9d66-bbea454b685c-e1",
+    "duration_seconds": 15.77,
+    "saved_at": "2026-06-22T13:55:34Z"
+  },
+  "043": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\nguoi-neanderthal-cham-soc-vi\\images_vi\\img_043.png",
+    "errors": [],
+    "job_id": "c6220e67-d4da-4e9c-a62f-f42a42b64196-e2",
+    "duration_seconds": 15.98,
+    "saved_at": "2026-06-22T13:55:40Z"
+  },
+  "044": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\nguoi-neanderthal-cham-soc-vi\\images_vi\\img_044.png",
+    "errors": [],
+    "job_id": "6aea9eb0-0ff3-41d2-bb90-c392a5d38ebc-e2",
+    "duration_seconds": 16.28,
+    "saved_at": "2026-06-22T13:55:44Z"
+  },
+  "045": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\nguoi-neanderthal-cham-soc-vi\\images_vi\\img_045.png",
+    "errors": [],
+    "job_id": "2bcf5fad-3182-4382-bdbd-0c5db8288485-e2",
+    "duration_seconds": 16.19,
+    "saved_at": "2026-06-22T13:55:44Z"
+  },
+  "046": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\nguoi-neanderthal-cham-soc-vi\\images_vi\\img_046.png",
+    "errors": [],
+    "job_id": "a56ce844-9e95-481d-ad95-1ce6c809b9b4-e1",
+    "duration_seconds": 16.1,
+    "saved_at": "2026-06-22T13:55:46Z"
+  },
+  "047": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\nguoi-neanderthal-cham-soc-vi\\images_vi\\img_047.png",
+    "errors": [],
+    "job_id": "99066b19-29b8-4fc4-96f0-643637fb1a51-e2",
+    "duration_seconds": 16.41,
+    "saved_at": "2026-06-22T13:55:50Z"
+  },
+  "048": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\nguoi-neanderthal-cham-soc-vi\\images_vi\\img_048.png",
+    "errors": [],
+    "job_id": "1b0c8134-2dc2-44b0-9603-a3763674e1ce-e1",
+    "duration_seconds": 16.29,
+    "saved_at": "2026-06-22T13:55:57Z"
+  },
+  "049": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\nguoi-neanderthal-cham-soc-vi\\images_vi\\img_049.png",
+    "errors": [],
+    "job_id": "a77600d2-0b0b-4549-9eb7-0084b549749f-e1",
+    "duration_seconds": 15.75,
+    "saved_at": "2026-06-22T13:56:00Z"
+  },
+  "050": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\nguoi-neanderthal-cham-soc-vi\\images_vi\\img_050.png",
+    "errors": [],
+    "job_id": "66f0e423-3b94-40b6-afe2-11c0842cb0a6-e2",
+    "duration_seconds": 16.18,
+    "saved_at": "2026-06-22T13:56:01Z"
+  },
+  "051": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\nguoi-neanderthal-cham-soc-vi\\images_vi\\img_051.png",
+    "errors": [],
+    "job_id": "70a7cd31-7a5d-477e-b3ab-86822351d950-e2",
+    "duration_seconds": 15.88,
+    "saved_at": "2026-06-22T13:56:02Z"
+  },
+  "052": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\nguoi-neanderthal-cham-soc-vi\\images_vi\\img_052.png",
+    "errors": [],
+    "job_id": "b8bec74f-0537-4cfb-bf7d-ef5b6040e5ff-e1",
+    "duration_seconds": 15.88,
+    "saved_at": "2026-06-22T13:56:06Z"
+  },
+  "053": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\nguoi-neanderthal-cham-soc-vi\\images_vi\\img_053.png",
+    "errors": [],
+    "job_id": "e428962a-8380-4195-95a8-bfd86e13a296-e1",
+    "duration_seconds": 16.27,
+    "saved_at": "2026-06-22T13:56:13Z"
+  },
+  "054": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\nguoi-neanderthal-cham-soc-vi\\images_vi\\img_054.png",
+    "errors": [],
+    "job_id": "14b68dc6-5076-4ebe-aca7-f7fbae586d6f-e2",
+    "duration_seconds": 15.9,
+    "saved_at": "2026-06-22T13:56:16Z"
+  },
+  "055": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\nguoi-neanderthal-cham-soc-vi\\images_vi\\img_055.png",
+    "errors": [],
+    "job_id": "510eaf45-c219-48ac-91c8-b52f5b81bdae-e2",
+    "duration_seconds": 15.8,
+    "saved_at": "2026-06-22T13:56:17Z"
+  },
+  "056": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\nguoi-neanderthal-cham-soc-vi\\images_vi\\img_056.png",
+    "errors": [],
+    "job_id": "2b97e7c2-07bd-4044-8141-91c1f6d3873f-e1",
+    "duration_seconds": 16.27,
+    "saved_at": "2026-06-22T13:56:18Z"
+  },
+  "058": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\nguoi-neanderthal-cham-soc-vi\\images_vi\\img_058.png",
+    "errors": [],
+    "job_id": "93bc3afe-db79-4037-9c9d-33d7f24eeb47-e1",
+    "duration_seconds": 15.73,
+    "saved_at": "2026-06-22T13:56:29Z"
+  },
+  "059": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\nguoi-neanderthal-cham-soc-vi\\images_vi\\img_059.png",
+    "errors": [],
+    "job_id": "a1ce7205-2579-4bb2-96cc-594e2ef63feb-e2",
+    "duration_seconds": 16.24,
+    "saved_at": "2026-06-22T13:56:32Z"
+  },
+  "060": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\nguoi-neanderthal-cham-soc-vi\\images_vi\\img_060.png",
+    "errors": [],
+    "job_id": "7a394f41-52e6-4442-81c9-d82ba5a67a40-e1",
+    "duration_seconds": 15.92,
+    "saved_at": "2026-06-22T13:56:33Z"
+  },
+  "057": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\nguoi-neanderthal-cham-soc-vi\\images_vi\\img_057.png",
+    "errors": [],
+    "job_id": "c406cc83-6fa2-4afa-afbd-af6021d3de5b-e1",
+    "duration_seconds": 26.92,
+    "saved_at": "2026-06-22T13:56:33Z"
+  },
+  "061": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\nguoi-neanderthal-cham-soc-vi\\images_vi\\img_061.png",
+    "errors": [],
+    "job_id": "4d5a5cd2-3713-441b-b78a-81e637086bea-e2",
+    "duration_seconds": 26.67,
+    "saved_at": "2026-06-22T13:56:45Z"
+  },
+  "062": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\nguoi-neanderthal-cham-soc-vi\\images_vi\\img_062.png",
+    "errors": [],
+    "job_id": "018dc3ac-d910-4dc4-b9a2-a1a1a499f7e7-e1",
+    "duration_seconds": 16.18,
+    "saved_at": "2026-06-22T13:56:46Z"
+  },
+  "063": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\nguoi-neanderthal-cham-soc-vi\\images_vi\\img_063.png",
+    "errors": [],
+    "job_id": "2e8bd9b2-f363-4142-ac58-1fb9e421372c-e2",
+    "duration_seconds": 15.7,
+    "saved_at": "2026-06-22T13:56:48Z"
+  },
+  "064": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\nguoi-neanderthal-cham-soc-vi\\images_vi\\img_064.png",
+    "errors": [],
+    "job_id": "86938f96-f41c-43eb-8877-d5e6af968925-e1",
+    "duration_seconds": 16.12,
+    "saved_at": "2026-06-22T13:56:49Z"
+  },
+  "065": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\nguoi-neanderthal-cham-soc-vi\\images_vi\\img_065.png",
+    "errors": [],
+    "job_id": "5424178b-778c-4e33-9381-015b8c0f33b6-e1",
+    "duration_seconds": 26.44,
+    "saved_at": "2026-06-22T13:57:00Z"
+  },
+  "066": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\nguoi-neanderthal-cham-soc-vi\\images_vi\\img_066.png",
+    "errors": [],
+    "job_id": "fb8bd27e-af78-4956-a108-5743405d4fa3-e1",
+    "duration_seconds": 15.8,
+    "saved_at": "2026-06-22T13:57:01Z"
+  },
+  "067": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\nguoi-neanderthal-cham-soc-vi\\images_vi\\img_067.png",
+    "errors": [],
+    "job_id": "782a864f-4b4b-4f9a-aa47-47dc180460a0-e2",
+    "duration_seconds": 16.08,
+    "saved_at": "2026-06-22T13:57:02Z"
+  },
+  "068": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\nguoi-neanderthal-cham-soc-vi\\images_vi\\img_068.png",
+    "errors": [],
+    "job_id": "3442910c-b90f-45e6-a0a8-7da93cd546d2-e1",
+    "duration_seconds": 15.79,
+    "saved_at": "2026-06-22T13:57:04Z"
+  },
+  "069": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\nguoi-neanderthal-cham-soc-vi\\images_vi\\img_069.png",
+    "errors": [],
+    "job_id": "05718871-bf0b-436e-bf5f-f8e935f2fe28-e2",
+    "duration_seconds": 15.72,
+    "saved_at": "2026-06-22T13:57:05Z"
+  },
+  "070": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\nguoi-neanderthal-cham-soc-vi\\images_vi\\img_070.png",
+    "errors": [],
+    "job_id": "2abc1e77-992c-4838-971d-3e25177eb5ad-e1",
+    "duration_seconds": 16.0,
+    "saved_at": "2026-06-22T13:57:16Z"
+  },
+  "071": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\nguoi-neanderthal-cham-soc-vi\\images_vi\\img_071.png",
+    "errors": [],
+    "job_id": "749ca701-8663-476e-8581-2ff2e533b0d3-e2",
+    "duration_seconds": 16.12,
+    "saved_at": "2026-06-22T13:57:17Z"
+  },
+  "072": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\nguoi-neanderthal-cham-soc-vi\\images_vi\\img_072.png",
+    "errors": [],
+    "job_id": "0566b907-e050-4d39-8089-b6699bb253e6-e1",
+    "duration_seconds": 16.45,
+    "saved_at": "2026-06-22T13:57:18Z"
+  },
+  "073": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\nguoi-neanderthal-cham-soc-vi\\images_vi\\img_073.png",
+    "errors": [],
+    "job_id": "159aeda1-9e97-40e9-9c63-b030dddf74fc-e2",
+    "duration_seconds": 16.1,
+    "saved_at": "2026-06-22T13:57:20Z"
+  },
+  "074": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\nguoi-neanderthal-cham-soc-vi\\images_vi\\img_074.png",
+    "errors": [],
+    "job_id": "70488fd0-5070-4990-bd37-c5bd9ab9c90f-e1",
+    "duration_seconds": 26.45,
+    "saved_at": "2026-06-22T13:57:32Z"
+  },
+  "075": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\nguoi-neanderthal-cham-soc-vi\\images_vi\\img_075.png",
+    "errors": [],
+    "job_id": "248362ff-aa03-4390-974d-2ef405c4ba33-e1",
+    "duration_seconds": 15.93,
+    "saved_at": "2026-06-22T13:57:32Z"
+  },
+  "076": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\nguoi-neanderthal-cham-soc-vi\\images_vi\\img_076.png",
+    "errors": [],
+    "job_id": "59f2e4b5-e92b-4829-99b5-e8a775463dd1-e1",
+    "duration_seconds": 16.31,
+    "saved_at": "2026-06-22T13:57:34Z"
+  },
+  "078": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\nguoi-neanderthal-cham-soc-vi\\images_vi\\img_078.png",
+    "errors": [],
+    "job_id": "59887524-c6b3-40d9-9f13-74c3763a5eb9-e2",
+    "duration_seconds": 15.93,
+    "saved_at": "2026-06-22T13:57:36Z"
+  },
+  "077": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\nguoi-neanderthal-cham-soc-vi\\images_vi\\img_077.png",
+    "errors": [],
+    "job_id": "04037489-bfbe-4744-97cf-7506e9c70ac2-e2",
+    "duration_seconds": 26.14,
+    "saved_at": "2026-06-22T13:57:45Z"
+  },
+  "079": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\nguoi-neanderthal-cham-soc-vi\\images_vi\\img_079.png",
+    "errors": [],
+    "job_id": "247e2866-0d00-4728-a9dd-87218079f10f-e2",
+    "duration_seconds": 16.28,
+    "saved_at": "2026-06-22T13:57:48Z"
+  },
+  "080": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\nguoi-neanderthal-cham-soc-vi\\images_vi\\img_080.png",
+    "errors": [],
+    "job_id": "2fe36b2a-b963-4f11-acc4-c59eb18e4bb9-e2",
+    "duration_seconds": 16.52,
+    "saved_at": "2026-06-22T13:57:49Z"
+  },
+  "081": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\nguoi-neanderthal-cham-soc-vi\\images_vi\\img_081.png",
+    "errors": [],
+    "job_id": "ccce25ee-c36e-453f-9b18-867dfc40b295-e2",
+    "duration_seconds": 26.37,
+    "saved_at": "2026-06-22T13:58:00Z"
+  },
+  "083": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\nguoi-neanderthal-cham-soc-vi\\images_vi\\img_083.png",
+    "errors": [],
+    "job_id": "3760a2df-f0f5-4299-911a-1cfe39dd5afe-e1",
+    "duration_seconds": 16.32,
+    "saved_at": "2026-06-22T13:58:01Z"
+  },
+  "082": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\nguoi-neanderthal-cham-soc-vi\\images_vi\\img_082.png",
+    "errors": [],
+    "job_id": "bd363bda-05e7-46a4-8b93-a160b44ce294-e2",
+    "duration_seconds": 26.63,
+    "saved_at": "2026-06-22T13:58:03Z"
+  },
+  "084": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\nguoi-neanderthal-cham-soc-vi\\images_vi\\img_084.png",
+    "errors": [],
+    "job_id": "5e90ca59-7563-4f58-9c91-c70a11ba6f4d-e2",
+    "duration_seconds": 26.42,
+    "saved_at": "2026-06-22T13:58:15Z"
+  },
+  "085": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\nguoi-neanderthal-cham-soc-vi\\images_vi\\img_085.png",
+    "errors": [],
+    "job_id": "4d46e462-d3e8-4880-9093-9c91c3d0690a-e2",
+    "duration_seconds": 26.17,
+    "saved_at": "2026-06-22T13:58:15Z"
+  },
+  "086": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\nguoi-neanderthal-cham-soc-vi\\images_vi\\img_086.png",
+    "errors": [],
+    "job_id": "42a29c29-d8f4-4124-a362-a1b139a4a92a-e1",
+    "duration_seconds": 15.96,
+    "saved_at": "2026-06-22T13:58:16Z"
+  },
+  "088": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\nguoi-neanderthal-cham-soc-vi\\images_vi\\img_088.png",
+    "errors": [],
+    "job_id": "492a80fd-7ae7-4c87-8b02-41f7145273c0-e1",
+    "duration_seconds": 16.24,
+    "saved_at": "2026-06-22T13:58:19Z"
+  },
+  "087": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\nguoi-neanderthal-cham-soc-vi\\images_vi\\img_087.png",
+    "errors": [],
+    "job_id": "799376f4-4d59-477d-9cb9-4df40a92dad7-e2",
+    "duration_seconds": 26.3,
+    "saved_at": "2026-06-22T13:58:28Z"
+  },
+  "089": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\nguoi-neanderthal-cham-soc-vi\\images_vi\\img_089.png",
+    "errors": [],
+    "job_id": "7588d505-d1c6-4895-a0cd-f35c347b6fc5-e2",
+    "duration_seconds": 15.92,
+    "saved_at": "2026-06-22T13:58:31Z"
+  },
+  "090": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\nguoi-neanderthal-cham-soc-vi\\images_vi\\img_090.png",
+    "errors": [],
+    "job_id": "73ab60fe-3c9e-4770-924a-b0048f14d84c-e1",
+    "duration_seconds": 16.02,
+    "saved_at": "2026-06-22T13:58:32Z"
+  },
+  "091": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\nguoi-neanderthal-cham-soc-vi\\images_vi\\img_091.png",
+    "errors": [],
+    "job_id": "dd42ffe1-8128-4279-949f-8e298886a5a7-e1",
+    "duration_seconds": 15.73,
+    "saved_at": "2026-06-22T13:58:32Z"
+  },
+  "093": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\nguoi-neanderthal-cham-soc-vi\\images_vi\\img_093.png",
+    "errors": [],
+    "job_id": "b3340503-9b26-4463-943c-b156af4e91b9-e2",
+    "duration_seconds": 15.56,
+    "saved_at": "2026-06-22T13:58:43Z"
+  },
+  "092": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\nguoi-neanderthal-cham-soc-vi\\images_vi\\img_092.png",
+    "errors": [],
+    "job_id": "e7583664-a25d-492d-a210-4bc248b096c1-e2",
+    "duration_seconds": 26.01,
+    "saved_at": "2026-06-22T13:58:46Z"
+  },
+  "094": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\nguoi-neanderthal-cham-soc-vi\\images_vi\\img_094.png",
+    "errors": [],
+    "job_id": "d2c858af-7699-4f2b-b168-4f2c9baee06c-e2",
+    "duration_seconds": 16.45,
+    "saved_at": "2026-06-22T13:58:47Z"
+  },
+  "095": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\nguoi-neanderthal-cham-soc-vi\\images_vi\\img_095.png",
+    "errors": [],
+    "job_id": "3d10101b-a2b7-4645-af50-98fa88fe1b49-e1",
+    "duration_seconds": 16.39,
+    "saved_at": "2026-06-22T13:58:48Z"
+  },
+  "096": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\nguoi-neanderthal-cham-soc-vi\\images_vi\\img_096.png",
+    "errors": [],
+    "job_id": "6892ba4f-ab10-4fde-b23c-d9a26edc2585-e1",
+    "duration_seconds": 26.53,
+    "saved_at": "2026-06-22T13:58:59Z"
+  },
+  "097": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\nguoi-neanderthal-cham-soc-vi\\images_vi\\img_097.png",
+    "errors": [],
+    "job_id": "a43745c3-3cb1-458a-8003-178ae328d8dd-e2",
+    "duration_seconds": 16.18,
+    "saved_at": "2026-06-22T13:59:00Z"
+  },
+  "098": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\nguoi-neanderthal-cham-soc-vi\\images_vi\\img_098.png",
+    "errors": [],
+    "job_id": "e5e14fb0-20cd-4a67-8785-c565b919dbcd-e2",
+    "duration_seconds": 15.61,
+    "saved_at": "2026-06-22T13:59:01Z"
+  },
+  "099": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\nguoi-neanderthal-cham-soc-vi\\images_vi\\img_099.png",
+    "errors": [],
+    "job_id": "bd6961c6-942e-4a79-b40c-9d5eae76ae35-e1",
+    "duration_seconds": 15.51,
+    "saved_at": "2026-06-22T13:59:03Z"
+  },
+  "100": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\nguoi-neanderthal-cham-soc-vi\\images_vi\\img_100.png",
+    "errors": [],
+    "job_id": "5eee044d-0fa0-4cbd-9331-3c2f6ea5d544-e1",
+    "duration_seconds": 26.38,
+    "saved_at": "2026-06-22T13:59:15Z"
+  },
+  "101": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\nguoi-neanderthal-cham-soc-vi\\images_vi\\img_101.png",
+    "errors": [],
+    "job_id": "d133ed83-8019-4c20-91bd-e9ec0fd364c2-e2",
+    "duration_seconds": 16.3,
+    "saved_at": "2026-06-22T13:59:15Z"
+  },
+  "102": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\nguoi-neanderthal-cham-soc-vi\\images_vi\\img_102.png",
+    "errors": [],
+    "job_id": "e097c4bb-070b-4bc9-9840-f88c130e4948-e1",
+    "duration_seconds": 15.88,
+    "saved_at": "2026-06-22T13:59:16Z"
+  },
+  "103": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\nguoi-neanderthal-cham-soc-vi\\images_vi\\img_103.png",
+    "errors": [],
+    "job_id": "2dd438f3-a030-4a7d-8b66-1306d9da69d2-e1",
+    "duration_seconds": 15.99,
+    "saved_at": "2026-06-22T13:59:18Z"
+  },
+  "104": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\nguoi-neanderthal-cham-soc-vi\\images_vi\\img_104.png",
+    "errors": [],
+    "job_id": "ddbd56e7-b817-4f05-978c-3188de25196d-e1",
+    "duration_seconds": 26.42,
+    "saved_at": "2026-06-22T13:59:30Z"
+  },
+  "105": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\nguoi-neanderthal-cham-soc-vi\\images_vi\\img_105.png",
+    "errors": [],
+    "job_id": "3fe4e484-81a1-48f1-917d-fe6bbda1b82a-e1",
+    "duration_seconds": 15.83,
+    "saved_at": "2026-06-22T13:59:31Z"
+  },
+  "107": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\nguoi-neanderthal-cham-soc-vi\\images_vi\\img_107.png",
+    "errors": [],
+    "job_id": "669b1a7a-10e7-415a-82ac-b66b9ea5c39b-e2",
+    "duration_seconds": 15.69,
+    "saved_at": "2026-06-22T13:59:32Z"
+  },
+  "106": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\nguoi-neanderthal-cham-soc-vi\\images_vi\\img_106.png",
+    "errors": [],
+    "job_id": "8f105435-5cb0-41fa-abf6-4735b9ad67c9-e1",
+    "duration_seconds": 16.22,
+    "saved_at": "2026-06-22T13:59:32Z"
+  },
+  "108": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\nguoi-neanderthal-cham-soc-vi\\images_vi\\img_108.png",
+    "errors": [],
+    "job_id": "9d49d010-955b-479d-808c-037ea10a1952-e2",
+    "duration_seconds": 26.44,
+    "saved_at": "2026-06-22T13:59:44Z"
+  },
+  "109": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\nguoi-neanderthal-cham-soc-vi\\images_vi\\img_109.png",
+    "errors": [],
+    "job_id": "3e9bc6e5-0722-41bd-8df1-ec753ec32e2b-e2",
+    "duration_seconds": 15.83,
+    "saved_at": "2026-06-22T13:59:46Z"
+  },
+  "110": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\nguoi-neanderthal-cham-soc-vi\\images_vi\\img_110.png",
+    "errors": [],
+    "job_id": "4f4de365-0179-4534-9f1d-1a411d819217-e1",
+    "duration_seconds": 15.93,
+    "saved_at": "2026-06-22T13:59:47Z"
+  },
+  "111": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\nguoi-neanderthal-cham-soc-vi\\images_vi\\img_111.png",
+    "errors": [],
+    "job_id": "63501688-0b4e-434a-ba9f-1ab6d81979d7-e1",
+    "duration_seconds": 16.42,
+    "saved_at": "2026-06-22T13:59:48Z"
+  },
+  "112": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\nguoi-neanderthal-cham-soc-vi\\images_vi\\img_112.png",
+    "errors": [],
+    "job_id": "d56d0f10-e8b3-4bae-8de0-afcb1abcbecb-e1",
+    "duration_seconds": 26.04,
+    "saved_at": "2026-06-22T13:59:58Z"
+  },
+  "113": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\nguoi-neanderthal-cham-soc-vi\\images_vi\\img_113.png",
+    "errors": [],
+    "job_id": "458d99ba-fb94-417b-81ed-07af739c74d5-e1",
+    "duration_seconds": 16.14,
+    "saved_at": "2026-06-22T14:00:00Z"
+  },
+  "114": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\nguoi-neanderthal-cham-soc-vi\\images_vi\\img_114.png",
+    "errors": [],
+    "job_id": "1145c7ad-3a51-457f-b634-cf3eeeb97018-e1",
+    "duration_seconds": 16.16,
+    "saved_at": "2026-06-22T14:00:02Z"
+  },
+  "115": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\nguoi-neanderthal-cham-soc-vi\\images_vi\\img_115.png",
+    "errors": [],
+    "job_id": "b246f5eb-0125-4573-8c66-b7b3a0440e92-e1",
+    "duration_seconds": 16.07,
+    "saved_at": "2026-06-22T14:00:03Z"
+  },
+  "116": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\nguoi-neanderthal-cham-soc-vi\\images_vi\\img_116.png",
+    "errors": [],
+    "job_id": "e921daee-445c-4ccf-b4d7-cb37e3d6931e-e1",
+    "duration_seconds": 15.69,
+    "saved_at": "2026-06-22T14:00:04Z"
+  },
+  "117": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\nguoi-neanderthal-cham-soc-vi\\images_vi\\img_117.png",
+    "errors": [],
+    "job_id": "86d5b7b2-f7ee-47db-8f20-12893af1140b-e2",
+    "duration_seconds": 15.5,
+    "saved_at": "2026-06-22T14:00:14Z"
+  },
+  "118": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\nguoi-neanderthal-cham-soc-vi\\images_vi\\img_118.png",
+    "errors": [],
+    "job_id": "ea26f383-685e-468d-9ced-9ffa5f808542-e1",
+    "duration_seconds": 16.24,
+    "saved_at": "2026-06-22T14:00:17Z"
+  },
+  "119": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\nguoi-neanderthal-cham-soc-vi\\images_vi\\img_119.png",
+    "errors": [],
+    "job_id": "54e396aa-a75f-499e-bdd5-d0355d3c34d4-e2",
+    "duration_seconds": 16.08,
+    "saved_at": "2026-06-22T14:00:18Z"
+  },
+  "120": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\nguoi-neanderthal-cham-soc-vi\\images_vi\\img_120.png",
+    "errors": [],
+    "job_id": "5003e5eb-50d1-46ec-aa0b-7c83eaeace06-e2",
+    "duration_seconds": 16.4,
+    "saved_at": "2026-06-22T14:00:20Z"
+  },
+  "121": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\nguoi-neanderthal-cham-soc-vi\\images_vi\\img_121.png",
+    "errors": [],
+    "job_id": "c2bef5ae-8ca7-49b7-9dda-5d790eb620cf-e1",
+    "duration_seconds": 16.04,
+    "saved_at": "2026-06-22T14:00:20Z"
+  },
+  "122": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\nguoi-neanderthal-cham-soc-vi\\images_vi\\img_122.png",
+    "errors": [],
+    "job_id": "507cef07-9173-4e4a-920a-ff2375c4b1b1-e1",
+    "duration_seconds": 16.23,
+    "saved_at": "2026-06-22T14:00:30Z"
+  },
+  "123": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\nguoi-neanderthal-cham-soc-vi\\images_vi\\img_123.png",
+    "errors": [],
+    "job_id": "18210711-8272-4f92-af14-6d244dad7b37-e2",
+    "duration_seconds": 15.8,
+    "saved_at": "2026-06-22T14:00:33Z"
+  },
+  "124": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\nguoi-neanderthal-cham-soc-vi\\images_vi\\img_124.png",
+    "errors": [],
+    "job_id": "7966ac56-7133-4f10-a83d-e338c6738ea4-e2",
+    "duration_seconds": 15.91,
+    "saved_at": "2026-06-22T14:00:34Z"
+  },
+  "125": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\nguoi-neanderthal-cham-soc-vi\\images_vi\\img_125.png",
+    "errors": [],
+    "job_id": "014209a9-7159-4b29-aeeb-a45de875ee1f-e1",
+    "duration_seconds": 15.99,
+    "saved_at": "2026-06-22T14:00:36Z"
+  },
+  "127": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\nguoi-neanderthal-cham-soc-vi\\images_vi\\img_127.png",
+    "errors": [],
+    "job_id": "8a9803df-bca6-4e2a-9193-b1980147f7b6-e2",
+    "duration_seconds": 15.79,
+    "saved_at": "2026-06-22T14:00:46Z"
+  },
+  "126": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\nguoi-neanderthal-cham-soc-vi\\images_vi\\img_126.png",
+    "errors": [],
+    "job_id": "25d13eb0-36fe-445e-b2ca-7fe7ea82ace1-e1",
+    "duration_seconds": 26.48,
+    "saved_at": "2026-06-22T14:00:47Z"
+  },
+  "128": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\nguoi-neanderthal-cham-soc-vi\\images_vi\\img_128.png",
+    "errors": [],
+    "job_id": "c5a39a2b-0c29-46d4-8678-e017a1da42fa-e1",
+    "duration_seconds": 16.37,
+    "saved_at": "2026-06-22T14:00:49Z"
+  },
+  "129": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\nguoi-neanderthal-cham-soc-vi\\images_vi\\img_129.png",
+    "errors": [],
+    "job_id": "8f995ec2-5731-48a7-acc3-c7584648feff-e2",
+    "duration_seconds": 16.46,
+    "saved_at": "2026-06-22T14:00:51Z"
+  },
+  "130": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\nguoi-neanderthal-cham-soc-vi\\images_vi\\img_130.png",
+    "errors": [],
+    "job_id": "87172c0d-3525-4af7-820b-b87a44e195e2-e1",
+    "duration_seconds": 16.04,
+    "saved_at": "2026-06-22T14:00:52Z"
+  },
+  "131": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\nguoi-neanderthal-cham-soc-vi\\images_vi\\img_131.png",
+    "errors": [],
+    "job_id": "f296c852-d2de-4682-bc86-c320e1ec7e45-e2",
+    "duration_seconds": 16.03,
+    "saved_at": "2026-06-22T14:01:02Z"
+  },
+  "132": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\nguoi-neanderthal-cham-soc-vi\\images_vi\\img_132.png",
+    "errors": [],
+    "job_id": "e9ec1799-e91e-41bb-8680-efff7d7b5c39-e2",
+    "duration_seconds": 16.28,
+    "saved_at": "2026-06-22T14:01:03Z"
+  },
+  "133": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\nguoi-neanderthal-cham-soc-vi\\images_vi\\img_133.png",
+    "errors": [],
+    "job_id": "4af6c722-2802-4d60-ae11-55726f1096df-e2",
+    "duration_seconds": 15.73,
+    "saved_at": "2026-06-22T14:01:05Z"
+  },
+  "134": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\nguoi-neanderthal-cham-soc-vi\\images_vi\\img_134.png",
+    "errors": [],
+    "job_id": "5af01ee9-9ea1-4eb8-96bb-fd345d25cd01-e1",
+    "duration_seconds": 16.05,
+    "saved_at": "2026-06-22T14:01:07Z"
+  },
+  "135": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\nguoi-neanderthal-cham-soc-vi\\images_vi\\img_135.png",
+    "errors": [],
+    "job_id": "7fd67185-b123-4c84-90d1-656011dc5db4-e2",
+    "duration_seconds": 16.36,
+    "saved_at": "2026-06-22T14:01:09Z"
+  },
+  "136": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\nguoi-neanderthal-cham-soc-vi\\images_vi\\img_136.png",
+    "errors": [],
+    "job_id": "0c4c4a14-1239-40fa-b841-be2835e7e7ba-e2",
+    "duration_seconds": 15.93,
+    "saved_at": "2026-06-22T14:01:18Z"
+  },
+  "137": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\nguoi-neanderthal-cham-soc-vi\\images_vi\\img_137.png",
+    "errors": [],
+    "job_id": "4462d4cf-6ee9-4725-885b-03ddbba56b2c-e2",
+    "duration_seconds": 16.56,
+    "saved_at": "2026-06-22T14:01:20Z"
+  },
+  "138": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\nguoi-neanderthal-cham-soc-vi\\images_vi\\img_138.png",
+    "errors": [],
+    "job_id": "90e32420-c241-49bd-bf46-0412122eb9c2-e1",
+    "duration_seconds": 16.51,
+    "saved_at": "2026-06-22T14:01:22Z"
+  },
+  "139": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\nguoi-neanderthal-cham-soc-vi\\images_vi\\img_139.png",
+    "errors": [],
+    "job_id": "7f679f47-78a7-4dae-bf9f-9cf3c5cb6b24-e1",
+    "duration_seconds": 16.08,
+    "saved_at": "2026-06-22T14:01:23Z"
+  },
+  "141": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\nguoi-neanderthal-cham-soc-vi\\images_vi\\img_141.png",
+    "errors": [],
+    "job_id": "4086369b-c336-4d4c-8ba7-5f9d8a115cb7-e1",
+    "duration_seconds": 15.78,
+    "saved_at": "2026-06-22T14:01:34Z"
+  },
+  "140": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\nguoi-neanderthal-cham-soc-vi\\images_vi\\img_140.png",
+    "errors": [],
+    "job_id": "42cefa83-8071-4674-8c2d-b78de4768593-e2",
+    "duration_seconds": 26.2,
+    "saved_at": "2026-06-22T14:01:35Z"
+  },
+  "142": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\nguoi-neanderthal-cham-soc-vi\\images_vi\\img_142.png",
+    "errors": [],
+    "job_id": "036141a5-32b3-403f-9d92-95725dc6ca57-e2",
+    "duration_seconds": 15.79,
+    "saved_at": "2026-06-22T14:01:36Z"
+  }
+}

@@ -1,0 +1,1018 @@
+[
+  {
+    "index": 1,
+    "start": 0.0,
+    "end": 4.0,
+    "prompt": "Cinematic paleo art, photorealistic, extreme close-up of a weathered ancient human skull resting on cracked dry earth, warm amber afternoon light casting long shadows across the bone surface, dust particles floating in the air, African savanna blurred in background, shallow depth of field, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, writing, logos",
+    "global_style": ""
+  },
+  {
+    "index": 2,
+    "start": 4.92,
+    "end": 6.28,
+    "prompt": "Cinematic paleo art, photorealistic, ancient Homo sapiens man's hands cradling a large heavy skull, fingers wrapped around the bone, veins and sinew visible on dark brown forearms, golden hour sidelight, stone ground beneath, shallow depth of field, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, writing, logos",
+    "global_style": ""
+  },
+  {
+    "index": 3,
+    "start": 7.4,
+    "end": 10.0,
+    "prompt": "Cinematic paleo art, photorealistic, ancient human crouching beside a stone hearth with glowing embers, firelight illuminating a lean weathered face, animal hide wrap around shoulders, cave interior with rough ochre-stained walls in background, deep shadows, orange glow, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, writing, logos",
+    "global_style": ""
+  },
+  {
+    "index": 4,
+    "start": 11.08,
+    "end": 14.2,
+    "prompt": "Cinematic paleo art, photorealistic, Spark — lean ancient Homo sapiens man standing at the mouth of a cave, one hand resting on the rough stone wall, gazing outward at vast African savanna at dusk, calm observant posture, faint firelight from inside cave behind him, warm amber and deep blue sky, shallow depth of field, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, writing, logos",
+    "global_style": ""
+  },
+  {
+    "index": 5,
+    "start": 15.18,
+    "end": 18.1,
+    "prompt": "Cinematic paleo art, photorealistic, ancient Homo sapiens man standing in profile in golden late-afternoon light, lean build, dark brown skin, simple rough hide wrap around hips, upright confident posture, open savanna grassland stretching to horizon behind him, warm amber light, long shadow cast across dry grass, shallow depth of field, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, writing, logos",
+    "global_style": ""
+  },
+  {
+    "index": 6,
+    "start": 18.64,
+    "end": 23.58,
+    "prompt": "Cinematic paleo art, photorealistic, close view of ancient human hands pressing ochre pigment onto a cave wall, torch light flickering orange-red, detailed fingers smearing dark red paint onto rough stone surface, deep cave interior darkness surrounding the illuminated patch of wall with faint animal shapes emerging, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, writing, logos",
+    "global_style": ""
+  },
+  {
+    "index": 7,
+    "start": 23.88,
+    "end": 28.3,
+    "prompt": "Cinematic paleo art, photorealistic, lone ancient Homo sapiens man walking across a vast open savanna, viewed from medium distance, carrying a wooden spear over one shoulder and a bundle of gathered roots, late golden hour light, dust rising from each footstep, distant acacia trees on the horizon, wide shot, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, writing, logos",
+    "global_style": ""
+  },
+  {
+    "index": 8,
+    "start": 28.3,
+    "end": 31.62,
+    "prompt": "Cinematic paleo art, photorealistic, ancient Homo sapiens woman alone at the edge of a dry savanna at midday, scanning the wide empty horizon with no shelter in sight, harsh sunlight, nothing but grass and sky in every direction, figure small in frame emphasizing vast empty world, shallow depth of field on face showing focused alertness, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, writing, logos",
+    "global_style": ""
+  },
+  {
+    "index": 9,
+    "start": 32.76,
+    "end": 34.9,
+    "prompt": "Cinematic paleo art, photorealistic, two ancient human skulls side by side on a flat stone surface, the left skull visibly larger with a broader cranial vault, the right skull slightly smaller, warm directional firelight from the left casting dramatic shadows, macro-style extreme close-up, no living figures, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, writing, logos",
+    "global_style": ""
+  },
+  {
+    "index": 10,
+    "start": 35.68,
+    "end": 37.42,
+    "prompt": "Cinematic paleo art, photorealistic, Spark — lean ancient man seated cross-legged on a rocky outcrop at dusk, looking directly forward with calm steady eyes, the vast savanna spreading behind him in fading orange-pink light, hands resting open on knees, observant and still, shallow depth of field, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, writing, logos",
+    "global_style": ""
+  },
+  {
+    "index": 11,
+    "start": 38.54,
+    "end": 42.98,
+    "prompt": "Cinematic paleo art, photorealistic, Spark seated beside a rocky outcrop, firelight from a small flame nearby, holding a large fossil skull in both hands and studying it intently, warm orange glow on face, African savanna night sky visible behind with stars, calm scholarly posture, shallow depth of field, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, writing, logos",
+    "global_style": ""
+  },
+  {
+    "index": 12,
+    "start": 44.0,
+    "end": 47.68,
+    "prompt": "Cinematic paleo art, photorealistic, wide view of ancient Homo sapiens group walking along a ridge at golden hour, silhouettes against a vast orange sky, figures moving forward in the same direction suggesting purposeful journey, spears visible among the group, savanna below, low angle looking up at the ridge, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, writing, logos",
+    "global_style": ""
+  },
+  {
+    "index": 13,
+    "start": 47.9,
+    "end": 51.2,
+    "prompt": "Cinematic paleo art, photorealistic, extreme close-up of an ancient human eye reflecting firelight, pupils large, expression of focused intelligence and awareness, forehead prominent with thick brow ridge, skin texture detailed, surrounding darkness except orange glow from fire below frame, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, writing, logos",
+    "global_style": ""
+  },
+  {
+    "index": 14,
+    "start": 52.12,
+    "end": 54.66,
+    "prompt": "Cinematic paleo art, photorealistic, two ancient human skulls on flat stone — the larger skull on the left gleams in firelight, the smaller skull on the right sits in shadow, a visual comparison emphasizing the size difference, dramatic chiaroscuro lighting, no living figures, close-up, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, writing, logos",
+    "global_style": ""
+  },
+  {
+    "index": 15,
+    "start": 55.66,
+    "end": 57.52,
+    "prompt": "Cinematic paleo art, photorealistic, ancient elder man with deeply lined face and grey-streaked hair seated beside a fire, arms gesturing expressively as he speaks to someone out of frame, firelight casting warm orange on weathered skin, cave interior background with dim shadows, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, writing, logos",
+    "global_style": ""
+  },
+  {
+    "index": 16,
+    "start": 58.3,
+    "end": 62.3,
+    "prompt": "Cinematic paleo art, photorealistic, fossilized skull half-buried in reddish-brown earth, partially exposed by erosion, afternoon sunlight raking across the surface to reveal texture, dry savanna soil cracked around it, no living figures, macro close-up, warm amber light, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, writing, logos",
+    "global_style": ""
+  },
+  {
+    "index": 17,
+    "start": 63.6,
+    "end": 67.8,
+    "prompt": "Cinematic paleo art, photorealistic, Spark kneeling in dry savanna earth, carefully unearthing a large ancient skull with bare hands, concentration on face, warm midday light casting sharp shadows, reddish dust on fingers, the skull emerging from soil visible and clearly large, shallow depth of field, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, writing, logos",
+    "global_style": ""
+  },
+  {
+    "index": 18,
+    "start": 68.8,
+    "end": 73.4,
+    "prompt": "Cinematic paleo art, photorealistic, wide panoramic view of three different ancient landscapes — European ice-age forest, African grassland, Asian riverside — each with a tiny human figure in the distance, split composition suggesting multiple locations across the world, cool blue and warm amber light contrasting across the frame, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, writing, logos",
+    "global_style": ""
+  },
+  {
+    "index": 19,
+    "start": 73.4,
+    "end": 76.54,
+    "prompt": "Cinematic paleo art, photorealistic, close-up of three skulls in a row on stone — one larger on the left, one medium in center, one slightly smaller on the right, all illuminated by the same warm firelight from one side, showing gradual size reduction, dramatic side-lighting, no living figures, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, writing, logos",
+    "global_style": ""
+  },
+  {
+    "index": 20,
+    "start": 77.7,
+    "end": 81.9,
+    "prompt": "Cinematic paleo art, photorealistic, ancient human hand holding a tennis ball-sized smooth stone up against the sky, golden hour backlight, fingers wrapped around the stone, comparing the weight and volume in one hand, savanna horizon below, minimal composition emphasizing the single object, shallow depth of field, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, writing, logos",
+    "global_style": ""
+  },
+  {
+    "index": 21,
+    "start": 82.18,
+    "end": 84.46,
+    "prompt": "Cinematic paleo art, photorealistic, close-up of ancient human palm holding a smooth round stone the size of a tennis ball, comparing it against a human skull placed nearby on the ground, firelight from below, simple composition emphasizing the size comparison, warm amber tones, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, writing, logos",
+    "global_style": ""
+  },
+  {
+    "index": 22,
+    "start": 85.98,
+    "end": 90.52,
+    "prompt": "Cinematic paleo art, photorealistic, Spark walking slowly across a vast savanna landscape at dusk, dozens of thousands of years of time suggested by the fading light and deep orange sky, figure small against enormous horizon, dry grass and acacia trees stretching endlessly, meditative pace, wide establishing shot, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, writing, logos",
+    "global_style": ""
+  },
+  {
+    "index": 23,
+    "start": 90.52,
+    "end": 92.74,
+    "prompt": "Cinematic paleo art, photorealistic, Spark crouching beside a stone marker on the savanna, examining the ground with focused attention, late afternoon light, the vast plains visible in every direction, no other figures visible, sense of careful observation, shallow depth of field on Spark's face, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, writing, logos",
+    "global_style": ""
+  },
+  {
+    "index": 24,
+    "start": 93.64,
+    "end": 97.88,
+    "prompt": "Cinematic paleo art, photorealistic, wide aerial-perspective view of an ancient savanna showing scattered groups of figures in three different areas of the frame — each group small and distant — suggesting multiple populations across a vast landscape, warm hazy light, horizon stretching beyond frame, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, writing, logos",
+    "global_style": ""
+  },
+  {
+    "index": 25,
+    "start": 98.08,
+    "end": 100.02,
+    "prompt": "Cinematic paleo art, photorealistic, extreme close-up of bone fragment with precise measurement marks scratched into it using a stone tool, ancient hand partially in frame holding the bone, warm firelight, archaeological precision, macro lens effect, sepia earth tones, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, writing, logos",
+    "global_style": ""
+  },
+  {
+    "index": 26,
+    "start": 101.04,
+    "end": 102.74,
+    "prompt": "Cinematic paleo art, photorealistic, close-up of a single fossil skull fragment resting on flat stone, isolated in frame, warm directional afternoon light from left, casting deep shadow to the right, dust and dry soil visible around it, nothing else in the composition, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, writing, logos",
+    "global_style": ""
+  },
+  {
+    "index": 27,
+    "start": 103.8,
+    "end": 106.16,
+    "prompt": "Cinematic paleo art, photorealistic, Spark standing beside a line of six skulls arranged on a flat stone ledge from largest to smallest left to right, studying them with calm focused expression, torch held in one hand casting warm flickering light, cave wall behind, the pattern clearly visible, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, writing, logos",
+    "global_style": ""
+  },
+  {
+    "index": 28,
+    "start": 107.14,
+    "end": 111.0,
+    "prompt": "Cinematic paleo art, photorealistic, Spark raising one open hand palm-forward as if pausing or cautioning, calm expression, seated near a fire, firelight from below, cave or rocky shelter in background, posture of someone about to make an important clarification, shallow depth of field, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, writing, logos",
+    "global_style": ""
+  },
+  {
+    "index": 29,
+    "start": 111.18,
+    "end": 114.18,
+    "prompt": "Cinematic paleo art, photorealistic, split-frame composition — left side shows a large whale skull fossil partially buried in ocean-cliff sediment, right side shows a large elephant skull on dry savanna earth, both in natural light, no human figures, emphasizing that brain size varies enormously across species, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, writing, logos",
+    "global_style": ""
+  },
+  {
+    "index": 30,
+    "start": 114.88,
+    "end": 118.98,
+    "prompt": "Cinematic paleo art, photorealistic, sperm whale breaching at sunset over open ocean, massive body emerging from water, spray catching golden light, vast scale suggested by the enormous body against the small horizon, dramatic low-angle view, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, writing, logos",
+    "global_style": ""
+  },
+  {
+    "index": 31,
+    "start": 119.22,
+    "end": 121.56,
+    "prompt": "Cinematic paleo art, photorealistic, African elephant standing in golden hour light on the savanna, viewed from low angle, massive head and tusks prominent, dust rising from footsteps, other elephants barely visible in background haze, warm amber tones, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, writing, logos",
+    "global_style": ""
+  },
+  {
+    "index": 32,
+    "start": 121.88,
+    "end": 125.6,
+    "prompt": "Cinematic paleo art, photorealistic, two ancient Homo sapiens figures working together — one building a stone shelter, one weaving plant fiber — viewed from across a clearing, a small fire between them, savanna at dusk, silhouettes defined by orange light, no city or complex structure visible, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, writing, logos",
+    "global_style": ""
+  },
+  {
+    "index": 33,
+    "start": 125.72,
+    "end": 128.7,
+    "prompt": "Cinematic paleo art, photorealistic, close-up of an ancient human brain cast — a natural endocast of fossilized brain shape in pale stone — resting on dark rock, raking sidelight from left highlighting the lobes and folds, macro detail, warm sepia tones, no living figures, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, writing, logos",
+    "global_style": ""
+  },
+  {
+    "index": 34,
+    "start": 128.9,
+    "end": 133.64,
+    "prompt": "Cinematic paleo art, photorealistic, ancient human man kneeling and tracing neural-like patterns in dry earth with a stick, concentrated expression, firelight behind him casting his shadow forward, the traced lines suggesting pathways or connections, cave interior, warm orange glow, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, writing, logos",
+    "global_style": ""
+  },
+  {
+    "index": 35,
+    "start": 133.64,
+    "end": 134.76,
+    "prompt": "Cinematic paleo art, photorealistic, extreme close-up of time — ancient human eye reflecting firelight, pupil dilated, expression of deep contemplation, surrounding skin weathered and detailed, only the eye and forehead in focus, pure darkness beyond the firelight ring, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, writing, logos",
+    "global_style": ""
+  },
+  {
+    "index": 36,
+    "start": 135.0,
+    "end": 139.22,
+    "prompt": "Cinematic paleo art, photorealistic, Spark seated thoughtfully beside a fire, one hand raised with index finger extended as if making a precise point, calm intelligent expression, firelight warm orange, cave background with dim rock wall, posture of careful explanation, shallow depth of field, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, writing, logos",
+    "global_style": ""
+  },
+  {
+    "index": 37,
+    "start": 140.12,
+    "end": 143.14,
+    "prompt": "Cinematic paleo art, photorealistic, two ancient human figures performing identical tasks — one using a heavy crude stone chopper, the other using a smaller refined hand axe — side by side comparison at a stone-knapping area, same golden hour light on both, no text, demonstrating efficiency not size, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, writing, logos",
+    "global_style": ""
+  },
+  {
+    "index": 38,
+    "start": 143.94,
+    "end": 146.12,
+    "prompt": "Cinematic paleo art, photorealistic, Spark holding two stones in raised hands — a rough heavy cobble in one hand, a smaller refined tool in the other — looking between them, comparing weight and form, afternoon light, rocky outcrop background, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, writing, logos",
+    "global_style": ""
+  },
+  {
+    "index": 39,
+    "start": 146.86,
+    "end": 150.44,
+    "prompt": "Cinematic paleo art, photorealistic, wide view of savanna showing visible transition — on the left side green and lush with a river, on the right side dry and sparse — ancient human silhouette in the center of the transition zone, arms open as if indicating the landscape, golden afternoon light, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, writing, logos",
+    "global_style": ""
+  },
+  {
+    "index": 40,
+    "start": 151.28,
+    "end": 154.16,
+    "prompt": "Cinematic paleo art, photorealistic, Spark seated facing the viewer with one finger raised, about to explain something, firelight from below casting upward shadows on the face, cave interior, serious and engaged expression, other figures barely visible seated in background shadows, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, writing, logos",
+    "global_style": ""
+  },
+  {
+    "index": 41,
+    "start": 154.96,
+    "end": 158.38,
+    "prompt": "Cinematic paleo art, photorealistic, ancient human figure viewed from behind standing upright in a forest clearing, lean physique visible — broad shoulders tapering to narrow waist — compared to a stocky Neanderthal figure also visible from behind at right of frame, dappled forest light, body size difference clearly visible, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, writing, logos",
+    "global_style": ""
+  },
+  {
+    "index": 42,
+    "start": 158.86,
+    "end": 160.42,
+    "prompt": "Cinematic paleo art, photorealistic, close-up of ancient human brain endocast — fossilized interior skull impression in pale cream stone — beside a smaller modern skull cast, both resting on dark basalt rock, warm sidelight, macro detail, the size difference visible, no living figures, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, writing, logos",
+    "global_style": ""
+  },
+  {
+    "index": 43,
+    "start": 161.46,
+    "end": 163.88,
+    "prompt": "Cinematic paleo art, photorealistic, ancient Homo sapiens boy of about ten years old — lean small frame — walking beside an adult man, both viewed from behind, the height and body scale difference clearly visible, open savanna, late afternoon golden light, long shadows, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, writing, logos",
+    "global_style": ""
+  },
+  {
+    "index": 44,
+    "start": 164.98,
+    "end": 168.3,
+    "prompt": "Cinematic paleo art, photorealistic, ancient Homo sapiens man crouching beside a smaller figure, both examining a bone fragment on the ground, golden hour light, the scale difference between adult and youth clearly shown without anatomical distortion, side view, savanna background, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, writing, logos",
+    "global_style": ""
+  },
+  {
+    "index": 45,
+    "start": 169.24,
+    "end": 171.4,
+    "prompt": "Cinematic paleo art, photorealistic, Spark turning away from two skull casts on a stone ledge, hands raised slightly as if acknowledging an incomplete explanation, expression of considered thought, afternoon sidelight, rock shelter background, posture suggesting there is more to say, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, writing, logos",
+    "global_style": ""
+  },
+  {
+    "index": 46,
+    "start": 172.22,
+    "end": 176.96,
+    "prompt": "Cinematic paleo art, photorealistic, graph-like arrangement of three skull fossils on a stone surface — arranged in a gentle downward slope from large to medium to small — firelight illuminating the size gradient, the reduction visible even without measurement, dramatic shadows, no living figures, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, writing, logos",
+    "global_style": ""
+  },
+  {
+    "index": 47,
+    "start": 177.12,
+    "end": 178.8,
+    "prompt": "Cinematic paleo art, photorealistic, close-up of an ancient human skull with a gap or hollow in the top of the cranial vault, visible empty space suggesting something missing, dramatic underlit from firelight below, cave setting, the absence itself as subject, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, writing, logos",
+    "global_style": ""
+  },
+  {
+    "index": 48,
+    "start": 179.74,
+    "end": 183.76,
+    "prompt": "Cinematic paleo art, photorealistic, shadowed cave entrance with a single figure standing just inside the threshold looking in, the cave interior dark and unknown, golden exterior light framing the figure from behind, the unknown interior as the subject, sense of entering something uncomfortable, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, writing, logos",
+    "global_style": ""
+  },
+  {
+    "index": 49,
+    "start": 184.74,
+    "end": 188.82,
+    "prompt": "Cinematic paleo art, photorealistic, ancient Homo sapiens man standing alone in open savanna looking down at his own hands, studying them as if seeing them for the first time, midday harsh light, vast empty landscape around him, no other figures, expression of self-examination and surprise, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, writing, logos",
+    "global_style": ""
+  },
+  {
+    "index": 50,
+    "start": 189.06,
+    "end": 192.36,
+    "prompt": "Cinematic paleo art, photorealistic, Spark gesturing toward a wolf and a domestic dog standing far apart in the same savanna clearing, torch raised to illuminate both, the wolf alert and independent at left, the dog looking toward a human figure at right, wide shot showing both animals clearly, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, writing, logos",
+    "global_style": ""
+  },
+  {
+    "index": 51,
+    "start": 193.56,
+    "end": 197.48,
+    "prompt": "Cinematic paleo art, photorealistic, grey wolf and a domestic dog standing side by side on open grassland at dusk, almost identical body shape and build, fur detail visible, golden hour backlight, the subtle differences in posture between the wild wolf and the domesticated dog, wide medium shot, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, writing, logos",
+    "global_style": ""
+  },
+  {
+    "index": 52,
+    "start": 197.48,
+    "end": 202.38,
+    "prompt": "Cinematic paleo art, photorealistic, ancient Homo sapiens camp at dusk — a fire at center with two to three figures seated around it — and at the edge of the firelight circle a dog lying down facing the humans, the boundary between wild darkness and warm camp life clear, 15000 years of coexistence implied, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, writing, logos",
+    "global_style": ""
+  },
+  {
+    "index": 53,
+    "start": 203.34,
+    "end": 207.64,
+    "prompt": "Cinematic paleo art, photorealistic, two dog skulls side by side — wolf skull on left clearly larger and longer, domestic dog skull on right noticeably smaller — resting on flat stone, warm firelight sidelight, the size reduction clearly visible even to the eye, macro close-up, no living figures, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, writing, logos",
+    "global_style": ""
+  },
+  {
+    "index": 54,
+    "start": 208.8,
+    "end": 210.88,
+    "prompt": "Cinematic paleo art, photorealistic, close-up of a domestic dog's face — warm expressive eyes, slightly tilted head — looking directly at camera, soft afternoon sidelight, fur detail visible, simple earthy background, the look of social intelligence and connection, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, writing, logos",
+    "global_style": ""
+  },
+  {
+    "index": 55,
+    "start": 212.02,
+    "end": 213.08,
+    "prompt": "Cinematic paleo art, photorealistic, ancient human's hand reaching down to a dog's raised paw, the exchange — fingers meeting paw — lit by warm firelight, cave floor below, the moment of contact between species, shallow depth of field on the hands, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, writing, logos",
+    "global_style": ""
+  },
+  {
+    "index": 56,
+    "start": 214.14,
+    "end": 216.2,
+    "prompt": "Cinematic paleo art, photorealistic, lone grey wolf navigating dense forest at dawn, moving between trees, head low, reading the ground and air independently, blue-grey morning light filtering through canopy, the wolf alert and completely self-reliant, no humans in frame, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, writing, logos",
+    "global_style": ""
+  },
+  {
+    "index": 57,
+    "start": 217.18,
+    "end": 221.72,
+    "prompt": "Cinematic paleo art, photorealistic, grey wolf tracking prey across open tundra — nose to ground, ears forward, moving fast — viewed from low angle, dramatic grey sky above, snow and rock beneath, the wolf's powerful independent movement through challenging terrain, wide shot, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, writing, logos",
+    "global_style": ""
+  },
+  {
+    "index": 58,
+    "start": 221.72,
+    "end": 222.74,
+    "prompt": "Cinematic paleo art, photorealistic, grey wolf alone on a windswept ridge, howling toward an empty sky, no pack visible, no humans, the solo predator at the pinnacle of its independent ability, dramatic backlit silhouette against pale winter sky, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, writing, logos",
+    "global_style": ""
+  },
+  {
+    "index": 59,
+    "start": 223.42,
+    "end": 224.62,
+    "prompt": "Cinematic paleo art, photorealistic, close-up of a dog's face turned up toward a human face, the dog reading the human's expression intently — ears forward, eyes tracking — ancient Homo sapiens man looking back down, mutual recognition, firelight, shallow depth of field, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, writing, logos",
+    "global_style": ""
+  },
+  {
+    "index": 60,
+    "start": 225.54,
+    "end": 230.22,
+    "prompt": "Cinematic paleo art, photorealistic, dog watching an ancient human's pointing gesture — the human's hand extended toward distant prey on the savanna — the dog's gaze following the direction precisely, both figures in medium shot, golden hour, the dog's social intelligence visible in its attentive posture, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, writing, logos",
+    "global_style": ""
+  },
+  {
+    "index": 61,
+    "start": 230.22,
+    "end": 232.24,
+    "prompt": "Cinematic paleo art, photorealistic, wolf standing stiffly apart from a group of ancient humans around a fire, not engaging, looking away toward the open darkness — the unbridgeable distance between wild wolf and human social world — dusk, firelight edge just touching the wolf's fur, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, writing, logos",
+    "global_style": ""
+  },
+  {
+    "index": 62,
+    "start": 233.16,
+    "end": 238.18,
+    "prompt": "Cinematic paleo art, photorealistic, ancient dog sitting attentively beside a human at a fire, watching the human's face closely while the human eats and speaks, the dog's posture completely social and integrated into the group, warm firelight, other humans in background shadows, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, writing, logos",
+    "global_style": ""
+  },
+  {
+    "index": 63,
+    "start": 238.46,
+    "end": 241.94,
+    "prompt": "Cinematic paleo art, photorealistic, ancient dog running in a pack alongside human hunters across open savanna, the dog integrated into the hunting group's movement, coordination visible, golden hour, long shadows, medium wide shot, the cooperative network in motion, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, writing, logos",
+    "global_style": ""
+  },
+  {
+    "index": 64,
+    "start": 242.98,
+    "end": 246.1,
+    "prompt": "Cinematic paleo art, photorealistic, montage-style wide shot of ancient settlement showing different domesticated animals at different distances — ox pulling load, goat near a figure, dog resting by fire — each animal in a different relationship to humans, warm midday light, no modern structures, early neolithic village suggested, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, writing, logos",
+    "global_style": ""
+  },
+  {
+    "index": 65,
+    "start": 247.06,
+    "end": 249.2,
+    "prompt": "Cinematic paleo art, photorealistic, wild aurochs — massive horned ancestor of cattle — standing in tall grass at the edge of a forest, powerful and alert, afternoon light catching its dark coat and enormous horns, no humans visible, the wild ancestor before domestication, wide shot, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, writing, logos",
+    "global_style": ""
+  },
+  {
+    "index": 66,
+    "start": 250.34,
+    "end": 251.66,
+    "prompt": "Cinematic paleo art, photorealistic, wild boar in dense undergrowth, bristled fur, powerful compact body, tusks visible, alert dark eyes — the wild ancestor of domestic pigs — dappled forest light, no humans, the animal in its natural habitat, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, writing, logos",
+    "global_style": ""
+  },
+  {
+    "index": 67,
+    "start": 252.48,
+    "end": 257.0,
+    "prompt": "Cinematic paleo art, photorealistic, two sets of animal skulls side by side — aurochs skull beside domestic cow skull, wild boar skull beside pig skull — all on a flat stone surface, same warm firelight from one side showing the size reduction across domestication in both species, no living figures, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, writing, logos",
+    "global_style": ""
+  },
+  {
+    "index": 68,
+    "start": 257.0,
+    "end": 259.02,
+    "prompt": "Cinematic paleo art, photorealistic, domestic cattle standing calmly in a simple enclosure near an early human settlement, late afternoon light, two ancient humans visible in background tending a fire, the animal integrated into human social environment, no modern structures, neolithic setting, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, writing, logos",
+    "global_style": ""
+  },
+  {
+    "index": 69,
+    "start": 259.8,
+    "end": 263.66,
+    "prompt": "Cinematic paleo art, photorealistic, Spark standing in open savanna with arms slightly open, looking directly forward, the landscape behind him showing evidence of ancient human activity — a distant fire, rough shelters — his posture suggesting he is drawing a parallel between animals and humans, wide medium shot, golden hour, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, writing, logos",
+    "global_style": ""
+  },
+  {
+    "index": 70,
+    "start": 264.72,
+    "end": 266.74,
+    "prompt": "Cinematic paleo art, photorealistic, ancient Homo sapiens man looking directly at another species across an open space — a wolf, not a dog — the unbridgeable wildness between them clear in the wolf's averted gaze and tense posture, dusk, firelight behind the man, cool darkness on the wolf's side, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, writing, logos",
+    "global_style": ""
+  },
+  {
+    "index": 71,
+    "start": 267.72,
+    "end": 270.88,
+    "prompt": "Cinematic paleo art, photorealistic, early neolithic human settlement — rough stone and timber structures, fire pits, domesticated animals nearby — viewed from a hilltop at golden hour, smoke rising from multiple fires, the community visible as a whole, wide panoramic shot, no modern elements, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, writing, logos",
+    "global_style": ""
+  },
+  {
+    "index": 72,
+    "start": 271.94,
+    "end": 276.62,
+    "prompt": "Cinematic paleo art, photorealistic, large ancient human settlement at dusk — dozens of figures visible at various distances doing different tasks, fires burning, children visible near adults, the complexity and density of a growing community — panoramic wide shot, warm orange sky, no modern objects, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, writing, logos",
+    "global_style": ""
+  },
+  {
+    "index": 73,
+    "start": 276.62,
+    "end": 276.84,
+    "prompt": "Cinematic paleo art, photorealistic, lone ancient Homo sapiens figure silhouetted against an enormous glowing sunset sky, standing at the edge of a vast plain, small figure against immensity — the individual within the group — golden orange light flooding everything, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, writing, logos",
+    "global_style": ""
+  },
+  {
+    "index": 74,
+    "start": 277.62,
+    "end": 282.54,
+    "prompt": "Cinematic paleo art, photorealistic, ancient human woman gathering edible plants in a forest clearing, focused on a specific cluster of berries and roots, another figure visible far in the background doing a different task, the specialization of knowledge visible, dappled afternoon light, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, writing, logos",
+    "global_style": ""
+  },
+  {
+    "index": 75,
+    "start": 283.42,
+    "end": 286.9,
+    "prompt": "Cinematic paleo art, photorealistic, ancient human tracker crouching low over animal prints in soft earth, reading the signs with expert focus, another human standing back watching — the community has a specialist — savanna midday, dust and dry grass, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, writing, logos",
+    "global_style": ""
+  },
+  {
+    "index": 76,
+    "start": 287.8,
+    "end": 292.34,
+    "prompt": "Cinematic paleo art, photorealistic, elder man seated at the edge of a group fire, other figures gathered around listening, his hands gesturing toward the night sky — pointing out constellations — the stars visible above the smoke, his posture that of someone holding and transmitting knowledge, firelight on all faces, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, writing, logos",
+    "global_style": ""
+  },
+  {
+    "index": 77,
+    "start": 292.34,
+    "end": 292.94,
+    "prompt": "Cinematic paleo art, photorealistic, extreme close-up of elder's weathered hand pointing upward toward a star-filled night sky, the Milky Way visible above, firelight from below illuminating the hand and wrist in warm orange, stars in cool blue-white above, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, writing, logos",
+    "global_style": ""
+  },
+  {
+    "index": 78,
+    "start": 294.08,
+    "end": 296.08,
+    "prompt": "Cinematic paleo art, photorealistic, ancient human settlement viewed from above at night — scattered fire pits glowing orange across a dark plain — the arrangement of fires suggesting a distributed network of people, stars above matching the fires below, aerial perspective, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, writing, logos",
+    "global_style": ""
+  },
+  {
+    "index": 79,
+    "start": 297.26,
+    "end": 301.8,
+    "prompt": "Cinematic paleo art, photorealistic, wide community fire scene — a dozen figures seated in a circle, some speaking, some listening, some gesturing — the social network of knowledge transmission, firelight on all faces, night sky above with stars, the group as a cognitive unit, wide shot, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, writing, logos",
+    "global_style": ""
+  },
+  {
+    "index": 80,
+    "start": 301.8,
+    "end": 302.84,
+    "prompt": "Cinematic paleo art, photorealistic, hands of several ancient people passing a carved bone tool around the fire circle, each hand holding it briefly — the object as a vessel of shared knowledge — close-up on hands and firelight, warm orange glow, cave or night setting, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, writing, logos",
+    "global_style": ""
+  },
+  {
+    "index": 81,
+    "start": 303.66,
+    "end": 309.02,
+    "prompt": "Cinematic paleo art, photorealistic, dense human settlement at night with figures visible at every fire — the mesh of relationships and information visible in the connected fires stretching across the dark plain — atmospheric wide panoramic shot, warm orange fires against cool dark night, sense of a living network, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, writing, logos",
+    "global_style": ""
+  },
+  {
+    "index": 82,
+    "start": 309.32,
+    "end": 311.24,
+    "prompt": "Cinematic paleo art, photorealistic, ancient human figure with arms slightly outstretched, head slightly bowed — posture suggesting integration into something larger — fire at center of a group, other figures faintly visible at the edges of firelight, the self within the network, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, writing, logos",
+    "global_style": ""
+  },
+  {
+    "index": 83,
+    "start": 312.4,
+    "end": 314.08,
+    "prompt": "Cinematic paleo art, photorealistic, Spark seated with arms open — posture of honest uncertainty — facing the viewer, fire behind him, cave rock wall beyond, expression of someone holding multiple possibilities without forcing a conclusion, warm firelight, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, writing, logos",
+    "global_style": ""
+  },
+  {
+    "index": 84,
+    "start": 315.16,
+    "end": 317.68,
+    "prompt": "Cinematic paleo art, photorealistic, ancient human woman kneeling in shallow river water, watching a clay vessel she has just made float — testing it — expression of concentration and discovery, early neolithic period, afternoon river light, simple clay pot her own creation, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, writing, logos",
+    "global_style": ""
+  },
+  {
+    "index": 85,
+    "start": 318.02,
+    "end": 320.74,
+    "prompt": "Cinematic paleo art, photorealistic, Spark pointing to a large rock face inscribed with tally marks, looking back over shoulder with a meaningful expression — the moment of correlation — afternoon light on the rock, the marks clearly intentional and countable, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, writing, logos",
+    "global_style": ""
+  },
+  {
+    "index": 86,
+    "start": 321.78,
+    "end": 326.36,
+    "prompt": "Cinematic paleo art, photorealistic, panoramic view of a river valley at dusk — numerous ancient human camps visible along the river, fires burning, figures in motion — the population density of early settled life visible as a whole landscape, warm orange and deep blue sky, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, writing, logos",
+    "global_style": ""
+  },
+  {
+    "index": 87,
+    "start": 326.36,
+    "end": 327.68,
+    "prompt": "Cinematic paleo art, photorealistic, aerial view of early permanent settlement — clustered stone and thatch structures on a flat plain beside a river, fires burning between structures, tracks worn in the earth showing repeated movement — the permanence visible, dusk light, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, writing, logos",
+    "global_style": ""
+  },
+  {
+    "index": 88,
+    "start": 328.58,
+    "end": 331.8,
+    "prompt": "Cinematic paleo art, photorealistic, wide view of ancient settled world — cultivated fields beside a river, simple structures, domesticated animals, people moving between tasks — the recognizable precursor of the world we know today, golden afternoon light, no modern elements, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, writing, logos",
+    "global_style": ""
+  },
+  {
+    "index": 89,
+    "start": 332.56,
+    "end": 337.28,
+    "prompt": "Cinematic paleo art, photorealistic, three ancient humans at different distances doing completely different tasks — one tending fire, one scraping hide, one weaving — each focused on their specialty, a community where labor is divided, wide shot at dusk showing all three in the same frame, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, writing, logos",
+    "global_style": ""
+  },
+  {
+    "index": 90,
+    "start": 337.28,
+    "end": 340.8,
+    "prompt": "Cinematic paleo art, photorealistic, ancient Homo sapiens man resting beside a fire, relaxed posture, others working in the background — he does not need to do everything — the burden redistributed by community, late afternoon light, the ease of distributed labor, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, writing, logos",
+    "global_style": ""
+  },
+  {
+    "index": 91,
+    "start": 341.72,
+    "end": 344.44,
+    "prompt": "Cinematic paleo art, photorealistic, Spark looking directly at the viewer, seated by a dying fire at dawn, the embers glowing orange-red, expression of someone summing up — steady, clear, direct — the landscape behind him brightening, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, writing, logos",
+    "global_style": ""
+  },
+  {
+    "index": 92,
+    "start": 344.78,
+    "end": 346.7,
+    "prompt": "Cinematic paleo art, photorealistic, Spark with one hand raised showing a finger — as if listing points — the second finger about to be raised, camp fire in background, morning light beginning, posture of organized explanation, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, writing, logos",
+    "global_style": ""
+  },
+  {
+    "index": 93,
+    "start": 347.76,
+    "end": 351.34,
+    "prompt": "Cinematic paleo art, photorealistic, ancient human figure sitting alone on a hilltop at twilight looking out at the landscape below, the posture of someone sitting with an unanswered question, the vast silent world around them, cool purple-blue dusk tones, figure small against immensity, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, writing, logos",
+    "global_style": ""
+  },
+  {
+    "index": 94,
+    "start": 352.24,
+    "end": 354.84,
+    "prompt": "Cinematic paleo art, photorealistic, ancient Homo sapiens hand turning a skull slowly in both hands, studying it from all angles, firelight from below, concentration on face partially in shadow, the skull the only answer available and it is incomplete, shallow depth of field, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, writing, logos",
+    "global_style": ""
+  },
+  {
+    "index": 95,
+    "start": 355.84,
+    "end": 359.86,
+    "prompt": "Cinematic paleo art, photorealistic, ancient Homo sapiens man 20000 years ago standing at the same rocky outcrop as scene 17, but now alone at dusk, the skull Spark found now beside him on the rock, the continuity of time implied, warm amber fading to deep blue, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, writing, logos",
+    "global_style": ""
+  },
+  {
+    "index": 96,
+    "start": 360.4,
+    "end": 361.86,
+    "prompt": "Cinematic paleo art, photorealistic, ancient human sitting in open grassland with no shelter visible in any direction — no structure, no reference point — just the grass and sky, the total absence of library or archive, vast emptiness, midday harsh light, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, writing, logos",
+    "global_style": ""
+  },
+  {
+    "index": 97,
+    "start": 362.92,
+    "end": 364.94,
+    "prompt": "Cinematic paleo art, photorealistic, ancient human carving notches into a bone with a flint tool — the only record system available — close-up on hands and bone, firelight, the scratches as storage of knowledge, the weight of everything being held in one artifact, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, writing, logos",
+    "global_style": ""
+  },
+  {
+    "index": 98,
+    "start": 365.4,
+    "end": 367.72,
+    "prompt": "Cinematic paleo art, photorealistic, ancient human standing at edge of a ravine looking down — the question below unanswerable — alone, no one to ask, just the landscape and what the brain holds, dusk, long shadows, the edge as metaphor for the limit of one mind, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, writing, logos",
+    "global_style": ""
+  },
+  {
+    "index": 99,
+    "start": 368.88,
+    "end": 373.16,
+    "prompt": "Cinematic paleo art, photorealistic, ancient Homo sapiens man kneeling in a cave with both hands pressed to the rock wall — all the survival knowledge of the world must fit inside one skull — firelight on the cave walls showing animal paintings he himself made, the entire cognitive load of one mind, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, writing, logos",
+    "global_style": ""
+  },
+  {
+    "index": 100,
+    "start": 373.5,
+    "end": 374.04,
+    "prompt": "Cinematic paleo art, photorealistic, extreme close-up of ancient human skull — the full weight of what it contains — firelight on bone, every groove and ridge catching light, the self-contained fullness of a mind that holds everything, dramatic macro, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, writing, logos",
+    "global_style": ""
+  },
+  {
+    "index": 101,
+    "start": 375.24,
+    "end": 376.16,
+    "prompt": "Cinematic paleo art, photorealistic, ancient human man asleep by a dying fire — the readiness even in sleep — curled around a spear, alert posture even at rest, fire embers glowing, cool night air visible in the darkness beyond, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, writing, logos",
+    "global_style": ""
+  },
+  {
+    "index": 102,
+    "start": 377.2,
+    "end": 378.96,
+    "prompt": "Cinematic paleo art, photorealistic, Spark standing in a community — other ancient humans visible at their tasks around him — his posture one of belonging to the group, the contrast from earlier scenes of solitude, warm midday light, the distributed structure as his world, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, writing, logos",
+    "global_style": ""
+  },
+  {
+    "index": 103,
+    "start": 379.94,
+    "end": 384.46,
+    "prompt": "Cinematic paleo art, photorealistic, ancient Homo sapiens man holding a flat stone carved with navigation marks — star positions and landscape features — studying it in morning light, a map of knowledge held in stone, the ancient equivalent of stored information, savanna background, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, writing, logos",
+    "global_style": ""
+  },
+  {
+    "index": 104,
+    "start": 384.46,
+    "end": 385.32,
+    "prompt": "Cinematic paleo art, photorealistic, close-up of ancient carved stone navigation tool — marks indicating directions, distances, landmarks — held in weathered hands, firelight revealing the intentional patterns, the weight of external knowledge storage, macro detail, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, writing, logos",
+    "global_style": ""
+  },
+  {
+    "index": 105,
+    "start": 386.04,
+    "end": 390.66,
+    "prompt": "Cinematic paleo art, photorealistic, elder woman sitting surrounded by younger figures in a circle, her hands gesturing in the patterns of oral storytelling — the tradition as a living library — firelight on all faces, night sky above, the knowledge transferred through voice and gesture, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, writing, logos",
+    "global_style": ""
+  },
+  {
+    "index": 106,
+    "start": 390.66,
+    "end": 391.48,
+    "prompt": "Cinematic paleo art, photorealistic, close-up of elder's mouth and hands in the act of oral transmission — lips forming words, hands gesturing the shapes of the story — firelight, a young face listening intently at the edge of frame, the moment of knowledge transfer, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, writing, logos",
+    "global_style": ""
+  },
+  {
+    "index": 107,
+    "start": 392.58,
+    "end": 397.12,
+    "prompt": "Cinematic paleo art, photorealistic, three figures in a chain — elder woman speaking to adult man, adult man gesturing toward a youth — knowledge passing through three generations in a single frame, the chain of transmission visible, firelight between them, cave wall with painted animals behind, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, writing, logos",
+    "global_style": ""
+  },
+  {
+    "index": 108,
+    "start": 397.12,
+    "end": 399.94,
+    "prompt": "Cinematic paleo art, photorealistic, wide view of ancient settlement showing tools, carved bones, animal skins, and a fire — knowledge embedded in objects and environment — no single person needing to hold it all, the distributed architecture of early civilization, afternoon light, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, writing, logos",
+    "global_style": ""
+  },
+  {
+    "index": 109,
+    "start": 400.76,
+    "end": 402.4,
+    "prompt": "Cinematic paleo art, photorealistic, ancient figure standing with open empty hands, looking up — the question of what was lost — dusk, the light fading, nothing held, nothing missing but perhaps something, the ambiguity of loss, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, writing, logos",
+    "global_style": ""
+  },
+  {
+    "index": 110,
+    "start": 403.32,
+    "end": 407.44,
+    "prompt": "Cinematic paleo art, photorealistic, ancient human figure releasing an object — opening the hand and letting a carved bone fall — not losing it but placing it outside himself, symbolizing externalized memory, slow motion feeling, firelight, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, writing, logos",
+    "global_style": ""
+  },
+  {
+    "index": 111,
+    "start": 407.96,
+    "end": 409.32,
+    "prompt": "Cinematic paleo art, photorealistic, settlement at night viewed from above — the fires forming a network that mirrors the stars above — the extended mind visible as a whole system, aerial view, warm orange fires against cool deep blue sky, symmetry of above and below, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, writing, logos",
+    "global_style": ""
+  },
+  {
+    "index": 112,
+    "start": 410.34,
+    "end": 412.42,
+    "prompt": "Cinematic paleo art, photorealistic, dozens of ancient human fires spread across a vast plain at night — the network as a living organism — each fire a node, each connection a path between people, the community as a single cognitive structure, panoramic night scene, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, writing, logos",
+    "global_style": ""
+  },
+  {
+    "index": 113,
+    "start": 412.86,
+    "end": 414.7,
+    "prompt": "Cinematic paleo art, photorealistic, ancient human man sitting alone by a dying fire at midnight, the network of other fires barely visible in the distance — something in the solitude that the network cannot replicate — cool night, embers fading, the individual within and apart from the whole, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, writing, logos",
+    "global_style": ""
+  },
+  {
+    "index": 114,
+    "start": 415.58,
+    "end": 418.32,
+    "prompt": "Cinematic paleo art, photorealistic, extreme close-up of ancient human eyes — deep, still, focused attention — the quality of individual awareness that cannot be distributed, firelight, surrounded by darkness, the inner world visible only through the eyes, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, writing, logos",
+    "global_style": ""
+  },
+  {
+    "index": 115,
+    "start": 419.38,
+    "end": 421.32,
+    "prompt": "Cinematic paleo art, photorealistic, lone ancient human sitting in complete darkness with only a single flame cupped in both hands, the entire world reduced to that one light — the singular deep knowing of one mind — vast darkness around, fragile warmth at center, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, writing, logos",
+    "global_style": ""
+  },
+  {
+    "index": 116,
+    "start": 422.34,
+    "end": 426.16,
+    "prompt": "Cinematic paleo art, photorealistic, large ancient skull resting on a flat stone, heavy and prominent in the frame — the weight of what it contained — a single figure's silhouette barely visible behind it in deep shadow, the object outlasting its owner, dramatic underlighting from fire embers below, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, writing, logos",
+    "global_style": ""
+  },
+  {
+    "index": 117,
+    "start": 427.14,
+    "end": 429.62,
+    "prompt": "Cinematic paleo art, photorealistic, close-up fossil record — skulls of different sizes arranged by era in the earth, partially buried as if discovered through excavation — the record as physical object, raking afternoon light, archaeological framing, no living figures, the evidence itself, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, writing, logos",
+    "global_style": ""
+  },
+  {
+    "index": 118,
+    "start": 430.78,
+    "end": 434.52,
+    "prompt": "Cinematic paleo art, photorealistic, Spark standing before the fossil arrangement from scene 117, looking at it with open hands — the record tells size, not value — his posture of honest admission that knowledge has limits, afternoon light on rock and bone, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, writing, logos",
+    "global_style": ""
+  },
+  {
+    "index": 119,
+    "start": 435.06,
+    "end": 437.94,
+    "prompt": "Cinematic paleo art, photorealistic, the large ancient skull from scene 1 now beside Spark's hand on a stone surface — heavier than yours — Spark's hand resting on it gently, late afternoon golden light, the weight of 20000 years held in one object, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, writing, logos",
+    "global_style": ""
+  },
+  {
+    "index": 120,
+    "start": 439.02,
+    "end": 442.36,
+    "prompt": "Cinematic paleo art, photorealistic, ancient man alone by a small fire at night — no network of other fires visible, no community in sight — only him, his thoughts, and the darkness — the total self-reliance and weight of carrying everything alone, cool blue-black night, single orange flame, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, writing, logos",
+    "global_style": ""
+  },
+  {
+    "index": 121,
+    "start": 442.9,
+    "end": 443.66,
+    "prompt": "Cinematic paleo art, photorealistic, Spark looking directly forward with a quiet nod — you have this — steady eyes, calm expression, the network of fires barely visible in the background over his shoulder, dawn light beginning, the acknowledgment simple and complete, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, writing, logos",
+    "global_style": ""
+  },
+  {
+    "index": 122,
+    "start": 444.64,
+    "end": 447.84,
+    "prompt": "Cinematic paleo art, photorealistic, Spark seated beside a fire in the center of the frame — the many fires he has sat beside across time suggested by the same posture repeated across the image in fading transparency — the continuity of the witness, night sky, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, writing, logos",
+    "global_style": ""
+  },
+  {
+    "index": 123,
+    "start": 448.8,
+    "end": 452.2,
+    "prompt": "Cinematic paleo art, photorealistic, single ancient human alone at a fire — the solitary weight of one mind holding all knowledge — vast dark savanna surrounding the small circle of light, no community visible, the fire as the only warmth and reference point, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, writing, logos",
+    "global_style": ""
+  },
+  {
+    "index": 124,
+    "start": 453.08,
+    "end": 457.7,
+    "prompt": "Cinematic paleo art, photorealistic, wide view of fires spreading across a plain — starting from one fire at the left edge, spreading to dozens of fires filling the right half of the frame — the expansion of community across time, cool-to-warm color gradient, the circle growing, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, writing, logos",
+    "global_style": ""
+  },
+  {
+    "index": 125,
+    "start": 457.7,
+    "end": 459.2,
+    "prompt": "Cinematic paleo art, photorealistic, fire circle with new figures joining at the edge — the burden distributed to new hands — new members visible entering the warmth of the circle, existing figures making room, the organic expansion of the shared cognitive network, night, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, writing, logos",
+    "global_style": ""
+  },
+  {
+    "index": 126,
+    "start": 460.16,
+    "end": 462.0,
+    "prompt": "Cinematic paleo art, photorealistic, Spark watching a community fire from slightly apart — still observing, still witnessing — his posture unchanged through the entire series, the continuity of the watcher at the edge of every human circle across time, dawn light beginning, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, writing, logos",
+    "global_style": ""
+  },
+  {
+    "index": 127,
+    "start": 462.3,
+    "end": 465.5,
+    "prompt": "Cinematic paleo art, photorealistic, Spark seated at the final fire of dawn — the question still open in his expression — watching the horizon as the sky lightens from deep blue to amber, the open question of what we keep and what we lose held in the stillness of his posture, wide shot, 16:9, no text, no watermark",
+    "negative_prompt": "deformed, extra limbs, extra fingers, mutation, disfigured, ugly, blurry, low quality, text, watermark, modern objects, anachronistic clothing, zippers, buttons, wristwatches, glasses, metal tools, writing, logos",
+    "global_style": ""
+  }
+]

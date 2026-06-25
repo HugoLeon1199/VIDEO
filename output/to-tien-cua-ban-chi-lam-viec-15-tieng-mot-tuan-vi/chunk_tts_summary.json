@@ -1,0 +1,10 @@
+{
+  "video_id": "to-tien-cua-ban-chi-lam-viec-15-tieng-mot-tuan-vi",
+  "chunks": 73,
+  "spoken_duration": 604.8,
+  "expected_audio_duration": 621.99,
+  "actual_audio_duration": 621.99,
+  "voice": "vi-VN-NamMinhNeural",
+  "rate": "-8%",
+  "method": "paragraph_chunk_tts_edge_concat"
+}

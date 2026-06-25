@@ -1,0 +1,656 @@
+[
+  {
+    "index": 1,
+    "start": 0.0,
+    "end": 1.96,
+    "text": "Your brain is smaller than your ancestors."
+  },
+  {
+    "index": 2,
+    "start": 2.96,
+    "end": 6.02,
+    "text": "Pick up a skull from twenty thousand years ago, hold it."
+  },
+  {
+    "index": 3,
+    "start": 6.28,
+    "end": 7.66,
+    "text": "It is heavier than it looks."
+  },
+  {
+    "index": 4,
+    "start": 8.4,
+    "end": 13.04,
+    "text": "Not the skull of some primitive creature still learning to use fire, the skull"
+  },
+  {
+    "index": 5,
+    "start": 13.04,
+    "end": 14.56,
+    "text": "of a fully modern human."
+  },
+  {
+    "index": 6,
+    "start": 15.52,
+    "end": 18.82,
+    "text": "Someone who painted animals on cave walls in the dark."
+  },
+  {
+    "index": 7,
+    "start": 19.32,
+    "end": 22.88,
+    "text": "Someone who navigated hundreds of miles to trade with strangers."
+  },
+  {
+    "index": 8,
+    "start": 23.82,
+    "end": 28.4,
+    "text": "Someone whose brain had been shaped by hundreds of thousands of years of one"
+  },
+  {
+    "index": 9,
+    "start": 28.4,
+    "end": 32.8,
+    "text": "particular pressure, surviving in a world with no backup systems."
+  },
+  {
+    "index": 10,
+    "start": 33.62,
+    "end": 35.08,
+    "text": "Their brain was bigger than yours."
+  },
+  {
+    "index": 11,
+    "start": 35.86,
+    "end": 40.86,
+    "text": "This is not a provocation, it is one of the most consistently documented findings"
+  },
+  {
+    "index": 12,
+    "start": 40.86,
+    "end": 44.18,
+    "text": "in the fossil record and it leads somewhere strange."
+  },
+  {
+    "index": 13,
+    "start": 44.96,
+    "end": 49.46,
+    "text": "We tend to assume evolution moves in one direction, more complex, more"
+  },
+  {
+    "index": 14,
+    "start": 49.46,
+    "end": 52.64,
+    "text": "capable, more refined, bigger brain means smarter."
+  },
+  {
+    "index": 15,
+    "start": 53.52,
+    "end": 58.24,
+    "text": "That assumption is older than science, and the fossil record has been quietly"
+  },
+  {
+    "index": 16,
+    "start": 58.24,
+    "end": 59.86,
+    "text": "contradicting it for decades."
+  },
+  {
+    "index": 17,
+    "start": 60.8,
+    "end": 65.36,
+    "text": "The human brain reached its largest average size somewhere between twenty and"
+  },
+  {
+    "index": 18,
+    "start": 65.36,
+    "end": 67.04,
+    "text": "thirty thousand years ago."
+  },
+  {
+    "index": 19,
+    "start": 67.9,
+    "end": 72.4,
+    "text": "Skulls from that period consistently hold more volume than skulls of people living"
+  },
+  {
+    "index": 20,
+    "start": 72.4,
+    "end": 72.86,
+    "text": "today."
+  },
+  {
+    "index": 21,
+    "start": 73.76,
+    "end": 78.7,
+    "text": "The reduction is roughly one hundred to one hundred fifty cubic centimeters, about"
+  },
+  {
+    "index": 22,
+    "start": 78.7,
+    "end": 81.84,
+    "text": "the volume of a tennis ball worth of brain tissue."
+  },
+  {
+    "index": 23,
+    "start": 82.64,
+    "end": 85.42,
+    "text": "Gone gradually, over tens of thousands of years."
+  },
+  {
+    "index": 24,
+    "start": 86.3,
+    "end": 91.22,
+    "text": "This pattern appears wherever researchers look, multiple populations, multiple"
+  },
+  {
+    "index": 25,
+    "start": 91.22,
+    "end": 93.58,
+    "text": "continents, thousands of years apart."
+  },
+  {
+    "index": 26,
+    "start": 94.42,
+    "end": 99.3,
+    "text": "It is not a measurement error, it is not one unusual burial site, it"
+  },
+  {
+    "index": 27,
+    "start": 99.3,
+    "end": 101.48,
+    "text": "is the consistent direction of change."
+  },
+  {
+    "index": 28,
+    "start": 102.36,
+    "end": 107.4,
+    "text": "Before this goes further one correction needs to land, brain size and intelligence"
+  },
+  {
+    "index": 29,
+    "start": 107.4,
+    "end": 108.78,
+    "text": "are not the same thing."
+  },
+  {
+    "index": 30,
+    "start": 109.58,
+    "end": 114.38,
+    "text": "A sperm whale has a brain roughly six times larger than yours, elephants"
+  },
+  {
+    "index": 31,
+    "start": 114.38,
+    "end": 118.9,
+    "text": "carry brains three times larger, neither writes music or builds cities."
+  },
+  {
+    "index": 32,
+    "start": 119.86,
+    "end": 124.42,
+    "text": "What matters is how tissue is organized, how densely it connects, how"
+  },
+  {
+    "index": 33,
+    "start": 124.42,
+    "end": 128.46,
+    "text": "efficiently signals travel, how specialized different regions become."
+  },
+  {
+    "index": 34,
+    "start": 129.44,
+    "end": 134.06,
+    "text": "Some researchers argue the modern brain is simply more efficient, the same"
+  },
+  {
+    "index": 35,
+    "start": 134.06,
+    "end": 136.56,
+    "text": "cognitive work accomplished with less tissue."
+  },
+  {
+    "index": 36,
+    "start": 137.46,
+    "end": 142.0,
+    "text": "That is entirely possible, but efficiency alone does not explain the"
+  },
+  {
+    "index": 37,
+    "start": 142.0,
+    "end": 143.02,
+    "text": "timing of the change."
+  },
+  {
+    "index": 38,
+    "start": 143.86,
+    "end": 148.7,
+    "text": "There is also a simpler mechanical explanation worth naming, human body"
+  },
+  {
+    "index": 39,
+    "start": 148.7,
+    "end": 151.06,
+    "text": "size decreased over the same period."
+  },
+  {
+    "index": 40,
+    "start": 152.0,
+    "end": 156.52,
+    "text": "Brains scale with bodies, a smaller frame generally carries a smaller"
+  },
+  {
+    "index": 41,
+    "start": 156.52,
+    "end": 161.3,
+    "text": "brain, some of the reduction may track leaner bodies rather than lost capacity."
+  },
+  {
+    "index": 42,
+    "start": 162.08,
+    "end": 166.58,
+    "text": "But body size does not account for all of it, the brain shrank more than"
+  },
+  {
+    "index": 43,
+    "start": 166.58,
+    "end": 168.04,
+    "text": "the body alone would predict."
+  },
+  {
+    "index": 44,
+    "start": 168.7,
+    "end": 173.26,
+    "text": "Which leaves a gap, and into that gap an unsettling hypothesis has walked."
+  },
+  {
+    "index": 45,
+    "start": 174.02,
+    "end": 177.92,
+    "text": "You have probably never thought of yourself as a domesticated animal."
+  },
+  {
+    "index": 46,
+    "start": 178.62,
+    "end": 182.0,
+    "text": "But look at what domestication consistently does to a brain."
+  },
+  {
+    "index": 47,
+    "start": 182.86,
+    "end": 187.52,
+    "text": "A wolf and a domestic dog are genetically nearly identical, the same"
+  },
+  {
+    "index": 48,
+    "start": 187.52,
+    "end": 192.12,
+    "text": "species separated by roughly 15,000 years of living alongside"
+  },
+  {
+    "index": 49,
+    "start": 192.12,
+    "end": 192.74,
+    "text": "humans."
+  },
+  {
+    "index": 50,
+    "start": 193.7,
+    "end": 198.48,
+    "text": "The dog's brain is significantly smaller than the wolf's when adjusted for body size."
+  },
+  {
+    "index": 51,
+    "start": 199.12,
+    "end": 201.66,
+    "text": "The dog did not simply lose this, it traded."
+  },
+  {
+    "index": 52,
+    "start": 202.52,
+    "end": 207.08,
+    "text": "A wolf solves problems alone, it reads a forest, tracks prey over"
+  },
+  {
+    "index": 53,
+    "start": 207.08,
+    "end": 210.12,
+    "text": "miles, makes every decision without any help arriving."
+  },
+  {
+    "index": 54,
+    "start": 210.82,
+    "end": 215.86,
+    "text": "A dog reads a human face, it follows a pointing finger, tracks emotional"
+  },
+  {
+    "index": 55,
+    "start": 215.86,
+    "end": 220.14,
+    "text": "signals across a room, asks for help in ways a wolf never does."
+  },
+  {
+    "index": 56,
+    "start": 221.06,
+    "end": 226.16,
+    "text": "The dog traded raw individual problem-solving capacity for social intelligence,"
+  },
+  {
+    "index": 57,
+    "start": 226.66,
+    "end": 231.3,
+    "text": "for the ability to function within a cooperative network rather than outside one."
+  },
+  {
+    "index": 58,
+    "start": 232.14,
+    "end": 236.8,
+    "text": "The pattern holds across domesticated species, cattle compared to"
+  },
+  {
+    "index": 59,
+    "start": 236.8,
+    "end": 240.84,
+    "text": "wild ancestor the Aurochs, pigs compared to wild boar."
+  },
+  {
+    "index": 60,
+    "start": 241.1,
+    "end": 245.68,
+    "text": "The brain that no longer needs to operate alone tends to shrink toward what the"
+  },
+  {
+    "index": 61,
+    "start": 245.68,
+    "end": 247.3,
+    "text": "social environment requires."
+  },
+  {
+    "index": 62,
+    "start": 248.4,
+    "end": 253.48,
+    "text": "Some researchers now propose that humans underwent a parallel process, not"
+  },
+  {
+    "index": 63,
+    "start": 253.48,
+    "end": 258.22,
+    "text": "domesticated by another species, self-domesticated by the growth of"
+  },
+  {
+    "index": 64,
+    "start": 258.22,
+    "end": 259.48,
+    "text": "civilization itself."
+  },
+  {
+    "index": 65,
+    "start": 260.28,
+    "end": 265.0,
+    "text": "As communities grew larger and more stable, individuals no longer needed"
+  },
+  {
+    "index": 66,
+    "start": 265.0,
+    "end": 266.6,
+    "text": "to carry everything alone."
+  },
+  {
+    "index": 67,
+    "start": 267.44,
+    "end": 272.0,
+    "text": "You did not need to memorize every edible plant if someone in your group specialized"
+  },
+  {
+    "index": 68,
+    "start": 272.0,
+    "end": 273.08,
+    "text": "in that knowledge."
+  },
+  {
+    "index": 69,
+    "start": 273.98,
+    "end": 278.44,
+    "text": "You did not need to track every animal if your community had a dedicated tracker."
+  },
+  {
+    "index": 70,
+    "start": 279.34,
+    "end": 284.26,
+    "text": "You did not need to remember every star path if the elder navigator held that knowledge"
+  },
+  {
+    "index": 71,
+    "start": 284.26,
+    "end": 285.38,
+    "text": "and could be asked."
+  },
+  {
+    "index": 72,
+    "start": 286.68,
+    "end": 291.44,
+    "text": "Cognitive work became distributed, stored across people, passed through language, embedded"
+  },
+  {
+    "index": 73,
+    "start": 291.44,
+    "end": 293.5,
+    "text": "in tools and ritual and story."
+  },
+  {
+    "index": 74,
+    "start": 294.38,
+    "end": 298.94,
+    "text": "A brain operating inside a dense social network needs to hold less"
+  },
+  {
+    "index": 75,
+    "start": 298.94,
+    "end": 302.06,
+    "text": "individually, the network becomes part of the thinking."
+  },
+  {
+    "index": 76,
+    "start": 302.88,
+    "end": 307.44,
+    "text": "This hypothesis is contested, other researchers point to other causes,"
+  },
+  {
+    "index": 77,
+    "start": 307.7,
+    "end": 309.56,
+    "text": "but the timing is hard to dismiss."
+  },
+  {
+    "index": 78,
+    "start": 310.5,
+    "end": 315.28,
+    "text": "The brain reduction correlates with rising population density and the formation"
+  },
+  {
+    "index": 79,
+    "start": 315.28,
+    "end": 320.38,
+    "text": "of permanently settled communities, with the beginning of the world we now recognize."
+  },
+  {
+    "index": 80,
+    "start": 321.46,
+    "end": 326.0,
+    "text": "After each generation living inside larger, more specialized, more"
+  },
+  {
+    "index": 81,
+    "start": 326.0,
+    "end": 330.64,
+    "text": "stable groups, the individual brain no longer needed to carry the full weight"
+  },
+  {
+    "index": 82,
+    "start": 330.64,
+    "end": 331.52,
+    "text": "it once did."
+  },
+  {
+    "index": 83,
+    "start": 332.4,
+    "end": 337.0,
+    "text": "You now know the brain shrank, you know several possible reasons, but you still"
+  },
+  {
+    "index": 84,
+    "start": 337.0,
+    "end": 339.86,
+    "text": "do not know what, if anything, was actually lost."
+  },
+  {
+    "index": 85,
+    "start": 340.62,
+    "end": 343.68,
+    "text": "That question is harder to cubic centimeters."
+  },
+  {
+    "index": 86,
+    "start": 344.66,
+    "end": 349.26,
+    "text": "The person who held that larger skull 20,000 years ago lived differently,"
+  },
+  {
+    "index": 87,
+    "start": 349.7,
+    "end": 354.22,
+    "text": "no library, no written record, no specialist to call when knowledge"
+  },
+  {
+    "index": 88,
+    "start": 354.22,
+    "end": 354.94,
+    "text": "ran out."
+  },
+  {
+    "index": 89,
+    "start": 355.74,
+    "end": 360.38,
+    "text": "Everything needed to survive had to live inside a single brain, fully loaded,"
+  },
+  {
+    "index": 90,
+    "start": 360.74,
+    "end": 361.74,
+    "text": "permanently available."
+  },
+  {
+    "index": 91,
+    "start": 362.56,
+    "end": 364.28,
+    "text": "You live inside a different structure."
+  },
+  {
+    "index": 92,
+    "start": 365.08,
+    "end": 369.9,
+    "text": "The smartphone in your pocket holds more navigational information than any ancient"
+  },
+  {
+    "index": 93,
+    "start": 369.9,
+    "end": 371.14,
+    "text": "human brain carried."
+  },
+  {
+    "index": 94,
+    "start": 371.14,
+    "end": 376.02,
+    "text": "The books on your shelf hold more accumulated knowledge than any oral tradition"
+  },
+  {
+    "index": 95,
+    "start": 376.02,
+    "end": 377.22,
+    "text": "could fully preserve."
+  },
+  {
+    "index": 96,
+    "start": 378.32,
+    "end": 383.16,
+    "text": "Your knowledge is distributed across the people around you, the devices in your hands,"
+  },
+  {
+    "index": 97,
+    "start": 383.44,
+    "end": 385.96,
+    "text": "the memory systems your civilization built."
+  },
+  {
+    "index": 98,
+    "start": 386.88,
+    "end": 391.68,
+    "text": "Maybe nothing was lost, maybe the brain moved its storage outside of itself, the"
+  },
+  {
+    "index": 99,
+    "start": 391.68,
+    "end": 394.26,
+    "text": "extended mind, the network as the organ."
+  },
+  {
+    "index": 100,
+    "start": 395.08,
+    "end": 399.88,
+    "text": "Or maybe something was lost, a quality of individual attention, a"
+  },
+  {
+    "index": 101,
+    "start": 399.88,
+    "end": 404.38,
+    "text": "depth of solo knowing, something that required the full weight of that heavier"
+  },
+  {
+    "index": 102,
+    "start": 404.38,
+    "end": 404.86,
+    "text": "skull."
+  },
+  {
+    "index": 103,
+    "start": 405.78,
+    "end": 410.68,
+    "text": "The fossil record can tell us the size, it cannot tell us the value of what changed."
+  },
+  {
+    "index": 104,
+    "start": 411.54,
+    "end": 416.04,
+    "text": "The skull from 20,000 years ago is heavier than yours, but the mind"
+  },
+  {
+    "index": 105,
+    "start": 416.04,
+    "end": 418.12,
+    "text": "inside it had no one else to ask."
+  },
+  {
+    "index": 106,
+    "start": 418.94,
+    "end": 419.44,
+    "text": "You do."
+  },
+  {
+    "index": 107,
+    "start": 420.4,
+    "end": 425.3,
+    "text": "Spark has watched every fire in this long story, the ones where a single mind"
+  },
+  {
+    "index": 108,
+    "start": 425.3,
+    "end": 430.0,
+    "text": "had to hold everything, the ones where the circle grew wide enough to share the weight."
+  },
+  {
+    "index": 109,
+    "start": 430.9,
+    "end": 434.42,
+    "text": "Still watching, still wondering which arrangement we would choose to keep."
+  }
+]

@@ -1,0 +1,729 @@
+[
+  {
+    "index": 1,
+    "sentences": [1],
+    "scene_text": "Tổ tiên của bạn thức dậy khi cơ thể sẵn sàng.",
+    "start": 0.0,
+    "end": 3.408,
+    "prompt": "A Paleolithic man slowly opening his eyes and sitting up on an animal hide bed at dawn, natural first light coming from outside a simple branch shelter, medium shot from beside him, other sleeping figures visible in background near glowing embers, cinematic documentary photograph, photorealistic, natural lighting, shallow depth of field, earthy muted color palette, Paleolithic prehistoric setting, highly detailed, 16:9 widescreen, no text, no watermark",
+    "negative_prompt": "nudity, bare chest, naked, nsfw, blurry, foggy, haze, overexposed, washed out, orange fog, amber haze, painting, illustration, anime, 3D render, CGI, watermark, text, logo, doodle, stick figure, modern clothing, modern buildings, technology",
+    "icon_overlays": [],
+    "text_overlays": []
+  },
+  {
+    "index": 2,
+    "sentences": [2],
+    "scene_text": "Không có chuông báo thức. Không có thông báo. Không có cuộc họp.",
+    "start": 3.708,
+    "end": 5.892,
+    "prompt": "A prehistoric man sitting peacefully at the edge of camp at sunrise, looking across open savanna with no devices or technology, relaxed posture, acacia trees on the horizon, small cooking fire with clay pot, another person stretching behind him, wide shot, cinematic documentary photograph, photorealistic, natural lighting, shallow depth of field, earthy muted color palette, Paleolithic prehistoric setting, highly detailed, 16:9 widescreen, no text, no watermark",
+    "negative_prompt": "nudity, bare chest, naked, nsfw, blurry, foggy, haze, overexposed, washed out, orange fog, amber haze, painting, illustration, anime, 3D render, CGI, watermark, text, logo, doodle, stick figure, modern clothing, modern buildings, technology",
+    "icon_overlays": [],
+    "text_overlays": []
+  },
+  {
+    "index": 3,
+    "sentences": [3],
+    "scene_text": "Suốt khoảng ba trăm nghìn năm, đây là mỗi buổi sáng của tổ tiên bạn.",
+    "start": 6.192,
+    "end": 8.232,
+    "prompt": "Wide shot of a Paleolithic camp at dawn with ten people in animal-skin clothing beginning their morning around a dying fire, simple branch-and-hide shelters in the background, flat African savanna stretching to a blue-gold horizon, clear morning sky, cinematic documentary photograph, photorealistic, natural lighting, shallow depth of field, earthy muted color palette, Paleolithic prehistoric setting, highly detailed, 16:9 widescreen, no text, no watermark",
+    "negative_prompt": "nudity, bare chest, naked, nsfw, blurry, foggy, haze, overexposed, washed out, orange fog, amber haze, painting, illustration, anime, 3D render, CGI, watermark, text, logo, doodle, stick figure, modern clothing, modern buildings",
+    "icon_overlays": [],
+    "text_overlays": []
+  },
+  {
+    "index": 4,
+    "sentences": [4],
+    "scene_text": "Vậy họ thực sự làm gì với tất cả thời gian đó?",
+    "start": 8.532,
+    "end": 11.34,
+    "prompt": "Extreme close-up of weathered Paleolithic human hands holding a flint hand-axe, sharp knapped stone edges clearly visible, scattered stone flakes on the dirt ground below, warm natural sidelight illuminating the tool detail, cinematic documentary photograph, photorealistic, natural lighting, shallow depth of field, earthy muted color palette, Paleolithic prehistoric setting, highly detailed, 16:9 widescreen, no text, no watermark",
+    "negative_prompt": "nudity, bare chest, naked, nsfw, blurry, foggy, haze, overexposed, washed out, orange fog, amber haze, painting, illustration, anime, 3D render, CGI, watermark, text, logo, doodle, stick figure, modern clothing, technology",
+    "icon_overlays": [],
+    "text_overlays": []
+  },
+  {
+    "index": 5,
+    "sentences": [5],
+    "scene_text": "Câu trả lời có lẽ sẽ khiến bạn không thoải mái.",
+    "start": 11.64,
+    "end": 16.488,
+    "prompt": "A prehistoric woman sitting comfortably with her back against a large baobab tree trunk, legs extended, gazing calmly at the distant open savanna, nothing urgent in her posture, late morning light casting tree shade, cinematic documentary photograph, photorealistic, natural lighting, shallow depth of field, earthy muted color palette, Paleolithic prehistoric setting, highly detailed, 16:9 widescreen, no text, no watermark",
+    "negative_prompt": "nudity, bare chest, naked, nsfw, blurry, foggy, haze, overexposed, washed out, orange fog, amber haze, painting, illustration, anime, 3D render, CGI, watermark, text, logo, doodle, stick figure, modern clothing, technology",
+    "icon_overlays": [],
+    "text_overlays": []
+  },
+  {
+    "index": 6,
+    "sentences": [6],
+    "scene_text": "Nhà nhân học Marshall Sahlins gọi người săn bắt hái lượm là xã hội sung túc nguyên thủy.",
+    "start": 16.788,
+    "end": 19.356,
+    "prompt": "Five hunter-gatherer people in hide clothing sitting contentedly around a large spread of food on the ground — piles of mongongo nuts, wild berries, and roots — relaxed expressions, afternoon sunlight, savanna camp setting, medium wide shot, cinematic documentary photograph, photorealistic, natural lighting, shallow depth of field, earthy muted color palette, Paleolithic prehistoric setting, highly detailed, 16:9 widescreen, no text, no watermark",
+    "negative_prompt": "nudity, bare chest, naked, nsfw, blurry, foggy, haze, overexposed, washed out, orange fog, amber haze, painting, illustration, anime, 3D render, CGI, watermark, text, logo, doodle, stick figure, modern clothing, technology",
+    "icon_overlays": [],
+    "text_overlays": [
+      {
+        "text": "Marshall Sahlins, 1966",
+        "position": "bottom-left"
+      }
+    ]
+  },
+  {
+    "index": 7,
+    "sentences": [7],
+    "scene_text": "Người Kung San ở sa mạc Kalahari chỉ làm việc 15-20 tiếng mỗi tuần để sinh tồn.",
+    "start": 19.656,
+    "end": 24.312,
+    "prompt": "Two San Bushmen women in traditional clothing crouching in the Kalahari desert, using sharpened digging sticks to unearth tubers, sparse dry thornscrub vegetation around them, bright afternoon sky, red sandy soil, medium shot from their level, cinematic documentary photograph, photorealistic, natural lighting, shallow depth of field, earthy muted color palette, Paleolithic prehistoric setting, highly detailed, 16:9 widescreen, no text, no watermark",
+    "negative_prompt": "nudity, bare chest, naked, nsfw, blurry, foggy, haze, overexposed, washed out, orange fog, amber haze, painting, illustration, anime, 3D render, CGI, watermark, text, logo, doodle, stick figure, modern clothing, technology",
+    "icon_overlays": [],
+    "text_overlays": [
+      {
+        "text": "Kalahari Desert, châu Phi",
+        "position": "bottom-left"
+      }
+    ]
+  },
+  {
+    "index": 8,
+    "sentences": [8, 9],
+    "scene_text": "Mười lăm đến hai mươi tiếng mỗi tuần. Bạn có lẽ còn mất nhiều hơn thế chỉ để đi làm về.",
+    "start": 24.612,
+    "end": 29.064,
+    "prompt": "Split-screen comparison: left half shows a prehistoric man resting in shade with a calm expression, right half shows a silhouetted modern commuter stuck in traffic under grey sky, strong visual contrast between ancient rest and modern stress, cinematic documentary photograph, photorealistic, natural lighting, 16:9 widescreen, no text, no watermark",
+    "negative_prompt": "nudity, bare chest, naked, nsfw, blurry, foggy, haze, overexposed, washed out, orange fog, amber haze, painting, illustration, anime, 3D render, CGI, watermark, text, logo, doodle, stick figure",
+    "icon_overlays": [],
+    "text_overlays": [
+      {
+        "text": "15-20 tiếng / tuần",
+        "position": "bottom-left"
+      }
+    ]
+  },
+  {
+    "index": 9,
+    "sentences": [10],
+    "scene_text": "Phần thời gian còn lại là thứ cổ xưa hơn năng suất.",
+    "start": 29.364,
+    "end": 31.404,
+    "prompt": "Four prehistoric people in hide clothing sitting in a loose circle under an acacia tree in afternoon shade, talking and laughing, relaxed body posture, savanna camp visible behind them, dappled light through branches, medium wide shot, cinematic documentary photograph, photorealistic, natural lighting, shallow depth of field, earthy muted color palette, Paleolithic prehistoric setting, highly detailed, 16:9 widescreen, no text, no watermark",
+    "negative_prompt": "nudity, bare chest, naked, nsfw, blurry, foggy, haze, overexposed, washed out, orange fog, amber haze, painting, illustration, anime, 3D render, CGI, watermark, text, logo, doodle, stick figure, modern clothing, technology",
+    "icon_overlays": [],
+    "text_overlays": []
+  },
+  {
+    "index": 10,
+    "sentences": [11],
+    "scene_text": "Hãy cùng dựng lại một buổi sáng.",
+    "start": 31.704,
+    "end": 38.952,
+    "prompt": "Wide establishing shot of a Paleolithic camp at first light, several hide-clothed figures beginning to stir and sit up from sleeping positions, central fire reduced to glowing orange coals, flat savanna with golden horizon behind, clear pre-dawn sky fading from deep blue to gold, cinematic documentary photograph, photorealistic, natural lighting, shallow depth of field, earthy muted color palette, Paleolithic prehistoric setting, highly detailed, 16:9 widescreen, no text, no watermark",
+    "negative_prompt": "nudity, bare chest, naked, nsfw, blurry, foggy, haze, overexposed, washed out, orange fog, amber haze, painting, illustration, anime, 3D render, CGI, watermark, text, logo, doodle, stick figure, modern clothing, technology",
+    "icon_overlays": [],
+    "text_overlays": []
+  },
+  {
+    "index": 11,
+    "sentences": [12],
+    "scene_text": "Bạn thức dậy cùng bốn hay năm người trong nhóm, khoảng một chục người đang cắm trại.",
+    "start": 39.252,
+    "end": 42.852,
+    "prompt": "A small Paleolithic camp of ten people in animal-skin clothing waking up around a dying campfire at dawn, simple woven-grass and hide shelters, acacia trees at camp edge, blue-gold morning sky, medium wide shot, cinematic documentary photograph, photorealistic, natural lighting, shallow depth of field, earthy muted color palette, Paleolithic prehistoric setting, highly detailed, 16:9 widescreen, no text, no watermark",
+    "negative_prompt": "nudity, bare chest, naked, nsfw, blurry, foggy, haze, overexposed, washed out, orange fog, amber haze, painting, illustration, anime, 3D render, CGI, watermark, text, logo, doodle, stick figure, modern clothing, technology",
+    "icon_overlays": [],
+    "text_overlays": []
+  },
+  {
+    "index": 12,
+    "sentences": [13],
+    "scene_text": "Đống lửa từ đêm qua vẫn còn thở với vài than hồng. Ai đó bỏ thêm củi.",
+    "start": 43.152,
+    "end": 46.584,
+    "prompt": "Extreme close-up of dark brown hands carefully laying a dry stick onto glowing orange embers in a stone-ringed fire pit, ash and glowing coals clearly visible, small flame beginning to catch, dark soil in background, cinematic documentary photograph, photorealistic, natural lighting, shallow depth of field, earthy muted color palette, Paleolithic prehistoric setting, highly detailed, 16:9 widescreen, no text, no watermark",
+    "negative_prompt": "nudity, bare chest, naked, nsfw, blurry, foggy, haze, overexposed, washed out, orange fog, amber haze, painting, illustration, anime, 3D render, CGI, watermark, text, logo, doodle, stick figure, modern clothing, technology",
+    "icon_overlays": [],
+    "text_overlays": []
+  },
+  {
+    "index": 13,
+    "sentences": [14],
+    "scene_text": "Không có sự vội vã. Không có trật tự cụ thể. Trẻ em lang thang tự do.",
+    "start": 46.884,
+    "end": 53.076,
+    "prompt": "Three young children in hide clothing playing freely at the edge of a prehistoric camp in morning light, one climbing a low acacia branch, two chasing each other through grass, adults sitting calmly in background near fire, medium wide shot, cinematic documentary photograph, photorealistic, natural lighting, shallow depth of field, earthy muted color palette, Paleolithic prehistoric setting, highly detailed, 16:9 widescreen, no text, no watermark",
+    "negative_prompt": "nudity, bare chest, naked, nsfw, blurry, foggy, haze, overexposed, washed out, orange fog, amber haze, painting, illustration, anime, 3D render, CGI, watermark, text, logo, doodle, stick figure, modern clothing, technology",
+    "icon_overlays": [],
+    "text_overlays": []
+  },
+  {
+    "index": 14,
+    "sentences": [15],
+    "scene_text": "Nhà nhân học Peter Gray: trẻ em có gần như vô hạn thời gian tự do từ khi biết đi.",
+    "start": 53.376,
+    "end": 56.064,
+    "prompt": "Two young Paleolithic children crouching on a forest floor examining a large beetle on a fallen log, completely absorbed, no adult nearby, dappled forest light filtering through canopy, clear background of trees and ferns, medium shot at child height, cinematic documentary photograph, photorealistic, natural lighting, shallow depth of field, earthy muted color palette, Paleolithic prehistoric setting, highly detailed, 16:9 widescreen, no text, no watermark",
+    "negative_prompt": "nudity, bare chest, naked, nsfw, blurry, foggy, haze, overexposed, washed out, orange fog, amber haze, painting, illustration, anime, 3D render, CGI, watermark, text, logo, doodle, stick figure, modern clothing, technology",
+    "icon_overlays": [],
+    "text_overlays": [
+      {
+        "text": "Peter Gray, nhà nhân học",
+        "position": "bottom-left"
+      }
+    ]
+  },
+  {
+    "index": 15,
+    "sentences": [16],
+    "scene_text": "Không có học tập có cấu trúc. Chỉ là khám phá tự định hướng không ngừng.",
+    "start": 56.364,
+    "end": 62.58,
+    "prompt": "A teenage Paleolithic boy crouching beside an adult hunter who points at animal tracks in dry dust, the boy studying the footprints intently and tracing them with his finger, forest clearing in afternoon light, learning through direct observation, medium shot, cinematic documentary photograph, photorealistic, natural lighting, shallow depth of field, earthy muted color palette, Paleolithic prehistoric setting, highly detailed, 16:9 widescreen, no text, no watermark",
+    "negative_prompt": "nudity, bare chest, naked, nsfw, blurry, foggy, haze, overexposed, washed out, orange fog, amber haze, painting, illustration, anime, 3D render, CGI, watermark, text, logo, doodle, stick figure, modern clothing, technology",
+    "icon_overlays": [],
+    "text_overlays": []
+  },
+  {
+    "index": 16,
+    "sentences": [17],
+    "scene_text": "Đến tuổi thiếu niên họ đã hấp thụ mọi thứ cần biết. Theo dấu vết. Nhóm lửa. Điều hướng xã hội.",
+    "start": 62.88,
+    "end": 73.176,
+    "prompt": "A teenage Paleolithic boy successfully using a bow-drill to start a fire, smoke rising from a char-cloth bundle, his face showing focused concentration, flat rock surface with tinder visible, dry savanna afternoon, medium close-up, cinematic documentary photograph, photorealistic, natural lighting, shallow depth of field, earthy muted color palette, Paleolithic prehistoric setting, highly detailed, 16:9 widescreen, no text, no watermark",
+    "negative_prompt": "nudity, bare chest, naked, nsfw, blurry, foggy, haze, overexposed, washed out, orange fog, amber haze, painting, illustration, anime, 3D render, CGI, watermark, text, logo, doodle, stick figure, modern clothing, technology",
+    "icon_overlays": [],
+    "text_overlays": []
+  },
+  {
+    "index": 17,
+    "sentences": [18],
+    "scene_text": "Bạn không được dạy dỗ. Bạn được nhúng chìm vào.",
+    "start": 73.476,
+    "end": 75.012,
+    "prompt": "A Paleolithic child sitting close beside an elderly woman who weaves a grass basket, the child watching her hands intently and beginning to copy the weaving motion with their own fingers, evening firelight nearby, medium close-up, cinematic documentary photograph, photorealistic, natural lighting, shallow depth of field, earthy muted color palette, Paleolithic prehistoric setting, highly detailed, 16:9 widescreen, no text, no watermark",
+    "negative_prompt": "nudity, bare chest, naked, nsfw, blurry, foggy, haze, overexposed, washed out, orange fog, amber haze, painting, illustration, anime, 3D render, CGI, watermark, text, logo, doodle, stick figure, modern clothing, technology",
+    "icon_overlays": [],
+    "text_overlays": []
+  },
+  {
+    "index": 18,
+    "sentences": [19],
+    "scene_text": "Đến giữa buổi sáng, hoạt động chính bắt đầu. Tùy thuộc vào mùa và những gì vùng đất cung cấp.",
+    "start": 75.312,
+    "end": 76.944,
+    "prompt": "A Paleolithic camp in mid-morning, small groups of people splitting and heading different directions — two men with spears walking one way, women carrying woven baskets going another — purposeful movement across the camp, wide shot, cinematic documentary photograph, photorealistic, natural lighting, shallow depth of field, earthy muted color palette, Paleolithic prehistoric setting, highly detailed, 16:9 widescreen, no text, no watermark",
+    "negative_prompt": "nudity, bare chest, naked, nsfw, blurry, foggy, haze, overexposed, washed out, orange fog, amber haze, painting, illustration, anime, 3D render, CGI, watermark, text, logo, doodle, stick figure, modern clothing, technology",
+    "icon_overlays": [],
+    "text_overlays": []
+  },
+  {
+    "index": 19,
+    "sentences": [20],
+    "scene_text": "Nếu là ngày săn, hai hay ba người sẽ lên đường. Không bao giờ tất cả.",
+    "start": 77.244,
+    "end": 79.332,
+    "prompt": "Two Paleolithic hunters in animal-skin clothing walking silently through tall savanna grass, crouched low, spears held horizontally at their sides, seen from behind as they move into the grassland, bright midday savanna ahead, cinematic documentary photograph, photorealistic, natural lighting, shallow depth of field, earthy muted color palette, Paleolithic prehistoric setting, highly detailed, 16:9 widescreen, no text, no watermark",
+    "negative_prompt": "nudity, bare chest, naked, nsfw, blurry, foggy, haze, overexposed, washed out, orange fog, amber haze, painting, illustration, anime, 3D render, CGI, watermark, text, logo, doodle, stick figure, modern clothing, technology",
+    "icon_overlays": [],
+    "text_overlays": []
+  },
+  {
+    "index": 20,
+    "sentences": [21],
+    "scene_text": "Người Hadza ở Tanzania thường săn theo nhóm hai đến bốn người.",
+    "start": 79.632,
+    "end": 82.488,
+    "prompt": "Three Hadza hunters in traditional clothing in acacia woodland in Tanzania, one kneeling to examine animal tracks in the dust while the other two crouch watching, dry golden landscape, clear afternoon sky, alert focused expressions, medium shot, cinematic documentary photograph, photorealistic, natural lighting, shallow depth of field, earthy muted color palette, Paleolithic prehistoric setting, highly detailed, 16:9 widescreen, no text, no watermark",
+    "negative_prompt": "nudity, bare chest, naked, nsfw, blurry, foggy, haze, overexposed, washed out, orange fog, amber haze, painting, illustration, anime, 3D render, CGI, watermark, text, logo, doodle, stick figure, modern clothing, technology",
+    "icon_overlays": [],
+    "text_overlays": [
+      {
+        "text": "Người Hadza, Tanzania",
+        "position": "bottom-left"
+      }
+    ]
+  },
+  {
+    "index": 21,
+    "sentences": [22],
+    "scene_text": "Cuộc săn có thể kéo dài ba tiếng, có thể bảy tiếng. Có thể không có gì.",
+    "start": 82.788,
+    "end": 85.452,
+    "prompt": "A lone Paleolithic hunter walking back toward camp across open savanna at midday, empty-handed, slightly slumped shoulders, harsh overhead sun creating short shadow, wide open landscape, no prey, long walk home visible, medium shot, cinematic documentary photograph, photorealistic, natural lighting, shallow depth of field, earthy muted color palette, Paleolithic prehistoric setting, highly detailed, 16:9 widescreen, no text, no watermark",
+    "negative_prompt": "nudity, bare chest, naked, nsfw, blurry, foggy, haze, overexposed, washed out, orange fog, amber haze, painting, illustration, anime, 3D render, CGI, watermark, text, logo, doodle, stick figure, modern clothing, technology",
+    "icon_overlays": [],
+    "text_overlays": []
+  },
+  {
+    "index": 22,
+    "sentences": [23],
+    "scene_text": "Thất bại không phải là thảm họa. Đó chỉ là ngày thứ Ba bình thường.",
+    "start": 85.752,
+    "end": 87.456,
+    "prompt": "A Paleolithic hunter returning to camp empty-handed, other camp members greeting him with relaxed casual expressions, one handing him food with no judgment visible, comfortable community atmosphere, afternoon camp setting, medium wide shot, cinematic documentary photograph, photorealistic, natural lighting, shallow depth of field, earthy muted color palette, Paleolithic prehistoric setting, highly detailed, 16:9 widescreen, no text, no watermark",
+    "negative_prompt": "nudity, bare chest, naked, nsfw, blurry, foggy, haze, overexposed, washed out, orange fog, amber haze, painting, illustration, anime, 3D render, CGI, watermark, text, logo, doodle, stick figure, modern clothing, technology",
+    "icon_overlays": [],
+    "text_overlays": []
+  },
+  {
+    "index": 23,
+    "sentences": [24],
+    "scene_text": "Ở trại, việc hái lượm tiếp tục. Phụ nữ và đàn ông lớn tuổi di chuyển qua vùng cảnh quan quen thuộc.",
+    "start": 87.756,
+    "end": 91.548,
+    "prompt": "Two Paleolithic women and one elderly man moving through open woodland, carrying woven grass baskets, bending to pick berries and roots from plants, following a familiar path between trees, clear daylight, purposeful gathering, medium wide shot, cinematic documentary photograph, photorealistic, natural lighting, shallow depth of field, earthy muted color palette, Paleolithic prehistoric setting, highly detailed, 16:9 widescreen, no text, no watermark",
+    "negative_prompt": "nudity, bare chest, naked, nsfw, blurry, foggy, haze, overexposed, washed out, orange fog, amber haze, painting, illustration, anime, 3D render, CGI, watermark, text, logo, doodle, stick figure, modern clothing, technology",
+    "icon_overlays": [],
+    "text_overlays": []
+  },
+  {
+    "index": 24,
+    "sentences": [25],
+    "scene_text": "Họ biết cây nào ăn được bây giờ và cây nào sẽ sẵn sàng sau ba tuần nữa.",
+    "start": 91.848,
+    "end": 95.136,
+    "prompt": "Close-up of a Paleolithic woman's hands carefully picking ripe red berries from a bush while leaving unripe green ones untouched, her expert selection visible in the motion, forest floor and plants in soft background, afternoon light, cinematic documentary photograph, photorealistic, natural lighting, shallow depth of field, earthy muted color palette, Paleolithic prehistoric setting, highly detailed, 16:9 widescreen, no text, no watermark",
+    "negative_prompt": "nudity, bare chest, naked, nsfw, blurry, foggy, haze, overexposed, washed out, orange fog, amber haze, painting, illustration, anime, 3D render, CGI, watermark, text, logo, doodle, stick figure, modern clothing, technology",
+    "icon_overlays": [],
+    "text_overlays": []
+  },
+  {
+    "index": 25,
+    "sentences": [26],
+    "scene_text": "Họ biết lối mòn thú và tiếng chim và ý nghĩa khi đàn ong bay về hướng bắc.",
+    "start": 95.436,
+    "end": 98.868,
+    "prompt": "A Paleolithic elder woman pointing upward at a swarm of bees flying across the sky, a younger person beside her looking up in the same direction learning to read the natural sign, open landscape, clear afternoon sky with visible bee swarm, medium shot, cinematic documentary photograph, photorealistic, natural lighting, shallow depth of field, earthy muted color palette, Paleolithic prehistoric setting, highly detailed, 16:9 widescreen, no text, no watermark",
+    "negative_prompt": "nudity, bare chest, naked, nsfw, blurry, foggy, haze, overexposed, washed out, orange fog, amber haze, painting, illustration, anime, 3D render, CGI, watermark, text, logo, doodle, stick figure, modern clothing, technology",
+    "icon_overlays": [],
+    "text_overlays": []
+  },
+  {
+    "index": 26,
+    "sentences": [27],
+    "scene_text": "Kiến thức này không được viết ra đâu cả. Nó sống trong cơ thể và trong những câu chuyện.",
+    "start": 99.168,
+    "end": 102.312,
+    "prompt": "A Paleolithic elder man using emphatic hand gestures to tell a story to three younger people seated around an evening campfire, the listeners leaning forward intently, firelight clearly illuminating all their faces, dark background, medium wide shot, cinematic documentary photograph, photorealistic, natural lighting, shallow depth of field, earthy muted color palette, Paleolithic prehistoric setting, highly detailed, 16:9 widescreen, no text, no watermark",
+    "negative_prompt": "nudity, bare chest, naked, nsfw, blurry, foggy, haze, overexposed, washed out, orange fog, amber haze, painting, illustration, anime, 3D render, CGI, watermark, text, logo, doodle, stick figure, modern clothing, technology",
+    "icon_overlays": [],
+    "text_overlays": []
+  },
+  {
+    "index": 27,
+    "sentences": [28],
+    "scene_text": "Polly Wiessner: ban ngày cuộc nói chuyện mang tính thực tế. Ban đêm hoàn toàn là những câu chuyện.",
+    "start": 102.612,
+    "end": 107.748,
+    "prompt": "Split-screen image: top half shows Paleolithic people in bright daylight discussing and pointing at the landscape in practical conversation, bottom half shows the same group at night around a fire, totally absorbed in a captivating story, clear contrast between the two scenes, cinematic documentary photograph, photorealistic, natural lighting, 16:9 widescreen, no text, no watermark",
+    "negative_prompt": "nudity, bare chest, naked, nsfw, blurry, foggy, haze, overexposed, washed out, orange fog, amber haze, painting, illustration, anime, 3D render, CGI, watermark, text, logo, doodle, stick figure, modern clothing, technology",
+    "icon_overlays": [],
+    "text_overlays": [
+      {
+        "text": "Polly Wiessner, nhà nghiên cứu",
+        "position": "bottom-left"
+      }
+    ]
+  },
+  {
+    "index": 28,
+    "sentences": [29],
+    "scene_text": "Chuyện về những người thân ở xa. Về những cuộc săn. Về các vị thần và những hành trình.",
+    "start": 108.048,
+    "end": 110.736,
+    "prompt": "A Paleolithic storyteller standing at a campfire at night, arms raised dramatically pointing at the stars above, six people seated around the fire staring upward in awe, night sky with stars clearly visible, firelight illuminating all their faces, wide shot, cinematic documentary photograph, photorealistic, natural lighting, shallow depth of field, earthy muted color palette, Paleolithic prehistoric setting, highly detailed, 16:9 widescreen, no text, no watermark",
+    "negative_prompt": "nudity, bare chest, naked, nsfw, blurry, foggy, haze, overexposed, washed out, orange fog, amber haze, painting, illustration, anime, 3D render, CGI, watermark, text, logo, doodle, stick figure, modern clothing, technology",
+    "icon_overlays": [],
+    "text_overlays": []
+  },
+  {
+    "index": 29,
+    "sentences": [30],
+    "scene_text": "Wiessner gọi đây là mạng xã hội nguyên thủy. Đống lửa là nơi trí tưởng tượng mở rộng.",
+    "start": 111.036,
+    "end": 114.612,
+    "prompt": "Wide shot of eight Paleolithic people seated around a large campfire at night, flames clearly rising, every face lit by firelight in animated conversation, dark sky with stars above, savanna beyond the firelight circle, medium wide shot, cinematic documentary photograph, photorealistic, natural lighting, shallow depth of field, earthy muted color palette, Paleolithic prehistoric setting, highly detailed, 16:9 widescreen, no text, no watermark",
+    "negative_prompt": "nudity, bare chest, naked, nsfw, blurry, foggy, haze, overexposed, washed out, orange fog, amber haze, painting, illustration, anime, 3D render, CGI, watermark, text, logo, doodle, stick figure, modern clothing, technology",
+    "icon_overlays": [],
+    "text_overlays": []
+  },
+  {
+    "index": 30,
+    "sentences": [31],
+    "scene_text": "Nơi văn hóa được truyền đi. Nơi bản sắc được duy trì qua các thế hệ.",
+    "start": 114.912,
+    "end": 118.776,
+    "prompt": "An old Paleolithic grandmother holding a small grandchild on her lap beside a campfire, leaning close to whisper a story in the child's ear, other family members seated nearby in soft firelight, intimate intergenerational scene, medium shot, cinematic documentary photograph, photorealistic, natural lighting, shallow depth of field, earthy muted color palette, Paleolithic prehistoric setting, highly detailed, 16:9 widescreen, no text, no watermark",
+    "negative_prompt": "nudity, bare chest, naked, nsfw, blurry, foggy, haze, overexposed, washed out, orange fog, amber haze, painting, illustration, anime, 3D render, CGI, watermark, text, logo, doodle, stick figure, modern clothing, technology",
+    "icon_overlays": [],
+    "text_overlays": []
+  },
+  {
+    "index": 31,
+    "sentences": [32],
+    "scene_text": "Bạn ngồi quanh lửa vào giữa buổi chiều. Những người hái lượm thành công trở về với hạt mongongo, củ, quả mọng.",
+    "start": 119.076,
+    "end": 122.676,
+    "prompt": "Paleolithic gatherers returning to camp laying out a large harvest of mongongo nuts, tubers, and wild berries on the ground, group members examining the food with satisfied expressions, afternoon sunlight, savanna camp, medium wide shot, cinematic documentary photograph, photorealistic, natural lighting, shallow depth of field, earthy muted color palette, Paleolithic prehistoric setting, highly detailed, 16:9 widescreen, no text, no watermark",
+    "negative_prompt": "nudity, bare chest, naked, nsfw, blurry, foggy, haze, overexposed, washed out, orange fog, amber haze, painting, illustration, anime, 3D render, CGI, watermark, text, logo, doodle, stick figure, modern clothing, technology",
+    "icon_overlays": [],
+    "text_overlays": []
+  },
+  {
+    "index": 32,
+    "sentences": [33],
+    "scene_text": "Thức ăn được chia sẻ không phải vì từ thiện mà vì chia sẻ theo yêu cầu.",
+    "start": 122.976,
+    "end": 125.328,
+    "prompt": "Paleolithic people in a circle passing food portions by hand to each member equally, focused on the act of food sharing, hands visible passing tubers and berries, cooperative atmosphere, savanna camp setting, medium close-up, cinematic documentary photograph, photorealistic, natural lighting, shallow depth of field, earthy muted color palette, Paleolithic prehistoric setting, highly detailed, 16:9 widescreen, no text, no watermark",
+    "negative_prompt": "nudity, bare chest, naked, nsfw, blurry, foggy, haze, overexposed, washed out, orange fog, amber haze, painting, illustration, anime, 3D render, CGI, watermark, text, logo, doodle, stick figure, modern clothing, technology",
+    "icon_overlays": [],
+    "text_overlays": []
+  },
+  {
+    "index": 33,
+    "sentences": [34],
+    "scene_text": "Tích trữ không chỉ bị coi là xấu. Nó còn nguy hiểm. Nó đánh dấu bạn là kẻ ngoài nhóm.",
+    "start": 125.628,
+    "end": 129.828,
+    "prompt": "A Paleolithic man caught in the act of hiding food under an animal hide, other camp members surrounding him with stern disapproving expressions, he looks caught and ashamed, tension clearly visible in the group dynamic, campfire nearby, medium shot, cinematic documentary photograph, photorealistic, natural lighting, shallow depth of field, earthy muted color palette, Paleolithic prehistoric setting, highly detailed, 16:9 widescreen, no text, no watermark",
+    "negative_prompt": "nudity, bare chest, naked, nsfw, blurry, foggy, haze, overexposed, washed out, orange fog, amber haze, painting, illustration, anime, 3D render, CGI, watermark, text, logo, doodle, stick figure, modern clothing, technology",
+    "icon_overlays": [],
+    "text_overlays": []
+  },
+  {
+    "index": 34,
+    "sentences": [35],
+    "scene_text": "Không có tủ lạnh, không có kho chứa. Những gì tìm được hôm nay được ăn hôm nay.",
+    "start": 130.128,
+    "end": 132.456,
+    "prompt": "A Paleolithic group eating a full meal together around a fire at sunset, meat roasting on sticks over flames, everyone eating directly from the food, no storage containers visible, communal feast in progress, warm evening light, medium wide shot, cinematic documentary photograph, photorealistic, natural lighting, shallow depth of field, earthy muted color palette, Paleolithic prehistoric setting, highly detailed, 16:9 widescreen, no text, no watermark",
+    "negative_prompt": "nudity, bare chest, naked, nsfw, blurry, foggy, haze, overexposed, washed out, orange fog, amber haze, painting, illustration, anime, 3D render, CGI, watermark, text, logo, doodle, stick figure, modern clothing, technology",
+    "icon_overlays": [],
+    "text_overlays": []
+  },
+  {
+    "index": 35,
+    "sentences": [36],
+    "scene_text": "Không ai đói khi có ai đó có thức ăn. Tích lũy là không thể.",
+    "start": 132.756,
+    "end": 135.636,
+    "prompt": "A younger Paleolithic person carefully placing food into the hands of a frail elderly woman seated by the fire, others watching the exchange with approval and warmth, no one left out, community care scene, campfire glow, medium shot, cinematic documentary photograph, photorealistic, natural lighting, shallow depth of field, earthy muted color palette, Paleolithic prehistoric setting, highly detailed, 16:9 widescreen, no text, no watermark",
+    "negative_prompt": "nudity, bare chest, naked, nsfw, blurry, foggy, haze, overexposed, washed out, orange fog, amber haze, painting, illustration, anime, 3D render, CGI, watermark, text, logo, doodle, stick figure, modern clothing, technology",
+    "icon_overlays": [],
+    "text_overlays": []
+  },
+  {
+    "index": 36,
+    "sentences": [37],
+    "scene_text": "James Suzman mô tả điều này là chủ nghĩa bình đẳng mạnh mẽ, được thực thi tích cực.",
+    "start": 135.936,
+    "end": 139.344,
+    "prompt": "A Paleolithic community seated in a flat circle outdoors, every person at exactly the same level with no one elevated, equal arrangement visible from a slightly elevated angle, open flat ground, trees around the perimeter, clear sky, cinematic documentary photograph, photorealistic, natural lighting, shallow depth of field, earthy muted color palette, Paleolithic prehistoric setting, highly detailed, 16:9 widescreen, no text, no watermark",
+    "negative_prompt": "nudity, bare chest, naked, nsfw, blurry, foggy, haze, overexposed, washed out, orange fog, amber haze, painting, illustration, anime, 3D render, CGI, watermark, text, logo, doodle, stick figure, modern clothing, technology",
+    "icon_overlays": [],
+    "text_overlays": [
+      {
+        "text": "James Suzman, nhà kinh tế học",
+        "position": "bottom-left"
+      }
+    ]
+  },
+  {
+    "index": 37,
+    "sentences": [38],
+    "scene_text": "Bất kỳ ai tự cao hay đòi hỏi nhiều hơn đều bị phá vỡ xã hội. Thông qua trêu chọc, tin đồn.",
+    "start": 139.644,
+    "end": 144.18,
+    "prompt": "A Paleolithic man who acted arrogant now surrounded by other community members who are laughing and mocking him, pointing and teasing, his posture deflated and embarrassed, social leveling in action, campfire setting, medium shot, cinematic documentary photograph, photorealistic, natural lighting, shallow depth of field, earthy muted color palette, Paleolithic prehistoric setting, highly detailed, 16:9 widescreen, no text, no watermark",
+    "negative_prompt": "nudity, bare chest, naked, nsfw, blurry, foggy, haze, overexposed, washed out, orange fog, amber haze, painting, illustration, anime, 3D render, CGI, watermark, text, logo, doodle, stick figure, modern clothing, technology",
+    "icon_overlays": [],
+    "text_overlays": []
+  },
+  {
+    "index": 38,
+    "sentences": [39],
+    "scene_text": "Cái đinh nổi lên đều bị đóng xuống. Mỗi lần.",
+    "start": 144.48,
+    "end": 155.328,
+    "prompt": "A Paleolithic group meeting in a circle outdoors, one person who stood up higher is now being gently but firmly pressed back to equal level by others, the social leveling mechanism visible, savanna background, clear scene of group dynamic, medium wide shot, cinematic documentary photograph, photorealistic, natural lighting, shallow depth of field, earthy muted color palette, Paleolithic prehistoric setting, highly detailed, 16:9 widescreen, no text, no watermark",
+    "negative_prompt": "nudity, bare chest, naked, nsfw, blurry, foggy, haze, overexposed, washed out, orange fog, amber haze, painting, illustration, anime, 3D render, CGI, watermark, text, logo, doodle, stick figure, modern clothing, technology",
+    "icon_overlays": [],
+    "text_overlays": []
+  },
+  {
+    "index": 39,
+    "sentences": [40],
+    "scene_text": "Tổ tiên của bạn không mơ về việc vươn lên trên. Họ mơ về việc ở lại bên trong.",
+    "start": 155.628,
+    "end": 158.148,
+    "prompt": "A Paleolithic person sitting contentedly at the center of their group around a campfire at night, others around them smiling and including them, strong sense of belonging and acceptance, firelight on faces, medium wide shot, cinematic documentary photograph, photorealistic, natural lighting, shallow depth of field, earthy muted color palette, Paleolithic prehistoric setting, highly detailed, 16:9 widescreen, no text, no watermark",
+    "negative_prompt": "nudity, bare chest, naked, nsfw, blurry, foggy, haze, overexposed, washed out, orange fog, amber haze, painting, illustration, anime, 3D render, CGI, watermark, text, logo, doodle, stick figure, modern clothing, technology",
+    "icon_overlays": [],
+    "text_overlays": []
+  },
+  {
+    "index": 40,
+    "sentences": [41],
+    "scene_text": "Khi mặt trời thấp hơn, ngày chậm lại. Trẻ em chạy nhảy, leo trèo. Người lớn ngủ trưa.",
+    "start": 158.448,
+    "end": 160.344,
+    "prompt": "Late afternoon at a Paleolithic camp, two children climbing acacia tree branches in golden low sunlight while three adults lie napping in deep shade below, long shadows across the ground, peaceful slow pace, wide shot, cinematic documentary photograph, photorealistic, natural lighting, shallow depth of field, earthy muted color palette, Paleolithic prehistoric setting, highly detailed, 16:9 widescreen, no text, no watermark",
+    "negative_prompt": "nudity, bare chest, naked, nsfw, blurry, foggy, haze, overexposed, washed out, orange fog, amber haze, painting, illustration, anime, 3D render, CGI, watermark, text, logo, doodle, stick figure, modern clothing, technology",
+    "icon_overlays": [],
+    "text_overlays": []
+  },
+  {
+    "index": 41,
+    "sentences": [42],
+    "scene_text": "Nghỉ ngơi không phải là lười biếng. Đó là sinh lý học. Giấc ngủ hai pha.",
+    "start": 160.644,
+    "end": 164.076,
+    "prompt": "A Paleolithic man sleeping deeply on his side under a broad shade tree in the afternoon, face relaxed and peaceful, lying on the ground with one arm under his head, dappled light through leaves overhead, savanna visible beyond, medium shot, cinematic documentary photograph, photorealistic, natural lighting, shallow depth of field, earthy muted color palette, Paleolithic prehistoric setting, highly detailed, 16:9 widescreen, no text, no watermark",
+    "negative_prompt": "nudity, bare chest, naked, nsfw, blurry, foggy, haze, overexposed, washed out, orange fog, amber haze, painting, illustration, anime, 3D render, CGI, watermark, text, logo, doodle, stick figure, modern clothing, technology",
+    "icon_overlays": [],
+    "text_overlays": []
+  },
+  {
+    "index": 42,
+    "sentences": [43],
+    "scene_text": "Cơ thể bạn được tạo ra cho điều này, trước khi ai đó quyết định mười sáu giờ liên tục là nghiêm túc.",
+    "start": 164.376,
+    "end": 169.68,
+    "prompt": "Side-by-side contrast: left panel shows a Paleolithic man napping naturally in afternoon shade looking healthy and at peace, right panel shows a silhouette of an overworked modern person slumped at a desk under cold fluorescent office light, cinematic documentary photograph, photorealistic, 16:9 widescreen, no text, no watermark",
+    "negative_prompt": "nudity, bare chest, naked, nsfw, blurry, foggy, haze, overexposed, washed out, orange fog, amber haze, painting, illustration, anime, 3D render, CGI, watermark, text, logo, doodle, stick figure",
+    "icon_overlays": [],
+    "text_overlays": []
+  },
+  {
+    "index": 43,
+    "sentences": [44],
+    "scene_text": "Nghiên cứu Carol Worthman: các xã hội truyền thống có mô hình ngủ khác biệt so với phương Tây.",
+    "start": 169.98,
+    "end": 171.756,
+    "prompt": "A Paleolithic family sleeping communally on the ground around glowing fire embers, one person awake and tending the coals, others sleeping in close proximity for warmth, clear night sky with stars above, medium wide shot, cinematic documentary photograph, photorealistic, natural lighting, shallow depth of field, earthy muted color palette, Paleolithic prehistoric setting, highly detailed, 16:9 widescreen, no text, no watermark",
+    "negative_prompt": "nudity, bare chest, naked, nsfw, blurry, foggy, haze, overexposed, washed out, orange fog, amber haze, painting, illustration, anime, 3D render, CGI, watermark, text, logo, doodle, stick figure, modern clothing, technology",
+    "icon_overlays": [],
+    "text_overlays": [
+      {
+        "text": "Carol Worthman, nhà nhân học",
+        "position": "bottom-left"
+      }
+    ]
+  },
+  {
+    "index": 44,
+    "sentences": [45],
+    "scene_text": "Không ai ngủ một mình nếu có thể tránh được. Ngủ trong bóng tối một mình sẽ là điều đáng sợ.",
+    "start": 172.056,
+    "end": 174.192,
+    "prompt": "A Paleolithic family sleeping in a tight huddle together on the ground at night for warmth and safety, multiple faces and bodies close together in sleeping positions, dying fire embers glowing at the edge, stars visible above, medium shot, cinematic documentary photograph, photorealistic, natural lighting, shallow depth of field, earthy muted color palette, Paleolithic prehistoric setting, highly detailed, 16:9 widescreen, no text, no watermark",
+    "negative_prompt": "nudity, bare chest, naked, nsfw, blurry, foggy, haze, overexposed, washed out, orange fog, amber haze, painting, illustration, anime, 3D render, CGI, watermark, text, logo, doodle, stick figure, modern clothing, technology",
+    "icon_overlays": [],
+    "text_overlays": []
+  },
+  {
+    "index": 45,
+    "sentences": [46],
+    "scene_text": "Buổi tối đến. Đống lửa được dựng lại. Những câu chuyện trong ngày bắt đầu.",
+    "start": 174.492,
+    "end": 176.22,
+    "prompt": "Paleolithic people gathering around a newly built campfire at dusk, flames rising clearly, people sitting down in a circle, anticipation on their faces, purple-blue twilight sky with first stars appearing above, wide shot, cinematic documentary photograph, photorealistic, natural lighting, shallow depth of field, earthy muted color palette, Paleolithic prehistoric setting, highly detailed, 16:9 widescreen, no text, no watermark",
+    "negative_prompt": "nudity, bare chest, naked, nsfw, blurry, foggy, haze, overexposed, washed out, orange fog, amber haze, painting, illustration, anime, 3D render, CGI, watermark, text, logo, doodle, stick figure, modern clothing, technology",
+    "icon_overlays": [],
+    "text_overlays": []
+  },
+  {
+    "index": 46,
+    "sentences": [47],
+    "scene_text": "Ai đó kể lại cuộc săn với những cử chỉ kịch tính. Người khác bắt chước tiếng chim.",
+    "start": 176.52,
+    "end": 178.632,
+    "prompt": "An animated Paleolithic man standing at a campfire dramatically reenacting a hunt, wide arm gestures mimicking a spear throw, group of five people laughing and reacting around him, children watching wide-eyed, firelight illuminating their faces, medium shot, cinematic documentary photograph, photorealistic, natural lighting, shallow depth of field, earthy muted color palette, Paleolithic prehistoric setting, highly detailed, 16:9 widescreen, no text, no watermark",
+    "negative_prompt": "nudity, bare chest, naked, nsfw, blurry, foggy, haze, overexposed, washed out, orange fog, amber haze, painting, illustration, anime, 3D render, CGI, watermark, text, logo, doodle, stick figure, modern clothing, technology",
+    "icon_overlays": [],
+    "text_overlays": []
+  },
+  {
+    "index": 47,
+    "sentences": [48],
+    "scene_text": "Trẻ em vẫn thức, lắng nghe, góp chuyện, được chào đón vào cuộc trò chuyện người lớn.",
+    "start": 178.932,
+    "end": 185.004,
+    "prompt": "Two small Paleolithic children sitting between adults at a night campfire, leaning forward to contribute to the conversation, an adult man listening to a child's comment with genuine attention and a smile, equal inclusion visible, firelight on all faces, medium shot, cinematic documentary photograph, photorealistic, natural lighting, shallow depth of field, earthy muted color palette, Paleolithic prehistoric setting, highly detailed, 16:9 widescreen, no text, no watermark",
+    "negative_prompt": "nudity, bare chest, naked, nsfw, blurry, foggy, haze, overexposed, washed out, orange fog, amber haze, painting, illustration, anime, 3D render, CGI, watermark, text, logo, doodle, stick figure, modern clothing, technology",
+    "icon_overlays": [],
+    "text_overlays": []
+  },
+  {
+    "index": 48,
+    "sentences": [49],
+    "scene_text": "Người Hadza không có giờ đi ngủ. Giấc ngủ đến khi cơ thể yêu cầu.",
+    "start": 185.304,
+    "end": 187.632,
+    "prompt": "A Hadza camp late at night, some people still talking quietly in the firelight while others have already fallen asleep naturally where they sat, fire dying down, starry sky overhead, organic unscheduled sleep visible across the group, wide shot, cinematic documentary photograph, photorealistic, natural lighting, shallow depth of field, earthy muted color palette, Paleolithic prehistoric setting, highly detailed, 16:9 widescreen, no text, no watermark",
+    "negative_prompt": "nudity, bare chest, naked, nsfw, blurry, foggy, haze, overexposed, washed out, orange fog, amber haze, painting, illustration, anime, 3D render, CGI, watermark, text, logo, doodle, stick figure, modern clothing, technology",
+    "icon_overlays": [],
+    "text_overlays": []
+  },
+  {
+    "index": 49,
+    "sentences": [50, 51],
+    "scene_text": "Và rồi lửa tàn. Và rồi im lặng.",
+    "start": 187.932,
+    "end": 194.4,
+    "prompt": "Wide shot of a Paleolithic camp at deep night, all people asleep, fire reduced to tiny glowing orange coals, vast dark savanna surrounding the camp, clear black sky filled with bright stars, total stillness and silence, cinematic documentary photograph, photorealistic, natural lighting, shallow depth of field, earthy muted color palette, Paleolithic prehistoric setting, highly detailed, 16:9 widescreen, no text, no watermark",
+    "negative_prompt": "nudity, bare chest, naked, nsfw, blurry, foggy, haze, overexposed, washed out, orange fog, amber haze, painting, illustration, anime, 3D render, CGI, watermark, text, logo, doodle, stick figure, modern clothing, technology",
+    "icon_overlays": [],
+    "text_overlays": []
+  },
+  {
+    "index": 50,
+    "sentences": [52],
+    "scene_text": "Bây giờ hãy nghĩ về ngày hôm qua của bạn.",
+    "start": 194.7,
+    "end": 196.716,
+    "prompt": "A lone Paleolithic person sitting awake beside dying campfire coals at late night, looking into the embers in quiet reflection, face clearly lit by the last glow, everyone else asleep around them in the background, medium shot, cinematic documentary photograph, photorealistic, natural lighting, shallow depth of field, earthy muted color palette, Paleolithic prehistoric setting, highly detailed, 16:9 widescreen, no text, no watermark",
+    "negative_prompt": "nudity, bare chest, naked, nsfw, blurry, foggy, haze, overexposed, washed out, orange fog, amber haze, painting, illustration, anime, 3D render, CGI, watermark, text, logo, doodle, stick figure, modern clothing, technology",
+    "icon_overlays": [],
+    "text_overlays": []
+  },
+  {
+    "index": 51,
+    "sentences": [53],
+    "scene_text": "Lần cuối cùng bạn để cơ thể thức dậy không có chuông báo là khi nào.",
+    "start": 197.016,
+    "end": 200.064,
+    "prompt": "A Paleolithic person waking naturally at dawn, sitting up slowly and stretching arms wide, looking at the golden horizon with a calm peaceful face, birds perched on an acacia branch behind them, soft blue-gold morning light, medium shot, cinematic documentary photograph, photorealistic, natural lighting, shallow depth of field, earthy muted color palette, Paleolithic prehistoric setting, highly detailed, 16:9 widescreen, no text, no watermark",
+    "negative_prompt": "nudity, bare chest, naked, nsfw, blurry, foggy, haze, overexposed, washed out, orange fog, amber haze, painting, illustration, anime, 3D render, CGI, watermark, text, logo, doodle, stick figure, modern clothing",
+    "icon_overlays": [],
+    "text_overlays": []
+  },
+  {
+    "index": 52,
+    "sentences": [54],
+    "scene_text": "Lần cuối cùng bạn dành ba tiếng trong thời gian không có cấu trúc với người bạn yêu.",
+    "start": 200.364,
+    "end": 206.604,
+    "prompt": "A Paleolithic family group lounging together with no tasks at hand under a large tree in afternoon shade, two adults talking face to face, a child asleep in the mother's lap, completely unhurried and present, dappled light, medium shot, cinematic documentary photograph, photorealistic, natural lighting, shallow depth of field, earthy muted color palette, Paleolithic prehistoric setting, highly detailed, 16:9 widescreen, no text, no watermark",
+    "negative_prompt": "nudity, bare chest, naked, nsfw, blurry, foggy, haze, overexposed, washed out, orange fog, amber haze, painting, illustration, anime, 3D render, CGI, watermark, text, logo, doodle, stick figure, modern clothing, technology",
+    "icon_overlays": [],
+    "text_overlays": []
+  },
+  {
+    "index": 53,
+    "sentences": [55],
+    "scene_text": "Lần cuối cùng bạn ăn bữa ăn do ai đó thân thiết tự nấu, chia sẻ với tất cả mọi người.",
+    "start": 206.904,
+    "end": 209.04,
+    "prompt": "A Paleolithic community sharing a cooked meal together, clay bowls being passed hand to hand around a circle, everyone eating together with warmth and connection, campfire cooking scene at dusk, medium wide shot, cinematic documentary photograph, photorealistic, natural lighting, shallow depth of field, earthy muted color palette, Paleolithic prehistoric setting, highly detailed, 16:9 widescreen, no text, no watermark",
+    "negative_prompt": "nudity, bare chest, naked, nsfw, blurry, foggy, haze, overexposed, washed out, orange fog, amber haze, painting, illustration, anime, 3D render, CGI, watermark, text, logo, doodle, stick figure, modern clothing, technology",
+    "icon_overlays": [],
+    "text_overlays": []
+  },
+  {
+    "index": 54,
+    "sentences": [56],
+    "scene_text": "Steven Mithen: đời sống xã hội thời tiền sử là một loại nền văn minh khác, tối ưu hóa cho sự thuộc về.",
+    "start": 209.34,
+    "end": 211.668,
+    "prompt": "Elevated aerial view of a Paleolithic camp from above, circular arrangement of hide shelters around a central fire pit, people arranged in a meaningful social pattern, organized community life visible, savanna around the edges, clear daytime, cinematic documentary photograph, photorealistic, natural lighting, shallow depth of field, earthy muted color palette, Paleolithic prehistoric setting, highly detailed, 16:9 widescreen, no text, no watermark",
+    "negative_prompt": "nudity, bare chest, naked, nsfw, blurry, foggy, haze, overexposed, washed out, orange fog, amber haze, painting, illustration, anime, 3D render, CGI, watermark, text, logo, doodle, stick figure, modern clothing, technology",
+    "icon_overlays": [],
+    "text_overlays": [
+      {
+        "text": "Steven Mithen, nhà khảo cổ học",
+        "position": "bottom-left"
+      }
+    ]
+  },
+  {
+    "index": 55,
+    "sentences": [57],
+    "scene_text": "Tối ưu hóa không phải cho sản lượng mà cho sự thuộc về. Không phải cho tích lũy mà cho sự đủ đầy.",
+    "start": 211.968,
+    "end": 223.632,
+    "prompt": "A Paleolithic family sitting together with simple but sufficient food and a modest shelter, content expressions on their faces, no excess or wealth visible, clear satisfaction and sufficiency, afternoon light, medium shot, cinematic documentary photograph, photorealistic, natural lighting, shallow depth of field, earthy muted color palette, Paleolithic prehistoric setting, highly detailed, 16:9 widescreen, no text, no watermark",
+    "negative_prompt": "nudity, bare chest, naked, nsfw, blurry, foggy, haze, overexposed, washed out, orange fog, amber haze, painting, illustration, anime, 3D render, CGI, watermark, text, logo, doodle, stick figure, modern clothing, technology",
+    "icon_overlays": [],
+    "text_overlays": []
+  },
+  {
+    "index": 56,
+    "sentences": [58],
+    "scene_text": "Bạn vẫn mang sự tối ưu hóa đó trong cơ thể. Đó là lý do sự im lặng cảm thấy sai và giọng nói cảm thấy đúng.",
+    "start": 223.932,
+    "end": 226.716,
+    "prompt": "Two Paleolithic figures sitting close together talking at a campfire, leaning toward each other in animated conversation, connection and recognition on their faces, fire between them clearly visible, dark savanna background, medium shot, cinematic documentary photograph, photorealistic, natural lighting, shallow depth of field, earthy muted color palette, Paleolithic prehistoric setting, highly detailed, 16:9 widescreen, no text, no watermark",
+    "negative_prompt": "nudity, bare chest, naked, nsfw, blurry, foggy, haze, overexposed, washed out, orange fog, amber haze, painting, illustration, anime, 3D render, CGI, watermark, text, logo, doodle, stick figure",
+    "icon_overlays": [],
+    "text_overlays": []
+  },
+  {
+    "index": 57,
+    "sentences": [59],
+    "scene_text": "Não bạn giải phóng dopamine khi kể chuyện và oxytocin khi tiếp xúc mắt và serotonin khi bạn cảm thấy quan trọng.",
+    "start": 227.016,
+    "end": 229.032,
+    "prompt": "Close-up portrait of two Paleolithic people making direct eye contact across a campfire, faces clearly illuminated by the firelight, a moment of deep human recognition and connection, dark background behind them, cinematic documentary photograph, photorealistic, natural lighting, shallow depth of field, earthy muted color palette, Paleolithic prehistoric setting, highly detailed, 16:9 widescreen, no text, no watermark",
+    "negative_prompt": "nudity, bare chest, naked, nsfw, blurry, foggy, haze, overexposed, washed out, orange fog, amber haze, painting, illustration, anime, 3D render, CGI, watermark, text, logo, doodle, stick figure, modern clothing, technology",
+    "icon_overlays": [],
+    "text_overlays": []
+  },
+  {
+    "index": 58,
+    "sentences": [60],
+    "scene_text": "Bạn không được tạo ra cho văn phòng. Bạn được tạo ra cho đống lửa.",
+    "start": 229.332,
+    "end": 231.732,
+    "prompt": "Clear split image: left side shows a Paleolithic human sitting with companions at a warm campfire, right side shows a solitary modern person at an office desk under cold fluorescent light, powerful visual contrast between the two worlds, cinematic documentary photograph, photorealistic, 16:9 widescreen, no text, no watermark",
+    "negative_prompt": "nudity, bare chest, naked, nsfw, blurry, foggy, haze, overexposed, washed out, orange fog, amber haze, painting, illustration, anime, 3D render, CGI, watermark, text, logo, doodle, stick figure",
+    "icon_overlays": [],
+    "text_overlays": []
+  },
+  {
+    "index": 59,
+    "sentences": [61],
+    "scene_text": "Chuông báo thức reo. Bạn với tay lấy điện thoại trước khi mắt mở hoàn toàn.",
+    "start": 232.032,
+    "end": 234.696,
+    "prompt": "A Paleolithic person sleeping peacefully on an animal hide, beside them a ghostly translucent image of a modern hand reflexively reaching toward a glowing phone alarm, jarring contrast of ancient natural sleep versus modern awakening disruption, cinematic documentary photograph, photorealistic, 16:9 widescreen, no text, no watermark",
+    "negative_prompt": "nudity, bare chest, naked, nsfw, blurry, foggy, haze, overexposed, washed out, orange fog, amber haze, painting, illustration, anime, 3D render, CGI, watermark, text, logo, doodle, stick figure",
+    "icon_overlays": [],
+    "text_overlays": []
+  },
+  {
+    "index": 60,
+    "sentences": [62],
+    "scene_text": "Tổ tiên của bạn sẽ không nhận ra bất kỳ điều gì trong số này.",
+    "start": 234.996,
+    "end": 237.732,
+    "prompt": "A Paleolithic ancestor with a bewildered and completely confused expression looking forward, savanna background clearly visible behind them, detailed face showing total incomprehension, traditional animal-skin clothing, sharp portrait, medium shot, cinematic documentary photograph, photorealistic, natural lighting, shallow depth of field, earthy muted color palette, Paleolithic prehistoric setting, highly detailed, 16:9 widescreen, no text, no watermark",
+    "negative_prompt": "nudity, bare chest, naked, nsfw, blurry, foggy, haze, overexposed, washed out, orange fog, amber haze, painting, illustration, anime, 3D render, CGI, watermark, text, logo, doodle, stick figure, modern clothing",
+    "icon_overlays": [],
+    "text_overlays": []
+  },
+  {
+    "index": 61,
+    "sentences": [63],
+    "scene_text": "Nhưng hệ thần kinh của bạn vẫn biết chính xác một buổi sáng thực sự cảm giác như thế nào.",
+    "start": 238.032,
+    "end": 242.16,
+    "prompt": "A Paleolithic person waking at dawn to birdsong, sitting up alert and content with a peaceful expression, birds perched on acacia branches in the foreground, golden horizon ahead, camp visible behind, natural awakening in full detail, medium shot, cinematic documentary photograph, photorealistic, natural lighting, shallow depth of field, earthy muted color palette, Paleolithic prehistoric setting, highly detailed, 16:9 widescreen, no text, no watermark",
+    "negative_prompt": "nudity, bare chest, naked, nsfw, blurry, foggy, haze, overexposed, washed out, orange fog, amber haze, painting, illustration, anime, 3D render, CGI, watermark, text, logo, doodle, stick figure, modern clothing, technology",
+    "icon_overlays": [],
+    "text_overlays": []
+  },
+  {
+    "index": 62,
+    "sentences": [64],
+    "scene_text": "Nó đang chờ bạn nhớ lại.",
+    "start": 242.46,
+    "end": 667.356,
+    "prompt": "Wide cinematic final shot of a campfire burning in the dark savanna at night, clear flames rising with sparks drifting upward toward a starry sky, surrounding darkness with the Milky Way visible above, timeless and waiting, medium wide shot, cinematic documentary photograph, photorealistic, natural lighting, shallow depth of field, earthy muted color palette, Paleolithic prehistoric setting, highly detailed, 16:9 widescreen, no text, no watermark",
+    "negative_prompt": "nudity, bare chest, naked, nsfw, blurry, foggy, haze, overexposed, washed out, orange fog, amber haze, painting, illustration, anime, 3D render, CGI, watermark, text, logo, doodle, stick figure, modern clothing, technology",
+    "icon_overlays": [],
+    "text_overlays": []
+  }
+]

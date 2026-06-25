@@ -1,0 +1,47 @@
+[
+  {
+    "index": 1,
+    "start": 0.0,
+    "end": 5.0,
+    "text": "style test 1",
+    "prompt": "flat 2D vector illustration, Kurzgesagt style, warm amber golden palette, simple bold shapes, clean silhouettes, prehistoric man wearing full animal hide clothing sitting peacefully under a large acacia tree in African savanna at golden hour, elephants in background, warm afternoon, at rest, work done",
+    "negative_prompt": "nudity, bare chest, bare skin, topless, shirtless, exposed torso, text, watermark, logo, extra limbs, deformed",
+    "global_style": ""
+  },
+  {
+    "index": 2,
+    "start": 0.0,
+    "end": 5.0,
+    "text": "style test 2",
+    "prompt": "BBC nature documentary digital painting, semi-realistic illustration, painterly brushstrokes, warm cinematic lighting, rich earthy colors, prehistoric man wearing full animal hide clothing sitting peacefully under a large acacia tree in African savanna at golden hour, elephants in background, warm afternoon, at rest, work done",
+    "negative_prompt": "nudity, bare chest, bare skin, topless, shirtless, exposed torso, text, watermark, logo, extra limbs, deformed",
+    "global_style": ""
+  },
+  {
+    "index": 3,
+    "start": 0.0,
+    "end": 5.0,
+    "text": "style test 3",
+    "prompt": "watercolor illustration, soft washes of warm amber and ochre, loose painterly style, National Geographic book illustration, prehistoric man wearing full animal hide clothing sitting peacefully under a large acacia tree in African savanna at golden hour, elephants in background, warm afternoon, at rest, work done",
+    "negative_prompt": "nudity, bare chest, bare skin, topless, shirtless, exposed torso, text, watermark, logo, extra limbs, deformed",
+    "global_style": ""
+  },
+  {
+    "index": 4,
+    "start": 0.0,
+    "end": 5.0,
+    "text": "style test 4",
+    "prompt": "epic cinematic matte painting, dramatic golden hour lighting, illustrated figures in vast landscape, sweeping wide angle, high detail environment, documentary epic style, prehistoric man wearing full animal hide clothing sitting peacefully under a large acacia tree in African savanna at golden hour, elephants in background, warm afternoon, at rest, work done",
+    "negative_prompt": "nudity, bare chest, bare skin, topless, shirtless, exposed torso, text, watermark, logo, extra limbs, deformed",
+    "global_style": ""
+  },
+  {
+    "index": 5,
+    "start": 0.0,
+    "end": 5.0,
+    "text": "style test 5",
+    "prompt": "graphic novel illustration, bold ink outlines, warm flat colors, expressive faces, serious mature tone, clean composition, prehistoric man wearing full animal hide clothing sitting peacefully under a large acacia tree in African savanna at golden hour, elephants in background, warm afternoon, at rest, work done",
+    "negative_prompt": "nudity, bare chest, bare skin, topless, shirtless, exposed torso, text, watermark, logo, extra limbs, deformed",
+    "global_style": ""
+  }
+]

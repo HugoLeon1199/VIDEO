@@ -1,0 +1,983 @@
+{
+  "002": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\brain-smaller-than-ancestors-en\\images_en\\img_002.png",
+    "errors": [],
+    "job_id": "6cdc8ac1-ae4a-4fe6-ad40-93fbe37656c4-e1",
+    "duration_seconds": 41.34,
+    "saved_at": "2026-06-24T02:38:11Z"
+  },
+  "009": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\brain-smaller-than-ancestors-en\\images_en\\img_009.png",
+    "errors": [],
+    "job_id": "8782f68c-a186-495a-b776-4c2de1d2af44-e1",
+    "duration_seconds": 41.24,
+    "saved_at": "2026-06-24T02:38:11Z"
+  },
+  "007": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\brain-smaller-than-ancestors-en\\images_en\\img_007.png",
+    "errors": [],
+    "job_id": "7f94d46f-adf3-46cc-af13-5fdd31f93667-e2",
+    "duration_seconds": 41.24,
+    "saved_at": "2026-06-24T02:38:11Z"
+  },
+  "006": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\brain-smaller-than-ancestors-en\\images_en\\img_006.png",
+    "errors": [],
+    "job_id": "c8efbd21-a98b-42ad-b1bf-801102afcb8a-e1",
+    "duration_seconds": 41.36,
+    "saved_at": "2026-06-24T02:38:11Z"
+  },
+  "004": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\brain-smaller-than-ancestors-en\\images_en\\img_004.png",
+    "errors": [],
+    "job_id": "5ac52ac0-4f9f-43cc-9a02-853bc6a9502c-e2",
+    "duration_seconds": 25.93,
+    "saved_at": "2026-06-24T02:37:56Z"
+  },
+  "005": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\brain-smaller-than-ancestors-en\\images_en\\img_005.png",
+    "errors": [],
+    "job_id": "0fdaf348-fc17-49e1-80ec-c5817860f6c2-e1",
+    "duration_seconds": 15.46,
+    "saved_at": "2026-06-24T02:37:45Z"
+  },
+  "010": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\brain-smaller-than-ancestors-en\\images_en\\img_010.png",
+    "errors": [],
+    "job_id": "1dbdc349-9aa1-46c2-8beb-b59ee3651331-e1",
+    "duration_seconds": 41.37,
+    "saved_at": "2026-06-24T02:38:11Z"
+  },
+  "008": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\brain-smaller-than-ancestors-en\\images_en\\img_008.png",
+    "errors": [],
+    "job_id": "1942eef0-8c20-4576-903c-59fc8475b028-e2",
+    "duration_seconds": 41.23,
+    "saved_at": "2026-06-24T02:38:11Z"
+  },
+  "003": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\brain-smaller-than-ancestors-en\\images_en\\img_003.png",
+    "errors": [],
+    "job_id": "1adfe550-d732-49f9-848f-8d9ce2df126b-e1",
+    "duration_seconds": 41.27,
+    "saved_at": "2026-06-24T02:38:11Z"
+  },
+  "001": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\brain-smaller-than-ancestors-en\\images_en\\img_001.png",
+    "errors": [],
+    "job_id": "0d23d29c-87b6-4d6f-9330-e479bce60126-e1",
+    "duration_seconds": 15.72,
+    "saved_at": "2026-06-24T02:37:22Z"
+  },
+  "013": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\brain-smaller-than-ancestors-en\\images_en\\img_013.png",
+    "errors": [],
+    "job_id": "7eda67bd-73e5-435a-82e7-1d0e153506d6-e2",
+    "duration_seconds": 15.72,
+    "saved_at": "2026-06-24T02:38:12Z"
+  },
+  "011": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\brain-smaller-than-ancestors-en\\images_en\\img_011.png",
+    "errors": [],
+    "job_id": "0724d4d9-d8dc-4120-b685-97cba4523459-e1",
+    "duration_seconds": 41.15,
+    "saved_at": "2026-06-24T02:38:11Z"
+  },
+  "012": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\brain-smaller-than-ancestors-en\\images_en\\img_012.png",
+    "errors": [],
+    "job_id": "3ddd1524-ba10-423a-aa56-2d684e59ca00-e1",
+    "duration_seconds": 25.91,
+    "saved_at": "2026-06-24T02:38:11Z"
+  },
+  "016": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\brain-smaller-than-ancestors-en\\images_en\\img_016.png",
+    "errors": [],
+    "job_id": "ea4ee75a-2871-48fa-a476-4700fd2d8e80-e2",
+    "duration_seconds": 25.83,
+    "saved_at": "2026-06-24T02:38:37Z"
+  },
+  "015": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\brain-smaller-than-ancestors-en\\images_en\\img_015.png",
+    "errors": [],
+    "job_id": "e9cdb4a9-c503-4388-9d30-c7c98442edc3-e1",
+    "duration_seconds": 15.63,
+    "saved_at": "2026-06-24T02:38:27Z"
+  },
+  "017": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\brain-smaller-than-ancestors-en\\images_en\\img_017.png",
+    "errors": [],
+    "job_id": "26f33cca-7fc2-4b0f-aabc-e730f6eb7b76-e2",
+    "duration_seconds": 25.75,
+    "saved_at": "2026-06-24T02:38:37Z"
+  },
+  "018": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\brain-smaller-than-ancestors-en\\images_en\\img_018.png",
+    "errors": [],
+    "job_id": "1b33e8b6-3b78-4811-94a4-84ac7b3fb181-e2",
+    "duration_seconds": 15.51,
+    "saved_at": "2026-06-24T02:38:27Z"
+  },
+  "014": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\brain-smaller-than-ancestors-en\\images_en\\img_014.png",
+    "errors": [],
+    "job_id": "0ec385dc-60c5-4402-8f21-f54aeb8b0cdb-e1",
+    "duration_seconds": 15.53,
+    "saved_at": "2026-06-24T02:38:27Z"
+  },
+  "019": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\brain-smaller-than-ancestors-en\\images_en\\img_019.png",
+    "errors": [],
+    "job_id": "0d1ded7c-0986-49f2-b06d-23516ab98dd8-e1",
+    "duration_seconds": 25.95,
+    "saved_at": "2026-06-24T02:38:37Z"
+  },
+  "020": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\brain-smaller-than-ancestors-en\\images_en\\img_020.png",
+    "errors": [],
+    "job_id": "5e41c3ef-7563-410f-b3da-4177cad005da-e2",
+    "duration_seconds": 41.26,
+    "saved_at": "2026-06-24T02:38:52Z"
+  },
+  "022": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\brain-smaller-than-ancestors-en\\images_en\\img_022.png",
+    "errors": [],
+    "job_id": "c7bd4470-fa1a-41c8-a5a1-f685d3cf24e2-e2",
+    "duration_seconds": 41.24,
+    "saved_at": "2026-06-24T02:38:53Z"
+  },
+  "023": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\brain-smaller-than-ancestors-en\\images_en\\img_023.png",
+    "errors": [],
+    "job_id": "4cd133a1-fe79-46de-9160-8b3bf200bbea-e1",
+    "duration_seconds": 41.1,
+    "saved_at": "2026-06-24T02:38:53Z"
+  },
+  "021": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\brain-smaller-than-ancestors-en\\images_en\\img_021.png",
+    "errors": [],
+    "job_id": "c3c7e191-24b1-43f4-81a4-aa1fafa68e26-e2",
+    "duration_seconds": 41.19,
+    "saved_at": "2026-06-24T02:38:52Z"
+  },
+  "029": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\brain-smaller-than-ancestors-en\\images_en\\img_029.png",
+    "errors": [],
+    "job_id": "dfec1f7d-ab62-4639-bf8e-b6b6448d16f0-e2",
+    "duration_seconds": 25.81,
+    "saved_at": "2026-06-24T02:39:03Z"
+  },
+  "030": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\brain-smaller-than-ancestors-en\\images_en\\img_030.png",
+    "errors": [],
+    "job_id": "04293612-c6f6-415f-be9a-fcbcd4268c9b-e1",
+    "duration_seconds": 25.82,
+    "saved_at": "2026-06-24T02:39:18Z"
+  },
+  "024": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\brain-smaller-than-ancestors-en\\images_en\\img_024.png",
+    "errors": [],
+    "job_id": "ffadb2cf-799b-45eb-80d5-306007248888-e1",
+    "duration_seconds": 25.9,
+    "saved_at": "2026-06-24T02:38:53Z"
+  },
+  "025": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\brain-smaller-than-ancestors-en\\images_en\\img_025.png",
+    "errors": [],
+    "job_id": "63698dd2-cbc6-4f13-a083-bb04f6382f4c-e1",
+    "duration_seconds": 25.88,
+    "saved_at": "2026-06-24T02:38:53Z"
+  },
+  "027": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\brain-smaller-than-ancestors-en\\images_en\\img_027.png",
+    "errors": [],
+    "job_id": "121774a9-9fb9-49cd-b8f3-d86e0d1afde5-e2",
+    "duration_seconds": 15.49,
+    "saved_at": "2026-06-24T02:38:52Z"
+  },
+  "031": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\brain-smaller-than-ancestors-en\\images_en\\img_031.png",
+    "errors": [],
+    "job_id": "ed88d1b1-27e8-430a-8d63-a707de70c854-e1",
+    "duration_seconds": 15.59,
+    "saved_at": "2026-06-24T02:39:08Z"
+  },
+  "032": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\brain-smaller-than-ancestors-en\\images_en\\img_032.png",
+    "errors": [],
+    "job_id": "3848dfde-9a28-48a7-9046-a96917f882d4-e2",
+    "duration_seconds": 8.63,
+    "saved_at": "2026-06-24T02:39:01Z"
+  },
+  "036": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\brain-smaller-than-ancestors-en\\images_en\\img_036.png",
+    "errors": [],
+    "job_id": "be54ca23-c476-4eee-97e3-1ac0f6b8e973-e2",
+    "duration_seconds": 25.85,
+    "saved_at": "2026-06-24T02:39:19Z"
+  },
+  "034": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\brain-smaller-than-ancestors-en\\images_en\\img_034.png",
+    "errors": [],
+    "job_id": "6293798e-62d1-4bb2-958e-2fa5d792ac2b-e2",
+    "duration_seconds": 15.59,
+    "saved_at": "2026-06-24T02:39:08Z"
+  },
+  "028": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\brain-smaller-than-ancestors-en\\images_en\\img_028.png",
+    "errors": [],
+    "job_id": "ad62dd51-2f7c-4061-9805-0783eccb70e0-e2",
+    "duration_seconds": 25.88,
+    "saved_at": "2026-06-24T02:39:03Z"
+  },
+  "026": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\brain-smaller-than-ancestors-en\\images_en\\img_026.png",
+    "errors": [],
+    "job_id": "116d0475-71ca-49b9-97ee-1361a07f8afd-e2",
+    "duration_seconds": 25.79,
+    "saved_at": "2026-06-24T02:38:53Z"
+  },
+  "039": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\brain-smaller-than-ancestors-en\\images_en\\img_039.png",
+    "errors": [],
+    "job_id": "315390ba-8cd5-458e-a2f3-2610e5918afb-e2",
+    "duration_seconds": 15.52,
+    "saved_at": "2026-06-24T02:39:19Z"
+  },
+  "040": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\brain-smaller-than-ancestors-en\\images_en\\img_040.png",
+    "errors": [],
+    "job_id": "9b74e019-d293-4e8a-81cb-d528b68260eb-e1",
+    "duration_seconds": 25.72,
+    "saved_at": "2026-06-24T02:39:29Z"
+  },
+  "037": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\brain-smaller-than-ancestors-en\\images_en\\img_037.png",
+    "errors": [],
+    "job_id": "84f3b401-996d-4d22-a994-400eedd35fe8-e1",
+    "duration_seconds": 25.88,
+    "saved_at": "2026-06-24T02:39:19Z"
+  },
+  "035": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\brain-smaller-than-ancestors-en\\images_en\\img_035.png",
+    "errors": [],
+    "job_id": "51dc2082-2efd-461d-93a0-912dd943b056-e1",
+    "duration_seconds": 25.79,
+    "saved_at": "2026-06-24T02:39:19Z"
+  },
+  "033": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\brain-smaller-than-ancestors-en\\images_en\\img_033.png",
+    "errors": [],
+    "job_id": "9a6a8b27-ed5c-4805-a28e-8ce1e9e7a92d-e1",
+    "duration_seconds": 15.54,
+    "saved_at": "2026-06-24T02:39:08Z"
+  },
+  "038": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\brain-smaller-than-ancestors-en\\images_en\\img_038.png",
+    "errors": [],
+    "job_id": "1585d0d9-3b30-4de3-bac3-92a0bea8f7e0-e1",
+    "duration_seconds": 25.82,
+    "saved_at": "2026-06-24T02:39:27Z"
+  },
+  "046": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\brain-smaller-than-ancestors-en\\images_en\\img_046.png",
+    "errors": [],
+    "job_id": "9de13966-7f1c-4bf8-be37-e9df5d10a152-e2",
+    "duration_seconds": 15.48,
+    "saved_at": "2026-06-24T02:39:34Z"
+  },
+  "045": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\brain-smaller-than-ancestors-en\\images_en\\img_045.png",
+    "errors": [],
+    "job_id": "bcc240f9-3e65-4d93-ac36-79549c4f228c-e2",
+    "duration_seconds": 15.53,
+    "saved_at": "2026-06-24T02:39:34Z"
+  },
+  "049": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\brain-smaller-than-ancestors-en\\images_en\\img_049.png",
+    "errors": [],
+    "job_id": "512345bb-fe53-4007-bdbf-c62cea316799-e2",
+    "duration_seconds": 15.46,
+    "saved_at": "2026-06-24T02:39:39Z"
+  },
+  "041": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\brain-smaller-than-ancestors-en\\images_en\\img_041.png",
+    "errors": [],
+    "job_id": "b96ac0f4-bc0e-4286-a2ec-4d2bebbe1d5d-e1",
+    "duration_seconds": 15.55,
+    "saved_at": "2026-06-24T02:39:24Z"
+  },
+  "043": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\brain-smaller-than-ancestors-en\\images_en\\img_043.png",
+    "errors": [],
+    "job_id": "76d5193d-f72d-48bf-bb48-a2868b878fd6-e2",
+    "duration_seconds": 25.85,
+    "saved_at": "2026-06-24T02:39:34Z"
+  },
+  "042": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\brain-smaller-than-ancestors-en\\images_en\\img_042.png",
+    "errors": [],
+    "job_id": "f6a34c74-432e-4df0-97c6-1c11271e5c3a-e1",
+    "duration_seconds": 25.84,
+    "saved_at": "2026-06-24T02:39:34Z"
+  },
+  "044": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\brain-smaller-than-ancestors-en\\images_en\\img_044.png",
+    "errors": [],
+    "job_id": "a0c7bb17-8108-49d5-b1a8-1c5c06760b8c-e1",
+    "duration_seconds": 15.57,
+    "saved_at": "2026-06-24T02:39:34Z"
+  },
+  "051": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\brain-smaller-than-ancestors-en\\images_en\\img_051.png",
+    "errors": [],
+    "job_id": "ca456eab-486e-44f9-a26a-159e2873d609-e1",
+    "duration_seconds": 15.47,
+    "saved_at": "2026-06-24T02:39:44Z"
+  },
+  "052": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\brain-smaller-than-ancestors-en\\images_en\\img_052.png",
+    "errors": [],
+    "job_id": "926c6ecf-067d-4150-a968-656ebd117904-e1",
+    "duration_seconds": 15.65,
+    "saved_at": "2026-06-24T02:39:50Z"
+  },
+  "053": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\brain-smaller-than-ancestors-en\\images_en\\img_053.png",
+    "errors": [],
+    "job_id": "5d8f7c88-f726-402e-bd64-c6ed69e310c6-e2",
+    "duration_seconds": 15.49,
+    "saved_at": "2026-06-24T02:39:50Z"
+  },
+  "054": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\brain-smaller-than-ancestors-en\\images_en\\img_054.png",
+    "errors": [],
+    "job_id": "698d681d-8503-4b59-b972-9548cb7421bb-e1",
+    "duration_seconds": 15.42,
+    "saved_at": "2026-06-24T02:39:50Z"
+  },
+  "048": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\brain-smaller-than-ancestors-en\\images_en\\img_048.png",
+    "errors": [],
+    "job_id": "f4622cb7-0e7a-402f-bf62-da3fbe502a93-e1",
+    "duration_seconds": 25.69,
+    "saved_at": "2026-06-24T02:39:44Z"
+  },
+  "047": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\brain-smaller-than-ancestors-en\\images_en\\img_047.png",
+    "errors": [],
+    "job_id": "cc13a932-1685-4678-a2d9-06e58c41649f-e2",
+    "duration_seconds": 25.77,
+    "saved_at": "2026-06-24T02:39:44Z"
+  },
+  "050": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\brain-smaller-than-ancestors-en\\images_en\\img_050.png",
+    "errors": [],
+    "job_id": "5a203b95-78ed-41c4-a47b-da5ca26a855d-e1",
+    "duration_seconds": 25.88,
+    "saved_at": "2026-06-24T02:39:53Z"
+  },
+  "058": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\brain-smaller-than-ancestors-en\\images_en\\img_058.png",
+    "errors": [],
+    "job_id": "995f7bc0-6dfd-4cf9-8ab3-d3a23a6a08a7-e2",
+    "duration_seconds": 25.83,
+    "saved_at": "2026-06-24T02:40:10Z"
+  },
+  "059": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\brain-smaller-than-ancestors-en\\images_en\\img_059.png",
+    "errors": [],
+    "job_id": "e54e045f-9b12-404b-aa2f-b4439bf60828-e1",
+    "duration_seconds": 8.65,
+    "saved_at": "2026-06-24T02:39:53Z"
+  },
+  "061": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\brain-smaller-than-ancestors-en\\images_en\\img_061.png",
+    "errors": [],
+    "job_id": "e3b77e3f-aaa8-4a3e-818b-8f4c82bd53f9-e2",
+    "duration_seconds": 15.65,
+    "saved_at": "2026-06-24T02:40:06Z"
+  },
+  "055": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\brain-smaller-than-ancestors-en\\images_en\\img_055.png",
+    "errors": [],
+    "job_id": "b2cbc94c-cbec-4e7c-a7b1-9e4019b9a809-e2",
+    "duration_seconds": 25.71,
+    "saved_at": "2026-06-24T02:40:00Z"
+  },
+  "056": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\brain-smaller-than-ancestors-en\\images_en\\img_056.png",
+    "errors": [],
+    "job_id": "b03da104-9afb-4c0d-abd0-425a14d6cfa6-e2",
+    "duration_seconds": 25.93,
+    "saved_at": "2026-06-24T02:40:00Z"
+  },
+  "057": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\brain-smaller-than-ancestors-en\\images_en\\img_057.png",
+    "errors": [],
+    "job_id": "056ca431-f99d-46de-9eb3-731253d981b7-e2",
+    "duration_seconds": 15.51,
+    "saved_at": "2026-06-24T02:39:55Z"
+  },
+  "066": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\brain-smaller-than-ancestors-en\\images_en\\img_066.png",
+    "errors": [],
+    "job_id": "7eb65c85-6ea1-465d-ad55-b41abc42c60f-e1",
+    "duration_seconds": 25.78,
+    "saved_at": "2026-06-24T02:40:21Z"
+  },
+  "060": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\brain-smaller-than-ancestors-en\\images_en\\img_060.png",
+    "errors": [],
+    "job_id": "0fd45463-a98b-4be7-9cc5-701e7b0b0d3b-e1",
+    "duration_seconds": 15.54,
+    "saved_at": "2026-06-24T02:40:00Z"
+  },
+  "067": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\brain-smaller-than-ancestors-en\\images_en\\img_067.png",
+    "errors": [],
+    "job_id": "c9e2b251-ab63-44b5-a487-96e8efd868d2-e1",
+    "duration_seconds": 15.68,
+    "saved_at": "2026-06-24T02:40:16Z"
+  },
+  "063": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\brain-smaller-than-ancestors-en\\images_en\\img_063.png",
+    "errors": [],
+    "job_id": "c5b76068-3832-412a-bcb5-cab867d566f1-e2",
+    "duration_seconds": 15.49,
+    "saved_at": "2026-06-24T02:40:05Z"
+  },
+  "062": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\brain-smaller-than-ancestors-en\\images_en\\img_062.png",
+    "errors": [],
+    "job_id": "72bc39cb-33c5-4063-a44c-9904f96c2fff-e1",
+    "duration_seconds": 15.5,
+    "saved_at": "2026-06-24T02:40:05Z"
+  },
+  "064": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\brain-smaller-than-ancestors-en\\images_en\\img_064.png",
+    "errors": [],
+    "job_id": "c253885a-f93e-42c8-942e-a33a0a70cff2-e1",
+    "duration_seconds": 15.44,
+    "saved_at": "2026-06-24T02:40:09Z"
+  },
+  "071": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\brain-smaller-than-ancestors-en\\images_en\\img_071.png",
+    "errors": [],
+    "job_id": "0547c3b6-611d-4cee-b3fa-1ec27c6cf356-e1",
+    "duration_seconds": 15.44,
+    "saved_at": "2026-06-24T02:40:21Z"
+  },
+  "072": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\brain-smaller-than-ancestors-en\\images_en\\img_072.png",
+    "errors": [],
+    "job_id": "f195a227-6e6c-41ea-800e-9f1d0f0962fb-e2",
+    "duration_seconds": 15.54,
+    "saved_at": "2026-06-24T02:40:21Z"
+  },
+  "065": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\brain-smaller-than-ancestors-en\\images_en\\img_065.png",
+    "errors": [],
+    "job_id": "b7113ddd-f2d9-47c0-b914-1efd6781bbf2-e2",
+    "duration_seconds": 15.44,
+    "saved_at": "2026-06-24T02:40:09Z"
+  },
+  "073": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\brain-smaller-than-ancestors-en\\images_en\\img_073.png",
+    "errors": [],
+    "job_id": "4cb9f79b-ea38-417b-a27d-b6523e96d9ae-e1",
+    "duration_seconds": 15.62,
+    "saved_at": "2026-06-24T02:40:25Z"
+  },
+  "068": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\brain-smaller-than-ancestors-en\\images_en\\img_068.png",
+    "errors": [],
+    "job_id": "d271205b-46da-481c-b097-5a66ce7f2117-e1",
+    "duration_seconds": 15.49,
+    "saved_at": "2026-06-24T02:40:16Z"
+  },
+  "069": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\brain-smaller-than-ancestors-en\\images_en\\img_069.png",
+    "errors": [],
+    "job_id": "567d4fe3-e845-4b00-8515-10ad7daae83b-e2",
+    "duration_seconds": 15.44,
+    "saved_at": "2026-06-24T02:40:16Z"
+  },
+  "070": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\brain-smaller-than-ancestors-en\\images_en\\img_070.png",
+    "errors": [],
+    "job_id": "9d031597-1958-496c-8c70-663024892d0f-e2",
+    "duration_seconds": 15.46,
+    "saved_at": "2026-06-24T02:40:21Z"
+  },
+  "077": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\brain-smaller-than-ancestors-en\\images_en\\img_077.png",
+    "errors": [],
+    "job_id": "4c9bba2d-36d2-43ee-9f3b-6afba755abb2-e2",
+    "duration_seconds": 25.8,
+    "saved_at": "2026-06-24T02:40:42Z"
+  },
+  "078": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\brain-smaller-than-ancestors-en\\images_en\\img_078.png",
+    "errors": [],
+    "job_id": "ea5f63bd-8331-4136-a930-69193a4267ec-e2",
+    "duration_seconds": 15.47,
+    "saved_at": "2026-06-24T02:40:31Z"
+  },
+  "080": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\brain-smaller-than-ancestors-en\\images_en\\img_080.png",
+    "errors": [],
+    "job_id": "89a52c92-c34a-4139-bcab-eb37ced020ad-e1",
+    "duration_seconds": 15.53,
+    "saved_at": "2026-06-24T02:40:37Z"
+  },
+  "074": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\brain-smaller-than-ancestors-en\\images_en\\img_074.png",
+    "errors": [],
+    "job_id": "19acf5b2-f171-4e5c-ac6f-44acc170bf46-e1",
+    "duration_seconds": 15.52,
+    "saved_at": "2026-06-24T02:40:24Z"
+  },
+  "076": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\brain-smaller-than-ancestors-en\\images_en\\img_076.png",
+    "errors": [],
+    "job_id": "dcc73ee7-eabe-4197-a5d6-4ea5910a9a7a-e1",
+    "duration_seconds": 15.47,
+    "saved_at": "2026-06-24T02:40:31Z"
+  },
+  "075": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\brain-smaller-than-ancestors-en\\images_en\\img_075.png",
+    "errors": [],
+    "job_id": "c0822b64-302a-4e70-98c9-2c57cd3ae396-e2",
+    "duration_seconds": 15.56,
+    "saved_at": "2026-06-24T02:40:26Z"
+  },
+  "084": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\brain-smaller-than-ancestors-en\\images_en\\img_084.png",
+    "errors": [],
+    "job_id": "05fd95fc-954c-4416-8ace-75c94da0a6fc-e2",
+    "duration_seconds": 25.76,
+    "saved_at": "2026-06-24T02:40:50Z"
+  },
+  "085": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\brain-smaller-than-ancestors-en\\images_en\\img_085.png",
+    "errors": [],
+    "job_id": "18c375fc-65b8-4f53-b7de-c988f05de547-e1",
+    "duration_seconds": 25.82,
+    "saved_at": "2026-06-24T02:40:52Z"
+  },
+  "079": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\brain-smaller-than-ancestors-en\\images_en\\img_079.png",
+    "errors": [],
+    "job_id": "407b48c7-e6e0-418f-af0e-2f11f1926676-e1",
+    "duration_seconds": 15.62,
+    "saved_at": "2026-06-24T02:40:37Z"
+  },
+  "086": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\brain-smaller-than-ancestors-en\\images_en\\img_086.png",
+    "errors": [],
+    "job_id": "0dc64df4-7e9c-467d-a294-79c8ff8f446d-e1",
+    "duration_seconds": 15.47,
+    "saved_at": "2026-06-24T02:40:47Z"
+  },
+  "082": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\brain-smaller-than-ancestors-en\\images_en\\img_082.png",
+    "errors": [],
+    "job_id": "501c110d-c237-4a49-bcfe-1cb72fb63210-e2",
+    "duration_seconds": 25.72,
+    "saved_at": "2026-06-24T02:40:47Z"
+  },
+  "081": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\brain-smaller-than-ancestors-en\\images_en\\img_081.png",
+    "errors": [],
+    "job_id": "1314e8b0-92b2-4555-8c4d-e013a4807e98-e2",
+    "duration_seconds": 15.59,
+    "saved_at": "2026-06-24T02:40:37Z"
+  },
+  "083": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\brain-smaller-than-ancestors-en\\images_en\\img_083.png",
+    "errors": [],
+    "job_id": "ea4938a1-5747-4e39-ad97-0810811bad4d-e2",
+    "duration_seconds": 15.5,
+    "saved_at": "2026-06-24T02:40:40Z"
+  },
+  "091": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\brain-smaller-than-ancestors-en\\images_en\\img_091.png",
+    "errors": [],
+    "job_id": "ffda2b2e-6ea2-4e58-900c-2eac57cb062b-e1",
+    "duration_seconds": 15.5,
+    "saved_at": "2026-06-24T02:40:56Z"
+  },
+  "090": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\brain-smaller-than-ancestors-en\\images_en\\img_090.png",
+    "errors": [],
+    "job_id": "13599af8-6a05-497c-8fee-baddc3e2a7c5-e2",
+    "duration_seconds": 15.53,
+    "saved_at": "2026-06-24T02:40:52Z"
+  },
+  "087": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\brain-smaller-than-ancestors-en\\images_en\\img_087.png",
+    "errors": [],
+    "job_id": "ec26a93f-c434-4bb9-9b0e-753dbc59307b-e1",
+    "duration_seconds": 15.33,
+    "saved_at": "2026-06-24T02:40:47Z"
+  },
+  "088": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\brain-smaller-than-ancestors-en\\images_en\\img_088.png",
+    "errors": [],
+    "job_id": "e7e60154-128f-469e-8073-e06ab32667e3-e2",
+    "duration_seconds": 15.46,
+    "saved_at": "2026-06-24T02:40:52Z"
+  },
+  "089": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\brain-smaller-than-ancestors-en\\images_en\\img_089.png",
+    "errors": [],
+    "job_id": "f2d2889c-5ac6-47b5-976c-6b6dd350ebb5-e2",
+    "duration_seconds": 15.62,
+    "saved_at": "2026-06-24T02:40:52Z"
+  },
+  "097": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\brain-smaller-than-ancestors-en\\images_en\\img_097.png",
+    "errors": [],
+    "job_id": "14fd5a63-2d56-4557-bb31-458faab1d030-e2",
+    "duration_seconds": 15.66,
+    "saved_at": "2026-06-24T02:41:08Z"
+  },
+  "098": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\brain-smaller-than-ancestors-en\\images_en\\img_098.png",
+    "errors": [],
+    "job_id": "5a203d35-ac49-410a-bab8-1faaeb1c47f1-e2",
+    "duration_seconds": 15.47,
+    "saved_at": "2026-06-24T02:41:08Z"
+  },
+  "092": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\brain-smaller-than-ancestors-en\\images_en\\img_092.png",
+    "errors": [],
+    "job_id": "c1d09b3c-5c32-4894-bf02-40799d67757f-e1",
+    "duration_seconds": 15.5,
+    "saved_at": "2026-06-24T02:40:57Z"
+  },
+  "093": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\brain-smaller-than-ancestors-en\\images_en\\img_093.png",
+    "errors": [],
+    "job_id": "564e9e33-a358-4758-b553-6f9d31635068-e1",
+    "duration_seconds": 15.53,
+    "saved_at": "2026-06-24T02:41:02Z"
+  },
+  "099": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\brain-smaller-than-ancestors-en\\images_en\\img_099.png",
+    "errors": [],
+    "job_id": "03962463-106b-4dd6-ba3f-99120c831c6d-e2",
+    "duration_seconds": 15.53,
+    "saved_at": "2026-06-24T02:41:08Z"
+  },
+  "095": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\brain-smaller-than-ancestors-en\\images_en\\img_095.png",
+    "errors": [],
+    "job_id": "aa9d573b-9713-40b2-a0a7-bd3a09f296fa-e2",
+    "duration_seconds": 15.54,
+    "saved_at": "2026-06-24T02:41:03Z"
+  },
+  "100": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\brain-smaller-than-ancestors-en\\images_en\\img_100.png",
+    "errors": [],
+    "job_id": "d307208a-879a-43cb-bcbe-669a0569d480-e2",
+    "duration_seconds": 25.78,
+    "saved_at": "2026-06-24T02:41:18Z"
+  },
+  "094": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\brain-smaller-than-ancestors-en\\images_en\\img_094.png",
+    "errors": [],
+    "job_id": "3e419932-2746-420d-9493-cb5a871b06b1-e1",
+    "duration_seconds": 15.61,
+    "saved_at": "2026-06-24T02:41:03Z"
+  },
+  "096": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\brain-smaller-than-ancestors-en\\images_en\\img_096.png",
+    "errors": [],
+    "job_id": "2c9f7d2d-d764-4bcf-b496-4d53da541929-e2",
+    "duration_seconds": 25.75,
+    "saved_at": "2026-06-24T02:41:16Z"
+  },
+  "101": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\brain-smaller-than-ancestors-en\\images_en\\img_101.png",
+    "errors": [],
+    "job_id": "935a5bb6-baf6-4204-9ec4-22e2a1981cc3-e1",
+    "duration_seconds": 15.48,
+    "saved_at": "2026-06-24T02:41:11Z"
+  },
+  "102": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\brain-smaller-than-ancestors-en\\images_en\\img_102.png",
+    "errors": [],
+    "job_id": "4c87f32f-1758-4b6a-aca1-bb085edf5654-e1",
+    "duration_seconds": 15.62,
+    "saved_at": "2026-06-24T02:41:13Z"
+  },
+  "103": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\brain-smaller-than-ancestors-en\\images_en\\img_103.png",
+    "errors": [],
+    "job_id": "50393828-6c5d-44cf-9ff4-de064b569b36-e1",
+    "duration_seconds": 15.49,
+    "saved_at": "2026-06-24T02:41:18Z"
+  },
+  "104": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\brain-smaller-than-ancestors-en\\images_en\\img_104.png",
+    "errors": [],
+    "job_id": "4afee967-56f7-4be7-b4a3-985f755f3edc-e2",
+    "duration_seconds": 25.91,
+    "saved_at": "2026-06-24T02:41:29Z"
+  },
+  "105": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\brain-smaller-than-ancestors-en\\images_en\\img_105.png",
+    "errors": [],
+    "job_id": "45af9181-378e-4400-973f-ac1bff199b8c-e2",
+    "duration_seconds": 25.75,
+    "saved_at": "2026-06-24T02:41:29Z"
+  },
+  "106": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\brain-smaller-than-ancestors-en\\images_en\\img_106.png",
+    "errors": [],
+    "job_id": "54a202b1-96e3-4cee-b2c4-f296d5705914-e2",
+    "duration_seconds": 15.57,
+    "saved_at": "2026-06-24T02:41:23Z"
+  },
+  "109": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\brain-smaller-than-ancestors-en\\images_en\\img_109.png",
+    "errors": [],
+    "job_id": "ff93bbfd-dc5c-4258-b30c-f741250b9eec-e1",
+    "duration_seconds": 15.53,
+    "saved_at": "2026-06-24T02:41:27Z"
+  },
+  "107": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\brain-smaller-than-ancestors-en\\images_en\\img_107.png",
+    "errors": [],
+    "job_id": "9796ae98-1489-48cd-b6e4-effa5fe6ed11-e1",
+    "duration_seconds": 15.53,
+    "saved_at": "2026-06-24T02:41:23Z"
+  },
+  "108": {
+    "status": "completed",
+    "candidates_saved": 1,
+    "selected_image": "output\\brain-smaller-than-ancestors-en\\images_en\\img_108.png",
+    "errors": [],
+    "job_id": "64de7226-3557-466d-840b-3da6c3f2bfeb-e1",
+    "duration_seconds": 15.59,
+    "saved_at": "2026-06-24T02:41:24Z"
+  }
+}

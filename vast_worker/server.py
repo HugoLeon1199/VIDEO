@@ -14,6 +14,8 @@ import base64
 import hashlib
 import io
 import os
+import signal
+import sys
 import time
 from typing import Optional
 
@@ -27,6 +29,9 @@ from pydantic import BaseModel
 
 app = FastAPI(title="Vast Image Worker")
 _pipe: Optional[FluxPipeline] = None
+
+# Graceful shutdown when Vast destroys the instance
+signal.signal(signal.SIGTERM, lambda sig, frame: sys.exit(0))
 
 
 def _load_model() -> FluxPipeline:

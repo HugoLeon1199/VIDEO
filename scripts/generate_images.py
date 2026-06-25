@@ -168,6 +168,70 @@ def _make_log_entry(
 
 
 # ---------------------------------------------------------------------------
+# Backend factories
+# ---------------------------------------------------------------------------
+
+def _build_vast_backend():
+    """Rent a Vast.ai instance, wait until ready, return (backend, teardown_fn).
+
+    If VAST_INSTANCE_HOST + VAST_INSTANCE_PORT are set, skip rent and connect
+    directly (useful for manual testing or resume after crash).
+    teardown_fn destroys the instance; None if rent was skipped.
+    """
+    import config as _cfg
+    from image_generation.vast_manager import VastManager
+    from image_generation.vast_backend import VastInstanceBackend
+
+    if not _cfg.VAST_API_KEY:
+        raise RuntimeError("VAST_API_KEY not set — add it to .env")
+
+    manager = VastManager(api_key=_cfg.VAST_API_KEY, worker_port=_cfg.VAST_WORKER_PORT)
+
+    # Manual / resume mode: instance already running
+    if _cfg.VAST_INSTANCE_HOST and _cfg.VAST_INSTANCE_PORT:
+        logger.info("Vast: connecting to existing instance %s:%d",
+                    _cfg.VAST_INSTANCE_HOST, _cfg.VAST_INSTANCE_PORT)
+        backend = VastInstanceBackend(
+            host=_cfg.VAST_INSTANCE_HOST,
+            port=_cfg.VAST_INSTANCE_PORT,
+            timeout=_cfg.VAST_REQUEST_TIMEOUT,
+        )
+        manager.wait_worker_ready(_cfg.VAST_INSTANCE_HOST, _cfg.VAST_INSTANCE_PORT, timeout=120)
+        return backend, None  # caller manages lifetime
+
+    # Auto-rent flow
+    logger.info("Vast: searching for GPU (vram>=%dGB, max $%.2f/hr)...",
+                _cfg.VAST_MIN_VRAM_GB, _cfg.VAST_MAX_PRICE_PER_HOUR)
+    offer = manager.find_offer(
+        min_vram_gb=_cfg.VAST_MIN_VRAM_GB,
+        gpu_name=_cfg.VAST_GPU_NAME,
+        max_price_per_hour=_cfg.VAST_MAX_PRICE_PER_HOUR,
+    )
+    env_vars = {"HF_TOKEN": _cfg.VAST_HF_TOKEN} if _cfg.VAST_HF_TOKEN else {}
+    instance = manager.rent(
+        offer_id=offer["id"],
+        image=_cfg.VAST_WORKER_IMAGE,
+        env_vars=env_vars,
+        disk_gb=_cfg.VAST_DISK_GB,
+    )
+    instance = manager.wait_until_running(instance.instance_id, timeout=300)
+    worker_port = instance.direct_port or _cfg.VAST_WORKER_PORT
+    manager.wait_worker_ready(instance.ssh_host, worker_port, timeout=600)
+
+    backend = VastInstanceBackend(
+        host=instance.ssh_host,
+        port=worker_port,
+        timeout=_cfg.VAST_REQUEST_TIMEOUT,
+    )
+
+    def teardown():
+        logger.info("Vast: destroying instance %d...", instance.instance_id)
+        manager.destroy(instance.instance_id)
+
+    return backend, teardown
+
+
+# ---------------------------------------------------------------------------
 # Main
 # ---------------------------------------------------------------------------
 
@@ -175,7 +239,8 @@ def main() -> None:
     parser = argparse.ArgumentParser(description="Generate images via RunPod Serverless")
     parser.add_argument("--video-id", required=True)
     parser.add_argument("--prompts", help="Path to image_prompts.json")
-    parser.add_argument("--backend", default="runpod_serverless", choices=["runpod_serverless"])
+    parser.add_argument("--backend", default="runpod_serverless",
+                        choices=["runpod_serverless", "vast_instance"])
     parser.add_argument("--track", choices=["vi", "en"], default=None,
                         help="Image track: 'vi'=2D documentary, 'en'=ink sketch")
     parser.add_argument("--scene-id", help="Process only this scene_id")
@@ -306,9 +371,13 @@ def main() -> None:
 
     # Setup backend (only needed when generation_enabled)
     backend = None
+    _vast_teardown = None
     if generation_enabled:
-        from image_generation.runpod_serverless_backend import RunPodServerlessBackend
-        backend = RunPodServerlessBackend()
+        if args.backend == "vast_instance":
+            backend, _vast_teardown = _build_vast_backend()
+        else:
+            from image_generation.runpod_serverless_backend import RunPodServerlessBackend
+            backend = RunPodServerlessBackend()
 
     from image_generation.runpod_serverless_backend import promote_candidate_to_render_image
     from image_generation.schemas import SceneRequest
@@ -591,18 +660,22 @@ def main() -> None:
 
         return scene_id, bool(selected_image)
 
-    with ThreadPoolExecutor(max_workers=args.workers) as executor:
-        futures = {executor.submit(process_scene, p): p for p in prompts}
-        for future in as_completed(futures):
-            scene_id, ok = future.result()
-            if ok:
-                total_ok += 1
-            else:
-                total_fail += 1
-                if args.fail_fast:
-                    logger.error("--fail-fast: cancelling remaining jobs.")
-                    executor.shutdown(wait=False, cancel_futures=True)
-                    break
+    try:
+        with ThreadPoolExecutor(max_workers=args.workers) as executor:
+            futures = {executor.submit(process_scene, p): p for p in prompts}
+            for future in as_completed(futures):
+                scene_id, ok = future.result()
+                if ok:
+                    total_ok += 1
+                else:
+                    total_fail += 1
+                    if args.fail_fast:
+                        logger.error("--fail-fast: cancelling remaining jobs.")
+                        executor.shutdown(wait=False, cancel_futures=True)
+                        break
+    finally:
+        if _vast_teardown:
+            _vast_teardown()
 
     # Write summary
     import config as _config3

@@ -84,28 +84,24 @@ class VastManager:
         extra_ports: list[int] | None = None,
         disk_gb: float = 40.0,
     ) -> VastInstance:
-        """Rent an instance and return its connection info."""
-        onstart = (
-            f"cd /workspace && pip install -q fastapi uvicorn diffusers transformers "
-            f"accelerate safetensors pillow torch && "
-            f"python vast_worker/server.py --port {self.worker_port} &"
-        )
+        """Rent an instance using a pre-built Docker image.
 
-        # Build port mapping: {internal: null} asks Vast to auto-assign external port
-        ports: dict[str, None] = {f"{self.worker_port}/tcp": None}
-        if extra_ports:
-            for p in extra_ports:
-                ports[f"{p}/tcp"] = None
-
+        The image's CMD starts the FastAPI worker automatically — no onstart
+        pip install needed. This makes boot time ~2-3 min instead of ~10 min.
+        """
         env_str = " ".join(f"-e {k}={v}" for k, v in (env_vars or {}).items())
+
+        # Vast port mapping format: "8080/tcp 22/tcp ..."
+        port_list = [f"{self.worker_port}/tcp"]
+        if extra_ports:
+            port_list += [f"{p}/tcp" for p in extra_ports]
 
         payload = {
             "client_id": "me",
             "image": image,
             "disk": disk_gb,
-            "onstart": onstart,
             "env": env_str,
-            "ports": " ".join(f"{p}" for p in ports),
+            "ports": " ".join(port_list),
             "runtype": "ssh",
         }
 

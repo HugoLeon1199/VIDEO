@@ -364,16 +364,6 @@ def run(video_id: str) -> None:
         logger.error("audio.mp3 not found: {}", audio_path)
         sys.exit(1)
 
-    # Skip if already written by TTS sentence mode
-    if output_path.exists():
-        existing = json.loads(output_path.read_text(encoding="utf-8"))
-        if existing and existing[0].get("text"):
-            logger.info(
-                "timestamps.json already exists ({} segments) — skipping (sentence mode output)",
-                len(existing),
-            )
-            return
-
     # Load per-video config
     engine = "faster_whisper"
     whisper_model = "medium.en"

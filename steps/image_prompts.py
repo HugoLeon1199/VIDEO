@@ -259,6 +259,58 @@ def _map_scene_times(scenes: list[dict], sentence_times: list[dict]) -> list[dic
     return result
 
 
+def _validate_scene_times(prompts: list[dict], audio_duration: float) -> None:
+    """Validate scene timings before render. Exits on any critical error."""
+    errors = []
+    warnings = []
+
+    prev_end = 0.0
+    for p in prompts:
+        idx = p["index"]
+        s, e = p["start"], p["end"]
+
+        if e <= s:
+            errors.append(f"Scene {idx}: end ({e}s) <= start ({s}s)")
+        if s < prev_end - 0.01:
+            errors.append(
+                f"Scene {idx}: start ({s}s) goes back before previous end ({prev_end}s)"
+            )
+        prev_end = e
+
+    # Last scene should end near audio duration
+    if prompts:
+        last_end = prompts[-1]["end"]
+        drift = abs(last_end - audio_duration)
+        if drift > 5.0:
+            errors.append(
+                f"Last scene ends at {last_end}s but audio is {audio_duration}s "
+                f"(drift {drift:.1f}s > 5s threshold)"
+            )
+        elif drift > 1.0:
+            warnings.append(
+                f"Last scene ends at {last_end}s vs audio {audio_duration}s (drift {drift:.1f}s)"
+            )
+
+    for w in warnings:
+        logger.warning("Timing warning: {}", w)
+    if errors:
+        for e in errors:
+            logger.error("Timing error: {}", e)
+        logger.error(
+            "{} timing error(s) found — fix timestamps.json and re-run step 3 before rendering",
+            len(errors),
+        )
+        sys.exit(1)
+
+    logger.info(
+        "Timing OK: {} scenes, {:.1f}s — {:.1f}s (audio {:.1f}s)",
+        len(prompts),
+        prompts[0]["start"] if prompts else 0,
+        prompts[-1]["end"] if prompts else 0,
+        audio_duration,
+    )
+
+
 # ── Main ──────────────────────────────────────────────────────────────────────
 
 def run(video_id: str, n_override: int | None = None) -> None:
@@ -342,6 +394,8 @@ def run(video_id: str, n_override: int | None = None) -> None:
     # Fix last entry end time to exactly match audio duration
     if prompts:
         prompts[-1]["end"] = round(total_dur, 3)
+
+    _validate_scene_times(prompts, total_dur)
 
     output_path.write_text(json.dumps(prompts, ensure_ascii=False, indent=2), encoding="utf-8")
     logger.info("Saved {} scenes → {}", len(prompts), output_path)

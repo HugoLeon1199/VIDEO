@@ -108,48 +108,56 @@ def _setup_demo_dir(base_video_id: str, n: int) -> str:
 
 
 def detect_resume_step(video_dir: Path) -> int:
-    """Return the next step number to run based on existing output files."""
+    """Return the next step number to run based on existing output files.
+
+    Resume logic (new workflow where 1 scene can span multiple sentences):
+    - Does image_prompts.json exist?       → yes: check images
+    - Do all img_NNN.png exist?            → yes: check render
+    - Does final.mp4 exist?                → yes: check metadata
+    - timestamps.json existence drives step 3→4, not compared to prompts count.
+    """
     import json as _json
 
     images_dir = video_dir / "images"
     prompts_path = video_dir / "image_prompts.json"
     ts_path = video_dir / "timestamps.json"
+    audio_path = video_dir / "audio.mp3"
+    script_path = video_dir / "script.txt"
 
-    if prompts_path.exists() and ts_path.exists():
+    if prompts_path.exists():
         try:
             n_prompts = len(_json.loads(prompts_path.read_text(encoding="utf-8")))
-            n_timestamps = len(_json.loads(ts_path.read_text(encoding="utf-8")))
         except Exception:
-            n_prompts = n_timestamps = 0
+            n_prompts = 0
 
-        # Mismatch means prompts were generated for a different (demo) run — redo step 4
-        if n_prompts != n_timestamps:
-            logger.warning(
-                "prompts ({}) != timestamps ({}) — resuming from step 4",
-                n_prompts, n_timestamps,
+        if n_prompts > 0:
+            completed_images = (
+                sum(1 for _ in images_dir.glob("img_*.png")) if images_dir.exists() else 0
             )
-            return 4
+            if completed_images >= n_prompts:
+                # All images done — check render
+                if (video_dir / "final.mp4").exists():
+                    if (video_dir / "metadata.json").exists():
+                        return 9
+                    return 8
+                if (video_dir / "soundscape.json").exists():
+                    return 7
+                return 6
+            elif completed_images > 0:
+                # Partial images — resume generation
+                return 5
+            else:
+                # Prompts exist but no images yet
+                return 5
 
-        completed_images = (
-            sum(1 for p_path in images_dir.glob("img_*.png")) if images_dir.exists() else 0
-        )
-        if completed_images >= n_prompts > 0:
-            if (video_dir / "final.mp4").exists():
-                if (video_dir / "metadata.json").exists():
-                    return 9
-                return 8
-            if (video_dir / "soundscape.json").exists():
-                return 7
-            return 6
-        elif completed_images > 0:
-            return 5
-        return 5
+        # image_prompts.json exists but empty/corrupt — redo step 4
+        return 4
 
+    # No image_prompts.json yet
     checks = [
-        (prompts_path, 5),
         (ts_path, 4),
-        (video_dir / "audio.mp3", 3),
-        (video_dir / "script.txt", 2),
+        (audio_path, 3),
+        (script_path, 2),
     ]
     for path, next_step in checks:
         if path.exists():

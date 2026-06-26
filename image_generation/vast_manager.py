@@ -45,14 +45,23 @@ class VastManager:
         max_price_per_hour: float = 1.0,
         min_inet_down_mbps: int = 500,
         min_reliability: float = 0.95,
+        require_verified: bool = True,
+        min_direct_ports: int = 10,
         exclude_machine_ids: set | None = None,
     ) -> dict:
         """Find the cheapest *good* offer matching requirements.
 
-        "Good, not just cheap": we filter out low-reliability and slow-internet
-        machines first (those are the ones that fail to start or take forever to
-        download the model), then pick the cheapest among what's left. This avoids
-        the lemons while still minimizing price.
+        "Good, not just cheap": we filter out machines that won't actually run
+        BEFORE renting, so we never pay to boot + download the model on a box that
+        then fails. The two decisive checks (per Vast docs):
+          - require_verified: only "verified" hosts — Vast has already tested them
+            end to end (datacenter GPUs, stable, many open ports). Unverified hosts
+            "may offer bad connections and may be unavailable once rebooted".
+          - min_direct_ports: hosts with too few open ports can't publish the
+            worker port mapping — that was the exact "running but no port mapping"
+            failure that killed earlier batches. Vast requires >=3, recommends 100.
+        We then also drop low-reliability / slow-internet machines and pick the
+        cheapest of what survives.
 
         - min_reliability: drop hosts below this uptime score (0.95 = 95%).
         - min_inet_down_mbps: drop slow machines; faster = model downloads in
@@ -102,6 +111,8 @@ class VastManager:
             and (o.get("inet_down") or 0) >= min_inet_down_mbps
             and _reliability(o) >= min_reliability
             and (o.get("cuda_max_good") or 0) >= 11.8
+            and (not require_verified or o.get("verification") == "verified")
+            and (o.get("direct_port_count") or 0) >= min_direct_ports
             and o.get("gpu_name", "") not in _GPU_BLACKLIST
             and o.get("machine_id") not in exclude_machine_ids
         ]
@@ -109,17 +120,19 @@ class VastManager:
             raise RuntimeError(
                 f"No good Vast.ai offers: vram>={min_vram_gb}GB, "
                 f"price<=${max_price_per_hour}/hr, inet_down>={min_inet_down_mbps}Mbps, "
-                f"reliability>={min_reliability}"
+                f"reliability>={min_reliability}, verified={require_verified}, "
+                f"ports>={min_direct_ports}"
             )
 
-        # Cheapest among the reliable, fast machines.
+        # Cheapest among the verified, reliable, fast, well-ported machines.
         best = min(eligible, key=lambda o: o["dph_total"])
         logger.info(
             "Vast offer selected: id={} machine={} gpu={} vram={}GB ${:.3f}/hr "
-            "inet_down={:.0f}Mbps reliability={:.3f}",
+            "inet_down={:.0f}Mbps reliability={:.3f} verified={} ports={}",
             best["id"], best.get("machine_id"), best.get("gpu_name"),
             best.get("gpu_ram", 0) // 1024, best["dph_total"],
             best.get("inet_down") or 0, _reliability(best),
+            best.get("verification"), best.get("direct_port_count"),
         )
         return best
 

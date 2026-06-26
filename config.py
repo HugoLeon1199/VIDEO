@@ -56,6 +56,8 @@ VAST_INSTANCE_HOST = os.getenv("VAST_INSTANCE_HOST", "")   # set this + VAST_INS
 VAST_INSTANCE_PORT = int(os.getenv("VAST_INSTANCE_PORT", "0"))  # external port mapped to VAST_WORKER_PORT
 VAST_HF_TOKEN = os.getenv("VAST_HF_TOKEN", os.getenv("HF_TOKEN", ""))
 VAST_DISK_GB = float(os.getenv("VAST_DISK_GB", "60.0"))
+VAST_USE_FP8 = os.getenv("VAST_USE_FP8", "1")  # "1" = FP8 (~12GB VRAM), "0" = bfloat16 (~24GB VRAM)
+VAST_MIN_INET_DOWN_MBPS = int(os.getenv("VAST_MIN_INET_DOWN_MBPS", "500"))  # min download speed Mbps
 VAST_REQUEST_TIMEOUT = int(os.getenv("VAST_REQUEST_TIMEOUT", "600"))
 
 # Per-track config — used by scripts/generate_images.py --track vi|en

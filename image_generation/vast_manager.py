@@ -6,6 +6,7 @@ The instance runs a FastAPI worker (vast_worker/) that accepts /generate request
 
 from __future__ import annotations
 
+import json
 import subprocess
 import time
 from dataclasses import dataclass
@@ -22,11 +23,12 @@ class VastInstance:
     instance_id: int
     ssh_host: str
     ssh_port: int
-    direct_port: Optional[int] = None  # mapped port for FastAPI (default 8080)
+    direct_port: Optional[int] = None   # mapped external port for FastAPI
+    public_ipaddr: str = ""             # public IP for HTTP connections (≠ ssh_host)
 
 
 class VastManager:
-    def __init__(self, api_key: str, worker_port: int = 8080):
+    def __init__(self, api_key: str, worker_port: int = 8888):
         self.api_key = api_key
         self.worker_port = worker_port
         self._headers = {"Authorization": f"Bearer {api_key}"}
@@ -38,13 +40,19 @@ class VastManager:
         min_vram_gb: int = 24,
         gpu_name: str = "",
         max_price_per_hour: float = 1.0,
+        min_inet_down_mbps: int = 500,
     ) -> dict:
-        """Find the cheapest available offer matching requirements."""
+        """Find the cheapest available offer matching requirements.
+
+        min_inet_down_mbps filters out slow-internet machines; at 500 Mbps a
+        24 GB model download takes ~6 min instead of hours.
+        """
         params = {
             "q": {
                 "gpu_ram": {"gte": min_vram_gb * 1024},
                 "rentable": {"eq": True},
                 "num_gpus": {"eq": 1},
+                "inet_down": {"gte": min_inet_down_mbps},
             }
         }
         if gpu_name:
@@ -53,26 +61,34 @@ class VastManager:
         resp = requests.get(
             f"{VAST_API_BASE}/bundles",
             headers=self._headers,
-            params={"q": str(params["q"])},
+            params={"q": json.dumps(params["q"])},
             timeout=30,
         )
         resp.raise_for_status()
         offers = resp.json().get("offers", [])
 
+        # V100 only supports CUDA ≤11.x; our image requires 11.8+ and the
+        # container silently fails to start, so exclude it entirely.
+        _GPU_BLACKLIST = {"Tesla V100"}
+
         eligible = [
             o for o in offers
             if o.get("dph_total", 999) <= max_price_per_hour
             and o.get("rentable", False)
+            and (o.get("inet_down") or 0) >= min_inet_down_mbps
+            and o.get("gpu_name", "") not in _GPU_BLACKLIST
         ]
         if not eligible:
             raise RuntimeError(
-                f"No Vast.ai offers found: vram>={min_vram_gb}GB, price<=${max_price_per_hour}/hr"
+                f"No Vast.ai offers found: vram>={min_vram_gb}GB, "
+                f"price<=${max_price_per_hour}/hr, inet_down>={min_inet_down_mbps}Mbps"
             )
 
         best = min(eligible, key=lambda o: o["dph_total"])
         logger.info(
-            "Vast offer selected: id={} gpu={} vram={}GB ${:.3f}/hr",
-            best["id"], best.get("gpu_name"), best.get("gpu_ram", 0) // 1024, best["dph_total"],
+            "Vast offer selected: id={} gpu={} vram={}GB ${:.3f}/hr inet_down={:.0f}Mbps",
+            best["id"], best.get("gpu_name"), best.get("gpu_ram", 0) // 1024,
+            best["dph_total"], best.get("inet_down") or 0,
         )
         return best
 
@@ -86,23 +102,27 @@ class VastManager:
     ) -> VastInstance:
         """Rent an instance using a pre-built Docker image.
 
-        The image's CMD starts the FastAPI worker automatically — no onstart
-        pip install needed. This makes boot time ~2-3 min instead of ~10 min.
+        We use runtype="args": it preserves the image's own ENTRYPOINT/CMD
+        (our server.py runs exactly as built) and still provisions the
+        "-p PORT:PORT" port mapping, without appending a "/ssh" or "/jupyter"
+        suffix to the image name. Earlier runtypes broke here: "jupyter_direct"
+        launched Vast's Jupyter wrapper instead of our CMD (status_msg
+        ".../jupyter"), and "ssh_direct" tried to pull a nonexistent
+        "<image>/ssh" derived image (pull access denied). With "args" the
+        image's CMD already starts the worker, so no onstart is needed.
         """
-        env_str = " ".join(f"-e {k}={v}" for k, v in (env_vars or {}).items())
-
-        # Vast port mapping format: "8080/tcp 22/tcp ..."
-        port_list = [f"{self.worker_port}/tcp"]
-        if extra_ports:
-            port_list += [f"{p}/tcp" for p in extra_ports]
+        # Vast API env field is a JSON dict; port mappings go inside it as "-p HOST:CONTAINER" keys
+        env_dict = dict(env_vars or {})
+        env_dict[f"-p {self.worker_port}:{self.worker_port}"] = "1"
+        for p in (extra_ports or []):
+            env_dict[f"-p {p}:{p}"] = "1"
 
         payload = {
             "client_id": "me",
             "image": image,
             "disk": disk_gb,
-            "env": env_str,
-            "ports": " ".join(port_list),
-            "runtype": "ssh",
+            "env": env_dict,
+            "runtype": "args",  # keep image CMD/ENTRYPOINT; map ports; no wrapper
         }
 
         resp = requests.put(
@@ -111,7 +131,8 @@ class VastManager:
             json=payload,
             timeout=30,
         )
-        resp.raise_for_status()
+        if not resp.ok:
+            raise RuntimeError(f"Vast rent failed {resp.status_code}: {resp.text}")
         data = resp.json()
         instance_id = data.get("new_contract")
         if not instance_id:
@@ -130,12 +151,15 @@ class VastManager:
         )
         resp.raise_for_status()
         inst = resp.json().get("instances", {})
+        if isinstance(inst, list):
+            inst = inst[0] if inst else {}
 
         ssh_host = inst.get("ssh_host", "")
         ssh_port = inst.get("ssh_port", 22)
+        public_ipaddr = inst.get("public_ipaddr", "") or ssh_host
 
         # Find external port mapped to our worker port
-        port_map = inst.get("ports", {})
+        port_map = inst.get("ports", {}) or {}
         direct_port = None
         key = f"{self.worker_port}/tcp"
         if key in port_map and port_map[key]:
@@ -146,10 +170,18 @@ class VastManager:
             ssh_host=ssh_host,
             ssh_port=ssh_port,
             direct_port=direct_port,
+            public_ipaddr=public_ipaddr,
         )
 
     def wait_until_running(self, instance_id: int, timeout: int = 300) -> VastInstance:
-        """Poll until instance status == 'running'."""
+        """Poll until instance status == 'running' or 'created'.
+
+        With runtype='jupyter_direct', Vast only marks an instance 'running' when
+        its internal jupyter health check passes (port 8888). Our FastAPI worker
+        uses port 8080 so the Vast health check never passes — the instance stays
+        at 'created' forever even though the container is up. We accept 'created'
+        as sufficient here; wait_worker_ready() then polls our /health endpoint.
+        """
         deadline = time.time() + timeout
         while time.time() < deadline:
             resp = requests.get(
@@ -159,32 +191,62 @@ class VastManager:
             )
             resp.raise_for_status()
             inst = resp.json().get("instances", {})
-            status = inst.get("actual_status", "")
+            if isinstance(inst, list):
+                inst = inst[0] if inst else {}
+            status = inst.get("actual_status") or ""
             logger.debug("Vast instance {} status: {}", instance_id, status)
-            if status == "running":
-                info = self._get_instance_info(instance_id)
+            if status in ("running", "created"):
+                port_map = inst.get("ports", {}) or {}
+                key = f"{self.worker_port}/tcp"
+                direct_port = None
+                if key in port_map and port_map[key]:
+                    direct_port = int(port_map[key][0]["HostPort"])
+                public_ipaddr = inst.get("public_ipaddr", "") or inst.get("ssh_host", "")
+                info = VastInstance(
+                    instance_id=instance_id,
+                    ssh_host=inst.get("ssh_host", ""),
+                    ssh_port=inst.get("ssh_port", 22),
+                    direct_port=direct_port,
+                    public_ipaddr=public_ipaddr,
+                )
                 logger.info(
-                    "Vast instance running: {}:{} worker_port={}",
-                    info.ssh_host, info.ssh_port, info.direct_port,
+                    "Vast instance {}: ip={} ssh={} worker_port={}",
+                    status, info.public_ipaddr, info.ssh_host, info.direct_port,
                 )
                 return info
+            if status in ("exited", "dead", "error"):
+                raise RuntimeError(f"Vast instance {instance_id} failed with status={status!r}")
             time.sleep(10)
         raise TimeoutError(f"Vast instance {instance_id} not running after {timeout}s")
 
-    def wait_worker_ready(self, host: str, port: int, timeout: int = 300) -> None:
-        """Poll /health until FastAPI worker responds."""
+    def wait_worker_ready(self, host: str, port: int, timeout: int = 600) -> None:
+        """Poll /health until the FLUX model is loaded and ready to generate.
+
+        The worker preloads the model in a background thread, so /health responds
+        200 immediately (HTTP up) but reports model_loaded=False until the ~13GB
+        model finishes streaming in. We wait for model_loaded=True; if the worker
+        reports a load_error we fail fast instead of burning the full timeout.
+        """
         url = f"http://{host}:{port}/health"
         deadline = time.time() + timeout
+        http_up = False
         while time.time() < deadline:
             try:
                 r = requests.get(url, timeout=5)
                 if r.status_code == 200:
-                    logger.info("Vast worker ready at {}:{}", host, port)
-                    return
-            except requests.RequestException:
+                    if not http_up:
+                        http_up = True
+                        logger.info("Vast worker HTTP up at {}:{} — waiting for model load", host, port)
+                    body = r.json()
+                    if body.get("load_error"):
+                        raise RuntimeError(f"Vast worker model load failed: {body['load_error']}")
+                    if body.get("model_loaded"):
+                        logger.info("Vast worker ready (model loaded) at {}:{}", host, port)
+                        return
+            except (requests.RequestException, ValueError):
                 pass
             time.sleep(5)
-        raise TimeoutError(f"Vast worker at {host}:{port} not ready after {timeout}s")
+        raise TimeoutError(f"Vast worker at {host}:{port} not model-ready after {timeout}s")
 
     # ── Deploy worker via SSH ─────────────────────────────────────────────────
 

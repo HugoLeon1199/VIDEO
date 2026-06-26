@@ -1,7 +1,15 @@
+# Pin the whole ML stack to a combination known to work with the base image's
+# torch 2.4.1. Unpinned, pip pulls diffusers 0.38 / transformers 5.x which need
+# a newer torch and fail to import (flash-attn custom_op infer_schema error).
+torchvision==0.19.1
+diffusers==0.31.0
+transformers==4.44.2
+huggingface_hub==0.24.6
+accelerate==0.34.2
+safetensors==0.4.5
+tokenizers==0.19.1
+sentencepiece==0.2.0
+protobuf==4.25.4
 fastapi>=0.111
 uvicorn>=0.29
-diffusers>=0.31
-transformers>=4.41
-accelerate>=0.30
-safetensors>=0.4
 Pillow>=10

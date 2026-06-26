@@ -200,27 +200,44 @@ def _build_vast_backend():
         return backend, None  # caller manages lifetime
 
     # Auto-rent flow
-    logger.info("Vast: searching for GPU (vram>=%dGB, max $%.2f/hr)...",
-                _cfg.VAST_MIN_VRAM_GB, _cfg.VAST_MAX_PRICE_PER_HOUR)
+    logger.info("Vast: searching for GPU (vram>=%dGB, max $%.2f/hr, inet>=%dMbps)...",
+                _cfg.VAST_MIN_VRAM_GB, _cfg.VAST_MAX_PRICE_PER_HOUR, _cfg.VAST_MIN_INET_DOWN_MBPS)
     offer = manager.find_offer(
         min_vram_gb=_cfg.VAST_MIN_VRAM_GB,
         gpu_name=_cfg.VAST_GPU_NAME,
         max_price_per_hour=_cfg.VAST_MAX_PRICE_PER_HOUR,
+        min_inet_down_mbps=_cfg.VAST_MIN_INET_DOWN_MBPS,
     )
-    env_vars = {"HF_TOKEN": _cfg.VAST_HF_TOKEN} if _cfg.VAST_HF_TOKEN else {}
+    env_vars = {}
+    if _cfg.VAST_HF_TOKEN:
+        env_vars["HF_TOKEN"] = _cfg.VAST_HF_TOKEN
+    env_vars["USE_FP8"] = _cfg.VAST_USE_FP8
     instance = manager.rent(
         offer_id=offer["id"],
         image=_cfg.VAST_WORKER_IMAGE,
         env_vars=env_vars,
         disk_gb=_cfg.VAST_DISK_GB,
     )
-    instance = manager.wait_until_running(instance.instance_id, timeout=300)
-    worker_port = instance.direct_port or _cfg.VAST_WORKER_PORT
-    manager.wait_worker_ready(instance.ssh_host, worker_port, timeout=600)
+
+    # From this point on, the instance is billed. Destroy on any failure.
+    try:
+        instance = manager.wait_until_running(instance.instance_id, timeout=1200)
+        if not instance.direct_port:
+            raise RuntimeError(
+                f"Vast instance {instance.instance_id} running but no port mapping yet — "
+                "retry in a few seconds or set VAST_INSTANCE_HOST+VAST_INSTANCE_PORT manually"
+            )
+        # 1200s: the worker downloads the ~24GB FLUX model from HF at startup
+        # (model is not baked into the image) and then loads it into VRAM.
+        manager.wait_worker_ready(instance.public_ipaddr, instance.direct_port, timeout=1200)
+    except Exception:
+        logger.error("Vast setup failed — destroying instance %d", instance.instance_id)
+        manager.destroy(instance.instance_id)
+        raise
 
     backend = VastInstanceBackend(
-        host=instance.ssh_host,
-        port=worker_port,
+        host=instance.public_ipaddr,
+        port=instance.direct_port,
         timeout=_cfg.VAST_REQUEST_TIMEOUT,
     )
 
@@ -229,6 +246,62 @@ def _build_vast_backend():
         manager.destroy(instance.instance_id)
 
     return backend, teardown
+
+
+def _build_vast_backends_parallel(n: int) -> tuple[list, callable]:
+    """Rent N Vast instances in parallel, return (backends_list, teardown_all_fn).
+
+    All instances are rented simultaneously then waited on in parallel — boot
+    time stays the same as renting 1 instance. On any failure, all already-rented
+    instances are destroyed before re-raising.
+    """
+    from concurrent.futures import ThreadPoolExecutor, as_completed as _as_completed
+
+    if n == 1:
+        backend, teardown = _build_vast_backend()
+        return [backend], teardown
+
+    logger.info("Vast: renting %d instances in parallel...", n)
+    results = [None] * n
+    errors = []
+
+    def _rent_one(idx):
+        return idx, _build_vast_backend()
+
+    teardowns = []
+    with ThreadPoolExecutor(max_workers=n) as ex:
+        futures = {ex.submit(_rent_one, i): i for i in range(n)}
+        for fut in _as_completed(futures):
+            idx = futures[fut]
+            try:
+                _, (backend, td) = fut.result()
+                results[idx] = backend
+                if td:
+                    teardowns.append(td)
+                logger.info("Vast: instance %d/%d ready", idx + 1, n)
+            except Exception as e:
+                errors.append(e)
+                logger.error("Vast: instance %d/%d failed: %s", idx + 1, n, e)
+
+    if errors:
+        # Destroy any that did succeed before raising
+        for td in teardowns:
+            try:
+                td()
+            except Exception:
+                pass
+        raise RuntimeError(f"Vast: {len(errors)}/{n} instances failed to start: {errors[0]}")
+
+    def teardown_all():
+        for td in teardowns:
+            try:
+                td()
+            except Exception as e:
+                logger.warning("Vast teardown error: %s", e)
+
+    backends = [b for b in results if b is not None]
+    logger.info("Vast: all %d instances ready", len(backends))
+    return backends, teardown_all
 
 
 # ---------------------------------------------------------------------------
@@ -256,6 +329,8 @@ def main() -> None:
     parser.add_argument("--validate-only", action="store_true")
     parser.add_argument("--fail-fast", action="store_true")
     parser.add_argument("--workers", type=int, default=10)
+    parser.add_argument("--vast-instances", type=int, default=1,
+                        help="Number of Vast.ai instances to rent in parallel (vast_instance backend only)")
     parser.add_argument("--verbose", action="store_true")
     parser.add_argument("--output-root", default=os.environ.get("IMAGE_OUTPUT_ROOT", "output"))
 
@@ -370,11 +445,16 @@ def main() -> None:
         return
 
     # Setup backend (only needed when generation_enabled)
-    backend = None
+    backend = None          # single backend (runpod or vast n=1)
+    _vast_backends = []     # list of backends when vast n>1
     _vast_teardown = None
     if generation_enabled:
         if args.backend == "vast_instance":
-            backend, _vast_teardown = _build_vast_backend()
+            n_inst = args.vast_instances
+            if n_inst > 1:
+                _vast_backends, _vast_teardown = _build_vast_backends_parallel(n_inst)
+            else:
+                backend, _vast_teardown = _build_vast_backend()
         else:
             from image_generation.runpod_serverless_backend import RunPodServerlessBackend
             backend = RunPodServerlessBackend()
@@ -398,9 +478,10 @@ def main() -> None:
     total_fail = 0
     total_needs_review = 0
 
-    def _generate_candidates(p: dict, attempt_seeds: list[int]) -> tuple:
-        """Submit one RunPod job and return (result, error_str)."""
+    def _generate_candidates(p: dict, attempt_seeds: list[int], _backend=None) -> tuple:
+        """Submit one generation job and return (result, error_str)."""
         scene_id = f"{p['index']:03d}"
+        active_backend = _backend or backend
 
         req = SceneRequest(
             video_id=args.video_id,
@@ -415,10 +496,10 @@ def main() -> None:
             candidate_seeds=attempt_seeds,
             output_mode="base64",
         )
-        result = backend.generate(req)
+        result = active_backend.generate(req)
         return result, None
 
-    def process_scene(p: dict) -> tuple[str, bool]:
+    def process_scene(p: dict, _backend=None) -> tuple[str, bool]:
         scene_id = f"{p['index']:03d}"
         nonlocal total_needs_review
 
@@ -494,7 +575,7 @@ def main() -> None:
 
             # Generate candidates
             try:
-                result, err = _generate_candidates(p | {"prompt": current_prompt}, current_seeds)
+                result, err = _generate_candidates(p | {"prompt": current_prompt}, current_seeds, _backend)
             except Exception as e:
                 logger.error("Scene %s FAILED (round %d): %s", scene_id, regen_round, e)
                 with log_lock:
@@ -662,7 +743,19 @@ def main() -> None:
 
     try:
         with ThreadPoolExecutor(max_workers=args.workers) as executor:
-            futures = {executor.submit(process_scene, p): p for p in prompts}
+            if _vast_backends:
+                # Multi-instance: round-robin assign scenes to backends
+                # Each backend gets its own subset; scenes for the same backend
+                # run sequentially on that GPU (GPU is the bottleneck anyway).
+                n_b = len(_vast_backends)
+                logger.info("Vast: distributing %d scenes across %d instances", len(prompts), n_b)
+                futures = {
+                    executor.submit(process_scene, p, _vast_backends[i % n_b]): p
+                    for i, p in enumerate(prompts)
+                }
+            else:
+                futures = {executor.submit(process_scene, p): p for p in prompts}
+
             for future in as_completed(futures):
                 scene_id, ok = future.result()
                 if ok:

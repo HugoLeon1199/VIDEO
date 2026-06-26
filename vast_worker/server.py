@@ -29,6 +29,7 @@ from pydantic import BaseModel
 
 app = FastAPI(title="Vast Image Worker")
 _pipe: Optional[FluxPipeline] = None
+_load_error: Optional[str] = None  # set if background load fails
 
 # Graceful shutdown when Vast destroys the instance
 signal.signal(signal.SIGTERM, lambda sig, frame: sys.exit(0))
@@ -42,15 +43,27 @@ def _load_model() -> FluxPipeline:
     model_id = os.getenv("MODEL_ID", "black-forest-labs/FLUX.1-dev")
     hf_token = os.getenv("HF_TOKEN", "")
     device = "cuda" if torch.cuda.is_available() else "cpu"
+
+    # Plain FLUX.1-dev in bfloat16. The torchao/FP8 route was abandoned: the
+    # prebuilt torchao-fp8 checkpoint needs diffusers>=0.32, but this stack pins
+    # diffusers 0.31 (newer breaks on torch 2.4), and torchao that supports the
+    # checkpoint needs torch>=2.6 ("torch has no attribute int1"). bfloat16 needs
+    # ~24GB VRAM, which our >=24GB machine filter satisfies. enable_model_cpu_offload
+    # keeps VRAM in check if the card is tight.
     dtype = torch.bfloat16 if device == "cuda" else torch.float32
 
-    print(f"Loading {model_id} on {device}...")
+    print(f"Loading {model_id} on {device} dtype={dtype}...")
     _pipe = FluxPipeline.from_pretrained(
         model_id,
         torch_dtype=dtype,
         token=hf_token or None,
-    ).to(device)
-    _pipe.enable_model_cpu_offload()
+    )
+    if device == "cuda":
+        # Offload submodules to CPU as needed so a 24GB card doesn't OOM on the
+        # ~24GB bf16 pipeline; the active module still runs on GPU.
+        _pipe.enable_model_cpu_offload()
+    else:
+        _pipe.enable_model_cpu_offload()
     print("Model loaded.")
     return _pipe
 
@@ -73,7 +86,13 @@ class GenerateRequest(BaseModel):
 
 @app.get("/health")
 def health() -> dict:
-    return {"status": "ok", "model_loaded": _pipe is not None}
+    # status "ok" means the HTTP server is up (client can stop waiting on boot);
+    # model_loaded tells the client whether /generate will succeed immediately.
+    return {
+        "status": "ok",
+        "model_loaded": _pipe is not None,
+        "load_error": _load_error,
+    }
 
 
 @app.post("/generate")
@@ -82,10 +101,11 @@ def generate(req: GenerateRequest) -> JSONResponse:
     images_out = []
     errors = []
 
+    device = "cuda" if torch.cuda.is_available() else "cpu"
     for seed in req.candidate_seeds:
         t0 = time.time()
         try:
-            generator = torch.Generator().manual_seed(seed)
+            generator = torch.Generator(device=device).manual_seed(seed)
             result = pipe(
                 prompt=req.prompt,
                 width=req.width,
@@ -121,14 +141,28 @@ def generate(req: GenerateRequest) -> JSONResponse:
     return JSONResponse({"images": images_out, "errors": errors})
 
 
+def _background_load() -> None:
+    """Load the model in a thread so /health is reachable while ~13GB streams in."""
+    global _load_error
+    try:
+        _load_model()
+    except Exception as e:  # noqa: BLE001 — surface any load failure via /health
+        _load_error = str(e)
+        print(f"Model load failed: {e}", flush=True)
+
+
 if __name__ == "__main__":
+    import threading
+
     parser = argparse.ArgumentParser()
     parser.add_argument("--port", type=int, default=8080)
     parser.add_argument("--host", default="0.0.0.0")
     parser.add_argument("--preload", action="store_true", help="Load model at startup")
     args = parser.parse_args()
 
+    # Preload in the background: the HTTP server (and /health) comes up immediately,
+    # so the client stops waiting on container boot and then polls model_loaded.
     if args.preload:
-        _load_model()
+        threading.Thread(target=_background_load, daemon=True).start()
 
     uvicorn.run(app, host=args.host, port=args.port)

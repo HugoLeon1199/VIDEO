@@ -133,10 +133,22 @@ def handler(job):
     # Clamp steps
     steps = max(20, min(24, steps))
 
-    # FLUX.1-dev: embed negative_prompt into text (no native support)
-    full_prompt = prompt
+    # FLUX.1-dev has no real negative_prompt (distilled model, guidance_scale is
+    # not true CFG), so constraints must be phrased into the prompt text. It feeds
+    # `prompt` to CLIP (hard 77-token cap) and `prompt_2` to T5 (512 tokens). If we
+    # only pass one long string, CLIP truncates at 77 tokens and anything past it —
+    # including the "fully clothed / avoid nudity" clause appended at the end — is
+    # silently dropped. So we split:
+    #   clip_prompt : the scene + the most important constraint, kept short so it
+    #                 survives CLIP's 77-token window
+    #   t5_prompt   : the full description plus the negative clause, which T5 reads
+    #                 in full (up to 512 tokens) without truncation
+    # This is a general rule for every video, not a per-scene tweak.
+    CLOTHING_RULE = "all people fully clothed in modest traditional clothing"
+    clip_prompt = f"{CLOTHING_RULE}. {prompt}"
+    t5_prompt = clip_prompt
     if negative_prompt:
-        full_prompt = f"{prompt}. Avoid: {negative_prompt}"
+        t5_prompt = f"{clip_prompt}. Avoid: {negative_prompt}"
 
     mode = "img2img" if ref_image_b64 else "text_to_image"
 
@@ -158,7 +170,9 @@ def handler(job):
 
             if mode == "img2img":
                 result = pipe(
-                    prompt=full_prompt,
+                    prompt=clip_prompt,
+                    prompt_2=t5_prompt,
+                    max_sequence_length=512,
                     image=ref_image,
                     strength=strength,
                     num_inference_steps=steps,
@@ -167,7 +181,9 @@ def handler(job):
                 )
             else:
                 result = pipe(
-                    prompt=full_prompt,
+                    prompt=clip_prompt,
+                    prompt_2=t5_prompt,
+                    max_sequence_length=512,
                     width=width,
                     height=height,
                     num_inference_steps=steps,

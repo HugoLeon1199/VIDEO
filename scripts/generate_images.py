@@ -171,8 +171,12 @@ def _make_log_entry(
 # Backend factories
 # ---------------------------------------------------------------------------
 
-def _build_vast_backend():
+def _build_vast_backend(n_images: int = 100):
     """Rent a Vast.ai instance, wait until ready, return (backend, teardown_fn).
+
+    n_images: batch size — passed to find_offer so the true-cost ranking weighs
+    GPU-hours vs the one-time download correctly (small batch = download-bound,
+    large batch = GPU-bound).
 
     If VAST_INSTANCE_HOST + VAST_INSTANCE_PORT are set, skip rent and connect
     directly (useful for manual testing or resume after crash).
@@ -199,53 +203,96 @@ def _build_vast_backend():
         manager.wait_worker_ready(_cfg.VAST_INSTANCE_HOST, _cfg.VAST_INSTANCE_PORT, timeout=120)
         return backend, None  # caller manages lifetime
 
-    # Auto-rent flow
+    # Auto-rent flow. STRATEGY (locked in 2026-06-26):
+    #   1. pick the right GPU arch (Ada/Ampere — RTX 50xx & old Teslas blacklisted)
+    #   2. apply the gates (disk≥60, US/EU, inet, reliability)
+    #   3. cap price (VAST_MAX_PRICE_PER_HOUR, e.g. ≤$0.20/hr)
+    #   4. take the CHEAPEST survivor
+    #   5. if it fails to come up, EXCLUDE that machine and try the next-cheapest —
+    #      loop up to VAST_MAX_RENT_ATTEMPTS times so a single lemon never sinks
+    #      the run. Each failed attempt's instance is destroyed before the retry.
     logger.info("Vast: searching for GPU (vram>=%dGB, max $%.2f/hr, inet>=%dMbps)...",
                 _cfg.VAST_MIN_VRAM_GB, _cfg.VAST_MAX_PRICE_PER_HOUR, _cfg.VAST_MIN_INET_DOWN_MBPS)
-    offer = manager.find_offer(
-        min_vram_gb=_cfg.VAST_MIN_VRAM_GB,
-        gpu_name=_cfg.VAST_GPU_NAME,
-        max_price_per_hour=_cfg.VAST_MAX_PRICE_PER_HOUR,
-        min_inet_down_mbps=_cfg.VAST_MIN_INET_DOWN_MBPS,
-        min_reliability=_cfg.VAST_MIN_RELIABILITY,
-    )
+    # The FLUX 24GB repo + HF cache + working space needs ≥60GB of disk on the box,
+    # or the model download dies mid-way with "[Errno 28] No space left on device"
+    # (this bit us repeatedly — small-disk boxes looked like "slow/lemon machines").
+    # Hard floor of 60GB regardless of any lower VAST_DISK_GB override.
+    disk_floor = max(60.0, _cfg.VAST_DISK_GB)
     env_vars = {}
     if _cfg.VAST_HF_TOKEN:
         env_vars["HF_TOKEN"] = _cfg.VAST_HF_TOKEN
-    env_vars["USE_FP8"] = _cfg.VAST_USE_FP8
-    instance = manager.rent(
-        offer_id=offer["id"],
-        image=_cfg.VAST_WORKER_IMAGE,
-        env_vars=env_vars,
-        disk_gb=_cfg.VAST_DISK_GB,
+    # Worker reads USE_8BIT (quantize transformer + T5) — the proven RunPod path
+    # that avoids both OOM and the '_hf_hook' crash. Default on.
+    env_vars["USE_8BIT"] = os.getenv("VAST_USE_8BIT", "1")
+
+    max_attempts = int(os.getenv("VAST_MAX_RENT_ATTEMPTS", "4"))
+    tried_machines: set = set()
+    last_err: Exception | None = None
+
+    for attempt in range(1, max_attempts + 1):
+        # Each round re-queries and excludes machines we already burned, so we move
+        # down the cheapest-first list instead of re-renting the same dud.
+        offer = manager.find_offer(
+            min_vram_gb=_cfg.VAST_MIN_VRAM_GB,
+            gpu_name=_cfg.VAST_GPU_NAME,
+            max_price_per_hour=_cfg.VAST_MAX_PRICE_PER_HOUR,
+            min_inet_down_mbps=_cfg.VAST_MIN_INET_DOWN_MBPS,
+            min_reliability=_cfg.VAST_MIN_RELIABILITY,
+            min_disk_gb=disk_floor,
+            max_inet_cost_per_gb=_cfg.VAST_MAX_INET_DOWN_COST,
+            preferred_inet_cost_per_gb=_cfg.VAST_PREFERRED_INET_DOWN_COST,
+            expected_download_gb=_cfg.VAST_EXPECTED_DOWNLOAD_GB,
+            expected_upload_gb=_cfg.VAST_EXPECTED_UPLOAD_GB,
+            n_images=n_images,
+            exclude_machine_ids=tried_machines,
+        )
+        tried_machines.add(offer.get("machine_id"))
+        instance = manager.rent(
+            offer_id=offer["id"],
+            image=_cfg.VAST_WORKER_IMAGE,
+            env_vars=env_vars,
+            disk_gb=disk_floor,  # ≥60GB so the 24GB model fits
+        )
+        try:
+            # Tight timeouts so a slow/stuck box is abandoned fast instead of
+            # billing while it crawls. A healthy US/EU box on a decent link boots +
+            # loads the 24GB model in ~3-5 min; if it's not running in 5 min or not
+            # model-ready in 8, it's a lemon — bail and the loop tries the next
+            # cheapest machine. (Tunable via VAST_BOOT_TIMEOUT / VAST_READY_TIMEOUT.)
+            boot_to = int(os.getenv("VAST_BOOT_TIMEOUT", "300"))
+            ready_to = int(os.getenv("VAST_READY_TIMEOUT", "480"))
+            instance = manager.wait_until_running(instance.instance_id, timeout=boot_to)
+            if not instance.direct_port:
+                instance = manager.wait_for_port(instance.instance_id, timeout=120)
+            manager.wait_worker_ready(instance.public_ipaddr, instance.direct_port, timeout=ready_to)
+        except Exception as e:  # noqa: BLE001 — try the next machine
+            last_err = e
+            logger.error(
+                "Vast attempt %d/%d failed on machine %s (%s) — destroying and trying next: %s",
+                attempt, max_attempts, offer.get("machine_id"), offer.get("gpu_name"), e,
+            )
+            manager.destroy(instance.instance_id)
+            continue
+
+        # Success — this machine is up and the model is loaded.
+        backend = VastInstanceBackend(
+            host=instance.public_ipaddr,
+            port=instance.direct_port,
+            timeout=_cfg.VAST_REQUEST_TIMEOUT,
+        )
+        inst_id = instance.instance_id
+
+        def teardown():
+            logger.info("Vast: destroying instance %d...", inst_id)
+            manager.destroy(inst_id)
+
+        logger.info("Vast: ready on attempt %d/%d (machine %s, %s)",
+                    attempt, max_attempts, offer.get("machine_id"), offer.get("gpu_name"))
+        return backend, teardown
+
+    raise RuntimeError(
+        f"Vast: all {max_attempts} rent attempts failed (last error: {last_err})"
     )
-
-    # From this point on, the instance is billed. Destroy on any failure.
-    try:
-        instance = manager.wait_until_running(instance.instance_id, timeout=1200)
-        # Vast often needs a little longer to publish the host port mapping than
-        # it does to reach 'created'. Wait for it instead of failing immediately.
-        if not instance.direct_port:
-            instance = manager.wait_for_port(instance.instance_id, timeout=180)
-        # 1200s: the worker downloads the ~24GB FLUX model from HF at startup
-        # (model is not baked into the image) and then loads it into VRAM.
-        manager.wait_worker_ready(instance.public_ipaddr, instance.direct_port, timeout=1200)
-    except Exception:
-        logger.error("Vast setup failed — destroying instance %d", instance.instance_id)
-        manager.destroy(instance.instance_id)
-        raise
-
-    backend = VastInstanceBackend(
-        host=instance.public_ipaddr,
-        port=instance.direct_port,
-        timeout=_cfg.VAST_REQUEST_TIMEOUT,
-    )
-
-    def teardown():
-        logger.info("Vast: destroying instance %d...", instance.instance_id)
-        manager.destroy(instance.instance_id)
-
-    return backend, teardown
 
 
 def _build_vast_backends_parallel(n: int) -> tuple[list, callable]:
@@ -469,11 +516,21 @@ def main() -> None:
     _vast_teardown = None
     if generation_enabled:
         if args.backend == "vast_instance":
+            # Sweep any orphaned instances from a previous crashed run BEFORE renting
+            # — a PC power-loss / kill can leave a box billing; the rented_instances
+            # log is our record of truth (see VastManager.destroy_all).
+            try:
+                from image_generation.vast_manager import VastManager as _VM
+                _VM(api_key=_config.VAST_API_KEY,
+                    worker_port=_config.VAST_WORKER_PORT).destroy_all()
+            except Exception as _e:  # noqa: BLE001
+                logger.warning("Vast startup orphan-sweep error: %s", _e)
             n_inst = args.vast_instances
+            n_imgs = max(1, len(prompts))  # batch size → true-cost ranking
             if n_inst > 1:
                 _vast_backends, _vast_teardown = _build_vast_backends_parallel(n_inst)
             else:
-                backend, _vast_teardown = _build_vast_backend()
+                backend, _vast_teardown = _build_vast_backend(n_images=n_imgs)
         else:
             from image_generation.runpod_serverless_backend import RunPodServerlessBackend
             backend = RunPodServerlessBackend()

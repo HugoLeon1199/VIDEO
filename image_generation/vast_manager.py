@@ -7,6 +7,7 @@ The instance runs a FastAPI worker (vast_worker/) that accepts /generate request
 from __future__ import annotations
 
 import json
+import os
 import subprocess
 import time
 from dataclasses import dataclass
@@ -31,10 +32,26 @@ class VastInstance:
 
 
 class VastManager:
+    # Class-level registry of every instance id this process has rented, so cleanup
+    # can destroy them BY ID even when the list/destroy_all API returns 410/403 and
+    # falsely reports "0 instances" (that false-clean left 3 boxes billing 14-17h =
+    # $4.79). A persistent on-disk log (rented_instances.log) survives a crash too.
+    _RENTED_LOG = os.path.join(os.path.dirname(__file__), "rented_instances.log")
+    rented_ids: set[int] = set()
+
     def __init__(self, api_key: str, worker_port: int = 8888):
         self.api_key = api_key
         self.worker_port = worker_port
         self._headers = {"Authorization": f"Bearer {api_key}"}
+
+    def _record_rented(self, instance_id: int) -> None:
+        """Remember a rented id (in-memory + on-disk) for guaranteed cleanup."""
+        VastManager.rented_ids.add(int(instance_id))
+        try:
+            with open(self._RENTED_LOG, "a", encoding="utf-8") as fh:
+                fh.write(f"{int(instance_id)}\n")
+        except Exception:  # noqa: BLE001 — best-effort persistence
+            pass
 
     # ── Search & Rent ─────────────────────────────────────────────────────────
 
@@ -44,9 +61,21 @@ class VastManager:
         gpu_name: str = "",
         max_price_per_hour: float = 1.0,
         min_inet_down_mbps: int = 500,
-        min_reliability: float = 0.95,
+        min_reliability: float = 0.98,
         require_verified: bool = True,
-        min_direct_ports: int = 10,
+        min_direct_ports: int = 1,
+        min_disk_gb: float = 60.0,
+        min_cuda: float = 12.2,
+        on_demand_only: bool = True,
+        prefer_datacenter: bool = True,
+        max_inet_cost_per_gb: float = 0.005,   # HARD CAP on download $/GB
+        preferred_inet_cost_per_gb: float = 0.003,  # tie-breaker only, NOT a hard filter
+        expected_download_gb: float = 37.0,    # model(34) + docker/setup(3) pulled per rental
+        expected_upload_gb: float = 2.0,       # output images sent back
+        n_images: int = 100,                   # batch size — drives the GPU-hours estimate
+        sec_per_image: float = 19.0,           # measured warm gen time (fallback)
+        boot_seconds: float = 120.0,           # fixed boot/init before model download
+        allowed_countries: set | None = None,
         exclude_machine_ids: set | None = None,
     ) -> dict:
         """Find the cheapest *good* offer matching requirements.
@@ -75,6 +104,7 @@ class VastManager:
                 "rentable": {"eq": True},
                 "num_gpus": {"eq": 1},
                 "inet_down": {"gte": min_inet_down_mbps},
+                "disk_space": {"gte": min_disk_gb},
             }
         }
         if gpu_name:
@@ -94,45 +124,138 @@ class VastManager:
         # container fails or is painfully slow). cuda_max_good lies for these —
         # e.g. V100 advertises CUDA 13 but the worker silently fails to start.
         # This is the "don't pick a lemon GPU and then cry" guard.
+        # Two reasons a GPU is blacklisted:
+        #  - pre-Ampere (no proper bf16, slow/failing): old Teslas, Quadros, TITANs.
+        #  - RTX 50xx (Blackwell, sm_120): NOT supported by our torch 2.4.1 wheel
+        #    (it only covers sm_50..sm_90). The card boots but torch refuses it:
+        #    "CUDA capability sm_120 is not compatible". Proven by an RTX 5070 Ti
+        #    that loaded the worker but could never generate. Use Ada (RTX 40xx /
+        #    RTX 6000 Ada) or Ampere (RTX 30xx) instead — those generate fine.
+        #    (To use 50xx later, rebuild the worker on torch >= 2.7 / cu124+.)
         _GPU_BLACKLIST = {
             "Tesla V100", "Tesla P100", "Tesla P40", "Tesla K80",
             "Tesla T4", "Quadro RTX 6000", "Quadro RTX 8000", "TITAN V",
             "TITAN Xp", "GTX 1080 Ti",
+            "RTX 5090", "RTX 5080", "RTX 5070 Ti", "RTX 5070", "RTX 5060 Ti", "RTX 5060",
         }
         exclude_machine_ids = exclude_machine_ids or set()
+
+        # Geo gate: HuggingFace + Docker Hub origin storage lives in US/EU AWS/GCP
+        # datacenters. A machine in China/Asia pulls the 24GB FLUX model across the
+        # Pacific — the advertised inet_down (e.g. 800Mbps) is the LAN link, but the
+        # real HF egress over throttled subsea cables drops to a few MB/s and the
+        # download hangs (exactly what stranded the China box 120.238.149.205 here).
+        # Restricting to US/EU keeps the machine on the same network backbone as the
+        # model origin, so a 24GB pull finishes in seconds-to-minutes, not never.
+        if allowed_countries is None:
+            allowed_countries = {
+                "US", "CA",                                      # North America
+                "GB", "DE", "NL", "FR", "FI", "SE", "NO", "IE",  # West/North EU
+                "CZ", "PL", "BG", "HU", "RO", "AT", "CH", "BE", "ES", "IT", "PT",
+            }
+
+        def _country(o: dict) -> str:
+            geo = o.get("geolocation") or ""
+            m = geo.rsplit(",", 1)
+            return m[-1].strip().upper() if m else ""
 
         def _reliability(o: dict) -> float:
             return o.get("reliability2", o.get("reliability", 0)) or 0
 
+        # Every check here answers "will this machine actually do the work?" —
+        # we apply them BEFORE renting, so we never pay to boot a box that fails.
         eligible = [
             o for o in offers
             if o.get("dph_total", 999) <= max_price_per_hour
             and o.get("rentable", False)
             and (o.get("inet_down") or 0) >= min_inet_down_mbps
+            and (o.get("disk_space") or 0) >= min_disk_gb
             and _reliability(o) >= min_reliability
-            and (o.get("cuda_max_good") or 0) >= 11.8
+            and (o.get("cuda_max_good") or 0) >= min_cuda
             and (not require_verified or o.get("verification") == "verified")
             and (o.get("direct_port_count") or 0) >= min_direct_ports
+            # On-demand only: bid/interruptible machines can be yanked mid-batch.
+            and (not on_demand_only or not o.get("is_bid", False))
+            # Bandwidth fee: SOME hosts charge $/GB for download. The worker pulls
+            # the ~30GB FLUX model every rental, so a host at $0.0156/GB silently
+            # adds ~$0.47 PER RUN — that's why a "$0.25/hr" box actually cost ~$1.86/hr
+            # for a 28-min job. Reject hosts with a high inet_down_cost; the good
+            # datacenter boxes charge $0 or a tiny amount.
+            and (o.get("inet_down_cost") or 0) <= max_inet_cost_per_gb
             and o.get("gpu_name", "") not in _GPU_BLACKLIST
+            and _country(o) in allowed_countries
             and o.get("machine_id") not in exclude_machine_ids
         ]
         if not eligible:
             raise RuntimeError(
-                f"No good Vast.ai offers: vram>={min_vram_gb}GB, "
+                f"No good Vast.ai offers: vram>={min_vram_gb}GB disk>={min_disk_gb}GB, "
                 f"price<=${max_price_per_hour}/hr, inet_down>={min_inet_down_mbps}Mbps, "
                 f"reliability>={min_reliability}, verified={require_verified}, "
-                f"ports>={min_direct_ports}"
+                f"ports>={min_direct_ports}, cuda>={min_cuda}, on_demand={on_demand_only}, "
+                f"countries={sorted(allowed_countries)}"
             )
 
-        # Cheapest among the verified, reliable, fast, well-ported machines.
-        best = min(eligible, key=lambda o: o["dph_total"])
+        # PREFER real datacenters (hosting_type==1, the 🏢 icon) over home hosts
+        # (hosting_type==0, the 🏠 icon). A home host can DESTROY your instance the
+        # moment they decide the price is too low for them ("bẻ kèo" — they manually
+        # kill it); datacenters run on Vast's automation and never hand-check a single
+        # box. So: if any datacenter box passes the gates, choose the cheapest of
+        # THOSE; only fall back to home hosts when no datacenter is available in range.
+        # (All survivors already passed reliability/inet/on-demand/disk/arch gates.)
+        pool = eligible
+        if prefer_datacenter:
+            datacenters = [o for o in eligible if o.get("hosting_type") == 1]
+            if datacenters:
+                pool = datacenters
+                logger.info("Vast: {} datacenter (🏢) offers in range — preferring those over home hosts",
+                            len(datacenters))
+            else:
+                logger.warning("Vast: no datacenter offers in range — falling back to home hosts "
+                               "(higher risk of host-initiated destroy)")
+
+        # Pick by TRUE total cost of THIS batch, not $/hr alone. The invoice proved
+        # download dominates (a $0.25/hr box at $0.012/GB cost $0.86 for 28 min,
+        # 85% download). But cost depends on the batch: 3 images = download-bound,
+        # 400 = GPU-bound; a slow card with cheap bandwidth can lose. So estimate
+        # the actual wall-time per offer:
+        #   job_hours = boot + (download_gb / this box's link) + n_images × sec/image
+        #   cost = gpu×job_hours + download_gb×$/GB + upload_gb×$/GB + storage
+        # A per-GPU speed table can refine sec/image later; for now scale a baseline
+        # by the offer's dlperf so a faster card gets a shorter estimate.
+        _BASELINE_DLPERF = 40.0   # ~RTX 3090 dlperf, the card sec_per_image was measured on
+        def _job_hours(o: dict) -> float:
+            dlperf = o.get("dlperf") or _BASELINE_DLPERF
+            spi = sec_per_image * (_BASELINE_DLPERF / max(dlperf, 1.0))   # faster card → fewer s/img
+            link_mbps = max(o.get("inet_down") or 1.0, 1.0)
+            dl_sec = expected_download_gb * 8 * 1024 / link_mbps          # GB→Mb / Mbps = s
+            return (boot_seconds + dl_sec + n_images * spi) / 3600.0
+        def _true_cost(o: dict) -> float:
+            jh = _job_hours(o)
+            gpu = (o.get("dph_total") or 0) * jh
+            dl = expected_download_gb * (o.get("inet_down_cost") or 0)
+            ul = expected_upload_gb * (o.get("inet_up_cost") or 0)
+            # storage is billed per hour the box exists; default search assumes 5GB,
+            # but we rent ~60GB → add it explicitly. storage_cost is $/GB/month.
+            store = (o.get("storage_cost") or 0) * min_disk_gb / 720.0 * jh
+            return gpu + dl + ul + store
+        # Rank by true cost. Tie-break (costs within ~$0.02): prefer a host at or
+        # below preferred_inet_cost_per_gb — so a near-tie goes to the cheaper-
+        # bandwidth box, WITHOUT hard-filtering the pool to that threshold.
+        def _sort_key(o: dict):
+            tc = _true_cost(o)
+            bucket = round(tc / 0.02)  # group near-equal costs
+            below_pref = 0 if (o.get("inet_down_cost") or 0) <= preferred_inet_cost_per_gb else 1
+            return (bucket, below_pref, o.get("inet_down_cost") or 0, tc)
+        best = min(pool, key=_sort_key)
+        host_kind = "datacenter🏢" if best.get("hosting_type") == 1 else "home🏠"
         logger.info(
             "Vast offer selected: id={} machine={} gpu={} vram={}GB ${:.3f}/hr "
-            "inet_down={:.0f}Mbps reliability={:.3f} verified={} ports={}",
+            "inet_down={:.0f}Mbps reliability={:.3f} {} verified={} ports={} geo={}",
             best["id"], best.get("machine_id"), best.get("gpu_name"),
             best.get("gpu_ram", 0) // 1024, best["dph_total"],
-            best.get("inet_down") or 0, _reliability(best),
+            best.get("inet_down") or 0, _reliability(best), host_kind,
             best.get("verification"), best.get("direct_port_count"),
+            best.get("geolocation"),
         )
         return best
 
@@ -182,17 +305,25 @@ class VastManager:
         if not instance_id:
             raise RuntimeError(f"Vast rent failed: {data}")
 
+        self._record_rented(instance_id)  # track for guaranteed cleanup
         logger.info("Vast instance rented: id={}", instance_id)
         return self._get_instance_info(instance_id)
 
     # ── Status & Wait ─────────────────────────────────────────────────────────
 
     def _get_instance_info(self, instance_id: int) -> VastInstance:
-        resp = requests.get(
-            f"{VAST_API_BASE}/instances/{instance_id}/",
-            headers=self._headers,
-            timeout=15,
-        )
+        # Retry through transient Vast rate-limits (429) instead of crashing.
+        for attempt in range(6):
+            resp = requests.get(
+                f"{VAST_API_BASE}/instances/{instance_id}/",
+                headers=self._headers,
+                timeout=15,
+            )
+            if resp.status_code == 429:
+                logger.warning("Vast 429 on instance info — backing off 20s")
+                time.sleep(20)
+                continue
+            break
         resp.raise_for_status()
         inst = resp.json().get("instances", {})
         if isinstance(inst, list):
@@ -233,10 +364,22 @@ class VastManager:
                 headers=self._headers,
                 timeout=15,
             )
+            # 429 = Vast rate-limit (many calls across a long session). Don't crash
+            # the whole run — back off and retry; the instance is still booting.
+            if resp.status_code == 429:
+                logger.warning("Vast 429 rate-limit on status poll — backing off 20s")
+                time.sleep(20)
+                continue
             resp.raise_for_status()
             inst = resp.json().get("instances", {})
             if isinstance(inst, list):
                 inst = inst[0] if inst else {}
+            # Vast can return "instances": null right after creation — treat as
+            # "not ready yet" and keep polling instead of crashing with NoneType.
+            if not inst:
+                logger.debug("Vast instance {} not in API yet — waiting", instance_id)
+                time.sleep(15)
+                continue
             status = inst.get("actual_status") or ""
             logger.debug("Vast instance {} status: {}", instance_id, status)
             if status in ("running", "created"):
@@ -260,7 +403,7 @@ class VastManager:
                 return info
             if status in ("exited", "dead", "error"):
                 raise RuntimeError(f"Vast instance {instance_id} failed with status={status!r}")
-            time.sleep(10)
+            time.sleep(15)  # gentle poll to avoid Vast API rate-limit over a session
         raise TimeoutError(f"Vast instance {instance_id} not running after {timeout}s")
 
     def wait_for_port(self, instance_id: int, timeout: int = 180) -> VastInstance:
@@ -316,7 +459,18 @@ class VastManager:
         the API does report, and (c) re-query several times to catch stragglers
         the API was briefly hiding.
         """
+        # Seed from EVERY source we trust more than the (often-broken) list API:
+        # explicit known_ids, this process's in-memory registry, and the on-disk log
+        # of everything ever rented (survives a crash). These get destroyed by id
+        # regardless of what list_instances returns.
         ids: set[int] = set(known_ids or [])
+        ids |= set(VastManager.rented_ids)
+        try:
+            if os.path.exists(self._RENTED_LOG):
+                with open(self._RENTED_LOG, encoding="utf-8") as fh:
+                    ids |= {int(x) for x in fh.read().split() if x.strip().isdigit()}
+        except Exception:  # noqa: BLE001
+            pass
         for _ in range(verify_rounds):
             try:
                 for inst in self.list_instances():
@@ -330,15 +484,39 @@ class VastManager:
                 except Exception as e:  # noqa: BLE001
                     logger.warning("Vast destroy {} failed: {}", iid, e)
             time.sleep(4)
-            remaining = []
-            try:
-                remaining = [i.get("id") for i in self.list_instances()]
-            except Exception:
-                pass
-            if not remaining:
-                logger.info("Vast: all instances destroyed and verified clean")
+            # Verify each id is really gone by GETting it (404 = destroyed). Don't
+            # rely on list_instances alone — it's the thing that lied before.
+            still_alive = []
+            for iid in list(ids):
+                try:
+                    resp = requests.get(f"{VAST_API_BASE}/instances/{iid}/",
+                                        headers=self._headers, timeout=15)
+                    # ONLY 404 = confirmed destroyed. Per Vast destroy/show-instance
+                    # docs: 401/403 = auth error (NOT clean — could still be billing),
+                    # 410/429/5xx = transient/ambiguous (NOT clean). Treat anything
+                    # that isn't a clear 404 as still-alive and keep retrying — the
+                    # old "410 == clean" assumption is exactly what stranded $4.79.
+                    if resp.status_code == 404:
+                        ids.discard(iid)  # confirmed gone
+                        continue
+                    inst = resp.json().get("instances") if resp.ok else None
+                    if isinstance(inst, list):
+                        inst = inst[0] if inst else None
+                    if resp.ok and not inst:
+                        ids.discard(iid)  # 200 but empty body = gone
+                    else:
+                        still_alive.append(iid)  # 200-alive / 401 / 403 / 410 / 5xx
+                except Exception:  # noqa: BLE001 — network blip: assume still alive, retry
+                    still_alive.append(iid)
+            if not still_alive:
+                # clear the on-disk log so old ids don't linger
+                try:
+                    open(self._RENTED_LOG, "w").close()
+                except Exception:  # noqa: BLE001
+                    pass
+                logger.info("Vast: all instances destroyed and verified clean (by id)")
                 return
-            logger.warning("Vast: still see instances {} — retrying destroy", remaining)
+            logger.warning("Vast: still alive {} — retrying destroy", still_alive)
         logger.error(
             "Vast: instances may still be alive after cleanup — CHECK DASHBOARD: "
             "https://cloud.vast.ai/instances/"

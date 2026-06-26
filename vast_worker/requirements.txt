@@ -1,15 +1,17 @@
-# Pin the whole ML stack to a combination known to work with the base image's
-# torch 2.4.1. Unpinned, pip pulls diffusers 0.38 / transformers 5.x which need
-# a newer torch and fail to import (flash-attn custom_op infer_schema error).
-torchvision==0.19.1
+# EXACT stack from the proven RunPod handler (serverless_worker_unified), which
+# generated all 62 images cleanly with FLUX 8-bit. torch is installed in the
+# Dockerfile (cu121). The "index 21 out of bounds" on Vast was traced to
+# accelerate==0.34.2 (pinned old): enable_model_cpu_offload() lives in accelerate,
+# and 0.34.2 mishandles 8-bit device placement. RunPod leaves accelerate UNPINNED
+# (latest), so we do the same. Let transformers 4.45.2 pull its own tokenizers/hub.
 diffusers==0.31.0
-transformers==4.44.2
-huggingface_hub==0.24.6
-accelerate==0.34.2
-safetensors==0.4.5
-tokenizers==0.19.1
-sentencepiece==0.2.0
-protobuf==4.25.4
+transformers==4.45.2
+accelerate
+safetensors
+sentencepiece
+protobuf
+bitsandbytes>=0.43.0
+hf_transfer>=0.1.6
 fastapi>=0.111
 uvicorn>=0.29
 Pillow>=10

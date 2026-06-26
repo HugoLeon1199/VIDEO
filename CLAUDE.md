@@ -90,6 +90,13 @@ Core invariant: one prompt/image per timestamp entry. Demo mode is isolated and 
 - Network Volume `jqscreri1e` (US-IL-1, 50GB) mounted at `/runpod-volume` caches 13GB model
 - `HF_TOKEN` injected via RunPod Secrets (never in Dockerfile)
 
+### Vast.ai backend (cost rules — bandwidth is the #1 cost, not GPU)
+- Worker: `vast_worker/` (Dockerfile, server.py). Image `leon1199/vast-flux:latest`.
+- **Bandwidth (download) dominates cost**: each rental pulls the model; a gouging host ($0.012/GB) cost $0.73 just for the pull (7× the GPU charge). `find_offer` ranks by TRUE cost (gpu-hours + download×$/GB + upload + storage), caps `inet_down_cost` at 0.005, and `server.py` skips the 23.8GB redundant `flux1-dev.safetensors` (download ~58GB→~34GB).
+- **ONE rental draws the WHOLE batch** — download is paid once per rental, so amortize it. Production: `--vast-instances 1 --workers 1`, draw all scenes in one go. NEVER rent-per-scene while debugging (each rental re-downloads the model). To reuse a running box across debug runs, set `VAST_INSTANCE_HOST` + `VAST_INSTANCE_PORT` (skips rent + teardown).
+- **Don't raise `--vast-instances`** unless truly needed: each instance downloads its own copy of the model = multiplied bandwidth cost.
+- **Orphan safety**: every rented id is logged to `image_generation/rented_instances.log`. Run `python scripts/vast_reaper.py` on a 5-min schedule (Windows Task Scheduler) to destroy any box older than `MAX_LEASE_MINUTES` — a crash/power-loss won't leave a machine billing.
+
 ### Render (Step 6)
 - Two-pass FFmpeg: each canonical PNG → clip → concatenate + mux audio
 - Clip duration = `current.start` to `next.start`; last clip to audio end

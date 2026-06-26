@@ -7,7 +7,14 @@ import io
 import shutil
 from pathlib import Path
 from PIL import Image
-from diffusers import FluxPipeline, FluxImg2ImgPipeline
+from diffusers import (
+    FluxPipeline,
+    FluxImg2ImgPipeline,
+    FluxTransformer2DModel,
+    BitsAndBytesConfig,
+)
+from transformers import T5EncoderModel
+import os
 
 print("Base model only. No LoRA or external adapter loaded.")
 
@@ -24,14 +31,49 @@ _pipe_t2i = None
 _pipe_i2i = None
 
 
+# 8-bit quantization (bitsandbytes) drops the transformer + T5 from ~24GB to
+# ~12GB VRAM, so the endpoint runs on a 24GB GPU instead of a 48GB one (cheaper).
+# Quality is essentially unchanged and negative_prompt still works — bitsandbytes
+# only changes weight storage. Toggle with USE_8BIT=0 to fall back to full bf16.
+USE_8BIT = os.getenv("USE_8BIT", "1") == "1"
+CACHE_DIR = "/runpod-volume/hf-cache-clean"
+
+
 def load_t2i():
     global _pipe_t2i
     if _pipe_t2i is None:
-        _pipe_t2i = FluxPipeline.from_pretrained(
-            MODEL_ID,
-            torch_dtype=torch.bfloat16,
-            cache_dir="/runpod-volume/hf-cache-clean",
-        ).to("cuda")
+        if USE_8BIT:
+            qcfg = BitsAndBytesConfig(load_in_8bit=True)
+            transformer = FluxTransformer2DModel.from_pretrained(
+                MODEL_ID,
+                subfolder="transformer",
+                quantization_config=qcfg,
+                torch_dtype=torch.bfloat16,
+                cache_dir=CACHE_DIR,
+            )
+            text_encoder_2 = T5EncoderModel.from_pretrained(
+                MODEL_ID,
+                subfolder="text_encoder_2",
+                quantization_config=qcfg,
+                torch_dtype=torch.bfloat16,
+                cache_dir=CACHE_DIR,
+            )
+            # No .to("cuda"): bitsandbytes places quantized layers itself.
+            # enable_model_cpu_offload keeps peak VRAM low on a 24GB card.
+            _pipe_t2i = FluxPipeline.from_pretrained(
+                MODEL_ID,
+                transformer=transformer,
+                text_encoder_2=text_encoder_2,
+                torch_dtype=torch.bfloat16,
+                cache_dir=CACHE_DIR,
+            )
+            _pipe_t2i.enable_model_cpu_offload()
+        else:
+            _pipe_t2i = FluxPipeline.from_pretrained(
+                MODEL_ID,
+                torch_dtype=torch.bfloat16,
+                cache_dir=CACHE_DIR,
+            ).to("cuda")
     return _pipe_t2i
 
 

@@ -16,6 +16,9 @@ import requests
 from loguru import logger
 
 VAST_API_BASE = "https://console.vast.ai/api/v0"
+# v1 is required for listing instances — v0 /instances/ now returns 410 Gone,
+# which used to parse as "0 instances" and stranded a billing machine for ~16h.
+VAST_API_V1 = "https://console.vast.ai/api/v1"
 
 
 @dataclass
@@ -41,11 +44,21 @@ class VastManager:
         gpu_name: str = "",
         max_price_per_hour: float = 1.0,
         min_inet_down_mbps: int = 500,
+        min_reliability: float = 0.95,
+        exclude_machine_ids: set | None = None,
     ) -> dict:
-        """Find the cheapest available offer matching requirements.
+        """Find the cheapest *good* offer matching requirements.
 
-        min_inet_down_mbps filters out slow-internet machines; at 500 Mbps a
-        24 GB model download takes ~6 min instead of hours.
+        "Good, not just cheap": we filter out low-reliability and slow-internet
+        machines first (those are the ones that fail to start or take forever to
+        download the model), then pick the cheapest among what's left. This avoids
+        the lemons while still minimizing price.
+
+        - min_reliability: drop hosts below this uptime score (0.95 = 95%).
+        - min_inet_down_mbps: drop slow machines; faster = model downloads in
+          minutes, not hours, and far fewer load timeouts.
+        - exclude_machine_ids: machine_ids already rented in this batch, so the
+          N parallel instances land on N distinct physical hosts.
         """
         params = {
             "q": {
@@ -67,28 +80,46 @@ class VastManager:
         resp.raise_for_status()
         offers = resp.json().get("offers", [])
 
-        # V100 only supports CUDA ≤11.x; our image requires 11.8+ and the
-        # container silently fails to start, so exclude it entirely.
-        _GPU_BLACKLIST = {"Tesla V100"}
+        # Exclude GPUs that look fine by cuda_max_good but don't actually run our
+        # FLUX/bf16 image well (old pre-Ampere architectures: no proper bf16, the
+        # container fails or is painfully slow). cuda_max_good lies for these —
+        # e.g. V100 advertises CUDA 13 but the worker silently fails to start.
+        # This is the "don't pick a lemon GPU and then cry" guard.
+        _GPU_BLACKLIST = {
+            "Tesla V100", "Tesla P100", "Tesla P40", "Tesla K80",
+            "Tesla T4", "Quadro RTX 6000", "Quadro RTX 8000", "TITAN V",
+            "TITAN Xp", "GTX 1080 Ti",
+        }
+        exclude_machine_ids = exclude_machine_ids or set()
+
+        def _reliability(o: dict) -> float:
+            return o.get("reliability2", o.get("reliability", 0)) or 0
 
         eligible = [
             o for o in offers
             if o.get("dph_total", 999) <= max_price_per_hour
             and o.get("rentable", False)
             and (o.get("inet_down") or 0) >= min_inet_down_mbps
+            and _reliability(o) >= min_reliability
+            and (o.get("cuda_max_good") or 0) >= 11.8
             and o.get("gpu_name", "") not in _GPU_BLACKLIST
+            and o.get("machine_id") not in exclude_machine_ids
         ]
         if not eligible:
             raise RuntimeError(
-                f"No Vast.ai offers found: vram>={min_vram_gb}GB, "
-                f"price<=${max_price_per_hour}/hr, inet_down>={min_inet_down_mbps}Mbps"
+                f"No good Vast.ai offers: vram>={min_vram_gb}GB, "
+                f"price<=${max_price_per_hour}/hr, inet_down>={min_inet_down_mbps}Mbps, "
+                f"reliability>={min_reliability}"
             )
 
+        # Cheapest among the reliable, fast machines.
         best = min(eligible, key=lambda o: o["dph_total"])
         logger.info(
-            "Vast offer selected: id={} gpu={} vram={}GB ${:.3f}/hr inet_down={:.0f}Mbps",
-            best["id"], best.get("gpu_name"), best.get("gpu_ram", 0) // 1024,
-            best["dph_total"], best.get("inet_down") or 0,
+            "Vast offer selected: id={} machine={} gpu={} vram={}GB ${:.3f}/hr "
+            "inet_down={:.0f}Mbps reliability={:.3f}",
+            best["id"], best.get("machine_id"), best.get("gpu_name"),
+            best.get("gpu_ram", 0) // 1024, best["dph_total"],
+            best.get("inet_down") or 0, _reliability(best),
         )
         return best
 
@@ -218,6 +249,87 @@ class VastManager:
                 raise RuntimeError(f"Vast instance {instance_id} failed with status={status!r}")
             time.sleep(10)
         raise TimeoutError(f"Vast instance {instance_id} not running after {timeout}s")
+
+    def wait_for_port(self, instance_id: int, timeout: int = 180) -> VastInstance:
+        """Poll until Vast has mapped the worker port (direct_port is set).
+
+        After an instance reaches 'created'/'running', Vast often needs another
+        10-60s to publish the host port mapping. The old code failed immediately
+        when direct_port was still None, killing perfectly good instances. This
+        waits for the mapping instead.
+        """
+        deadline = time.time() + timeout
+        last = None
+        while time.time() < deadline:
+            info = self._get_instance_info(instance_id)
+            last = info
+            if info.direct_port:
+                logger.info(
+                    "Vast instance {} port mapped: {}:{}",
+                    instance_id, info.public_ipaddr, info.direct_port,
+                )
+                return info
+            logger.debug("Vast instance {} waiting for port mapping...", instance_id)
+            time.sleep(5)
+        raise TimeoutError(
+            f"Vast instance {instance_id} got no port mapping after {timeout}s "
+            f"(ip={last.public_ipaddr if last else '?'})"
+        )
+
+    def list_instances(self) -> list[dict]:
+        """Return ALL instances for this account (raw dicts), robust to API shape.
+
+        IMPORTANT: uses the v1 endpoint. The old v0 `/instances/` is DEPRECATED
+        and now returns HTTP 410 — which silently parsed as "0 instances" and let
+        a machine stay alive billing for ~16h. v1 reports the real list.
+        """
+        resp = requests.get(
+            f"{VAST_API_V1}/instances/",
+            headers=self._headers,
+            timeout=20,
+        )
+        resp.raise_for_status()
+        data = resp.json().get("instances", [])
+        if isinstance(data, dict):
+            data = [data]
+        return data or []
+
+    def destroy_all(self, known_ids: list[int] | None = None, verify_rounds: int = 3) -> None:
+        """Safety net: destroy every instance on the account, then verify.
+
+        The Vast API sometimes reports zero instances while machines are still
+        alive and billing (this stranded a V100 for ~16h). So we (a) always try
+        the explicitly known ids from this run, (b) also list+destroy anything
+        the API does report, and (c) re-query several times to catch stragglers
+        the API was briefly hiding.
+        """
+        ids: set[int] = set(known_ids or [])
+        for _ in range(verify_rounds):
+            try:
+                for inst in self.list_instances():
+                    if inst.get("id"):
+                        ids.add(int(inst["id"]))
+            except Exception as e:  # noqa: BLE001
+                logger.warning("Vast list_instances failed: {}", e)
+            for iid in list(ids):
+                try:
+                    self.destroy(iid)
+                except Exception as e:  # noqa: BLE001
+                    logger.warning("Vast destroy {} failed: {}", iid, e)
+            time.sleep(4)
+            remaining = []
+            try:
+                remaining = [i.get("id") for i in self.list_instances()]
+            except Exception:
+                pass
+            if not remaining:
+                logger.info("Vast: all instances destroyed and verified clean")
+                return
+            logger.warning("Vast: still see instances {} — retrying destroy", remaining)
+        logger.error(
+            "Vast: instances may still be alive after cleanup — CHECK DASHBOARD: "
+            "https://cloud.vast.ai/instances/"
+        )
 
     def wait_worker_ready(self, host: str, port: int, timeout: int = 600) -> None:
         """Poll /health until the FLUX model is loaded and ready to generate.

@@ -57,7 +57,8 @@ VAST_INSTANCE_PORT = int(os.getenv("VAST_INSTANCE_PORT", "0"))  # external port 
 VAST_HF_TOKEN = os.getenv("VAST_HF_TOKEN", os.getenv("HF_TOKEN", ""))
 VAST_DISK_GB = float(os.getenv("VAST_DISK_GB", "60.0"))
 VAST_USE_FP8 = os.getenv("VAST_USE_FP8", "1")  # "1" = FP8 (~12GB VRAM), "0" = bfloat16 (~24GB VRAM)
-VAST_MIN_INET_DOWN_MBPS = int(os.getenv("VAST_MIN_INET_DOWN_MBPS", "500"))  # min download speed Mbps
+VAST_MIN_INET_DOWN_MBPS = int(os.getenv("VAST_MIN_INET_DOWN_MBPS", "800"))  # min download speed Mbps (fast model download, fewer timeouts)
+VAST_MIN_RELIABILITY = float(os.getenv("VAST_MIN_RELIABILITY", "0.95"))     # drop low-uptime hosts (avoid lemons)
 VAST_REQUEST_TIMEOUT = int(os.getenv("VAST_REQUEST_TIMEOUT", "600"))
 
 # Per-track config — used by scripts/generate_images.py --track vi|en
@@ -66,7 +67,10 @@ TRACK_CONFIG = {
     "vi": {
         "endpoint_id_env": "RUNPOD_ENDPOINT_ID",
         "model": "black-forest-labs/FLUX.1-dev",
-        "steps": 22,
+        # 20 steps: the flat-vector / 2D illustration style converges well below
+        # FLUX-dev's default 28; dropping 22->20 saves ~7% GPU time per image with
+        # no visible quality loss for this art style.
+        "steps": 20,
         "guidance_scale": 3.5,
         "system_prompt_file": "prompts/image_prompt_vi.txt",
         "output_subdir": "images_vi",
@@ -75,7 +79,7 @@ TRACK_CONFIG = {
     "en": {
         "endpoint_id_env": "RUNPOD_ENDPOINT_ID",
         "model": "black-forest-labs/FLUX.1-dev",
-        "steps": 22,
+        "steps": 20,
         "guidance_scale": 3.5,
         "system_prompt_file": "prompts/image_prompt_en.txt",
         "output_subdir": "images_en",

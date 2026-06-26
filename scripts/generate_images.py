@@ -207,6 +207,7 @@ def _build_vast_backend():
         gpu_name=_cfg.VAST_GPU_NAME,
         max_price_per_hour=_cfg.VAST_MAX_PRICE_PER_HOUR,
         min_inet_down_mbps=_cfg.VAST_MIN_INET_DOWN_MBPS,
+        min_reliability=_cfg.VAST_MIN_RELIABILITY,
     )
     env_vars = {}
     if _cfg.VAST_HF_TOKEN:
@@ -222,11 +223,10 @@ def _build_vast_backend():
     # From this point on, the instance is billed. Destroy on any failure.
     try:
         instance = manager.wait_until_running(instance.instance_id, timeout=1200)
+        # Vast often needs a little longer to publish the host port mapping than
+        # it does to reach 'created'. Wait for it instead of failing immediately.
         if not instance.direct_port:
-            raise RuntimeError(
-                f"Vast instance {instance.instance_id} running but no port mapping yet — "
-                "retry in a few seconds or set VAST_INSTANCE_HOST+VAST_INSTANCE_PORT manually"
-            )
+            instance = manager.wait_for_port(instance.instance_id, timeout=180)
         # 1200s: the worker downloads the ~24GB FLUX model from HF at startup
         # (model is not baked into the image) and then loads it into VRAM.
         manager.wait_worker_ready(instance.public_ipaddr, instance.direct_port, timeout=1200)
@@ -256,6 +256,7 @@ def _build_vast_backends_parallel(n: int) -> tuple[list, callable]:
     instances are destroyed before re-raising.
     """
     from concurrent.futures import ThreadPoolExecutor, as_completed as _as_completed
+    from image_generation.vast_manager import VastManager
 
     if n == 1:
         backend, teardown = _build_vast_backend()
@@ -283,14 +284,26 @@ def _build_vast_backends_parallel(n: int) -> tuple[list, callable]:
                 errors.append(e)
                 logger.error("Vast: instance %d/%d failed: %s", idx + 1, n, e)
 
+    backends = [b for b in results if b is not None]
+
+    # Fault-tolerant: a failed instance no longer kills the whole batch. As long
+    # as at least one machine came up, we run on those; the failed ones were
+    # already destroyed inside _build_vast_backend. Only abort if ALL failed.
+    if not backends:
+        # Nothing usable — make absolutely sure nothing is left billing.
+        try:
+            import config as _cfg2
+            VastManager(api_key=_cfg2.VAST_API_KEY,
+                        worker_port=_cfg2.VAST_WORKER_PORT).destroy_all()
+        except Exception:
+            pass
+        raise RuntimeError(f"Vast: all {n} instances failed to start: {errors[0]}")
+
     if errors:
-        # Destroy any that did succeed before raising
-        for td in teardowns:
-            try:
-                td()
-            except Exception:
-                pass
-        raise RuntimeError(f"Vast: {len(errors)}/{n} instances failed to start: {errors[0]}")
+        logger.warning(
+            "Vast: %d/%d instances failed but %d are ready — continuing on those",
+            len(errors), n, len(backends),
+        )
 
     def teardown_all():
         for td in teardowns:
@@ -298,9 +311,15 @@ def _build_vast_backends_parallel(n: int) -> tuple[list, callable]:
                 td()
             except Exception as e:
                 logger.warning("Vast teardown error: %s", e)
+        # Belt-and-suspenders: force a verified destroy-all so no machine is left.
+        try:
+            import config as _cfg3
+            VastManager(api_key=_cfg3.VAST_API_KEY,
+                        worker_port=_cfg3.VAST_WORKER_PORT).destroy_all()
+        except Exception as e:
+            logger.error("Vast destroy_all error: %s — CHECK DASHBOARD", e)
 
-    backends = [b for b in results if b is not None]
-    logger.info("Vast: all %d instances ready", len(backends))
+    logger.info("Vast: %d/%d instances ready", len(backends), n)
     return backends, teardown_all
 
 
@@ -769,6 +788,21 @@ def main() -> None:
     finally:
         if _vast_teardown:
             _vast_teardown()
+        # Safety net: the Vast API has been seen reporting 0 instances while
+        # machines were still alive and billing (one V100 was stranded ~16h).
+        # After the per-instance teardown, force a destroy-all + verify so no
+        # rented machine is ever left running. Only for the vast backend.
+        if args.backend == "vast_instance":
+            try:
+                from image_generation.vast_manager import VastManager
+                _mgr = VastManager(api_key=_config.VAST_API_KEY,
+                                   worker_port=_config.VAST_WORKER_PORT)
+                _mgr.destroy_all()
+            except Exception as _e:  # noqa: BLE001
+                logger.error(
+                    "Vast safety-net cleanup error: %s — CHECK DASHBOARD "
+                    "https://cloud.vast.ai/instances/", _e,
+                )
 
     # Write summary
     import config as _config3

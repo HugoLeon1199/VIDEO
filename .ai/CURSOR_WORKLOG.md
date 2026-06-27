@@ -1,5 +1,56 @@
 # CURSOR_WORKLOG - Repo worklog
 
+## Session 2026-06-27 - Final TTS continuity audit for `to-tien-ban-lam-gi-ca-ngay-vi`
+
+### Goal
+Run a final continuity audit on the current Vietnamese block-TTS output and only regenerate blocks if a real continuity defect is found.
+
+### Files touched
+| File | Action |
+|------|--------|
+| `.ai/CURSOR_WORKLOG.md` | MODIFIED - recorded audit evidence and decision |
+
+### Audit inputs
+- `output/to-tien-ban-lam-gi-ca-ngay-vi/audio_master.wav`
+- `output/to-tien-ban-lam-gi-ca-ngay-vi/tts_blocks/blocks.json`
+- `output/to-tien-ban-lam-gi-ca-ngay-vi/tts_blocks/diagnostics.json`
+- `output/to-tien-ban-lam-gi-ca-ngay-vi/tts_blocks/alignment_diagnostics.json`
+
+### Findings
+- No block in the current manifest used fallback sentence mode.
+- No block used non-default retry params in the manifest.
+- `reused_block_count = 52`, `regenerated_block_count = 0`, `fallback_block_count = 0`.
+- `voice` stayed constant across the run and the manifest does not show any per-block voice drift.
+- Block-to-block gap in the audio master is the configured `300ms` everywhere.
+- The main continuity outliers are short-block transitions and a few amplitude-contrast-heavy boundaries, but none of them forced regeneration by the current deterministic checks.
+
+### Boundary clips exported for manual listening
+Created under:
+
+`output/to-tien-ban-lam-gi-ca-ngay-vi/continuity_audit/`
+
+Selected clips:
+- `boundary_012_b012_to_b013.mp3`
+- `boundary_013_b013_to_b014.mp3`
+- `boundary_016_b016_to_b017.mp3`
+- `boundary_021_b021_to_b022.mp3`
+- `boundary_023_b023_to_b024.mp3`
+- `boundary_028_b028_to_b029.mp3`
+- `boundary_037_b037_to_b038.mp3`
+- `boundary_043_b043_to_b044.mp3`
+- `boundary_046_b046_to_b047.mp3`
+- `boundary_049_b049_to_b050.mp3`
+
+### Quantitative boundary notes
+- Loudness contrast was highest around boundaries `37` and `46`.
+- The shortest blocks were `7` (`1.022s`), `52` (`1.704s`), and `17` (`2.169s`), so those were included in the audit set indirectly through their neighboring boundaries.
+- The current block builder cache stayed intact; no block was regenerated during this audit.
+
+### Decision
+- No production block was changed.
+- Cache was preserved exactly as-is because there was no clear audible defect proven by the available evidence.
+- If Leon hears a problem in one of the exported clips, the next step should be to regenerate only that specific block and re-run the adjacent boundary clips.
+
 ## Session 2026-06-27 - Block-TTS production hardening
 
 ### Goal

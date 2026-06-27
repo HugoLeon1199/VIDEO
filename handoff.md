@@ -179,6 +179,34 @@ File này chứa thông tin kỹ thuật chi tiết, lịch sử debug, và quy�
 - Existing tracked output churn under `output/to-tien-ban-lam-gi-ca-ngay-vi/` was intentionally left out of this patch scope except `transcribe_config.json`.
 - The real VI sample did not trigger a natural fallback, so fallback-restart behavior is primarily proven by unit coverage in this patch.
 
+## Final TTS continuity audit - 2026-06-27
+
+- Audited `output/to-tien-ban-lam-gi-ca-ngay-vi` for continuity after the production hardening patch.
+- Input artifacts checked:
+  - `audio_master.wav`
+  - `tts_blocks/blocks.json`
+  - `tts_blocks/diagnostics.json`
+  - `tts_blocks/alignment_diagnostics.json`
+- Findings:
+  - no fallback sentence mode in the manifest
+  - no retry params different from default in the manifest
+  - `reused_block_count = 52`
+  - `regenerated_block_count = 0`
+  - `fallback_block_count = 0`
+  - voice stayed constant across the run
+  - block gap stayed at the configured `300ms`
+- Exported manual listening clips under:
+  - `output/to-tien-ban-lam-gi-ca-ngay-vi/continuity_audit/`
+- Selected suspicious boundaries:
+  - `12`, `13`, `16`, `21`, `23`, `28`, `37`, `43`, `46`, `49`
+- Quantitative note:
+  - highest loudness-contrast boundaries were `37` and `46`
+  - shortest blocks in the run were `7`, `52`, and `17`
+- Decision:
+  - no block was regenerated
+  - cache was preserved as-is
+  - if Leon hears a defect in one of the exported clips, only that specific block should be regenerated next
+
 ## Step 4 one-sentence-one-image update - 2026-06-27
 
 - `steps/image_prompts.py` now treats `1 sentence = 1 scene = 1 image` as a hard invariant.

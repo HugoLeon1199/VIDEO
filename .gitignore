@@ -28,6 +28,7 @@ output/*_demo*/
 output/*/compare_kokoro/
 output/*/compare_vieneu/
 output/*/compare_vieneu_sentence_test/
+output/voice_lab/
 output/smoke-*/
 output/_kokoro_compare_summary.json
 output/_kokoro_compare_summary.md

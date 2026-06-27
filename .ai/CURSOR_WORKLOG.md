@@ -1,5 +1,63 @@
 # CURSOR_WORKLOG - Repo worklog
 
+## Session 2026-06-27 - Kokoro Voice Lab bootstrap
+
+### Goal
+Create an independent Kokoro Voice Lab for blind testing base voices, weighted blends, speed variants, and longform finalists without touching production TTS.
+
+### Files changed
+| File | Action |
+|------|--------|
+| `scripts/kokoro_voice_lab.py` | CREATED - standalone lab CLI with base/topics/blends/speed/longform/report |
+| `.gitignore` | MODIFIED - ignore `output/voice_lab/` lab artifacts |
+
+### What was implemented
+- Reused one `KPipeline` per language code inside the lab.
+- Discovered official English Kokoro voices from the HF repo and local cache, then filtered to `a/b` voices only.
+- Added blind IDs for every artifact and kept the mapping in `blind_mapping.json`.
+- Added a topic pack generator for:
+  - history/documentary
+  - dark mystery
+  - science/technology
+  - finance/business
+  - calm reflective
+  - energetic hook
+  - dialogue/quotation
+  - pronunciation stress test
+- Added controlled weighted blend generation with:
+  - tensor `.pt` output
+  - component metadata
+  - weights that sum to 1
+  - same-accent-family restriction on first-round blends
+- Added speed variants for finalists at:
+  - `0.92`
+  - `0.95`
+  - `0.98`
+  - `1.00`
+- Added longform finalist stress test that uses block-mode style chunking and exports suspicious boundary clips.
+- Added a local `review.html` blind-review page with audio players and score inputs.
+
+### Smoke test results
+- `python scripts/kokoro_voice_lab.py --output-dir output/voice_lab base --limit 2`
+- `python scripts/kokoro_voice_lab.py --output-dir output/voice_lab topics`
+- `python scripts/kokoro_voice_lab.py --output-dir output/voice_lab blends --limit 1`
+- `python scripts/kokoro_voice_lab.py --output-dir output/voice_lab speed --limit 1`
+- `python scripts/kokoro_voice_lab.py --output-dir output/voice_lab longform --limit 1`
+- `python scripts/kokoro_voice_lab.py --output-dir output/voice_lab report`
+
+Observed smoke output:
+- `artifact_count = 8`
+- kind counts:
+  - `base = 2`
+  - `blend = 1`
+  - `speed = 4`
+  - `longform = 1`
+- longform finalist produced block audio and suspicious boundary clips under `output/voice_lab/longform/<blind_id>/`
+
+### Important note
+- No production TTS code was changed.
+- All lab audio, tensors, and review files stay under `output/voice_lab/` and are ignored by Git.
+
 ## Session 2026-06-27 - Final Kokoro production audit on `ancient-child-surgery-31000-years`
 
 ### Goal

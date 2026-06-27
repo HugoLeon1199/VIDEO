@@ -1,5 +1,73 @@
 # CURSOR_WORKLOG - Repo worklog
 
+## Session 2026-06-27 - Kokoro Voice Lab simplification and round-gated review
+
+### Goal
+Simplify Kokoro Voice Lab so Leon can review faster with less audio generation, strict round gating, simple decisions, and no production TTS changes.
+
+### Files changed
+| File | Action |
+|------|--------|
+| `scripts/kokoro_voice_lab.py` | REWRITTEN - strict `base -> topic -> blend -> speed -> final -> report` workflow with round lineage, `active_round`, `decisions.csv`, reveal-gated blind review UI, and alias commands |
+| `tests/test_kokoro_voice_lab.py` | CREATED - smoke-style round tests for base/topic/blend/speed/final/report behavior |
+| `.ai/CURSOR_WORKLOG.md` | MODIFIED - recorded implementation and verification |
+| `handoff.md` | MODIFIED - recorded new Kokoro Voice Lab workflow and verification |
+
+### What was implemented
+- Replaced score-based review with round-gated decisions:
+  - `Keep`
+  - `Maybe`
+  - `Reject`
+- Added artifact-level workflow metadata:
+  - `round`
+  - `round_order`
+  - `lineage`
+- Added manifest-level workflow metadata:
+  - `active_round`
+  - `round_counts`
+  - `round_configs`
+- Switched report/review persistence from `scores.csv` to `decisions.csv`.
+- Added `--decisions <path>` support with default `output/voice_lab/decisions.csv`.
+- Locked finalist flow to the immediately previous round only:
+  - `topic <- base`
+  - `blend <- topic`
+  - `speed <- blend`
+  - `final <- speed`
+- Simplified audio generation:
+  - base sample uses one richer calibration script
+  - topic round creates one `topic_reel` per finalist
+  - blend round creates `3` base comparison artifacts plus up to `6` blends
+  - speed round only tests `0.95` and `0.98`
+  - final round renders `90-120s` longform only
+- Added duration enforcement:
+  - base target `20-25s`, acceptable `18-30s`
+  - blend/speed target `25-30s`, acceptable `22-35s`
+  - final hard-required `90-120s`
+  - outside target but inside acceptable only warns
+  - outside acceptable fails
+- Updated blind review HTML:
+  - hides voice/family/source before decision
+  - Reveal is disabled until a decision is chosen
+  - restores local state from `localStorage`
+  - exports `decisions.csv`
+  - report ranks only the manifest `active_round`
+- Kept production TTS untouched.
+
+### Verification
+- Static check:
+  - `python -m py_compile scripts/kokoro_voice_lab.py tests/test_kokoro_voice_lab.py`
+- New Kokoro lab tests:
+  - `python -m pytest tests/test_kokoro_voice_lab.py -q`
+  - result: `3 passed`
+- Full suite:
+  - `python -m pytest tests -q`
+  - result: `128 passed`
+  - warnings came from existing torch/runtime deps in `tests/test_tts_block_mode.py`, not from the new lab patch
+
+### Important note
+- No generated audio/output artifacts were staged for commit.
+- The repo already had unrelated dirty files under `output/`; they were intentionally left untouched.
+
 ## Session 2026-06-27 - Kokoro Voice Lab bootstrap
 
 ### Goal

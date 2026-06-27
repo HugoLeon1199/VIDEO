@@ -834,6 +834,49 @@ def _load_all_artifacts(manifest: dict[str, Any]) -> list[LabArtifact]:
     return _load_base_artifacts(manifest)
 
 
+def _mapping_entry_from_artifact(artifact: dict[str, Any]) -> dict[str, Any]:
+    kind = artifact["kind"]
+    if kind == "base":
+        return {
+            "kind": "base",
+            "voice": artifact["source_ref"],
+            "lang_code": artifact["lang_code"],
+            "family": artifact["family"],
+        }
+    if kind == "blend":
+        return {
+            "kind": "blend",
+            "lang_code": artifact["lang_code"],
+            "family": artifact["family"],
+            "components": artifact.get("metadata", {}).get("components", []),
+            "tensor_path": artifact.get("metadata", {}).get("tensor_path"),
+            "tensor_sha256": artifact.get("metadata", {}).get("tensor_sha256"),
+            "kokoro_version": artifact.get("metadata", {}).get("kokoro_version"),
+        }
+    if kind == "speed":
+        return {
+            "kind": "speed",
+            "source_blind_id": artifact.get("metadata", {}).get("source_blind_id"),
+            "lang_code": artifact["lang_code"],
+            "family": artifact["family"],
+            "speed": artifact.get("speed"),
+        }
+    if kind == "longform":
+        return {
+            "kind": "longform",
+            "source_blind_id": artifact.get("metadata", {}).get("source_blind_id"),
+            "lang_code": artifact["lang_code"],
+            "family": artifact["family"],
+            "speed": artifact.get("speed"),
+            "block_count": artifact.get("metadata", {}).get("block_count"),
+        }
+    return {
+        "kind": kind,
+        "lang_code": artifact.get("lang_code"),
+        "family": artifact.get("family"),
+    }
+
+
 def _render_blend_artifact(
     out_dir: Path,
     repo_id: str,
@@ -1264,7 +1307,13 @@ def _resolve_manifest(out_dir: Path) -> dict[str, Any]:
 
 
 def _resolve_mapping(out_dir: Path) -> dict[str, Any]:
-    return _load_json(out_dir / "blind_mapping.json", default={})
+    mapping = _load_json(out_dir / "blind_mapping.json", default={})
+    manifest = _load_json(out_dir / "manifest.json", default={"artifacts": []})
+    for artifact in manifest.get("artifacts", []):
+        blind_id = artifact.get("blind_id")
+        if blind_id and blind_id not in mapping:
+            mapping[blind_id] = _mapping_entry_from_artifact(artifact)
+    return mapping
 
 
 def _write_outputs(out_dir: Path, manifest: dict[str, Any], mapping: dict[str, Any], scores: list[dict[str, str]] | None = None) -> None:
@@ -1279,11 +1328,17 @@ def _write_outputs(out_dir: Path, manifest: dict[str, Any], mapping: dict[str, A
 def cmd_base(args: argparse.Namespace) -> int:
     out_dir = args.output_dir
     out_dir.mkdir(parents=True, exist_ok=True)
+    existing_manifest = _resolve_manifest(out_dir)
+    existing_mapping = _resolve_mapping(out_dir)
+    existing_artifacts = _load_all_artifacts(existing_manifest)
     voice_filter = set(args.voices) if args.voices else None
     family_filter = set(args.families) if args.families else None
     manifest, mapping, artifacts = _base_artifacts(out_dir, args.repo_id, args.limit, args.seed, args.device, voice_filter, family_filter)
     scores = _voice_records_to_scores(artifacts)
-    _save_manifest_bundle(out_dir, manifest, mapping)
+    combined_artifacts = _merge_artifacts(existing_artifacts, artifacts, "base")
+    manifest["artifacts"] = [dataclasses.asdict(item) for item in combined_artifacts]
+    manifest["artifact_count"] = len(combined_artifacts)
+    _save_manifest_bundle(out_dir, manifest, {**existing_mapping, **mapping})
     merged_scores = _merge_score_rows(_load_scores(out_dir / "scores.csv"), scores)
     _write_scores(out_dir / "scores.csv", merged_scores)
     print(f"Generated {len(artifacts)} base voices in {out_dir}")

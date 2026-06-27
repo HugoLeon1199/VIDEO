@@ -44,14 +44,16 @@ Create an independent Kokoro Voice Lab for blind testing base voices, weighted b
 - `python scripts/kokoro_voice_lab.py --output-dir output/voice_lab speed --limit 1`
 - `python scripts/kokoro_voice_lab.py --output-dir output/voice_lab longform --limit 1`
 - `python scripts/kokoro_voice_lab.py --output-dir output/voice_lab report`
+- Follow-up full base pass:
+  - `python scripts/kokoro_voice_lab.py --output-dir output/voice_lab base`
+  - final catalog counts: `base=28`, `blend=1`, `speed=4`, `longform=1`
+- Mapping repair:
+  - longform initially failed when the blind mapping lacked the blend tensor entry
+  - lab now reconstructs missing mapping entries from `manifest.json` so longform can resolve blend finalists reliably
 
 Observed smoke output:
-- `artifact_count = 8`
-- kind counts:
-  - `base = 2`
-  - `blend = 1`
-  - `speed = 4`
-  - `longform = 1`
+- initial smoke: `artifact_count = 8`
+- final catalog: `artifact_count = 34`
 - longform finalist produced block audio and suspicious boundary clips under `output/voice_lab/longform/<blind_id>/`
 
 ### Important note

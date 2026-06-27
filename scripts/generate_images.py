@@ -234,6 +234,7 @@ def _build_vast_backend(n_images: int = 100):
         # down the cheapest-first list instead of re-renting the same dud.
         offer = manager.find_offer(
             min_vram_gb=_cfg.VAST_MIN_VRAM_GB,
+            max_vram_gb=_cfg.VAST_MAX_VRAM_GB,
             gpu_name=_cfg.VAST_GPU_NAME,
             max_price_per_hour=_cfg.VAST_MAX_PRICE_PER_HOUR,
             min_inet_down_mbps=_cfg.VAST_MIN_INET_DOWN_MBPS,
@@ -397,6 +398,8 @@ def main() -> None:
     parser.add_argument("--workers", type=int, default=10)
     parser.add_argument("--vast-instances", type=int, default=1,
                         help="Number of Vast.ai instances to rent in parallel (vast_instance backend only)")
+    parser.add_argument("--steps", type=int, default=None,
+                        help="Override inference steps (e.g. quality test at 5/10/15/20)")
     parser.add_argument("--verbose", action="store_true")
     parser.add_argument("--output-root", default=os.environ.get("IMAGE_OUTPUT_ROOT", "output"))
 
@@ -459,6 +462,9 @@ def main() -> None:
         _track_steps = tc["steps"]
         _track_guidance = tc["guidance_scale"]
         _track_output_subdir = tc["output_subdir"]
+    # --steps override (quality-vs-cost experiments)
+    if args.steps is not None:
+        _track_steps = args.steps
         logger.info(
             "Track '%s': %d steps, guidance %.1f -> %s | QA: %s",
             args.track, _track_steps, _track_guidance, _track_output_subdir,
@@ -519,12 +525,15 @@ def main() -> None:
             # Sweep any orphaned instances from a previous crashed run BEFORE renting
             # — a PC power-loss / kill can leave a box billing; the rented_instances
             # log is our record of truth (see VastManager.destroy_all).
-            try:
-                from image_generation.vast_manager import VastManager as _VM
-                _VM(api_key=_config.VAST_API_KEY,
-                    worker_port=_config.VAST_WORKER_PORT).destroy_all()
-            except Exception as _e:  # noqa: BLE001
-                logger.warning("Vast startup orphan-sweep error: %s", _e)
+            # SKIP this when reusing an externally-managed box (VAST_INSTANCE_HOST set):
+            # destroy_all would kill the very instance we're connecting to.
+            if not (_config.VAST_INSTANCE_HOST and _config.VAST_INSTANCE_PORT):
+                try:
+                    from image_generation.vast_manager import VastManager as _VM
+                    _VM(api_key=_config.VAST_API_KEY,
+                        worker_port=_config.VAST_WORKER_PORT).destroy_all()
+                except Exception as _e:  # noqa: BLE001
+                    logger.warning("Vast startup orphan-sweep error: %s", _e)
             n_inst = args.vast_instances
             n_imgs = max(1, len(prompts))  # batch size → true-cost ranking
             if n_inst > 1:
@@ -845,11 +854,13 @@ def main() -> None:
     finally:
         if _vast_teardown:
             _vast_teardown()
-        # Safety net: the Vast API has been seen reporting 0 instances while
-        # machines were still alive and billing (one V100 was stranded ~16h).
-        # After the per-instance teardown, force a destroy-all + verify so no
-        # rented machine is ever left running. Only for the vast backend.
-        if args.backend == "vast_instance":
+        # Safety net: force a destroy-all so no rented machine is ever left billing.
+        # SKIP when reusing an externally-managed box (VAST_INSTANCE_HOST set) — the
+        # caller owns that instance's lifetime; destroying it here would kill a box
+        # the parent script is still using for the next run.
+        _reuse = args.backend == "vast_instance" and (
+            _config.VAST_INSTANCE_HOST and _config.VAST_INSTANCE_PORT)
+        if args.backend == "vast_instance" and not _reuse:
             try:
                 from image_generation.vast_manager import VastManager
                 _mgr = VastManager(api_key=_config.VAST_API_KEY,

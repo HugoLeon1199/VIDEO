@@ -28,7 +28,7 @@ $python = "C:\Users\LEON_RM\.cache\codex-runtimes\codex-primary-runtime\dependen
 
 `GEMINI_API_KEY` is hardcoded in `config.py` and used only for step 4 text prompts.
 `RUNPOD_API_KEY` and `RUNPOD_ENDPOINT_ID` are required for step 5 and are loaded from `.env`.
-`ANTHROPIC_API_KEY` is required only for step 7.
+`ANTHROPIC_API_KEY` is required only for step 8 (metadata).
 
 FFmpeg must be installed via `winget install Gyan.FFmpeg`; `steps/render_video.py` has a local WinGet path fallback.
 
@@ -43,19 +43,28 @@ Each step is a standalone module in `steps/`; `main.py` dispatches the step sequ
 | 3 | `transcribe.py` | `audio.mp3` | `timestamps.json` |
 | 4 | `image_prompts.py` | `timestamps.json` + `script.txt` | `image_prompts.json` |
 | 5 | `generate_images.py` | `image_prompts.json` | `images/img_001.png` … |
-| 6 | `render_video.py` | images + audio + prompts | `final.mp4` + `subtitles.srt` |
-| 7 | `metadata.py` | `script.txt` | `metadata.json` |
+| 6 | `design_soundscape.py` | `image_prompts.json` | `soundscape.json` |
+| 7 | `render_video.py` | images + audio + prompts | `final.mp4` + `subtitles.srt` |
+| 8 | `metadata.py` | `script.txt` | `metadata.json` |
 
-Core invariant: one prompt/image per timestamp entry. Demo mode is isolated and never overwrites production files.
+Core invariant: one prompt/image per sentence. Each transcript sentence maps to exactly one scene and one generated image. Demo mode is isolated and never overwrites production files.
+
+**Render is step 7, not step 6** — step 6 generates `soundscape.json` (SFX events). `main.py --step` accepts 1–8.
 
 ## Key Details
 
 ### TTS
 - English: Kokoro first (`am_fenrir`), fallback to `edge-tts`
-- Vietnamese: always `edge-tts` with per-video override `output/{video-id}/tts_config.json`:
+- Vietnamese (edge): per-video override `output/{video-id}/tts_config.json`:
   ```json
   {"engine": "edge", "voice": "vi-VN-NamMinhNeural", "rate": "-8%"}
   ```
+- Vietnamese (VieNeu, local 48kHz, voice e.g. `Thái Sơn`):
+  ```json
+  {"engine": "vieneu", "voice": "Thái Sơn"}
+  ```
+  - VieNeu ALWAYS runs comma-aware sentence mode (`_run_vieneu_sentence_mode`) and writes `timestamps.json` itself → **do NOT run step 3** (stable_ts align would overwrite the synced timestamps with align errors). Go straight from step 2 → retime → step 6/7.
+  - **Why**: VieNeu v3 Turbo can't find EOS for a clause containing a comma; fed the whole script it runs to `max_new_frames` (~20s of silence) after every comma clause. Splitting on commas (`_split_vieneu_chunks`) keeps each chunk EOS-safe. The legacy whole-script `_vieneu_tts()` is unused — never route VieNeu to it.
 - **Vietnamese script must not contain**: em dash `—` (ord 8212), leading `!`, `/` — these cause edge-tts "No audio received"
 
 ### Transcription
@@ -69,7 +78,12 @@ Core invariant: one prompt/image per timestamp entry. Demo mode is isolated and 
 
 ### Image Prompts (Step 4)
 - Gemini text model `gemini-2.5-flash` generates one prompt per timestamp
+- Default invariant: `1 sentence = 1 scene = 1 image`
+- `image_prompts.json` count should match `timestamps.json` count exactly
+- Script guideline: each sentence should usually read in about 3-7 seconds; for Vietnamese that is often about 10-25 words
+- If a sentence is too long, split it in `script.txt` before running the pipeline
 - `_enforce_timings()` overwrites model-provided timings with exact transcript timings
+- If `timestamps.json` count and script sentence count do not match, step 4 should fail early in 1:1 mode instead of silently grouping scenes
 - For Vietnamese videos, prompts are often written manually and saved directly to `image_prompts.json`
 - English style: `Cinematic wide shot, [scene], photorealistic, natural lighting, shallow depth of field, 16:9, no text`
 - Vietnamese style: rural/village people (người quê), earthy, photorealistic cinematic, NOT doodle/stick-figure
@@ -97,9 +111,10 @@ Core invariant: one prompt/image per timestamp entry. Demo mode is isolated and 
 - **Don't raise `--vast-instances`** unless truly needed: each instance downloads its own copy of the model = multiplied bandwidth cost.
 - **Orphan safety**: every rented id is logged to `image_generation/rented_instances.log`. Run `python scripts/vast_reaper.py` on a 5-min schedule (Windows Task Scheduler) to destroy any box older than `MAX_LEASE_MINUTES` — a crash/power-loss won't leave a machine billing.
 
-### Render (Step 6)
+### Render (Step 7)
 - Two-pass FFmpeg: each canonical PNG → clip → concatenate + mux audio
-- Clip duration = `current.start` to `next.start`; last clip to audio end
+- Clip duration = `current.start` to `next.start`; last clip to audio end (so prompt `start` values MUST match the real transcript timing or images drift out of sync)
+- Re-sync a stale `image_prompts.json` against `timestamps.json` with `scripts/retime_prompts.py --video-id <slug>` (rewrites each scene's start/end to its first transcript sentence; no image regen needed)
 - Output: H.264 1920×1080, `VIDEO_BITRATE`, AAC stereo 192k 48kHz
 
 ## Config
@@ -136,8 +151,8 @@ $vid = "my-topic-vi"
 # 5. Generate images
 & $python scripts/generate_images.py --video-id $vid --candidates 1 --workers 5
 
-# 6. Render
-& $python main.py --video-id $vid --step 6
+# 6. Render (step 7; step 6 is soundscape and runs automatically before it)
+& $python main.py --video-id $vid --from-step 6
 ```
 
 ## Validation

@@ -48,6 +48,7 @@ IMAGE_BACKEND = os.getenv("IMAGE_BACKEND", "runpod_serverless")  # runpod_server
 VAST_API_KEY = os.getenv("VAST_API_KEY", "")
 VAST_WORKER_PORT = int(os.getenv("VAST_WORKER_PORT", "8080"))
 VAST_MIN_VRAM_GB = int(os.getenv("VAST_MIN_VRAM_GB", "24"))   # FLUX 8-bit needs ~15GB → 24GB (16GB OOMs)
+VAST_MAX_VRAM_GB = int(os.getenv("VAST_MAX_VRAM_GB", "200"))   # no real cap; arch gate + _true_cost decide
 # Price cap: $0.40/hr. $0.20 is ideal (cheap RTX 3090 ~$0.12-0.19) but the pool of
 # 24GB Ada/Ampere boxes that ALSO pass disk≥60 / US-EU / reliability / on-demand is
 # small and shifts minute-to-minute — at $0.20 it's often empty. $0.40 reliably

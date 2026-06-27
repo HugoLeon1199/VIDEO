@@ -1,8 +1,7 @@
-"""Step 4: Generate image prompts using Claude — smart scene segmentation.
+"""Step 4: Generate image prompts with a strict one-sentence-one-scene mapping.
 
-Claude reads the full script and groups sentences into ~100-120 scenes semantically,
-then writes one image prompt per scene. Timestamps are computed proportionally
-by character count across total audio duration.
+Each script sentence becomes exactly one scene / one image prompt. Timestamps are
+read from timestamps.json when available, or computed proportionally as a fallback.
 """
 
 import json
@@ -33,14 +32,16 @@ EN_NEGATIVE_PROMPT = (
 VI_SYSTEM_PROMPT = """Bạn là chuyên gia tạo storyboard cho video YouTube lịch sử tiền sử.
 
 Tôi sẽ gửi cho bạn một script tiếng Việt và danh sách các câu đã được đánh số (1-based).
-Nhiệm vụ của bạn: chia toàn bộ script thành các SCENES — mỗi scene = 1 ảnh.
+Nhiệm vụ của bạn: tạo SCENES theo nguyên tắc tuyệt đối MỖI CÂU = 1 SCENE = 1 ẢNH.
 
-NGUYÊN TẮC GOM CÂU:
-- Câu ngắn (<6 từ) cùng chủ đề liệt kê → gom lại 1 scene (VD: "Họ chơi. Họ hát. Họ nhảy." → 1 scene)
-- Câu dài có ý nghĩa độc lập → 1 scene riêng
-- Câu trích dẫn số liệu + câu giải thích liền sau → gom 1 scene
-- Câu chuyển đoạn (dấu hỏi rhetorical) → 1 scene riêng
-- Target: ~100-120 scenes cho script ~8-10 phút
+NGUYÊN TẮC PHÂN SCENE:
+- Mỗi câu trong danh sách phải tạo đúng 1 scene.
+- Không được gom nhiều câu vào 1 scene.
+- Không được tách 1 câu thành nhiều scene.
+- Trường `sentences` luôn phải chứa đúng 1 index câu. Ví dụ: [5], không phải [5,6].
+- Trường `scene_text` phải là nguyên văn đúng câu đó.
+- Số scene phải bằng số câu trong danh sách.
+- Phải phủ kín toàn bộ các câu từ 1 đến N, không bỏ sót, không lặp.
 
 CÁCH VIẾT PROMPT ẢNH:
 Style bắt buộc: "cinematic 2D painted documentary illustration, semi-realistic prehistoric humans, warm ochre earth tones, firelight atmosphere"
@@ -60,25 +61,28 @@ OUTPUT: JSON array thuần, không có markdown, không có giải thích.
 Mỗi phần tử:
 {
   "index": 1,
-  "sentences": [1, 2],
-  "scene_text": "nội dung gộp",
+  "sentences": [1],
+  "scene_text": "nguyên văn câu 1",
   "prompt": "cinematic 2D painted...",
   "icon_overlays": [],
   "text_overlays": []
 }
 
-QUAN TRỌNG: Phủ kín tất cả câu từ 1 đến N. Không bỏ sót câu nào."""
+QUAN TRỌNG: Scene 1 phải ứng với câu 1, scene 2 ứng với câu 2, tiếp tục tuần tự đến câu N."""
 
 EN_SYSTEM_PROMPT = """You are a storyboard expert for a prehistoric history YouTube channel.
 
 I will send you an English script and a numbered list of sentences (1-based).
-Your task: group the script into SCENES — one image per scene.
+Your task: create scenes using the strict rule ONE SENTENCE = ONE SCENE = ONE IMAGE.
 
-GROUPING RULES:
-- Short sentences (<6 words) on the same theme → group into 1 scene
-- Long independent sentences → 1 scene each
-- Stat/quote + following explanation → group together
-- Target: ~100-120 scenes for an ~8-10 minute script
+SCENE RULES:
+- Every numbered sentence must become exactly one scene.
+- Do not group multiple sentences into one scene.
+- Do not split one sentence into multiple scenes.
+- `sentences` must always contain exactly one sentence index. Example: [5], never [5,6].
+- `scene_text` must be the exact original sentence for that scene.
+- Total scene count must equal total sentence count.
+- Cover every sentence from 1 to N exactly once, with no omissions and no duplicates.
 
 IMAGE PROMPT STYLE:
 Required style: "cinematic wide shot, photorealistic, natural lighting, shallow depth of field, 16:9, no text"
@@ -93,14 +97,14 @@ OUTPUT: pure JSON array only, no markdown, no explanation.
 Each element:
 {
   "index": 1,
-  "sentences": [1, 2],
-  "scene_text": "combined text",
+  "sentences": [1],
+  "scene_text": "exact sentence 1 text",
   "prompt": "cinematic wide shot...",
   "icon_overlays": [],
   "text_overlays": []
 }
 
-IMPORTANT: Cover all sentences from 1 to N. Miss none."""
+IMPORTANT: Scene 1 must map to sentence 1, scene 2 to sentence 2, and so on through sentence N."""
 
 
 # ── Script parsing ────────────────────────────────────────────────────────────
@@ -141,6 +145,20 @@ def _split_sentences(script_text: str) -> list[str]:
             if part:
                 sentences.append(part)
     return sentences
+
+
+def _looks_vietnamese(text: str) -> bool:
+    vi_chars = set("ăâđêôơưáàảãạấầẩẫậắằẳẵặéèẻẽẹếềểễệíìỉĩịóòỏõọốồổỗộớờởỡợúùủũụứừửữựýỳỷỹỵ")
+    lowered = text.lower()
+    hits = sum(1 for ch in lowered if ch in vi_chars)
+    letters = sum(1 for ch in lowered if ch.isalpha())
+    return hits >= 5 or (letters > 0 and hits / letters >= 0.01)
+
+
+def _select_language_profile(video_id: str, script_text: str) -> tuple[str, str, str]:
+    if video_id.lower().endswith("-vi") or _looks_vietnamese(script_text):
+        return "vi", VI_SYSTEM_PROMPT, VI_NEGATIVE_PROMPT
+    return "en", EN_SYSTEM_PROMPT, EN_NEGATIVE_PROMPT
 
 
 # ── Timestamp computation ─────────────────────────────────────────────────────
@@ -230,9 +248,48 @@ def _parse_json_response(text: str) -> list[dict]:
     return json.loads(text[start:end])
 
 
+def _validate_one_to_one_scenes(scenes: list[dict], sentences: list[str]) -> None:
+    errors = []
+    seen_indices = []
+    sentence_count = len(sentences)
+
+    for scene_idx, scene in enumerate(scenes, 1):
+        sent_indices = scene.get("sentences")
+        if not isinstance(sent_indices, list):
+            errors.append(f"Scene {scene_idx}: sentences must be a list, got {type(sent_indices).__name__}")
+            continue
+        if len(sent_indices) != 1:
+            errors.append(f"Scene {scene_idx}: sentences must contain exactly 1 index, got {sent_indices}")
+            continue
+        sent_idx = sent_indices[0]
+        if not isinstance(sent_idx, int):
+            errors.append(f"Scene {scene_idx}: sentence index must be int, got {sent_idx!r}")
+            continue
+        if sent_idx < 1 or sent_idx > sentence_count:
+            errors.append(f"Scene {scene_idx}: sentence index {sent_idx} out of range 1..{sentence_count}")
+            continue
+        scene_text = scene.get("scene_text", "")
+        if not isinstance(scene_text, str) or not scene_text.strip():
+            errors.append(f"Scene {scene_idx}: scene_text is empty")
+        seen_indices.append(sent_idx)
+
+    missing = sorted(set(range(1, sentence_count + 1)) - set(seen_indices))
+    duplicates = sorted({idx for idx in seen_indices if seen_indices.count(idx) > 1})
+    if missing:
+        errors.append(f"Missing sentence indices: {missing}")
+    if duplicates:
+        errors.append(f"Duplicate sentence indices: {duplicates}")
+
+    if errors:
+        for error in errors:
+            logger.error("Scene validation error: {}", error)
+        logger.error("Model output must be strict 1:1 sentence→scene. Fix prompt/model output and rerun step 4.")
+        sys.exit(1)
+
+
 # ── Scene → timestamp mapping ─────────────────────────────────────────────────
 
-def _map_scene_times(scenes: list[dict], sentence_times: list[dict]) -> list[dict]:
+def _map_scene_times(scenes: list[dict], sentence_times: list[dict], negative_prompt: str) -> list[dict]:
     """Map each scene's sentences[] to start/end timestamps."""
     st_map = {s["index"]: s for s in sentence_times}
     result = []
@@ -252,7 +309,7 @@ def _map_scene_times(scenes: list[dict], sentence_times: list[dict]) -> list[dic
             "start": round(start, 3),
             "end": round(end, 3),
             "prompt": scene.get("prompt", ""),
-            "negative_prompt": VI_NEGATIVE_PROMPT,
+            "negative_prompt": negative_prompt,
             "icon_overlays": scene.get("icon_overlays", []),
             "text_overlays": scene.get("text_overlays", []),
         })
@@ -338,12 +395,14 @@ def run(video_id: str, n_override: int | None = None) -> None:
 
     script_text = _load_script_text(script_path)
     sentences = _split_sentences(script_text)
+    language, system_prompt, negative_prompt = _select_language_profile(video_id, script_text)
 
     if n_override is not None:
         sentences = sentences[:n_override]
         logger.info("Demo mode: using first {} sentences", len(sentences))
 
     logger.info("Script: {} sentences detected", len(sentences))
+    logger.info("Scene generation profile: {}", language.upper())
 
     total_dur = _get_audio_duration(audio_path)
     if total_dur <= 0:
@@ -357,20 +416,32 @@ def run(video_id: str, n_override: int | None = None) -> None:
     if timestamps_path.exists():
         sentence_times = json.loads(timestamps_path.read_text(encoding="utf-8"))
         logger.info("Using sentence timestamps from timestamps.json ({} entries)", len(sentence_times))
+        if n_override is None and len(sentence_times) != len(sentences):
+            logger.error(
+                "timestamps.json has {} entries but script split into {} sentences — 1:1 scene mode requires an exact match",
+                len(sentence_times), len(sentences),
+            )
+            sys.exit(1)
+        if n_override is not None and len(sentence_times) < len(sentences):
+            logger.error(
+                "timestamps.json has {} entries but demo needs {} sentences",
+                len(sentence_times), len(sentences),
+            )
+            sys.exit(1)
     else:
         sentence_times = _compute_sentence_times(sentences, total_dur)
         logger.info("Using proportional timestamps (no timestamps.json found)")
 
-    logger.info("Calling Claude claude-sonnet-4-6 to generate scenes...")
+    logger.info("Calling model to generate 1:1 sentence scenes...")
 
     scenes = None
     last_error = None
     for attempt in range(1, config.CLAUDE_MAX_RETRIES + 2):
         try:
             if use_claude:
-                scenes = _call_claude(script_text, sentences, VI_SYSTEM_PROMPT)
+                scenes = _call_claude(script_text, sentences, system_prompt)
             else:
-                scenes = _call_gemini(script_text, sentences, VI_SYSTEM_PROMPT)
+                scenes = _call_gemini(script_text, sentences, system_prompt)
             break
         except (json.JSONDecodeError, ValueError) as e:
             last_error = e
@@ -387,9 +458,16 @@ def run(video_id: str, n_override: int | None = None) -> None:
         logger.error("All Claude attempts failed: {}", last_error)
         sys.exit(1)
 
-    logger.info("Claude returned {} scenes (from {} sentences)", len(scenes), len(sentences))
+    logger.info("Model returned {} scenes (from {} sentences)", len(scenes), len(sentences))
+    if len(scenes) != len(sentences):
+        logger.warning(
+            "Scene count ({}) != sentence count ({}) — expected 1:1",
+            len(scenes), len(sentences),
+        )
 
-    prompts = _map_scene_times(scenes, sentence_times)
+    _validate_one_to_one_scenes(scenes, sentences)
+
+    prompts = _map_scene_times(scenes, sentence_times, negative_prompt)
 
     # Fix last entry end time to exactly match audio duration
     if prompts:

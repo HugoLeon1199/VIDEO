@@ -39,6 +39,14 @@ class VastManager:
     _RENTED_LOG = os.path.join(os.path.dirname(__file__), "rented_instances.log")
     rented_ids: set[int] = set()
 
+    # Real measured warm seconds-per-image (20 steps, 1024×576, FLUX 8-bit). Add a
+    # GPU here once you've clocked it — used by find_offer to estimate job time
+    # accurately (dlperf/TFLOPS only used as a fallback for unknown cards).
+    MEASURED_SPEED: dict[str, float] = {
+        "RTX 3090": 19.0,   # measured: 50-image batch, ~18.5-19s/img
+    }
+    _BASELINE_TFLOPS = 35.5   # RTX 3090 FP16 TFLOPS — the card MEASURED_SPEED is keyed to
+
     def __init__(self, api_key: str, worker_port: int = 8888):
         self.api_key = api_key
         self.worker_port = worker_port
@@ -58,6 +66,11 @@ class VastManager:
     def find_offer(
         self,
         min_vram_gb: int = 24,
+        max_vram_gb: int = 200,  # no real VRAM cap — any card ≥24GB is fine. The arch
+                                 # gate (max_compute_cap) guarantees it runs FLUX, and
+                                 # _true_cost (GPU + download + upload + storage) picks
+                                 # the cheapest TOTAL, so a big-VRAM card only wins if
+                                 # it's genuinely cheaper overall (e.g. free download).
         gpu_name: str = "",
         max_price_per_hour: float = 1.0,
         min_inet_down_mbps: int = 500,
@@ -66,6 +79,16 @@ class VastManager:
         min_direct_ports: int = 1,
         min_disk_gb: float = 60.0,
         min_cuda: float = 12.2,
+        min_tflops: float = 25.0,    # reject cards too slow for FLUX (FP16 TFLOPS).
+                                     # RTX 3090=35, 4090=81; below ~25 the per-image
+                                     # time balloons and a "cheap $/hr" card ends up
+                                     # costing MORE in total GPU-hours.
+        max_compute_cap: int = 900,  # torch 2.4.1 supports sm_50..sm_90 → compute_cap
+                                     # ≤900. Reject sm_100 (B200=1000) & sm_120 (RTX
+                                     # 50xx / RTX PRO 4000+) — they boot but torch
+                                     # refuses them, so the model downloads (costs $)
+                                     # then NEVER generates. This is the robust gate;
+                                     # the name blacklist below is just belt-and-braces.
         on_demand_only: bool = True,
         prefer_datacenter: bool = True,
         max_inet_cost_per_gb: float = 0.005,   # HARD CAP on download $/GB
@@ -98,9 +121,12 @@ class VastManager:
         - exclude_machine_ids: machine_ids already rented in this batch, so the
           N parallel instances land on N distinct physical hosts.
         """
+        # gpu_ram cap: lte uses a small margin (24GB cards report ~24576MB, but some
+        # read slightly under, so allow up to max_vram_gb+1 GB to not exclude a real
+        # 24GB box while still rejecting 32/40/48GB cards).
         params = {
             "q": {
-                "gpu_ram": {"gte": min_vram_gb * 1024},
+                "gpu_ram": {"gte": min_vram_gb * 1024, "lte": (max_vram_gb + 1) * 1024},
                 "rentable": {"eq": True},
                 "num_gpus": {"eq": 1},
                 "inet_down": {"gte": min_inet_down_mbps},
@@ -168,10 +194,20 @@ class VastManager:
             o for o in offers
             if o.get("dph_total", 999) <= max_price_per_hour
             and o.get("rentable", False)
+            # VRAM band: ≥min (fits 8-bit) AND ≤max (don't overpay for 48GB cards).
+            and (o.get("gpu_ram") or 0) >= min_vram_gb * 1024
+            and (o.get("gpu_ram") or 0) <= (max_vram_gb + 1) * 1024
             and (o.get("inet_down") or 0) >= min_inet_down_mbps
             and (o.get("disk_space") or 0) >= min_disk_gb
             and _reliability(o) >= min_reliability
             and (o.get("cuda_max_good") or 0) >= min_cuda
+            # Arch gate: torch 2.4.1 only supports up to sm_90. compute_cap is sm×10,
+            # so ≤900. This rejects Blackwell (sm_120) & B200 (sm_100) reliably —
+            # the real "card must run our FLUX" check, independent of the name list.
+            and 800 <= (o.get("compute_cap") or 0) <= max_compute_cap
+            # Speed gate: reject cards too slow for FLUX (FP16 TFLOPS). A slow card
+            # is a false bargain — cheap $/hr but many more GPU-hours = higher total.
+            and (o.get("total_flops") or 0) >= min_tflops
             and (not require_verified or o.get("verification") == "verified")
             and (o.get("direct_port_count") or 0) >= min_direct_ports
             # On-demand only: bid/interruptible machines can be yanked mid-batch.
@@ -220,12 +256,19 @@ class VastManager:
         # the actual wall-time per offer:
         #   job_hours = boot + (download_gb / this box's link) + n_images × sec/image
         #   cost = gpu×job_hours + download_gb×$/GB + upload_gb×$/GB + storage
-        # A per-GPU speed table can refine sec/image later; for now scale a baseline
-        # by the offer's dlperf so a faster card gets a shorter estimate.
-        _BASELINE_DLPERF = 40.0   # ~RTX 3090 dlperf, the card sec_per_image was measured on
+        # SPEED: dlperf is a bad proxy for FLUX inference (it weights training/mixed
+        # workloads — an A100 shows high dlperf but low FP16 TFLOPS and draws slowly;
+        # an A40 looked fine on dlperf but rendered ~3-4× slower than a 4090 in
+        # practice). So we estimate sec/image from:
+        #   1) MEASURED_SPEED — real per-GPU times we've actually clocked (most exact),
+        #   2) else scale the baseline by FP16 TFLOPS (total_flops) — far better than
+        #      dlperf for diffusion, since denoising is compute-bound.
         def _job_hours(o: dict) -> float:
-            dlperf = o.get("dlperf") or _BASELINE_DLPERF
-            spi = sec_per_image * (_BASELINE_DLPERF / max(dlperf, 1.0))   # faster card → fewer s/img
+            name = o.get("gpu_name", "")
+            spi = self.MEASURED_SPEED.get(name)
+            if spi is None:
+                tflops = o.get("total_flops") or self._BASELINE_TFLOPS
+                spi = sec_per_image * (self._BASELINE_TFLOPS / max(tflops, 1.0))
             link_mbps = max(o.get("inet_down") or 1.0, 1.0)
             dl_sec = expected_download_gb * 8 * 1024 / link_mbps          # GB→Mb / Mbps = s
             return (boot_seconds + dl_sec + n_images * spi) / 3600.0

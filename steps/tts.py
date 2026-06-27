@@ -3,6 +3,8 @@
 from __future__ import annotations
 
 import asyncio
+import hashlib
+import importlib.metadata
 import json
 import os
 import shutil
@@ -17,6 +19,8 @@ from loguru import logger
 import config
 from steps.text_units import SentenceUnit, load_script_text, load_sentence_units, split_paragraph_texts
 
+
+BLOCK_CACHE_SCHEMA_VERSION = "block-tts-v2"
 
 VIENEU_BLOCK_DEFAULTS = {
     "block_target_min_seconds": 10.0,
@@ -88,6 +92,19 @@ def _merge_dict(base: dict, override: dict | None) -> dict:
     return merged
 
 
+def _package_version(package_name: str) -> str:
+    try:
+        return importlib.metadata.version(package_name)
+    except importlib.metadata.PackageNotFoundError:
+        return "unknown"
+
+
+def _json_fingerprint(payload: dict) -> str:
+    return hashlib.sha256(
+        json.dumps(payload, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode("utf-8")
+    ).hexdigest()
+
+
 def _trim_trailing_silence(
     audio,
     sample_rate: int,
@@ -148,7 +165,7 @@ def _load_tts_config(video_dir: Path) -> dict:
     tts_config_path = video_dir / "tts_config.json"
     if not tts_config_path.exists():
         return {}
-    return json.loads(tts_config_path.read_text(encoding="utf-8"))
+    return json.loads(tts_config_path.read_text(encoding="utf-8-sig"))
 
 
 def _invalidate_timestamps(video_dir: Path) -> None:
@@ -179,6 +196,30 @@ def _load_manifest(video_dir: Path) -> dict:
     return json.loads(manifest_path.read_text(encoding="utf-8"))
 
 
+def _load_existing_manifest(video_dir: Path) -> dict | None:
+    manifest_path = video_dir / "tts_blocks" / "blocks.json"
+    if not manifest_path.exists():
+        return None
+    return json.loads(manifest_path.read_text(encoding="utf-8"))
+
+
+def _validate_reusable_wav(video_dir: Path, wav_path: str, expected_sample_rate: int) -> bool:
+    import soundfile as sf
+
+    candidate = video_dir / wav_path
+    if not candidate.exists() or candidate.stat().st_size <= 0:
+        return False
+    try:
+        info = sf.info(str(candidate))
+    except Exception:
+        return False
+    if info.samplerate != expected_sample_rate:
+        return False
+    if info.frames <= 0 or (info.frames / info.samplerate) <= 0:
+        return False
+    return True
+
+
 def _sentence_indices_are_contiguous(blocks: list[dict], expected_count: int) -> None:
     actual = [idx for block in blocks for idx in block["sentence_indices"]]
     expected = list(range(1, expected_count + 1))
@@ -196,20 +237,25 @@ class BlockSpec:
     estimated_seconds: float
     normalized_chars: int | None = None
     phoneme_chars: int | None = None
+    block_hash: str | None = None
 
 
 class VieNeuRuntime:
-    def __init__(self, voice: str, block_config: dict, infer_overrides: dict | None = None):
+    package_name = "vieneu"
+
+    def __init__(self, voice: str, block_config: dict, infer_overrides: dict | None = None, speed: float | None = None):
         import numpy as np  # noqa: F401
         from vieneu import Vieneu
         from vieneu_utils.phonemize_text import PuncNormalizer
 
         os.environ["HF_HUB_DISABLE_SYMLINKS_WARNING"] = "1"
         self.voice = voice
+        self.speed = speed
         self.block_config = block_config
         self.normalizer = PuncNormalizer()
         self.tts = Vieneu()
         self.sample_rate = self.tts.sample_rate
+        self.package_version = _package_version(self.package_name)
         self.infer_params = _merge_dict(VIENEU_INFER_DEFAULTS, infer_overrides)
         self.infer_params["voice"] = voice
         self.infer_params["max_new_frames"] = block_config["max_new_frames"]
@@ -235,13 +281,16 @@ class VieNeuRuntime:
 
 
 class KokoroRuntime:
-    def __init__(self):
+    package_name = "kokoro"
+
+    def __init__(self, voice: str | None = None, speed: float | None = None):
         from kokoro import KPipeline
 
         self.pipeline = KPipeline(lang_code="a")
         self.sample_rate = 24000
-        self.voice = config.TTS_VOICE
-        self.speed = config.TTS_SPEED
+        self.voice = voice or config.TTS_VOICE
+        self.speed = config.TTS_SPEED if speed is None else speed
+        self.package_version = _package_version(self.package_name)
 
     def phoneme_chars(self, text: str) -> int:
         phoneme_text, _tokens = self.pipeline.g2p(text, preprocess=True)
@@ -263,6 +312,37 @@ class KokoroRuntime:
             "voice": self.voice,
             "speed": self.speed,
         }
+
+
+def _effective_kokoro_infer_params(runtime: KokoroRuntime) -> dict:
+    return {
+        "voice": runtime.voice,
+        "speed": runtime.speed,
+    }
+
+
+def _compute_block_hash(
+    *,
+    engine: str,
+    voice: str | None,
+    speed: float | None,
+    block_config: dict,
+    infer_params: dict,
+    block_text: str,
+    engine_version: str,
+) -> str:
+    return _json_fingerprint(
+        {
+            "cache_schema_version": BLOCK_CACHE_SCHEMA_VERSION,
+            "engine": engine,
+            "voice": voice,
+            "speed": speed,
+            "block_config": block_config,
+            "infer_params": infer_params,
+            "block_text": block_text,
+            "engine_version": engine_version,
+        }
+    )
 
 
 def _build_vieneu_blocks(sentence_units: list[SentenceUnit], runtime: VieNeuRuntime) -> list[BlockSpec]:
@@ -337,15 +417,16 @@ def _build_kokoro_blocks(sentence_units: list[SentenceUnit], runtime: KokoroRunt
                 f"({single_phonemes} phoneme chars)"
             )
 
+        if not current:
+            current = [unit]
+            continue
+
         candidate = current + [unit]
         candidate_spec = finalize(candidate)
-        if candidate_spec.phoneme_chars > block_config["block_hard_max_phoneme_chars"]:
-            raise RuntimeError(
-                f"Kokoro candidate block exceeded hard cap with sentence {unit.sentence_index}: "
-                f"{candidate_spec.phoneme_chars}"
-            )
-
-        if current and candidate_spec.phoneme_chars > block_config["block_soft_max_phoneme_chars"]:
+        if (
+            candidate_spec.phoneme_chars > block_config["block_soft_max_phoneme_chars"]
+            or candidate_spec.phoneme_chars > block_config["block_hard_max_phoneme_chars"]
+        ):
             blocks.append(finalize(current))
             current = [unit]
         else:
@@ -393,6 +474,7 @@ def _recompute_block_spec(block: BlockSpec, engine: str, runtime, block_config: 
             raw_chars=block.raw_chars,
             estimated_seconds=runtime.estimate_seconds(block.text),
             normalized_chars=normalized_chars,
+            block_hash=block.block_hash,
         )
     phoneme_chars = runtime.phoneme_chars(block.text)
     return BlockSpec(
@@ -403,7 +485,56 @@ def _recompute_block_spec(block: BlockSpec, engine: str, runtime, block_config: 
         raw_chars=block.raw_chars,
         estimated_seconds=runtime.estimate_seconds(block.text),
         phoneme_chars=phoneme_chars,
+        block_hash=block.block_hash,
     )
+
+
+def _attach_block_hashes(
+    blocks: list[BlockSpec],
+    *,
+    engine: str,
+    voice: str | None,
+    speed: float | None,
+    block_config: dict,
+    infer_params: dict,
+    engine_version: str,
+) -> list[BlockSpec]:
+    hashed_blocks: list[BlockSpec] = []
+    for block in blocks:
+        hashed_blocks.append(
+            BlockSpec(
+                sentence_units=block.sentence_units,
+                text=block.text,
+                sentence_indices=block.sentence_indices,
+                sentence_texts=block.sentence_texts,
+                raw_chars=block.raw_chars,
+                estimated_seconds=block.estimated_seconds,
+                normalized_chars=block.normalized_chars,
+                phoneme_chars=block.phoneme_chars,
+                block_hash=_compute_block_hash(
+                    engine=engine,
+                    voice=voice,
+                    speed=speed,
+                    block_config=block_config,
+                    infer_params=infer_params,
+                    block_text=block.text,
+                    engine_version=engine_version,
+                ),
+            )
+        )
+    return hashed_blocks
+
+
+def _existing_blocks_by_hash(existing_manifest: dict | None) -> dict[str, list[dict]]:
+    grouped: dict[str, list[dict]] = {}
+    if not existing_manifest:
+        return grouped
+    for block in existing_manifest.get("blocks", []):
+        block_hash = block.get("block_hash")
+        if not block_hash:
+            continue
+        grouped.setdefault(block_hash, []).append(block)
+    return grouped
 
 
 def _render_sentence_fallback_block(
@@ -474,9 +605,31 @@ def _generate_vieneu_block_entry(
     block_index: int,
     block: BlockSpec,
     runtime: VieNeuRuntime,
+    reuse_candidate: dict | None = None,
 ) -> tuple[list[BlockSpec], dict | None]:
     block = _recompute_block_spec(block, "vieneu", runtime, runtime.block_config)
     cfg = runtime.block_config
+    if reuse_candidate and _validate_reusable_wav(video_dir, reuse_candidate["wav_path"], runtime.sample_rate):
+        return [], {
+            **reuse_candidate,
+            "block_index": block_index,
+            "sentence_indices": block.sentence_indices,
+            "sentence_texts": block.sentence_texts,
+            "text": block.text,
+            "raw_chars": block.raw_chars,
+            "normalized_chars": block.normalized_chars,
+            "phoneme_chars": None,
+            "estimated_seconds": round(block.estimated_seconds, 3),
+            "gap_after_ms": cfg["gap_after_ms"],
+            "infer_params": dict(runtime.infer_params),
+            "block_hash": block.block_hash,
+            "cache_schema_version": BLOCK_CACHE_SCHEMA_VERSION,
+            "engine_version": runtime.package_version,
+            "voice": runtime.voice,
+            "speed": runtime.speed,
+            "generation_status": "reused",
+        }
+
     audio, sample_rate, infer_params = runtime.synthesize(block.text)
     trailing_silence = _measure_trailing_silence(audio, sample_rate, threshold=cfg["trim_trailing_threshold"])
     if trailing_silence > cfg["abnormal_trailing_silence_seconds"]:
@@ -513,6 +666,12 @@ def _generate_vieneu_block_entry(
             "infer_params": infer_params,
             "fallback_level": fallback["fallback_level"],
             "fallback_segments": fallback["fallback_segments"],
+            "block_hash": block.block_hash,
+            "cache_schema_version": BLOCK_CACHE_SCHEMA_VERSION,
+            "engine_version": runtime.package_version,
+            "voice": runtime.voice,
+            "speed": runtime.speed,
+            "generation_status": "fallback",
         }
 
     wav_path = video_dir / "tts_blocks" / f"block_{block_index:03d}.wav"
@@ -533,6 +692,12 @@ def _generate_vieneu_block_entry(
         "gap_after_ms": cfg["gap_after_ms"],
         "infer_params": infer_params,
         "fallback_level": 0,
+        "block_hash": block.block_hash,
+        "cache_schema_version": BLOCK_CACHE_SCHEMA_VERSION,
+        "engine_version": runtime.package_version,
+        "voice": runtime.voice,
+        "speed": runtime.speed,
+        "generation_status": "regenerated",
     }
     return [], entry
 
@@ -543,8 +708,30 @@ def _generate_kokoro_block_entry(
     block: BlockSpec,
     runtime: KokoroRuntime,
     block_config: dict,
+    reuse_candidate: dict | None = None,
 ) -> tuple[list[BlockSpec], dict | None]:
     block = _recompute_block_spec(block, "kokoro", runtime, block_config)
+    if reuse_candidate and _validate_reusable_wav(video_dir, reuse_candidate["wav_path"], runtime.sample_rate):
+        return [], {
+            **reuse_candidate,
+            "block_index": block_index,
+            "sentence_indices": block.sentence_indices,
+            "sentence_texts": block.sentence_texts,
+            "text": block.text,
+            "raw_chars": block.raw_chars,
+            "normalized_chars": None,
+            "phoneme_chars": block.phoneme_chars,
+            "estimated_seconds": round(block.estimated_seconds, 3),
+            "gap_after_ms": block_config["gap_after_ms"],
+            "infer_params": _effective_kokoro_infer_params(runtime),
+            "block_hash": block.block_hash,
+            "cache_schema_version": BLOCK_CACHE_SCHEMA_VERSION,
+            "engine_version": runtime.package_version,
+            "voice": runtime.voice,
+            "speed": runtime.speed,
+            "generation_status": "reused",
+        }
+
     audio, sample_rate, infer_params = runtime.synthesize(block.text)
     actual_seconds = len(audio) / sample_rate
     if actual_seconds > block_config["block_hard_max_seconds"] and len(block.sentence_units) > 1:
@@ -568,6 +755,12 @@ def _generate_kokoro_block_entry(
         "gap_after_ms": block_config["gap_after_ms"],
         "infer_params": infer_params,
         "fallback_level": 0,
+        "block_hash": block.block_hash,
+        "cache_schema_version": BLOCK_CACHE_SCHEMA_VERSION,
+        "engine_version": runtime.package_version,
+        "voice": runtime.voice,
+        "speed": runtime.speed,
+        "generation_status": "regenerated",
     }
     return [], entry
 
@@ -612,34 +805,86 @@ def _run_block_mode(video_dir: Path, script_path: Path, engine: str, voice: str,
         sys.exit(1)
 
     tts_blocks_dir = video_dir / "tts_blocks"
-    if tts_blocks_dir.exists():
-        shutil.rmtree(tts_blocks_dir)
     tts_blocks_dir.mkdir(parents=True, exist_ok=True)
+    existing_manifest = _load_existing_manifest(video_dir)
 
     if engine == "vieneu":
         block_config = _merge_dict(VIENEU_BLOCK_DEFAULTS, tts_cfg.get("block_config"))
-        runtime = VieNeuRuntime(voice=voice, block_config=block_config, infer_overrides=tts_cfg.get("infer_params"))
-        initial_blocks = _build_vieneu_blocks(sentence_units, runtime)
+        runtime = VieNeuRuntime(
+            voice=voice,
+            block_config=block_config,
+            infer_overrides=tts_cfg.get("infer_params"),
+            speed=tts_cfg.get("speed"),
+        )
+        initial_blocks = _attach_block_hashes(
+            _build_vieneu_blocks(sentence_units, runtime),
+            engine=engine,
+            voice=runtime.voice,
+            speed=runtime.speed,
+            block_config=block_config,
+            infer_params=runtime.infer_params,
+            engine_version=runtime.package_version,
+        )
     else:
         block_config = _merge_dict(KOKORO_BLOCK_DEFAULTS, tts_cfg.get("block_config"))
-        runtime = KokoroRuntime()
-        initial_blocks = _build_kokoro_blocks(sentence_units, runtime, block_config)
+        runtime = KokoroRuntime(voice=tts_cfg.get("voice"), speed=tts_cfg.get("speed"))
+        initial_blocks = _attach_block_hashes(
+            _build_kokoro_blocks(sentence_units, runtime, block_config),
+            engine=engine,
+            voice=runtime.voice,
+            speed=runtime.speed,
+            block_config=block_config,
+            infer_params=_effective_kokoro_infer_params(runtime),
+            engine_version=runtime.package_version,
+        )
 
     queue = list(initial_blocks)
     final_blocks: list[dict] = []
     block_index = 1
+    existing_by_hash = _existing_blocks_by_hash(existing_manifest)
+    reused_count = 0
+    regenerated_count = 0
+    fallback_count = 0
     while queue:
         block = queue.pop(0)
+        if not block.block_hash:
+            block = _attach_block_hashes(
+                [block],
+                engine=engine,
+                voice=runtime.voice,
+                speed=runtime.speed,
+                block_config=block_config,
+                infer_params=runtime.infer_params if engine == "vieneu" else _effective_kokoro_infer_params(runtime),
+                engine_version=runtime.package_version,
+            )[0]
+        reuse_candidate = None
+        if block.block_hash:
+            candidates = existing_by_hash.get(block.block_hash, [])
+            while candidates:
+                candidate = candidates.pop(0)
+                if _validate_reusable_wav(video_dir, candidate["wav_path"], runtime.sample_rate):
+                    reuse_candidate = candidate
+                    break
         if engine == "vieneu":
-            replacement_blocks, entry = _generate_vieneu_block_entry(video_dir, block_index, block, runtime)
+            replacement_blocks, entry = _generate_vieneu_block_entry(
+                video_dir, block_index, block, runtime, reuse_candidate=reuse_candidate
+            )
         else:
-            replacement_blocks, entry = _generate_kokoro_block_entry(video_dir, block_index, block, runtime, block_config)
+            replacement_blocks, entry = _generate_kokoro_block_entry(
+                video_dir, block_index, block, runtime, block_config, reuse_candidate=reuse_candidate
+            )
         if replacement_blocks:
             queue = replacement_blocks + queue
             continue
         if entry is None:
             raise RuntimeError("Block generation returned neither replacement blocks nor manifest entry")
         final_blocks.append(entry)
+        if entry.get("generation_status") == "reused":
+            reused_count += 1
+        else:
+            regenerated_count += 1
+        if entry.get("fallback_level") == 2:
+            fallback_count += 1
         block_index += 1
         logger.info("  TTS block progress: {}/{}", len(final_blocks), len(final_blocks) + len(queue))
 
@@ -648,10 +893,16 @@ def _run_block_mode(video_dir: Path, script_path: Path, engine: str, voice: str,
         "engine": engine,
         "mode": "block",
         "voice": voice if engine == "vieneu" else runtime.voice,
+        "speed": runtime.speed,
         "sample_rate": final_blocks[0]["sample_rate"] if final_blocks else None,
         "sentence_count": len(sentence_units),
         "block_count": len(final_blocks),
         "block_config": block_config,
+        "cache_schema_version": BLOCK_CACHE_SCHEMA_VERSION,
+        "engine_version": runtime.package_version,
+        "reused_block_count": reused_count,
+        "regenerated_block_count": regenerated_count,
+        "fallback_block_count": fallback_count,
         "blocks": final_blocks,
     }
     _rebuild_audio_from_manifest(video_dir, manifest)
@@ -662,7 +913,13 @@ def _run_block_mode(video_dir: Path, script_path: Path, engine: str, voice: str,
         "sentence_count": len(sentence_units),
         "block_count": len(final_blocks),
         "voice": manifest["voice"],
+        "speed": runtime.speed,
         "block_config": block_config,
+        "cache_schema_version": BLOCK_CACHE_SCHEMA_VERSION,
+        "engine_version": runtime.package_version,
+        "reused_block_count": reused_count,
+        "regenerated_block_count": regenerated_count,
+        "fallback_block_count": fallback_count,
     }
     (tts_blocks_dir / "diagnostics.json").write_text(
         json.dumps(diagnostics, ensure_ascii=False, indent=2),
@@ -740,15 +997,35 @@ def _run_sentence_legacy_mode(
     tmp_dir = Path(tempfile.mkdtemp(prefix="tts_sentence_legacy_"))
     try:
         wavs: list[Path] = []
+        vieneu_runtime = None
+        kokoro_runtime = None
+        if tts_engine == "vieneu":
+            vieneu_runtime = VieNeuRuntime(
+                voice=edge_voice,
+                block_config=_merge_dict(VIENEU_BLOCK_DEFAULTS, None),
+                infer_overrides=None,
+            )
+        elif tts_engine == "kokoro":
+            kokoro_runtime = KokoroRuntime()
         for i, sentence in enumerate(sentences, start=1):
             wav_path = tmp_dir / f"sent_{i:04d}.wav"
             if tts_engine == "edge":
                 mp3_path = tmp_dir / f"sent_{i:04d}.mp3"
                 asyncio.run(_edge_tts_async(sentence, mp3_path, voice=edge_voice, rate=edge_rate, log=False))
                 subprocess.run(["ffmpeg", "-y", "-i", str(mp3_path), str(wav_path)], check=True, capture_output=True)
+            elif tts_engine == "vieneu":
+                assert vieneu_runtime is not None
+                audio, sample_rate, _ = vieneu_runtime.synthesize(sentence)
+                audio = _trim_trailing_silence(
+                    audio,
+                    sample_rate,
+                    threshold=vieneu_runtime.block_config["trim_trailing_threshold"],
+                    keep_ms=vieneu_runtime.block_config["trim_trailing_keep_ms"],
+                )
+                _write_wav(audio, sample_rate, wav_path)
             else:
-                runtime = KokoroRuntime()
-                audio, sample_rate, _ = runtime.synthesize(sentence)
+                assert kokoro_runtime is not None
+                audio, sample_rate, _ = kokoro_runtime.synthesize(sentence)
                 _write_wav(audio, sample_rate, wav_path)
             wavs.append(wav_path)
 
@@ -868,10 +1145,11 @@ def materialize_sentence_fallback_for_block(video_dir: Path, block_index: int) -
             voice=tts_cfg.get("voice", manifest.get("voice", "Bình An")),
             block_config=block_config,
             infer_overrides=tts_cfg.get("infer_params"),
+            speed=tts_cfg.get("speed"),
         )
     else:
         block_config = _merge_dict(KOKORO_BLOCK_DEFAULTS, tts_cfg.get("block_config"))
-        runtime = KokoroRuntime()
+        runtime = KokoroRuntime(voice=tts_cfg.get("voice", manifest.get("voice")), speed=tts_cfg.get("speed", manifest.get("speed")))
 
     block_spec = BlockSpec(
         sentence_units=[],
@@ -889,8 +1167,15 @@ def materialize_sentence_fallback_for_block(video_dir: Path, block_index: int) -
     block["actual_seconds"] = fallback["actual_seconds"]
     block["fallback_level"] = 2
     block["fallback_segments"] = fallback["fallback_segments"]
+    block["generation_status"] = "fallback"
     _rebuild_audio_from_manifest(video_dir, manifest)
+    manifest["fallback_block_count"] = sum(1 for item in manifest["blocks"] if item.get("fallback_level") == 2)
     _write_manifest(video_dir, manifest)
+    diagnostics_path = video_dir / "tts_blocks" / "diagnostics.json"
+    if diagnostics_path.exists():
+        diagnostics = json.loads(diagnostics_path.read_text(encoding="utf-8"))
+        diagnostics["fallback_block_count"] = manifest["fallback_block_count"]
+        diagnostics_path.write_text(json.dumps(diagnostics, ensure_ascii=False, indent=2), encoding="utf-8")
     return block
 
 

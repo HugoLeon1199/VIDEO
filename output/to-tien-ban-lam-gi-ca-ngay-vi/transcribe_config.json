@@ -1,1 +1,1 @@
-{"model": "medium", "language": "vi"}
+{"engine": "stable_ts", "model": "medium", "language": "vi", "mode": "align", "device": "cpu"}

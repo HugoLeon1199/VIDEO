@@ -15,6 +15,8 @@ import config
 from steps import tts as tts_step
 from steps.text_units import load_sentence_units
 
+MAX_BLOCK_ALIGNMENT_RESTARTS = 2
+
 
 def _normalize_token(text: str) -> str:
     lowered = text.lower()
@@ -45,12 +47,14 @@ def _load_blocks_manifest(video_dir: Path) -> dict | None:
     return json.loads(manifest_path.read_text(encoding="utf-8"))
 
 
-def _blocks_are_newer(video_dir: Path, manifest_path: Path, timestamps_path: Path) -> bool:
-    if not manifest_path.exists():
+def _should_use_block_mode(video_dir: Path, manifest: dict | None) -> bool:
+    if not manifest:
         return False
-    if not timestamps_path.exists():
-        return True
-    return manifest_path.stat().st_mtime > timestamps_path.stat().st_mtime
+    if manifest.get("mode") != "block":
+        return False
+    if not manifest.get("blocks"):
+        return False
+    return (video_dir / "audio_master.wav").exists()
 
 
 def _collect_aligned_words(result) -> list[dict]:
@@ -143,7 +147,6 @@ def _timestamps_from_fallback_segments(block: dict, starting_index: int) -> list
 
 def _run_stable_ts_blocks(
     video_dir: Path,
-    manifest: dict,
     model_name: str,
     language: str,
     device: str,
@@ -155,103 +158,138 @@ def _run_stable_ts_blocks(
     model = stable_whisper.load_model(model_name, device=device)
     audio_master_path = video_dir / "audio_master.wav"
     audio_duration = _audio_duration(audio_master_path)
-    all_timestamps: list[dict] = []
-    cursor_index = 1
-    block_diagnostics: list[dict] = []
+    for restart_count in range(MAX_BLOCK_ALIGNMENT_RESTARTS + 1):
+        manifest = _load_blocks_manifest(video_dir)
+        if not _should_use_block_mode(video_dir, manifest):
+            logger.error("Block-aware stable-ts requested but block artifacts are incomplete")
+            sys.exit(1)
 
-    for block in manifest["blocks"]:
-        if block.get("fallback_level") == 2 and block.get("fallback_segments"):
-            timestamps = _timestamps_from_fallback_segments(block, cursor_index)
+        all_timestamps: list[dict] = []
+        cursor_index = 1
+        block_diagnostics: list[dict] = []
+        restart_needed = False
+
+        for block in manifest["blocks"]:
+            if block.get("fallback_level") == 2 and block.get("fallback_segments"):
+                timestamps = _timestamps_from_fallback_segments(block, cursor_index)
+                if not timestamps or any(item["end"] <= item["start"] for item in timestamps):
+                    logger.error("Block {} is already fallback_level=2 but fallback timestamps are invalid", block["block_index"])
+                    sys.exit(1)
+                all_timestamps.extend(timestamps)
+                block_diagnostics.append(
+                    {
+                        "block_index": block["block_index"],
+                        "coverage": 1.0,
+                        "used_fallback_segments": True,
+                    }
+                )
+                cursor_index += len(block["sentence_texts"])
+                continue
+
+            block_wav = video_dir / block["wav_path"]
+            canonical_text = " ".join(block["sentence_texts"])
+            result = model.align(str(block_wav), canonical_text, language=language)
+            aligned_words = _collect_aligned_words(result)
+            timestamps, coverage, all_matched = _map_aligned_words_to_sentences(
+                block["sentence_texts"],
+                aligned_words,
+                float(block["audio_start"]),
+                cursor_index,
+            )
+
+            if coverage < 0.90 or not all_matched:
+                if block.get("fallback_level") == 2:
+                    logger.error(
+                        "Block {} is already fallback_level=2 but still failed stable-ts validation ({:.2%}, all_matched={})",
+                        block["block_index"],
+                        coverage,
+                        all_matched,
+                    )
+                    sys.exit(1)
+                if restart_count >= MAX_BLOCK_ALIGNMENT_RESTARTS:
+                    logger.error(
+                        "Block {} exceeded maximum stable-ts fallback restarts ({})",
+                        block["block_index"],
+                        MAX_BLOCK_ALIGNMENT_RESTARTS,
+                    )
+                    sys.exit(1)
+                logger.warning(
+                    "Block {} alignment coverage {:.2%} (all_matched={}) -> sentence fallback and restart",
+                    block["block_index"],
+                    coverage,
+                    all_matched,
+                )
+                tts_step.materialize_sentence_fallback_for_block(video_dir, block["block_index"])
+                restart_needed = True
+                break
+
             all_timestamps.extend(timestamps)
             block_diagnostics.append(
                 {
                     "block_index": block["block_index"],
-                    "coverage": 1.0,
-                    "used_fallback_segments": True,
+                    "coverage": round(coverage, 4),
+                    "used_fallback_segments": False,
                 }
             )
             cursor_index += len(block["sentence_texts"])
+
+        if restart_needed:
+            logger.info(
+                "Restarting stable-ts block alignment after fallback rebuild ({}/{})",
+                restart_count + 1,
+                MAX_BLOCK_ALIGNMENT_RESTARTS,
+            )
             continue
 
-        block_wav = video_dir / block["wav_path"]
-        canonical_text = " ".join(block["sentence_texts"])
-        result = model.align(str(block_wav), canonical_text, language=language)
-        aligned_words = _collect_aligned_words(result)
-        timestamps, coverage, all_matched = _map_aligned_words_to_sentences(
-            block["sentence_texts"],
-            aligned_words,
-            float(block["audio_start"]),
-            cursor_index,
-        )
+        if not all_timestamps:
+            logger.error("No timestamps produced in block-aware stable-ts mode")
+            sys.exit(1)
 
-        if coverage < 0.90 or not all_matched:
-            logger.warning(
-                "Block {} alignment coverage {:.2%} (all_matched={}) -> sentence fallback",
-                block["block_index"],
-                coverage,
-                all_matched,
+        if len(all_timestamps) != manifest["sentence_count"]:
+            logger.error(
+                "Timestamp count {} does not match manifest sentence count {}",
+                len(all_timestamps),
+                manifest["sentence_count"],
             )
-            patched_block = tts_step.materialize_sentence_fallback_for_block(video_dir, block["block_index"])
-            timestamps = _timestamps_from_fallback_segments(patched_block, cursor_index)
-            coverage = 1.0
-            all_matched = True
+            sys.exit(1)
 
-        all_timestamps.extend(timestamps)
-        block_diagnostics.append(
-            {
-                "block_index": block["block_index"],
-                "coverage": round(coverage, 4),
-                "used_fallback_segments": block.get("fallback_level") == 2,
-            }
+        prev_end = 0.0
+        for entry in all_timestamps:
+            entry["start"] = round(max(entry["start"], prev_end), 3)
+            entry["end"] = round(max(entry["end"], entry["start"] + 0.1), 3)
+            prev_end = entry["end"]
+
+        if audio_duration and abs(all_timestamps[-1]["end"] - audio_duration) > 2.5:
+            logger.error(
+                "Final timestamp {:.3f}s drifts too far from audio_master duration {:.3f}s",
+                all_timestamps[-1]["end"],
+                audio_duration,
+            )
+            sys.exit(1)
+
+        diagnostics_path = video_dir / "tts_blocks" / "alignment_diagnostics.json"
+        diagnostics_path.write_text(
+            json.dumps(
+                {
+                    "engine": "stable_ts",
+                    "mode": "block",
+                    "audio_duration": round(audio_duration, 3),
+                    "restart_count": restart_count,
+                    "blocks": block_diagnostics,
+                },
+                ensure_ascii=False,
+                indent=2,
+            ),
+            encoding="utf-8",
         )
-        cursor_index += len(block["sentence_texts"])
+        return all_timestamps
 
-    if not all_timestamps:
-        logger.error("No timestamps produced in block-aware stable-ts mode")
-        sys.exit(1)
-
-    if len(all_timestamps) != manifest["sentence_count"]:
-        logger.error(
-            "Timestamp count {} does not match manifest sentence count {}",
-            len(all_timestamps),
-            manifest["sentence_count"],
-        )
-        sys.exit(1)
-
-    prev_end = 0.0
-    for entry in all_timestamps:
-        entry["start"] = round(max(entry["start"], prev_end), 3)
-        entry["end"] = round(max(entry["end"], entry["start"] + 0.1), 3)
-        prev_end = entry["end"]
-
-    if audio_duration and abs(all_timestamps[-1]["end"] - audio_duration) > 2.5:
-        logger.error(
-            "Final timestamp {:.3f}s drifts too far from audio_master duration {:.3f}s",
-            all_timestamps[-1]["end"],
-            audio_duration,
-        )
-        sys.exit(1)
-
-    diagnostics_path = video_dir / "tts_blocks" / "alignment_diagnostics.json"
-    diagnostics_path.write_text(
-        json.dumps(
-            {
-                "engine": "stable_ts",
-                "mode": "block",
-                "audio_duration": round(audio_duration, 3),
-                "blocks": block_diagnostics,
-            },
-            ensure_ascii=False,
-            indent=2,
-        ),
-        encoding="utf-8",
-    )
-    return all_timestamps
+    logger.error("Stable-ts block alignment exhausted restart guard unexpectedly")
+    sys.exit(1)
 
 
 def _run_faster_whisper_blocks(
     video_dir: Path,
-    manifest: dict,
     model_name: str,
     language: str | None,
 ) -> list[dict]:
@@ -261,111 +299,147 @@ def _run_faster_whisper_blocks(
     model = WhisperModel(model_name, device="cpu", compute_type="int8")
     audio_master_path = video_dir / "audio_master.wav"
     audio_duration = _audio_duration(audio_master_path)
-    all_timestamps: list[dict] = []
-    cursor_index = 1
-    block_diagnostics: list[dict] = []
+    for restart_count in range(MAX_BLOCK_ALIGNMENT_RESTARTS + 1):
+        manifest = _load_blocks_manifest(video_dir)
+        if not _should_use_block_mode(video_dir, manifest):
+            logger.error("Block-aware faster-whisper requested but block artifacts are incomplete")
+            sys.exit(1)
 
-    for block in manifest["blocks"]:
-        if block.get("fallback_level") == 2 and block.get("fallback_segments"):
-            timestamps = _timestamps_from_fallback_segments(block, cursor_index)
+        all_timestamps: list[dict] = []
+        cursor_index = 1
+        block_diagnostics: list[dict] = []
+        restart_needed = False
+
+        for block in manifest["blocks"]:
+            if block.get("fallback_level") == 2 and block.get("fallback_segments"):
+                timestamps = _timestamps_from_fallback_segments(block, cursor_index)
+                if not timestamps or any(item["end"] <= item["start"] for item in timestamps):
+                    logger.error("Block {} is already fallback_level=2 but fallback timestamps are invalid", block["block_index"])
+                    sys.exit(1)
+                all_timestamps.extend(timestamps)
+                block_diagnostics.append(
+                    {
+                        "block_index": block["block_index"],
+                        "coverage": 1.0,
+                        "used_fallback_segments": True,
+                    }
+                )
+                cursor_index += len(block["sentence_texts"])
+                continue
+
+            block_wav = video_dir / block["wav_path"]
+            kwargs = {"word_timestamps": True}
+            if language:
+                kwargs["language"] = language
+            segments_gen, _info = model.transcribe(str(block_wav), **kwargs)
+            aligned_words = []
+            for seg in segments_gen:
+                if not seg.words:
+                    continue
+                for word in seg.words:
+                    normalized = _normalize_token(word.word)
+                    if not normalized or word.start is None or word.end is None:
+                        continue
+                    aligned_words.append(
+                        {
+                            "word": word.word,
+                            "normalized": normalized,
+                            "start": float(word.start),
+                            "end": float(word.end),
+                        }
+                    )
+
+            timestamps, coverage, all_matched = _map_aligned_words_to_sentences(
+                block["sentence_texts"],
+                aligned_words,
+                float(block["audio_start"]),
+                cursor_index,
+            )
+            if coverage < 0.90 or not all_matched:
+                if block.get("fallback_level") == 2:
+                    logger.error(
+                        "Block {} is already fallback_level=2 but still failed faster-whisper validation ({:.2%}, all_matched={})",
+                        block["block_index"],
+                        coverage,
+                        all_matched,
+                    )
+                    sys.exit(1)
+                if restart_count >= MAX_BLOCK_ALIGNMENT_RESTARTS:
+                    logger.error(
+                        "Block {} exceeded maximum faster-whisper fallback restarts ({})",
+                        block["block_index"],
+                        MAX_BLOCK_ALIGNMENT_RESTARTS,
+                    )
+                    sys.exit(1)
+                logger.warning(
+                    "Block {} faster-whisper coverage {:.2%} (all_matched={}) -> sentence fallback and restart",
+                    block["block_index"],
+                    coverage,
+                    all_matched,
+                )
+                tts_step.materialize_sentence_fallback_for_block(video_dir, block["block_index"])
+                restart_needed = True
+                break
+
             all_timestamps.extend(timestamps)
             block_diagnostics.append(
                 {
                     "block_index": block["block_index"],
-                    "coverage": 1.0,
-                    "used_fallback_segments": True,
+                    "coverage": round(coverage, 4),
+                    "used_fallback_segments": False,
                 }
             )
             cursor_index += len(block["sentence_texts"])
+
+        if restart_needed:
+            logger.info(
+                "Restarting faster-whisper block alignment after fallback rebuild ({}/{})",
+                restart_count + 1,
+                MAX_BLOCK_ALIGNMENT_RESTARTS,
+            )
             continue
 
-        block_wav = video_dir / block["wav_path"]
-        kwargs = {"word_timestamps": True}
-        if language:
-            kwargs["language"] = language
-        segments_gen, _info = model.transcribe(str(block_wav), **kwargs)
-        aligned_words = []
-        for seg in segments_gen:
-            if not seg.words:
-                continue
-            for word in seg.words:
-                normalized = _normalize_token(word.word)
-                if not normalized or word.start is None or word.end is None:
-                    continue
-                aligned_words.append(
-                    {
-                        "word": word.word,
-                        "normalized": normalized,
-                        "start": float(word.start),
-                        "end": float(word.end),
-                    }
-                )
-
-        timestamps, coverage, all_matched = _map_aligned_words_to_sentences(
-            block["sentence_texts"],
-            aligned_words,
-            float(block["audio_start"]),
-            cursor_index,
-        )
-        if coverage < 0.90 or not all_matched:
-            logger.warning(
-                "Block {} faster-whisper coverage {:.2%} (all_matched={}) -> sentence fallback",
-                block["block_index"],
-                coverage,
-                all_matched,
+        if len(all_timestamps) != manifest["sentence_count"]:
+            logger.error(
+                "Timestamp count {} does not match manifest sentence count {}",
+                len(all_timestamps),
+                manifest["sentence_count"],
             )
-            patched_block = tts_step.materialize_sentence_fallback_for_block(video_dir, block["block_index"])
-            timestamps = _timestamps_from_fallback_segments(patched_block, cursor_index)
-            coverage = 1.0
-            all_matched = True
+            sys.exit(1)
 
-        all_timestamps.extend(timestamps)
-        block_diagnostics.append(
-            {
-                "block_index": block["block_index"],
-                "coverage": round(coverage, 4),
-                "used_fallback_segments": block.get("fallback_level") == 2,
-            }
+        prev_end = 0.0
+        for entry in all_timestamps:
+            entry["start"] = round(max(entry["start"], prev_end), 3)
+            entry["end"] = round(max(entry["end"], entry["start"] + 0.1), 3)
+            prev_end = entry["end"]
+
+        if audio_duration and abs(all_timestamps[-1]["end"] - audio_duration) > 2.5:
+            logger.error(
+                "Final timestamp {:.3f}s drifts too far from audio_master duration {:.3f}s",
+                all_timestamps[-1]["end"],
+                audio_duration,
+            )
+            sys.exit(1)
+
+        diagnostics_path = video_dir / "tts_blocks" / "alignment_diagnostics.json"
+        diagnostics_path.write_text(
+            json.dumps(
+                {
+                    "engine": "faster_whisper",
+                    "mode": "block",
+                    "audio_duration": round(audio_duration, 3),
+                    "restart_count": restart_count,
+                    "blocks": block_diagnostics,
+                },
+                ensure_ascii=False,
+                indent=2,
+            ),
+            encoding="utf-8",
         )
-        cursor_index += len(block["sentence_texts"])
+        return all_timestamps
 
-    if len(all_timestamps) != manifest["sentence_count"]:
-        logger.error(
-            "Timestamp count {} does not match manifest sentence count {}",
-            len(all_timestamps),
-            manifest["sentence_count"],
-        )
-        sys.exit(1)
-
-    prev_end = 0.0
-    for entry in all_timestamps:
-        entry["start"] = round(max(entry["start"], prev_end), 3)
-        entry["end"] = round(max(entry["end"], entry["start"] + 0.1), 3)
-        prev_end = entry["end"]
-
-    if audio_duration and abs(all_timestamps[-1]["end"] - audio_duration) > 2.5:
-        logger.error(
-            "Final timestamp {:.3f}s drifts too far from audio_master duration {:.3f}s",
-            all_timestamps[-1]["end"],
-            audio_duration,
-        )
-        sys.exit(1)
-
-    diagnostics_path = video_dir / "tts_blocks" / "alignment_diagnostics.json"
-    diagnostics_path.write_text(
-        json.dumps(
-            {
-                "engine": "faster_whisper",
-                "mode": "block",
-                "audio_duration": round(audio_duration, 3),
-                "blocks": block_diagnostics,
-            },
-            ensure_ascii=False,
-            indent=2,
-        ),
-        encoding="utf-8",
-    )
-    return all_timestamps
+    logger.error("Faster-whisper block alignment exhausted restart guard unexpectedly")
+    sys.exit(1)
 
 
 def _run_stable_ts_full(
@@ -515,7 +589,7 @@ def run(video_id: str) -> None:
 
     cfg_path = video_dir / "transcribe_config.json"
     if cfg_path.exists():
-        cfg = json.loads(cfg_path.read_text(encoding="utf-8"))
+        cfg = json.loads(cfg_path.read_text(encoding="utf-8-sig"))
         engine = cfg.get("engine", engine)
         whisper_model = cfg.get("model", whisper_model)
         whisper_language = cfg.get("language", whisper_language)
@@ -530,14 +604,12 @@ def run(video_id: str) -> None:
             device,
         )
 
-    manifest_path = video_dir / "tts_blocks" / "blocks.json"
     manifest = _load_blocks_manifest(video_dir)
-    use_block_mode = manifest is not None and _blocks_are_newer(video_dir, manifest_path, output_path)
+    use_block_mode = _should_use_block_mode(video_dir, manifest)
 
     if use_block_mode and engine == "stable_ts":
         result = _run_stable_ts_blocks(
             video_dir,
-            manifest,
             model_name=whisper_model,
             language=whisper_language or "vi",
             device=device,
@@ -545,7 +617,6 @@ def run(video_id: str) -> None:
     elif use_block_mode:
         result = _run_faster_whisper_blocks(
             video_dir,
-            manifest,
             model_name=whisper_model,
             language=whisper_language,
         )

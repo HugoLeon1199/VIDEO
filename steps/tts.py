@@ -1,246 +1,683 @@
-"""Step 2: Text-to-Speech using Kokoro TTS (local), fallback to edge-tts, or RunPod F5-TTS clone.
+"""Step 2: Text-to-Speech with block-aware production paths for VieNeu and Kokoro."""
 
-Sentence mode (tts_config.json: "mode": "sentence"):
-  - Splits script.txt into sentences using the same logic as transcribe.py align mode
-  - Generates TTS for each sentence individually → knows exact duration per sentence
-  - Concatenates all sentence audio into audio.mp3
-  - Writes timestamps.json directly → step 3 (Whisper) is skipped automatically
-  - Result: 100% sync between audio and timestamps, no Whisper drift
-"""
+from __future__ import annotations
 
 import asyncio
 import json
-import re
+import os
+import shutil
 import subprocess
 import sys
 import tempfile
+from dataclasses import dataclass
 from pathlib import Path
 
 from loguru import logger
 
 import config
+from steps.text_units import SentenceUnit, load_script_text, load_sentence_units, split_paragraph_texts
 
 
-# ── Sentence splitter (mirrors transcribe.py logic) ──────────────────────────
+VIENEU_BLOCK_DEFAULTS = {
+    "block_target_min_seconds": 10.0,
+    "block_target_max_seconds": 16.0,
+    "block_soft_max_seconds": 18.0,
+    "block_hard_max_seconds": 20.0,
+    "initial_chars_per_second": 14.0,
+    "block_soft_max_normalized_chars": 240,
+    "block_hard_max_normalized_chars": 280,
+    "max_chars": 384,
+    "max_new_frames": 300,
+    "gap_after_ms": 300,
+    "fallback_sentence_gap_ms": 220,
+    "trim_trailing_threshold": 0.01,
+    "trim_trailing_keep_ms": 120,
+    "abnormal_trailing_silence_seconds": 1.2,
+}
 
-_SCRIPT_STOP_MARKERS = (
-    "COMMENT SEED:",
-    "RESEARCH NOTES:",
-    "Your script is ready",
-    "Save as:",
-    "Then: python",
-)
+VIENEU_INFER_DEFAULTS = {
+    "temperature": 0.45,
+    "top_k": 25,
+    "top_p": 0.92,
+    "repetition_penalty": 1.18,
+    "crossfade_p": 0.0,
+    "silence_p": 0.15,
+    "max_new_frames": 300,
+    "max_chars": 384,
+    "apply_watermark": False,
+}
 
-
-def _split_script_sentences(script_path: Path) -> list[str]:
-    text = script_path.read_text(encoding="utf-8").lstrip("﻿")
-    for marker in _SCRIPT_STOP_MARKERS:
-        idx = text.find(marker)
-        if idx != -1:
-            text = text[:idx]
-    paragraphs = re.split(r"\n{2,}", text)
-    sentences = []
-    first = True
-    for para in paragraphs:
-        para = para.strip()
-        if not para:
-            continue
-        if first:
-            first = False
-            if not re.search(r"[.!?]$", para) and len(para.split()) <= 12:
-                continue
-        for part in re.split(r"(?<=[.!?])\s+", para):
-            part = part.strip()
-            if part:
-                sentences.append(part)
-    return sentences
-
-
-def _split_script_paragraphs(script_path: Path) -> list[str]:
-    text = script_path.read_text(encoding="utf-8").lstrip("\ufeff")
-    for marker in _SCRIPT_STOP_MARKERS:
-        idx = text.find(marker)
-        if idx != -1:
-            text = text[:idx]
-    paragraphs = re.split(r"\n{2,}", text)
-    cleaned = []
-    first = True
-    for para in paragraphs:
-        para = re.sub(r"\s+", " ", para.strip())
-        if not para:
-            continue
-        if first:
-            first = False
-            if not re.search(r"[.!?]$", para) and len(para.split()) <= 12:
-                continue
-        cleaned.append(para)
-    return cleaned
-
-
-def _split_vieneu_chunks(script_path: Path, legacy: bool = False) -> list[dict]:
-    """Split script into VieNeu-safe chunks with EOS reliability.
-
-    VieNeu v3 Turbo fails to find EOS for clauses containing a comma — the
-    phonemizer does not emit a pause/EOS signal mid-sentence, so generation
-    runs to max_new_frames (300 → 24s).  Splitting on commas in addition to
-    sentence-ending punctuation keeps every chunk short enough for reliable EOS.
-
-    Returns a list of chunk dicts.
-    - ``text`` is the original spoken clause used for timestamps/diagnostics
-    - ``synth_text`` is the text actually sent to VieNeu
-    - ``is_sentence_end=True``  → end of a full sentence (. ! ?) → 300ms silence gap
-    - ``is_sentence_end=False`` → comma split inside a sentence → shorter comma gap
-
-    Default mode adds a terminal period to intermediate comma chunks so VieNeu sees
-    a clean EOS marker instead of an abruptly truncated fragment. Set ``legacy=True``
-    to keep the old behavior for before/after comparison.
-    """
-    text = script_path.read_text(encoding="utf-8").lstrip("﻿")
-    for marker in _SCRIPT_STOP_MARKERS:
-        idx = text.find(marker)
-        if idx != -1:
-            text = text[:idx]
-
-    paragraphs = re.split(r"\n{2,}", text)
-    chunks: list[dict] = []
-    first = True
-    for para in paragraphs:
-        para = para.strip()
-        if not para:
-            continue
-        if first:
-            first = False
-            if not re.search(r"[.!?]$", para) and len(para.split()) <= 12:
-                continue
-        # Split on sentence-ending punctuation first
-        for sent in re.split(r"(?<=[.!?])\s+", para):
-            sent = sent.strip()
-            if not sent:
-                continue
-            # Then split each sentence on commas — keeps chunks EOS-safe
-            parts = re.split(r",\s*", sent)
-            for j, part in enumerate(parts):
-                part = part.strip()
-                if not part:
-                    continue
-                is_last = (j == len(parts) - 1)
-                synth_text = part
-                if not is_last and not legacy and not re.search(r"[.!?…]$", synth_text):
-                    synth_text = f"{synth_text}."
-                chunks.append(
-                    {
-                        "text": part,
-                        "synth_text": synth_text,
-                        "is_sentence_end": is_last,
-                    }
-                )
-    return chunks
+KOKORO_BLOCK_DEFAULTS = {
+    "block_soft_max_phoneme_chars": 420,
+    "block_hard_max_phoneme_chars": 500,
+    "official_phoneme_cap": 510,
+    "block_target_min_seconds": 12.0,
+    "block_target_max_seconds": 22.0,
+    "block_hard_max_seconds": 25.0,
+    "gap_after_ms": 300,
+    "fallback_sentence_gap_ms": 220,
+}
 
 
 def _get_audio_duration(audio_path: Path) -> float:
-    """Return duration in seconds using ffprobe."""
     try:
         result = subprocess.run(
             [
-                "ffprobe", "-v", "error",
-                "-show_entries", "format=duration",
-                "-of", "default=noprint_wrappers=1:nokey=1",
+                "ffprobe",
+                "-v",
+                "error",
+                "-show_entries",
+                "format=duration",
+                "-of",
+                "default=noprint_wrappers=1:nokey=1",
                 str(audio_path),
             ],
             capture_output=True,
             text=True,
+            check=True,
         )
         return float(result.stdout.strip())
-    except (ValueError, FileNotFoundError):
+    except (ValueError, FileNotFoundError, subprocess.CalledProcessError):
         return 0.0
 
 
-def _kokoro_tts(text: str, output_path: Path) -> None:
-    from kokoro import KPipeline
+def _merge_dict(base: dict, override: dict | None) -> dict:
+    merged = dict(base)
+    if override:
+        merged.update(override)
+    return merged
+
+
+def _trim_trailing_silence(
+    audio,
+    sample_rate: int,
+    threshold: float = 0.01,
+    keep_ms: int = 120,
+):
     import numpy as np
+
+    if audio.size == 0:
+        return audio
+    loud = np.abs(audio) > threshold
+    if not loud.any():
+        return audio[:0]
+    last = len(loud) - int(np.argmax(loud[::-1]))
+    keep = int(keep_ms / 1000 * sample_rate)
+    end = min(len(audio), last + keep)
+    return audio[:end]
+
+
+def _measure_trailing_silence(audio, sample_rate: int, threshold: float = 0.01) -> float:
+    import numpy as np
+
+    if audio.size == 0:
+        return 0.0
+    loud = np.abs(audio) > threshold
+    if not loud.any():
+        return len(audio) / sample_rate
+    last = len(loud) - int(np.argmax(loud[::-1]))
+    return max(0.0, (len(audio) - last) / sample_rate)
+
+
+def _write_wav(audio, sample_rate: int, output_path: Path) -> None:
     import soundfile as sf
 
-    logger.info("Using Kokoro TTS (voice: {})", config.TTS_VOICE)
-    pipeline = KPipeline(lang_code="a")  # American English
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    sf.write(str(output_path), audio, sample_rate)
 
-    audio_chunks = []
-    for _, _, audio in pipeline(text, voice=config.TTS_VOICE, speed=config.TTS_SPEED):
-        audio_chunks.append(audio)
 
-    if not audio_chunks:
-        raise RuntimeError("Kokoro produced no audio output")
-
-    combined = np.concatenate(audio_chunks)
-    sample_rate = 24000  # Kokoro default
-
-    with tempfile.NamedTemporaryFile(suffix=".wav", delete=False) as tmp:
-        tmp_path = Path(tmp.name)
-
-    sf.write(str(tmp_path), combined, sample_rate)
-
-    # Convert WAV → MP3 via ffmpeg
+def _wav_to_mp3(input_wav: Path, output_mp3: Path) -> None:
     subprocess.run(
-        ["ffmpeg", "-y", "-i", str(tmp_path), "-codec:a", "libmp3lame", "-qscale:a", "0", str(output_path)],
+        [
+            "ffmpeg",
+            "-y",
+            "-i",
+            str(input_wav),
+            "-codec:a",
+            "libmp3lame",
+            "-qscale:a",
+            "0",
+            str(output_mp3),
+        ],
         check=True,
         capture_output=True,
     )
-    tmp_path.unlink(missing_ok=True)
-    logger.info("Kokoro TTS complete → {}", output_path)
 
 
-def _vieneu_tts(text: str, output_path: Path, voice: str = "Thái Sơn") -> None:
-    """LEGACY whole-script VieNeu path — NOT used by run() anymore.
+def _load_tts_config(video_dir: Path) -> dict:
+    tts_config_path = video_dir / "tts_config.json"
+    if not tts_config_path.exists():
+        return {}
+    return json.loads(tts_config_path.read_text(encoding="utf-8"))
 
-    Kept for reference/manual use only.  Feeding the whole script at once makes
-    VieNeu v3 Turbo run to max_new_frames (~20s of silence) after every clause
-    that contains a comma.  Production VieNeu now goes through
-    _run_vieneu_sentence_mode() (comma-aware chunking + synced timestamps).
-    """
-    import os, subprocess, tempfile
+
+def _invalidate_timestamps(video_dir: Path) -> None:
+    timestamps_path = video_dir / "timestamps.json"
+    stale_path = video_dir / "timestamps.stale.json"
+    if timestamps_path.exists():
+        shutil.move(str(timestamps_path), str(stale_path))
+        logger.info("Renamed stale timestamps.json -> {}", stale_path.name)
+    marker = {
+        "reason": "block_tts_generated",
+        "audio": "audio_master.wav",
+        "manifest": "tts_blocks/blocks.json",
+    }
+    (video_dir / "tts_blocks" / "needs_alignment.json").write_text(
+        json.dumps(marker, ensure_ascii=False, indent=2),
+        encoding="utf-8",
+    )
+
+
+def _write_manifest(video_dir: Path, manifest: dict) -> None:
+    manifest_path = video_dir / "tts_blocks" / "blocks.json"
+    manifest_path.parent.mkdir(parents=True, exist_ok=True)
+    manifest_path.write_text(json.dumps(manifest, ensure_ascii=False, indent=2), encoding="utf-8")
+
+
+def _load_manifest(video_dir: Path) -> dict:
+    manifest_path = video_dir / "tts_blocks" / "blocks.json"
+    return json.loads(manifest_path.read_text(encoding="utf-8"))
+
+
+def _sentence_indices_are_contiguous(blocks: list[dict], expected_count: int) -> None:
+    actual = [idx for block in blocks for idx in block["sentence_indices"]]
+    expected = list(range(1, expected_count + 1))
+    if actual != expected:
+        raise RuntimeError(f"Sentence coverage mismatch in blocks manifest: expected {expected[:5]}... got {actual[:5]}...")
+
+
+@dataclass
+class BlockSpec:
+    sentence_units: list[SentenceUnit]
+    text: str
+    sentence_indices: list[int]
+    sentence_texts: list[str]
+    raw_chars: int
+    estimated_seconds: float
+    normalized_chars: int | None = None
+    phoneme_chars: int | None = None
+
+
+class VieNeuRuntime:
+    def __init__(self, voice: str, block_config: dict, infer_overrides: dict | None = None):
+        import numpy as np  # noqa: F401
+        from vieneu import Vieneu
+        from vieneu_utils.phonemize_text import PuncNormalizer
+
+        os.environ["HF_HUB_DISABLE_SYMLINKS_WARNING"] = "1"
+        self.voice = voice
+        self.block_config = block_config
+        self.normalizer = PuncNormalizer()
+        self.tts = Vieneu()
+        self.sample_rate = self.tts.sample_rate
+        self.infer_params = _merge_dict(VIENEU_INFER_DEFAULTS, infer_overrides)
+        self.infer_params["voice"] = voice
+        self.infer_params["max_new_frames"] = block_config["max_new_frames"]
+        self.infer_params["max_chars"] = block_config["max_chars"]
+
+    def normalized_chars(self, text: str) -> int:
+        normalized_text = self.normalizer.normalize(text, punc_norm=True)
+        return len(normalized_text)
+
+    def estimate_seconds(self, text: str) -> float:
+        return self.normalized_chars(text) / self.block_config["initial_chars_per_second"]
+
+    def synthesize(self, text: str, infer_params: dict | None = None):
+        import numpy as np
+
+        params = dict(self.infer_params)
+        if infer_params:
+            params.update(infer_params)
+        audio = self.tts.infer(text, **params)
+        if audio.ndim > 1:
+            audio = audio.mean(axis=1)
+        return audio.astype(np.float32), self.sample_rate, params
+
+
+class KokoroRuntime:
+    def __init__(self):
+        from kokoro import KPipeline
+
+        self.pipeline = KPipeline(lang_code="a")
+        self.sample_rate = 24000
+        self.voice = config.TTS_VOICE
+        self.speed = config.TTS_SPEED
+
+    def phoneme_chars(self, text: str) -> int:
+        phoneme_text, _tokens = self.pipeline.g2p(text, preprocess=True)
+        return len(phoneme_text)
+
+    def estimate_seconds(self, text: str) -> float:
+        word_count = max(1, len(text.split()))
+        return word_count / 2.6
+
+    def synthesize(self, text: str):
+        import numpy as np
+
+        chunks = [audio for _gs, _ps, audio in self.pipeline(text, voice=self.voice, speed=self.speed)]
+        if not chunks:
+            raise RuntimeError("Kokoro produced no audio output")
+        if len(chunks) > 1:
+            raise RuntimeError("Kokoro internal-split block unexpectedly; lower phoneme limit or split block")
+        return np.concatenate(chunks), self.sample_rate, {
+            "voice": self.voice,
+            "speed": self.speed,
+        }
+
+
+def _build_vieneu_blocks(sentence_units: list[SentenceUnit], runtime: VieNeuRuntime) -> list[BlockSpec]:
+    cfg = runtime.block_config
+    blocks: list[BlockSpec] = []
+    current: list[SentenceUnit] = []
+
+    def finalize(units: list[SentenceUnit]) -> BlockSpec:
+        text = " ".join(unit.text for unit in units)
+        return BlockSpec(
+            sentence_units=list(units),
+            text=text,
+            sentence_indices=[unit.sentence_index for unit in units],
+            sentence_texts=[unit.text for unit in units],
+            raw_chars=len(text),
+            normalized_chars=runtime.normalized_chars(text),
+            estimated_seconds=runtime.estimate_seconds(text),
+        )
+
+    for unit in sentence_units:
+        single_norm = runtime.normalized_chars(unit.text)
+        single_seconds = runtime.estimate_seconds(unit.text)
+        if single_norm > cfg["block_hard_max_normalized_chars"] or single_seconds > cfg["block_hard_max_seconds"]:
+            raise RuntimeError(
+                f"Sentence {unit.sentence_index} exceeds VieNeu block limit "
+                f"({single_norm} normalized chars, {single_seconds:.2f}s estimated)"
+            )
+
+        if current and unit.paragraph_index != current[-1].paragraph_index:
+            current_spec = finalize(current)
+            if current_spec.estimated_seconds >= 8.0:
+                blocks.append(current_spec)
+                current = []
+
+        candidate = current + [unit]
+        candidate_spec = finalize(candidate)
+        if current and (
+            candidate_spec.normalized_chars > cfg["block_soft_max_normalized_chars"]
+            or candidate_spec.estimated_seconds > cfg["block_target_max_seconds"]
+        ):
+            blocks.append(finalize(current))
+            current = [unit]
+        else:
+            current = candidate
+
+    if current:
+        blocks.append(finalize(current))
+    return blocks
+
+
+def _build_kokoro_blocks(sentence_units: list[SentenceUnit], runtime: KokoroRuntime, block_config: dict) -> list[BlockSpec]:
+    blocks: list[BlockSpec] = []
+    current: list[SentenceUnit] = []
+
+    def finalize(units: list[SentenceUnit]) -> BlockSpec:
+        text = " ".join(unit.text for unit in units)
+        return BlockSpec(
+            sentence_units=list(units),
+            text=text,
+            sentence_indices=[unit.sentence_index for unit in units],
+            sentence_texts=[unit.text for unit in units],
+            raw_chars=len(text),
+            phoneme_chars=runtime.phoneme_chars(text),
+            estimated_seconds=runtime.estimate_seconds(text),
+        )
+
+    for unit in sentence_units:
+        single_phonemes = runtime.phoneme_chars(unit.text)
+        if single_phonemes > block_config["block_hard_max_phoneme_chars"]:
+            raise RuntimeError(
+                f"Sentence {unit.sentence_index} exceeds Kokoro block limit "
+                f"({single_phonemes} phoneme chars)"
+            )
+
+        candidate = current + [unit]
+        candidate_spec = finalize(candidate)
+        if candidate_spec.phoneme_chars > block_config["block_hard_max_phoneme_chars"]:
+            raise RuntimeError(
+                f"Kokoro candidate block exceeded hard cap with sentence {unit.sentence_index}: "
+                f"{candidate_spec.phoneme_chars}"
+            )
+
+        if current and candidate_spec.phoneme_chars > block_config["block_soft_max_phoneme_chars"]:
+            blocks.append(finalize(current))
+            current = [unit]
+        else:
+            current = candidate
+
+    if current:
+        blocks.append(finalize(current))
+    return blocks
+
+
+def _split_block_midpoint(block: BlockSpec) -> list[BlockSpec]:
+    if len(block.sentence_units) <= 1:
+        raise RuntimeError(f"Cannot split block with only one sentence: {block.sentence_indices}")
+    mid = len(block.sentence_units) // 2
+    left = block.sentence_units[:mid]
+    right = block.sentence_units[mid:]
+    return [
+        BlockSpec(
+            sentence_units=left,
+            text=" ".join(unit.text for unit in left),
+            sentence_indices=[unit.sentence_index for unit in left],
+            sentence_texts=[unit.text for unit in left],
+            raw_chars=len(" ".join(unit.text for unit in left)),
+            estimated_seconds=0.0,
+        ),
+        BlockSpec(
+            sentence_units=right,
+            text=" ".join(unit.text for unit in right),
+            sentence_indices=[unit.sentence_index for unit in right],
+            sentence_texts=[unit.text for unit in right],
+            raw_chars=len(" ".join(unit.text for unit in right)),
+            estimated_seconds=0.0,
+        ),
+    ]
+
+
+def _recompute_block_spec(block: BlockSpec, engine: str, runtime, block_config: dict) -> BlockSpec:
+    if engine == "vieneu":
+        normalized_chars = runtime.normalized_chars(block.text)
+        return BlockSpec(
+            sentence_units=block.sentence_units,
+            text=block.text,
+            sentence_indices=block.sentence_indices,
+            sentence_texts=block.sentence_texts,
+            raw_chars=block.raw_chars,
+            estimated_seconds=runtime.estimate_seconds(block.text),
+            normalized_chars=normalized_chars,
+        )
+    phoneme_chars = runtime.phoneme_chars(block.text)
+    return BlockSpec(
+        sentence_units=block.sentence_units,
+        text=block.text,
+        sentence_indices=block.sentence_indices,
+        sentence_texts=block.sentence_texts,
+        raw_chars=block.raw_chars,
+        estimated_seconds=runtime.estimate_seconds(block.text),
+        phoneme_chars=phoneme_chars,
+    )
+
+
+def _render_sentence_fallback_block(
+    video_dir: Path,
+    block_index: int,
+    block: BlockSpec,
+    engine: str,
+    runtime,
+    block_config: dict,
+    infer_retry_params: dict | None = None,
+) -> dict:
     import numpy as np
-    os.environ["HF_HUB_DISABLE_SYMLINKS_WARNING"] = "1"
-    from vieneu import Vieneu
 
-    logger.info("Using VieNeu TTS v3 Turbo (voice: {})", voice)
-    tts = Vieneu()
+    tts_blocks_dir = video_dir / "tts_blocks"
+    gap_ms = int(block_config.get("fallback_sentence_gap_ms", 220))
+    sample_rate = runtime.sample_rate
+    sentence_gap = np.zeros(int(gap_ms / 1000 * sample_rate), dtype=np.float32)
+    combined_parts: list[np.ndarray] = []
+    fallback_segments: list[dict] = []
+    cursor = 0.0
 
-    # temperature=0 → greedy argmax, zero randomness, 100% deterministic per token.
-    # voice= name → voice_token_id=reserved_id (speaker token baked into weights).
-    # Combined: identical prosody for every sentence regardless of position in script.
-    logger.info("VieNeu: synthesizing full script ({} chars)", len(text))
-    combined = tts.infer(
-        text,
-        voice=voice,
-        temperature=0.0,
-        repetition_penalty=1.2,
-        max_chars=1024,
-        crossfade_p=0.0,
-        silence_p=0.15,
-        apply_watermark=False,
+    for sentence_offset, sentence in enumerate(block.sentence_texts, start=1):
+        if engine == "vieneu":
+            audio, _sample_rate, infer_params = runtime.synthesize(sentence, infer_retry_params)
+            audio = _trim_trailing_silence(
+                audio,
+                sample_rate,
+                threshold=block_config["trim_trailing_threshold"],
+                keep_ms=block_config["trim_trailing_keep_ms"],
+            )
+        else:
+            audio, _sample_rate, infer_params = runtime.synthesize(sentence)
+        sentence_path = tts_blocks_dir / f"block_{block_index:03d}_sentence_{sentence_offset:03d}.wav"
+        _write_wav(audio, sample_rate, sentence_path)
+        duration = len(audio) / sample_rate
+        fallback_segments.append(
+            {
+                "sentence_index": block.sentence_indices[sentence_offset - 1],
+                "text": sentence,
+                "wav_path": str(sentence_path.relative_to(video_dir)).replace("\\", "/"),
+                "actual_seconds": round(duration, 3),
+                "start_in_block": round(cursor, 3),
+                "end_in_block": round(cursor + duration, 3),
+                "gap_after_ms": gap_ms if sentence_offset != len(block.sentence_texts) else 0,
+                "infer_params": infer_params,
+            }
+        )
+        combined_parts.append(audio)
+        cursor += duration
+        if sentence_offset != len(block.sentence_texts):
+            combined_parts.append(sentence_gap)
+            cursor += gap_ms / 1000
+
+    combined_audio = np.concatenate(combined_parts) if combined_parts else np.zeros(0, dtype=np.float32)
+    wav_path = tts_blocks_dir / f"block_{block_index:03d}.wav"
+    _write_wav(combined_audio, sample_rate, wav_path)
+    return {
+        "wav_path": str(wav_path.relative_to(video_dir)).replace("\\", "/"),
+        "sample_rate": sample_rate,
+        "actual_seconds": round(len(combined_audio) / sample_rate, 3),
+        "fallback_level": 2,
+        "fallback_segments": fallback_segments,
+    }
+
+
+def _generate_vieneu_block_entry(
+    video_dir: Path,
+    block_index: int,
+    block: BlockSpec,
+    runtime: VieNeuRuntime,
+) -> tuple[list[BlockSpec], dict | None]:
+    block = _recompute_block_spec(block, "vieneu", runtime, runtime.block_config)
+    cfg = runtime.block_config
+    audio, sample_rate, infer_params = runtime.synthesize(block.text)
+    trailing_silence = _measure_trailing_silence(audio, sample_rate, threshold=cfg["trim_trailing_threshold"])
+    if trailing_silence > cfg["abnormal_trailing_silence_seconds"]:
+        audio, sample_rate, infer_params = runtime.synthesize(block.text, {"temperature": 0.25})
+
+    audio = _trim_trailing_silence(
+        audio,
+        sample_rate,
+        threshold=cfg["trim_trailing_threshold"],
+        keep_ms=cfg["trim_trailing_keep_ms"],
     )
-    if combined.ndim > 1:
-        combined = combined.mean(axis=1)
-    combined = combined.astype(np.float32)
-    logger.info("VieNeu: synthesis done, {:.1f}s of audio", len(combined) / tts.sample_rate)
+    actual_seconds = len(audio) / sample_rate
+    if actual_seconds >= 23.0 or (actual_seconds > cfg["block_hard_max_seconds"] and len(block.sentence_units) > 1):
+        children = [_recompute_block_spec(child, "vieneu", runtime, cfg) for child in _split_block_midpoint(block)]
+        return children, None
+    if audio.size == 0:
+        fallback = _render_sentence_fallback_block(
+            video_dir, block_index, block, "vieneu", runtime, cfg, {"temperature": 0.25}
+        )
+        return [], {
+            "block_index": block_index,
+            "engine": "vieneu",
+            "sentence_indices": block.sentence_indices,
+            "sentence_texts": block.sentence_texts,
+            "text": block.text,
+            "raw_chars": block.raw_chars,
+            "normalized_chars": block.normalized_chars,
+            "phoneme_chars": None,
+            "estimated_seconds": round(block.estimated_seconds, 3),
+            "actual_seconds": fallback["actual_seconds"],
+            "wav_path": fallback["wav_path"],
+            "sample_rate": fallback["sample_rate"],
+            "gap_after_ms": cfg["gap_after_ms"],
+            "infer_params": infer_params,
+            "fallback_level": fallback["fallback_level"],
+            "fallback_segments": fallback["fallback_segments"],
+        }
 
-    with tempfile.NamedTemporaryFile(suffix=".wav", delete=False) as tmp:
-        tmp_path = Path(tmp.name)
+    wav_path = video_dir / "tts_blocks" / f"block_{block_index:03d}.wav"
+    _write_wav(audio, sample_rate, wav_path)
+    entry = {
+        "block_index": block_index,
+        "engine": "vieneu",
+        "sentence_indices": block.sentence_indices,
+        "sentence_texts": block.sentence_texts,
+        "text": block.text,
+        "raw_chars": block.raw_chars,
+        "normalized_chars": block.normalized_chars,
+        "phoneme_chars": None,
+        "estimated_seconds": round(block.estimated_seconds, 3),
+        "actual_seconds": round(actual_seconds, 3),
+        "wav_path": str(wav_path.relative_to(video_dir)).replace("\\", "/"),
+        "sample_rate": sample_rate,
+        "gap_after_ms": cfg["gap_after_ms"],
+        "infer_params": infer_params,
+        "fallback_level": 0,
+    }
+    return [], entry
 
+
+def _generate_kokoro_block_entry(
+    video_dir: Path,
+    block_index: int,
+    block: BlockSpec,
+    runtime: KokoroRuntime,
+    block_config: dict,
+) -> tuple[list[BlockSpec], dict | None]:
+    block = _recompute_block_spec(block, "kokoro", runtime, block_config)
+    audio, sample_rate, infer_params = runtime.synthesize(block.text)
+    actual_seconds = len(audio) / sample_rate
+    if actual_seconds > block_config["block_hard_max_seconds"] and len(block.sentence_units) > 1:
+        children = [_recompute_block_spec(child, "kokoro", runtime, block_config) for child in _split_block_midpoint(block)]
+        return children, None
+    wav_path = video_dir / "tts_blocks" / f"block_{block_index:03d}.wav"
+    _write_wav(audio, sample_rate, wav_path)
+    entry = {
+        "block_index": block_index,
+        "engine": "kokoro",
+        "sentence_indices": block.sentence_indices,
+        "sentence_texts": block.sentence_texts,
+        "text": block.text,
+        "raw_chars": block.raw_chars,
+        "normalized_chars": None,
+        "phoneme_chars": block.phoneme_chars,
+        "estimated_seconds": round(block.estimated_seconds, 3),
+        "actual_seconds": round(actual_seconds, 3),
+        "wav_path": str(wav_path.relative_to(video_dir)).replace("\\", "/"),
+        "sample_rate": sample_rate,
+        "gap_after_ms": block_config["gap_after_ms"],
+        "infer_params": infer_params,
+        "fallback_level": 0,
+    }
+    return [], entry
+
+
+def _rebuild_audio_from_manifest(video_dir: Path, manifest: dict) -> None:
+    import numpy as np
     import soundfile as sf
-    sf.write(str(tmp_path), combined, tts.sample_rate)
 
-    subprocess.run(
-        ["ffmpeg", "-y", "-i", str(tmp_path),
-         "-codec:a", "libmp3lame", "-qscale:a", "0", str(output_path)],
-        check=True, capture_output=True,
+    blocks = manifest["blocks"]
+    if not blocks:
+        raise RuntimeError("Cannot rebuild audio: manifest has no blocks")
+
+    combined_parts: list[np.ndarray] = []
+    cursor = 0.0
+    for i, block in enumerate(blocks):
+        wav_path = video_dir / block["wav_path"]
+        audio, sample_rate = sf.read(str(wav_path), dtype="float32")
+        if audio.ndim > 1:
+            audio = audio.mean(axis=1)
+        block["sample_rate"] = sample_rate
+        block["actual_seconds"] = round(len(audio) / sample_rate, 3)
+        block["audio_start"] = round(cursor, 3)
+        block["audio_end"] = round(cursor + len(audio) / sample_rate, 3)
+        combined_parts.append(audio)
+        cursor += len(audio) / sample_rate
+        gap_ms = int(block.get("gap_after_ms", 0)) if i != len(blocks) - 1 else 0
+        if gap_ms > 0:
+            gap = np.zeros(int(gap_ms / 1000 * sample_rate), dtype=np.float32)
+            combined_parts.append(gap)
+            cursor += gap_ms / 1000
+
+    master_audio = np.concatenate(combined_parts)
+    master_wav = video_dir / "audio_master.wav"
+    _write_wav(master_audio, blocks[0]["sample_rate"], master_wav)
+    _wav_to_mp3(master_wav, video_dir / "audio.mp3")
+
+
+def _run_block_mode(video_dir: Path, script_path: Path, engine: str, voice: str, tts_cfg: dict) -> None:
+    sentence_units = load_sentence_units(script_path)
+    if not sentence_units:
+        logger.error("No spoken sentences found in script.txt")
+        sys.exit(1)
+
+    tts_blocks_dir = video_dir / "tts_blocks"
+    if tts_blocks_dir.exists():
+        shutil.rmtree(tts_blocks_dir)
+    tts_blocks_dir.mkdir(parents=True, exist_ok=True)
+
+    if engine == "vieneu":
+        block_config = _merge_dict(VIENEU_BLOCK_DEFAULTS, tts_cfg.get("block_config"))
+        runtime = VieNeuRuntime(voice=voice, block_config=block_config, infer_overrides=tts_cfg.get("infer_params"))
+        initial_blocks = _build_vieneu_blocks(sentence_units, runtime)
+    else:
+        block_config = _merge_dict(KOKORO_BLOCK_DEFAULTS, tts_cfg.get("block_config"))
+        runtime = KokoroRuntime()
+        initial_blocks = _build_kokoro_blocks(sentence_units, runtime, block_config)
+
+    queue = list(initial_blocks)
+    final_blocks: list[dict] = []
+    block_index = 1
+    while queue:
+        block = queue.pop(0)
+        if engine == "vieneu":
+            replacement_blocks, entry = _generate_vieneu_block_entry(video_dir, block_index, block, runtime)
+        else:
+            replacement_blocks, entry = _generate_kokoro_block_entry(video_dir, block_index, block, runtime, block_config)
+        if replacement_blocks:
+            queue = replacement_blocks + queue
+            continue
+        if entry is None:
+            raise RuntimeError("Block generation returned neither replacement blocks nor manifest entry")
+        final_blocks.append(entry)
+        block_index += 1
+        logger.info("  TTS block progress: {}/{}", len(final_blocks), len(final_blocks) + len(queue))
+
+    _sentence_indices_are_contiguous(final_blocks, len(sentence_units))
+    manifest = {
+        "engine": engine,
+        "mode": "block",
+        "voice": voice if engine == "vieneu" else runtime.voice,
+        "sample_rate": final_blocks[0]["sample_rate"] if final_blocks else None,
+        "sentence_count": len(sentence_units),
+        "block_count": len(final_blocks),
+        "block_config": block_config,
+        "blocks": final_blocks,
+    }
+    _rebuild_audio_from_manifest(video_dir, manifest)
+    _write_manifest(video_dir, manifest)
+    diagnostics = {
+        "engine": engine,
+        "mode": "block",
+        "sentence_count": len(sentence_units),
+        "block_count": len(final_blocks),
+        "voice": manifest["voice"],
+        "block_config": block_config,
+    }
+    (tts_blocks_dir / "diagnostics.json").write_text(
+        json.dumps(diagnostics, ensure_ascii=False, indent=2),
+        encoding="utf-8",
     )
-    tmp_path.unlink(missing_ok=True)
-    logger.info("VieNeu TTS complete → {}", output_path)
+    _invalidate_timestamps(video_dir)
 
 
 async def _edge_tts_async(
-    text: str, output_path: Path, voice: str, rate: str = "-5%",
-    retries: int = 4, log: bool = True,
+    text: str,
+    output_path: Path,
+    voice: str,
+    rate: str = "-5%",
+    retries: int = 4,
+    log: bool = True,
 ) -> None:
     import edge_tts
 
@@ -253,16 +690,19 @@ async def _edge_tts_async(
             await communicate.save(str(output_path))
             if output_path.exists() and output_path.stat().st_size > 0:
                 if log:
-                    logger.info("edge-tts complete → {}", output_path)
+                    logger.info("edge-tts complete -> {}", output_path)
                 return
             raise RuntimeError("empty audio file")
-        except Exception as e:  # transient "No audio received" / network throttling
-            last_err = e
+        except Exception as exc:
+            last_err = exc
             if attempt < retries:
                 wait = attempt * 1.5
                 logger.warning(
                     "edge-tts attempt {}/{} failed ({}); retrying in {:.1f}s",
-                    attempt, retries, str(e)[:60], wait,
+                    attempt,
+                    retries,
+                    str(exc)[:60],
+                    wait,
                 )
                 await asyncio.sleep(wait)
     raise RuntimeError(f"edge-tts failed after {retries} attempts: {last_err}")
@@ -272,299 +712,78 @@ def _edge_tts(text: str, output_path: Path, voice: str = "en-US-GuyNeural", rate
     asyncio.run(_edge_tts_async(text, output_path, voice=voice, rate=rate))
 
 
-def _run_sentence_mode(
+def _kokoro_tts(text: str, output_path: Path) -> None:
+    runtime = KokoroRuntime()
+    audio, sample_rate, _infer_params = runtime.synthesize(text)
+    with tempfile.NamedTemporaryFile(suffix=".wav", delete=False) as tmp:
+        tmp_path = Path(tmp.name)
+    try:
+        _write_wav(audio, sample_rate, tmp_path)
+        _wav_to_mp3(tmp_path, output_path)
+    finally:
+        tmp_path.unlink(missing_ok=True)
+    logger.info("Kokoro TTS complete -> {}", output_path)
+
+
+def _run_sentence_legacy_mode(
     sentences: list[str],
-    script_path: Path,
     output_path: Path,
     timestamps_path: Path,
     tts_engine: str,
     edge_voice: str,
     edge_rate: str,
-    silence_ms: int = 300,
 ) -> None:
-    """TTS each sentence individually, concatenate, write timestamps.json.
-
-    For VieNeu engine: uses _split_vieneu_chunks (comma-aware) instead of the
-    sentence list, so every chunk is short enough for reliable EOS detection.
-    Comma-split parts share a timestamp entry with the sentence they belong to.
-
-    silence_ms: gap after sentence-ending punctuation (. ! ?).
-    Comma gaps are half of silence_ms.
-    """
     import numpy as np
     import soundfile as sf
 
-    # ── Edge / Kokoro sentence mode ───────────────────────────────────────────
-    logger.info("Sentence mode: {} sentences, {}ms gap between each", len(sentences), silence_ms)
-
-    tmp_dir = Path(tempfile.mkdtemp(prefix="tts_sentences_"))
-    sentence_wavs: list[Path] = []
-
+    logger.info("Sentence legacy mode: {} sentences", len(sentences))
+    tmp_dir = Path(tempfile.mkdtemp(prefix="tts_sentence_legacy_"))
     try:
-        for i, sentence in enumerate(sentences, 1):
+        wavs: list[Path] = []
+        for i, sentence in enumerate(sentences, start=1):
             wav_path = tmp_dir / f"sent_{i:04d}.wav"
-            mp3_tmp = tmp_dir / f"sent_{i:04d}.mp3"
-
             if tts_engine == "edge":
-                asyncio.run(_edge_tts_async(sentence, mp3_tmp, voice=edge_voice, rate=edge_rate, log=False))
-                subprocess.run(
-                    ["ffmpeg", "-y", "-i", str(mp3_tmp), str(wav_path)],
-                    check=True, capture_output=True,
-                )
+                mp3_path = tmp_dir / f"sent_{i:04d}.mp3"
+                asyncio.run(_edge_tts_async(sentence, mp3_path, voice=edge_voice, rate=edge_rate, log=False))
+                subprocess.run(["ffmpeg", "-y", "-i", str(mp3_path), str(wav_path)], check=True, capture_output=True)
             else:
-                from kokoro import KPipeline
-                pipeline = KPipeline(lang_code="a")
-                chunks = [a for _, _, a in pipeline(sentence, voice=config.TTS_VOICE, speed=config.TTS_SPEED)]
-                if not chunks:
-                    raise RuntimeError(f"Kokoro produced no audio for sentence {i}")
-                combined = np.concatenate(chunks)
-                sf.write(str(wav_path), combined, 24000)
+                runtime = KokoroRuntime()
+                audio, sample_rate, _ = runtime.synthesize(sentence)
+                _write_wav(audio, sample_rate, wav_path)
+            wavs.append(wav_path)
 
-            sentence_wavs.append(wav_path)
-            if i % 10 == 0 or i == len(sentences):
-                logger.info("  TTS progress: {}/{}", i, len(sentences))
-
-        logger.info("Building timestamps and concatenating audio...")
-        if not sentence_wavs:
-            raise RuntimeError("No sentence audio files generated")
-        all_audio = []
-        timestamps = []
+        audio_parts: list[np.ndarray] = []
+        timestamps: list[dict] = []
         cursor = 0.0
-        _, sample_rate = sf.read(str(sentence_wavs[0]), dtype="float32")
-        silence_arr = np.zeros(int(silence_ms / 1000 * sample_rate), dtype=np.float32)
+        silence_ms = 300
+        first_audio, sample_rate = sf.read(str(wavs[0]), dtype="float32")
+        if first_audio.ndim > 1:
+            first_audio = first_audio.mean(axis=1)
+        silence = np.zeros(int(silence_ms / 1000 * sample_rate), dtype=np.float32)
+        for i, wav_path in enumerate(wavs, start=1):
+            audio, sr = sf.read(str(wav_path), dtype="float32")
+            if audio.ndim > 1:
+                audio = audio.mean(axis=1)
+            duration = len(audio) / sr
+            timestamps.append(
+                {
+                    "index": i,
+                    "start": round(cursor, 3),
+                    "end": round(cursor + duration, 3),
+                    "text": sentences[i - 1],
+                }
+            )
+            audio_parts.append(audio)
+            audio_parts.append(silence)
+            cursor += duration + silence_ms / 1000
 
-        for i, wav_path in enumerate(sentence_wavs):
-            data, sr = sf.read(str(wav_path), dtype="float32")
-            if data.ndim > 1:
-                data = data.mean(axis=1)
-            sent_duration = len(data) / sr
-            seg_start = cursor
-            seg_end = cursor + sent_duration
-            timestamps.append({
-                "index": i + 1,
-                "start": round(seg_start, 3),
-                "end": round(seg_end, 3),
-                "text": sentences[i],
-            })
-            all_audio.append(data)
-            all_audio.append(silence_arr)
-            cursor = seg_end + silence_ms / 1000
-
-        full_audio = np.concatenate(all_audio)
+        combined = np.concatenate(audio_parts)
         combined_wav = tmp_dir / "combined.wav"
-        sf.write(str(combined_wav), full_audio, sample_rate)
-        subprocess.run(
-            ["ffmpeg", "-y", "-i", str(combined_wav),
-             "-codec:a", "libmp3lame", "-qscale:a", "0", str(output_path)],
-            check=True, capture_output=True,
-        )
-        timestamps_path.write_text(
-            json.dumps(timestamps, ensure_ascii=False, indent=2), encoding="utf-8"
-        )
-        logger.info(
-            "Sentence mode complete: {} segments, {:.1f}s → {} + {}",
-            len(timestamps),
-            timestamps[-1]["end"] if timestamps else 0,
-            output_path, timestamps_path,
-        )
-
+        _write_wav(combined, sample_rate, combined_wav)
+        _wav_to_mp3(combined_wav, output_path)
+        timestamps_path.write_text(json.dumps(timestamps, ensure_ascii=False, indent=2), encoding="utf-8")
     finally:
-        import shutil
         shutil.rmtree(tmp_dir, ignore_errors=True)
-
-
-def _trim_silence(audio, sample_rate: int, threshold: float = 0.01, keep_ms: int = 40):
-    """Trim leading/trailing near-silence from a mono float32 chunk.
-
-    VieNeu v3 Turbo sometimes fails to emit EOS and runs to max_new_frames,
-    appending ~20s of trailing silence to a chunk.  We control the gap between
-    chunks ourselves, so we strip whatever silence VieNeu produced (front+back)
-    and keep a tiny `keep_ms` cushion.  Robust regardless of why EOS missed.
-    """
-    import numpy as np
-
-    if audio.size == 0:
-        return audio
-    loud = np.abs(audio) > threshold
-    if not loud.any():
-        return audio[:0]  # entirely silent → drop it
-    first = int(np.argmax(loud))
-    last = len(loud) - int(np.argmax(loud[::-1]))
-    pad = int(keep_ms / 1000 * sample_rate)
-    start = max(0, first - pad)
-    end = min(len(audio), last + pad)
-    return audio[start:end]
-
-
-def _run_vieneu_sentence_mode(
-    script_path: Path,
-    output_path: Path,
-    timestamps_path: Path,
-    voice: str,
-    silence_ms: int = 300,
-    diagnostics_path: Path | None = None,
-    infer_overrides: dict | None = None,
-    trim_chunks: bool = True,
-    legacy_chunking: bool = False,
-    comma_gap_ms: int = 90,
-    trim_keep_ms: int = 90,
-) -> None:
-    """VieNeu sentence mode: comma-aware chunking for reliable EOS, synced timestamps.
-
-    VieNeu v3 Turbo fails to find EOS for clauses containing a comma — reading the
-    whole script at once makes generation run to max_new_frames (≈24s of silence)
-    after every such clause.  We split each sentence on commas (`_split_vieneu_chunks`)
-    so every chunk is short enough for reliable EOS, synthesize each chunk, then
-    concatenate.  Timestamps are grouped per SENTENCE (comma-split parts share the
-    timestamp of the sentence they belong to), so timestamps.json matches the audio
-    exactly and step 3 (transcribe/align) is not needed.
-
-    silence_ms: gap after a sentence end (. ! ?).  Comma gaps are half of silence_ms.
-    """
-    import numpy as np
-    import soundfile as sf
-
-    chunks = _split_vieneu_chunks(script_path, legacy=legacy_chunking)
-    if not chunks:
-        raise RuntimeError("No chunks found in script.txt")
-    logger.info(
-        "VieNeu sentence mode: {} chunks (comma-aware), voice={}", len(chunks), voice
-    )
-
-    import os
-    os.environ["HF_HUB_DISABLE_SYMLINKS_WARNING"] = "1"
-    from vieneu import Vieneu
-
-    tts = Vieneu()  # heavy model — instantiate ONCE and reuse for every chunk
-    sample_rate = tts.sample_rate  # v3 Turbo = 48 kHz
-
-    sentence_gap = np.zeros(int(silence_ms / 1000 * sample_rate), dtype=np.float32)
-    comma_gap = np.zeros(int(comma_gap_ms / 1000 * sample_rate), dtype=np.float32)
-
-    all_audio: list[np.ndarray] = []
-    timestamps: list[dict] = []
-    diagnostics_chunks: list[dict] = []
-    cursor = 0.0          # seconds written so far
-    sent_start = 0.0      # start of the current sentence
-    sent_text_parts: list[str] = []
-    sent_index = 0
-    infer_kwargs = {
-        "voice": voice,
-        "temperature": 0.0,
-        "repetition_penalty": 1.2,
-        "silence_p": 0.15,
-        "crossfade_p": 0.0,
-        "apply_watermark": False,
-    }
-    if infer_overrides:
-        infer_kwargs.update(infer_overrides)
-
-    for i, chunk in enumerate(chunks):
-        chunk_text = chunk["text"]
-        synth_text = chunk["synth_text"]
-        is_sentence_end = chunk["is_sentence_end"]
-        audio = tts.infer(synth_text, **infer_kwargs)
-        if audio.ndim > 1:
-            audio = audio.mean(axis=1)
-        audio = audio.astype(np.float32)
-        # Strip VieNeu's EOS-miss trailing silence; we add our own gaps below.
-        if trim_chunks:
-            audio = _trim_silence(audio, sample_rate, keep_ms=trim_keep_ms)
-
-        if not sent_text_parts:
-            sent_start = cursor
-        sent_text_parts.append(chunk_text)
-
-        chunk_start = cursor
-        chunk_dur = len(audio) / sample_rate
-        all_audio.append(audio)
-        cursor += chunk_dur
-
-        if is_sentence_end:
-            gap_ms = silence_ms
-            sent_index += 1
-            timestamps.append({
-                "index": sent_index,
-                "start": round(sent_start, 3),
-                "end": round(cursor, 3),
-                "text": " ".join(p.strip() for p in sent_text_parts).strip(),
-            })
-            sent_text_parts = []
-            all_audio.append(sentence_gap)
-            cursor += silence_ms / 1000
-        else:
-            gap_ms = comma_gap_ms
-            all_audio.append(comma_gap)
-            cursor += comma_gap_ms / 1000
-
-        diagnostics_chunks.append({
-            "chunk_index": i + 1,
-            "sentence_index": sent_index + (0 if is_sentence_end else 1),
-            "text": chunk_text,
-            "synth_text": synth_text,
-            "is_sentence_end": is_sentence_end,
-            "start": round(chunk_start, 3),
-            "speech_end": round(chunk_start + chunk_dur, 3),
-            "gap_ms": gap_ms,
-            "end_with_gap": round(cursor, 3),
-        })
-
-        if (i + 1) % 10 == 0 or (i + 1) == len(chunks):
-            logger.info("  VieNeu progress: {}/{} chunks", i + 1, len(chunks))
-
-    # Flush a trailing sentence that never hit an end marker (defensive)
-    if sent_text_parts:
-        sent_index += 1
-        timestamps.append({
-            "index": sent_index,
-            "start": round(sent_start, 3),
-            "end": round(cursor, 3),
-            "text": " ".join(p.strip() for p in sent_text_parts).strip(),
-        })
-
-    full_audio = np.concatenate(all_audio)
-    tmp_dir = Path(tempfile.mkdtemp(prefix="tts_vieneu_"))
-    try:
-        combined_wav = tmp_dir / "combined.wav"
-        sf.write(str(combined_wav), full_audio, sample_rate)
-        subprocess.run(
-            ["ffmpeg", "-y", "-i", str(combined_wav),
-             "-codec:a", "libmp3lame", "-qscale:a", "0", str(output_path)],
-            check=True, capture_output=True,
-        )
-    finally:
-        import shutil
-        shutil.rmtree(tmp_dir, ignore_errors=True)
-
-    timestamps_path.write_text(
-        json.dumps(timestamps, ensure_ascii=False, indent=2), encoding="utf-8"
-    )
-    if diagnostics_path is not None:
-        diagnostics = {
-            "engine": "vieneu",
-            "mode": "chunked_sentence",
-            "voice": voice,
-            "sample_rate": sample_rate,
-            "silence_ms": silence_ms,
-            "comma_gap_ms": comma_gap_ms,
-            "trim_chunks": trim_chunks,
-            "trim_keep_ms": trim_keep_ms,
-            "legacy_chunking": legacy_chunking,
-            "infer_kwargs": infer_kwargs,
-            "chunk_count": len(chunks),
-            "sentence_count": len(timestamps),
-            "chunks": diagnostics_chunks,
-        }
-        diagnostics_path.write_text(
-            json.dumps(diagnostics, ensure_ascii=False, indent=2),
-            encoding="utf-8",
-        )
-    logger.info(
-        "VieNeu sentence mode complete: {} sentences, {:.1f}s → {} + {}",
-        len(timestamps),
-        timestamps[-1]["end"] if timestamps else 0,
-        output_path, timestamps_path,
-    )
 
 
 def _run_vieneu_paragraph_mode(
@@ -577,100 +796,102 @@ def _run_vieneu_paragraph_mode(
     trim_paragraphs: bool = False,
     trim_keep_ms: int = 90,
 ) -> None:
-    """Audit/helper mode: synthesize one whole paragraph per VieNeu call."""
     import numpy as np
-    import soundfile as sf
 
-    paragraphs = _split_script_paragraphs(script_path)
+    paragraphs = split_paragraph_texts(load_script_text(script_path))
     if not paragraphs:
         raise RuntimeError("No paragraphs found in script.txt")
-    logger.info("VieNeu paragraph mode: {} paragraphs, voice={}", len(paragraphs), voice)
-
-    import os
-    os.environ["HF_HUB_DISABLE_SYMLINKS_WARNING"] = "1"
-    from vieneu import Vieneu
-
-    tts = Vieneu()
-    sample_rate = tts.sample_rate
-    paragraph_gap = np.zeros(int(silence_ms / 1000 * sample_rate), dtype=np.float32)
-
-    infer_kwargs = {
-        "voice": voice,
-        "temperature": 0.0,
-        "repetition_penalty": 1.2,
-        "silence_p": 0.15,
-        "crossfade_p": 0.0,
-        "apply_watermark": False,
-    }
-    if infer_overrides:
-        infer_kwargs.update(infer_overrides)
-
-    all_audio: list[np.ndarray] = []
-    diagnostics_chunks: list[dict] = []
+    runtime = VieNeuRuntime(voice=voice, block_config=_merge_dict(VIENEU_BLOCK_DEFAULTS, None), infer_overrides=infer_overrides)
+    gap = np.zeros(int(silence_ms / 1000 * runtime.sample_rate), dtype=np.float32)
+    all_audio = []
+    diagnostics = []
     cursor = 0.0
-
-    for i, paragraph in enumerate(paragraphs, 1):
-        audio = tts.infer(paragraph, **infer_kwargs)
-        if audio.ndim > 1:
-            audio = audio.mean(axis=1)
-        audio = audio.astype(np.float32)
+    for i, paragraph in enumerate(paragraphs, start=1):
+        audio, sample_rate, infer_params = runtime.synthesize(paragraph)
         if trim_paragraphs:
-            audio = _trim_silence(audio, sample_rate, keep_ms=trim_keep_ms)
-
-        para_duration = len(audio) / sample_rate
-        para_start = cursor
+            audio = _trim_trailing_silence(audio, sample_rate, keep_ms=trim_keep_ms)
+        start = cursor
         all_audio.append(audio)
-        cursor += para_duration
+        cursor += len(audio) / sample_rate
         if i != len(paragraphs):
-            all_audio.append(paragraph_gap)
+            all_audio.append(gap)
             cursor += silence_ms / 1000
-
-        diagnostics_chunks.append({
-            "paragraph_index": i,
-            "text": paragraph,
-            "start": round(para_start, 3),
-            "speech_end": round(para_start + para_duration, 3),
-            "end_with_gap": round(cursor, 3),
-        })
-        logger.info("  VieNeu paragraph progress: {}/{}", i, len(paragraphs))
-
-    full_audio = np.concatenate(all_audio)
-    tmp_dir = Path(tempfile.mkdtemp(prefix="tts_vieneu_paragraph_"))
-    try:
-        combined_wav = tmp_dir / "combined.wav"
-        sf.write(str(combined_wav), full_audio, sample_rate)
-        subprocess.run(
-            ["ffmpeg", "-y", "-i", str(combined_wav),
-             "-codec:a", "libmp3lame", "-qscale:a", "0", str(output_path)],
-            check=True, capture_output=True,
+        diagnostics.append(
+            {
+                "paragraph_index": i,
+                "text": paragraph,
+                "start": round(start, 3),
+                "speech_end": round(start + len(audio) / sample_rate, 3),
+                "end_with_gap": round(cursor, 3),
+                "infer_params": infer_params,
+            }
         )
+    combined = np.concatenate(all_audio)
+    with tempfile.NamedTemporaryFile(suffix=".wav", delete=False) as tmp:
+        wav_path = Path(tmp.name)
+    try:
+        _write_wav(combined, runtime.sample_rate, wav_path)
+        _wav_to_mp3(wav_path, output_path)
     finally:
-        import shutil
-        shutil.rmtree(tmp_dir, ignore_errors=True)
-
-    if diagnostics_path is not None:
-        diagnostics = {
-            "engine": "vieneu",
-            "mode": "paragraph_whole_blocks",
-            "voice": voice,
-            "sample_rate": sample_rate,
-            "silence_ms": silence_ms,
-            "trim_paragraphs": trim_paragraphs,
-            "trim_keep_ms": trim_keep_ms,
-            "infer_kwargs": infer_kwargs,
-            "paragraph_count": len(paragraphs),
-            "paragraphs": diagnostics_chunks,
-        }
+        wav_path.unlink(missing_ok=True)
+    if diagnostics_path:
         diagnostics_path.write_text(
-            json.dumps(diagnostics, ensure_ascii=False, indent=2),
+            json.dumps(
+                {
+                    "engine": "vieneu",
+                    "mode": "paragraph_whole_blocks",
+                    "voice": voice,
+                    "sample_rate": runtime.sample_rate,
+                    "silence_ms": silence_ms,
+                    "paragraphs": diagnostics,
+                },
+                ensure_ascii=False,
+                indent=2,
+            ),
             encoding="utf-8",
         )
-    logger.info(
-        "VieNeu paragraph mode complete: {} paragraphs, {:.1f}s → {}",
-        len(paragraphs),
-        cursor,
-        output_path,
+
+
+def materialize_sentence_fallback_for_block(video_dir: Path, block_index: int) -> dict:
+    manifest = _load_manifest(video_dir)
+    block = next((item for item in manifest["blocks"] if item["block_index"] == block_index), None)
+    if block is None:
+        raise RuntimeError(f"Block {block_index} not found in manifest")
+    if block.get("fallback_level") == 2 and block.get("fallback_segments"):
+        return block
+
+    tts_cfg = _load_tts_config(video_dir)
+    engine = manifest["engine"]
+    if engine == "vieneu":
+        block_config = _merge_dict(VIENEU_BLOCK_DEFAULTS, tts_cfg.get("block_config"))
+        runtime = VieNeuRuntime(
+            voice=tts_cfg.get("voice", manifest.get("voice", "Bình An")),
+            block_config=block_config,
+            infer_overrides=tts_cfg.get("infer_params"),
+        )
+    else:
+        block_config = _merge_dict(KOKORO_BLOCK_DEFAULTS, tts_cfg.get("block_config"))
+        runtime = KokoroRuntime()
+
+    block_spec = BlockSpec(
+        sentence_units=[],
+        text=block["text"],
+        sentence_indices=block["sentence_indices"],
+        sentence_texts=block["sentence_texts"],
+        raw_chars=block["raw_chars"],
+        estimated_seconds=block["estimated_seconds"],
+        normalized_chars=block.get("normalized_chars"),
+        phoneme_chars=block.get("phoneme_chars"),
     )
+    fallback = _render_sentence_fallback_block(video_dir, block_index, block_spec, engine, runtime, block_config, {"temperature": 0.25})
+    block["wav_path"] = fallback["wav_path"]
+    block["sample_rate"] = fallback["sample_rate"]
+    block["actual_seconds"] = fallback["actual_seconds"]
+    block["fallback_level"] = 2
+    block["fallback_segments"] = fallback["fallback_segments"]
+    _rebuild_audio_from_manifest(video_dir, manifest)
+    _write_manifest(video_dir, manifest)
+    return block
 
 
 def run(video_id: str) -> None:
@@ -679,108 +900,88 @@ def run(video_id: str) -> None:
     output_path = video_dir / "audio.mp3"
     timestamps_path = video_dir / "timestamps.json"
 
-    # Per-video TTS config override via tts_config.json
-    tts_config_path = video_dir / "tts_config.json"
-    tts_engine = "kokoro"
-    tts_mode = "default"  # "sentence" = per-sentence TTS + auto timestamps
-    edge_voice = "en-US-GuyNeural"
-    edge_rate = "-5%"
-    clone_voice_id = "default"
-    clone_ref_audio = None
-    clone_speed = 1.0
-    clone_ref_text = ""
-    if tts_config_path.exists():
-        tts_cfg = json.loads(tts_config_path.read_text(encoding="utf-8"))
-        tts_engine = tts_cfg.get("engine", tts_engine)
-        tts_mode = tts_cfg.get("mode", tts_mode)
-        edge_voice = tts_cfg.get("voice", edge_voice)
-        edge_rate = tts_cfg.get("rate", edge_rate)
-        clone_voice_id = tts_cfg.get("voice_id", clone_voice_id)
-        clone_ref_audio = tts_cfg.get("ref_audio")
-        clone_speed = tts_cfg.get("speed", clone_speed)
-        clone_ref_text = tts_cfg.get("ref_text", "")
-        logger.info(
-            "TTS config: engine={} mode={} voice={} rate={}",
-            tts_engine, tts_mode, edge_voice, edge_rate,
-        )
+    tts_cfg = _load_tts_config(video_dir)
+    tts_engine = tts_cfg.get("engine", "kokoro")
+    tts_mode = tts_cfg.get("mode")
+    edge_voice = tts_cfg.get("voice", "en-US-GuyNeural")
+    edge_rate = tts_cfg.get("rate", "-5%")
+    clone_voice_id = tts_cfg.get("voice_id", "default")
+    clone_ref_audio = tts_cfg.get("ref_audio")
+    clone_speed = tts_cfg.get("speed", 1.0)
+    clone_ref_text = tts_cfg.get("ref_text", "")
 
     if not script_path.exists():
         logger.error("script.txt not found: {}", script_path)
         sys.exit(1)
 
-    text = script_path.read_text(encoding="utf-8").strip()
+    text = load_script_text(script_path)
     if not text:
         logger.error("script.txt is empty")
         sys.exit(1)
 
-    # ── VieNeu: always sentence mode (comma-aware) to avoid EOS-fail silence ──
-    # Reading the whole script at once makes VieNeu insert ~20s of silence after
-    # every comma clause (EOS never fires mid-clause → runs to max_new_frames),
-    # so VieNeu always routes through the per-chunk path below.  The legacy
-    # whole-script _vieneu_tts() is kept only for reference/manual use.
-    if tts_engine == "vieneu":
-        try:
-            _run_vieneu_sentence_mode(
-                script_path=script_path,
-                output_path=output_path,
-                timestamps_path=timestamps_path,
-                voice=edge_voice,
-            )
-        except Exception as e:
-            logger.error("VieNeu sentence mode TTS failed: {}", e)
-            sys.exit(1)
+    if tts_mode is None and tts_engine in {"vieneu", "kokoro"}:
+        tts_mode = "block"
+    elif tts_mode is None:
+        tts_mode = "default"
 
-    # ── Sentence mode (edge / kokoro) ─────────────────────────────────────────
-    elif tts_mode == "sentence":
-        sentences = _split_script_sentences(script_path)
+    logger.info("TTS config: engine={} mode={} voice={} rate={}", tts_engine, tts_mode, edge_voice, edge_rate)
+
+    if tts_mode == "paragraph_audit" and tts_engine == "vieneu":
+        try:
+            _run_vieneu_paragraph_mode(script_path=script_path, output_path=output_path, voice=edge_voice)
+        except Exception as exc:
+            logger.error("VieNeu paragraph audit TTS failed: {}", exc)
+            sys.exit(1)
+    elif tts_mode == "block" and tts_engine in {"vieneu", "kokoro"}:
+        try:
+            _run_block_mode(video_dir, script_path, tts_engine, edge_voice, tts_cfg)
+        except Exception as exc:
+            logger.error("Block TTS failed: {}", exc)
+            sys.exit(1)
+    elif tts_mode in {"sentence", "sentence_legacy"}:
+        sentences = [unit.text for unit in load_sentence_units(script_path)]
         if not sentences:
             logger.error("No sentences found in script.txt")
             sys.exit(1)
-        logger.info("Sentence mode: {} sentences detected", len(sentences))
         try:
-            _run_sentence_mode(
-                sentences=sentences,
-                script_path=script_path,
-                output_path=output_path,
-                timestamps_path=timestamps_path,
-                tts_engine=tts_engine,
-                edge_voice=edge_voice,
-                edge_rate=edge_rate,
-            )
-        except Exception as e:
-            logger.error("Sentence mode TTS failed: {}", e)
+            _run_sentence_legacy_mode(sentences, output_path, timestamps_path, tts_engine, edge_voice, edge_rate)
+        except Exception as exc:
+            logger.error("Sentence legacy TTS failed: {}", exc)
             sys.exit(1)
-
-    # ── Standard mode (whole script at once) ─────────────────────────────────
     elif tts_engine == "clone":
         try:
             from tts_generation.runpod_tts_client import clone_voice
+
             ref_path = None
             if clone_ref_audio:
-                p = Path(clone_ref_audio)
-                ref_path = p if p.is_absolute() else video_dir / p
-            logger.info("Using F5-TTS clone (voice_id={}, ref={})", clone_voice_id, ref_path)
-            audio_bytes = clone_voice(text, voice_id=clone_voice_id, ref_audio_path=ref_path, ref_text=clone_ref_text, speed=clone_speed)
+                ref_candidate = Path(clone_ref_audio)
+                ref_path = ref_candidate if ref_candidate.is_absolute() else video_dir / ref_candidate
+            audio_bytes = clone_voice(
+                text,
+                voice_id=clone_voice_id,
+                ref_audio_path=ref_path,
+                ref_text=clone_ref_text,
+                speed=clone_speed,
+            )
             output_path.write_bytes(audio_bytes)
-            logger.info("F5-TTS clone complete → {}", output_path)
-        except Exception as e:
-            logger.error("F5-TTS clone failed: {}", e)
+        except Exception as exc:
+            logger.error("F5-TTS clone failed: {}", exc)
             sys.exit(1)
     elif tts_engine == "edge":
         try:
             _edge_tts(text, output_path, voice=edge_voice, rate=edge_rate)
-        except Exception as e:
-            logger.error("edge-tts failed: {}", e)
+        except Exception as exc:
+            logger.error("edge-tts failed: {}", exc)
             sys.exit(1)
     else:
         try:
             _kokoro_tts(text, output_path)
-        except (ImportError, Exception) as e:
-            logger.warning("Kokoro TTS failed ({}), falling back to edge-tts", e)
+        except Exception as exc:
+            logger.warning("Kokoro TTS failed ({}), falling back to edge-tts", exc)
             try:
                 _edge_tts(text, output_path, voice=edge_voice, rate=edge_rate)
-            except Exception as e2:
-                logger.error("edge-tts also failed: {}", e2)
+            except Exception as edge_exc:
+                logger.error("edge-tts also failed: {}", edge_exc)
                 sys.exit(1)
 
     if output_path.exists():
@@ -788,9 +989,9 @@ def run(video_id: str) -> None:
         minutes = duration / 60
         logger.info("Audio duration: {:.1f} minutes ({:.0f}s)", minutes, duration)
         if minutes < 7:
-            logger.warning("Audio is short ({:.1f} min). Target: 8–10 min.", minutes)
+            logger.warning("Audio is short ({:.1f} min). Target: 8-10 min.", minutes)
         elif minutes > 11:
-            logger.warning("Audio is long ({:.1f} min). Target: 8–10 min.", minutes)
+            logger.warning("Audio is long ({:.1f} min). Target: 8-10 min.", minutes)
     else:
         logger.error("TTS output file not created: {}", output_path)
         sys.exit(1)

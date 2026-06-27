@@ -16,14 +16,18 @@ venv/
 
 # Pipeline outputs (large binary files)
 output/*/audio.mp3
+output/*/audio_master.wav
 output/*/images/
 output/*/images_en/
 output/*/images_vi/
 output/*/final.mp4
 output/*/audio_trimmed.mp3
+output/*/tts_blocks/
+output/*/timestamps.stale.json
 output/*_demo*/
 output/*/compare_kokoro/
 output/*/compare_vieneu/
+output/*/compare_vieneu_sentence_test/
 output/smoke-*/
 output/_kokoro_compare_summary.json
 output/_kokoro_compare_summary.md

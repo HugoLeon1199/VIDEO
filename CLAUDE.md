@@ -39,8 +39,8 @@ Each step is a standalone module in `steps/`; `main.py` dispatches the step sequ
 | Step | Module | Input | Output |
 |------|--------|-------|--------|
 | 1 | `generate_script.py` | manual `script.txt` | validates format |
-| 2 | `tts.py` | `script.txt` | `audio.mp3` |
-| 3 | `transcribe.py` | `audio.mp3` | `timestamps.json` |
+| 2 | `tts.py` | `script.txt` | `tts_blocks/` + `audio_master.wav` + `audio.mp3` |
+| 3 | `transcribe.py` | `tts_blocks/blocks.json` + `audio.mp3` | `timestamps.json` |
 | 4 | `image_prompts.py` | `timestamps.json` + `script.txt` | `image_prompts.json` |
 | 5 | `generate_images.py` | `image_prompts.json` | `images/img_001.png` … |
 | 6 | `design_soundscape.py` | `image_prompts.json` | `soundscape.json` |
@@ -55,6 +55,10 @@ Core invariant: one prompt/image per sentence. Each transcript sentence maps to 
 
 ### TTS
 - English: Kokoro first (`am_fenrir`), fallback to `edge-tts`
+- Production default for both VieNeu and Kokoro is `mode=block`
+  - Step 2 writes `tts_blocks/block_XXX.wav`, `tts_blocks/blocks.json`, `tts_blocks/diagnostics.json`, `audio_master.wav`, and `audio.mp3`
+  - Step 2 invalidates stale `timestamps.json`; sentence timing is owned by step 3
+  - `mode=sentence_legacy` is still available for debug / compare-only runs
 - Vietnamese (edge): per-video override `output/{video-id}/tts_config.json`:
   ```json
   {"engine": "edge", "voice": "vi-VN-NamMinhNeural", "rate": "-8%"}

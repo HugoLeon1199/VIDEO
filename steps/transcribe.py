@@ -1,280 +1,432 @@
-"""Step 3: Transcribe audio to sentence-level timestamps.
+"""Step 3: Transcribe audio to sentence-level timestamps."""
 
-Two engines (set via transcribe_config.json):
-
-  stable_ts (default for VI):
-    Uses stable-ts forced alignment against script.txt canonical sentences.
-    Gives exact script text with accurate per-sentence timing.
-    Config: {"engine": "stable_ts", "model": "medium", "language": "vi", "mode": "align"}
-
-  faster_whisper (legacy / EN fallback):
-    Two modes:
-      default — Whisper auto-segments (sentence boundaries + max 4.5s)
-      align   — greedy word-count matching against script.txt sentences
-    Config: {"model": "medium.en", "language": "en"}
-"""
+from __future__ import annotations
 
 import json
 import re
 import sys
 import unicodedata
+from difflib import SequenceMatcher
 from pathlib import Path
 
 from loguru import logger
 
 import config
+from steps import tts as tts_step
+from steps.text_units import load_sentence_units
 
 
-def _normalize(text: str) -> str:
-    """Lowercase, strip diacritics for fuzzy word matching."""
-    text = text.lower()
-    text = unicodedata.normalize("NFD", text)
-    text = "".join(c for c in text if unicodedata.category(c) != "Mn")
-    text = re.sub(r"[^\w\s]", "", text)
-    return text.strip()
+def _normalize_token(text: str) -> str:
+    lowered = text.lower()
+    lowered = unicodedata.normalize("NFD", lowered)
+    lowered = "".join(ch for ch in lowered if unicodedata.category(ch) != "Mn")
+    lowered = re.sub(r"[^\w\s]", "", lowered)
+    return lowered.strip()
 
 
-_SCRIPT_STOP_MARKERS = (
-    "COMMENT SEED:",
-    "RESEARCH NOTES:",
-    "Your script is ready",
-    "Save as:",
-    "Then: python",
-)
+def _tokenize_sentence(text: str) -> list[str]:
+    return [token for token in (_normalize_token(part) for part in text.split()) if token]
 
 
-def _split_script_sentences(script_path: Path) -> list[str]:
-    """Split script.txt into non-empty spoken sentences.
+def _audio_duration(path: Path) -> float:
+    try:
+        import soundfile as sf
 
-    Splits only on sentence-ending punctuation (. ! ?) or blank lines.
-    Commas are NOT split points — they stay inside the same sentence.
-    Strips trailing metadata sections. Skips a leading title line.
-    """
-    text = script_path.read_text(encoding="utf-8")
-    text = text.lstrip("﻿")  # Strip BOM
+        info = sf.info(str(path))
+        return info.frames / info.samplerate
+    except Exception:
+        return 0.0
 
-    for marker in _SCRIPT_STOP_MARKERS:
-        idx = text.find(marker)
-        if idx != -1:
-            text = text[:idx]
 
-    paragraphs = re.split(r"\n{2,}", text)
-    sentences = []
-    first = True
-    for para in paragraphs:
-        para = para.strip()
-        if not para:
-            continue
-        if first:
-            first = False
-            if not re.search(r"[.!?]$", para) and len(para.split()) <= 12:
+def _load_blocks_manifest(video_dir: Path) -> dict | None:
+    manifest_path = video_dir / "tts_blocks" / "blocks.json"
+    if not manifest_path.exists():
+        return None
+    return json.loads(manifest_path.read_text(encoding="utf-8"))
+
+
+def _blocks_are_newer(video_dir: Path, manifest_path: Path, timestamps_path: Path) -> bool:
+    if not manifest_path.exists():
+        return False
+    if not timestamps_path.exists():
+        return True
+    return manifest_path.stat().st_mtime > timestamps_path.stat().st_mtime
+
+
+def _collect_aligned_words(result) -> list[dict]:
+    words: list[dict] = []
+    for seg in result.segments:
+        for word in seg.words:
+            if word.start is None or word.end is None:
                 continue
-        parts = re.split(r"(?<=[.!?])\s+", para)
-        for part in parts:
-            part = part.strip()
-            if part:
-                sentences.append(part)
-    return sentences
+            normalized = _normalize_token(word.word)
+            if not normalized:
+                continue
+            words.append(
+                {
+                    "word": word.word,
+                    "normalized": normalized,
+                    "start": float(word.start),
+                    "end": float(word.end),
+                }
+            )
+    return words
 
 
-# ── stable-ts engine ──────────────────────────────────────────────────────────
+def _map_aligned_words_to_sentences(
+    sentence_texts: list[str],
+    aligned_words: list[dict],
+    audio_start: float,
+    starting_index: int,
+) -> tuple[list[dict], float, bool]:
+    canonical_words: list[dict] = []
+    sentence_spans: list[tuple[int, int]] = []
+    cursor = 0
+    for sentence in sentence_texts:
+        tokens = _tokenize_sentence(sentence)
+        start = cursor
+        for token in tokens:
+            canonical_words.append({"token": token})
+            cursor += 1
+        sentence_spans.append((start, cursor))
 
-def _run_stable_ts(
+    aligned_tokens = [word["normalized"] for word in aligned_words]
+    canonical_tokens = [word["token"] for word in canonical_words]
+    matcher = SequenceMatcher(a=canonical_tokens, b=aligned_tokens, autojunk=False)
+
+    matched: dict[int, dict] = {}
+    for tag, i1, i2, j1, j2 in matcher.get_opcodes():
+        if tag != "equal":
+            continue
+        for offset in range(i2 - i1):
+            matched[i1 + offset] = aligned_words[j1 + offset]
+
+    coverage = len(matched) / max(1, len(canonical_words))
+    timestamps: list[dict] = []
+    all_sentences_matched = True
+    for sentence_offset, sentence in enumerate(sentence_texts):
+        span_start, span_end = sentence_spans[sentence_offset]
+        matched_words = [matched[idx] for idx in range(span_start, span_end) if idx in matched]
+        if not matched_words:
+            all_sentences_matched = False
+            continue
+        start = round(audio_start + matched_words[0]["start"], 3)
+        end = round(audio_start + matched_words[-1]["end"], 3)
+        if end <= start:
+            end = round(start + 0.1, 3)
+        timestamps.append(
+            {
+                "index": starting_index + sentence_offset,
+                "start": start,
+                "end": end,
+                "text": sentence,
+            }
+        )
+
+    return timestamps, coverage, all_sentences_matched
+
+
+def _timestamps_from_fallback_segments(block: dict, starting_index: int) -> list[dict]:
+    timestamps = []
+    audio_start = float(block["audio_start"])
+    for sentence_offset, segment in enumerate(block.get("fallback_segments", [])):
+        timestamps.append(
+            {
+                "index": starting_index + sentence_offset,
+                "start": round(audio_start + float(segment["start_in_block"]), 3),
+                "end": round(audio_start + float(segment["end_in_block"]), 3),
+                "text": segment["text"],
+            }
+        )
+    return timestamps
+
+
+def _run_stable_ts_blocks(
+    video_dir: Path,
+    manifest: dict,
+    model_name: str,
+    language: str,
+    device: str,
+) -> list[dict]:
+    import stable_whisper
+
+    manifest_path = video_dir / "tts_blocks" / "blocks.json"
+    logger.info("Block-aware alignment active via {}", manifest_path)
+    model = stable_whisper.load_model(model_name, device=device)
+    audio_master_path = video_dir / "audio_master.wav"
+    audio_duration = _audio_duration(audio_master_path)
+    all_timestamps: list[dict] = []
+    cursor_index = 1
+    block_diagnostics: list[dict] = []
+
+    for block in manifest["blocks"]:
+        if block.get("fallback_level") == 2 and block.get("fallback_segments"):
+            timestamps = _timestamps_from_fallback_segments(block, cursor_index)
+            all_timestamps.extend(timestamps)
+            block_diagnostics.append(
+                {
+                    "block_index": block["block_index"],
+                    "coverage": 1.0,
+                    "used_fallback_segments": True,
+                }
+            )
+            cursor_index += len(block["sentence_texts"])
+            continue
+
+        block_wav = video_dir / block["wav_path"]
+        canonical_text = " ".join(block["sentence_texts"])
+        result = model.align(str(block_wav), canonical_text, language=language)
+        aligned_words = _collect_aligned_words(result)
+        timestamps, coverage, all_matched = _map_aligned_words_to_sentences(
+            block["sentence_texts"],
+            aligned_words,
+            float(block["audio_start"]),
+            cursor_index,
+        )
+
+        if coverage < 0.90 or not all_matched:
+            logger.warning(
+                "Block {} alignment coverage {:.2%} (all_matched={}) -> sentence fallback",
+                block["block_index"],
+                coverage,
+                all_matched,
+            )
+            patched_block = tts_step.materialize_sentence_fallback_for_block(video_dir, block["block_index"])
+            timestamps = _timestamps_from_fallback_segments(patched_block, cursor_index)
+            coverage = 1.0
+            all_matched = True
+
+        all_timestamps.extend(timestamps)
+        block_diagnostics.append(
+            {
+                "block_index": block["block_index"],
+                "coverage": round(coverage, 4),
+                "used_fallback_segments": block.get("fallback_level") == 2,
+            }
+        )
+        cursor_index += len(block["sentence_texts"])
+
+    if not all_timestamps:
+        logger.error("No timestamps produced in block-aware stable-ts mode")
+        sys.exit(1)
+
+    if len(all_timestamps) != manifest["sentence_count"]:
+        logger.error(
+            "Timestamp count {} does not match manifest sentence count {}",
+            len(all_timestamps),
+            manifest["sentence_count"],
+        )
+        sys.exit(1)
+
+    prev_end = 0.0
+    for entry in all_timestamps:
+        entry["start"] = round(max(entry["start"], prev_end), 3)
+        entry["end"] = round(max(entry["end"], entry["start"] + 0.1), 3)
+        prev_end = entry["end"]
+
+    if audio_duration and abs(all_timestamps[-1]["end"] - audio_duration) > 2.5:
+        logger.error(
+            "Final timestamp {:.3f}s drifts too far from audio_master duration {:.3f}s",
+            all_timestamps[-1]["end"],
+            audio_duration,
+        )
+        sys.exit(1)
+
+    diagnostics_path = video_dir / "tts_blocks" / "alignment_diagnostics.json"
+    diagnostics_path.write_text(
+        json.dumps(
+            {
+                "engine": "stable_ts",
+                "mode": "block",
+                "audio_duration": round(audio_duration, 3),
+                "blocks": block_diagnostics,
+            },
+            ensure_ascii=False,
+            indent=2,
+        ),
+        encoding="utf-8",
+    )
+    return all_timestamps
+
+
+def _run_faster_whisper_blocks(
+    video_dir: Path,
+    manifest: dict,
+    model_name: str,
+    language: str | None,
+) -> list[dict]:
+    from faster_whisper import WhisperModel
+
+    logger.info("Block-aware faster-whisper active via {}", video_dir / "tts_blocks" / "blocks.json")
+    model = WhisperModel(model_name, device="cpu", compute_type="int8")
+    audio_master_path = video_dir / "audio_master.wav"
+    audio_duration = _audio_duration(audio_master_path)
+    all_timestamps: list[dict] = []
+    cursor_index = 1
+    block_diagnostics: list[dict] = []
+
+    for block in manifest["blocks"]:
+        if block.get("fallback_level") == 2 and block.get("fallback_segments"):
+            timestamps = _timestamps_from_fallback_segments(block, cursor_index)
+            all_timestamps.extend(timestamps)
+            block_diagnostics.append(
+                {
+                    "block_index": block["block_index"],
+                    "coverage": 1.0,
+                    "used_fallback_segments": True,
+                }
+            )
+            cursor_index += len(block["sentence_texts"])
+            continue
+
+        block_wav = video_dir / block["wav_path"]
+        kwargs = {"word_timestamps": True}
+        if language:
+            kwargs["language"] = language
+        segments_gen, _info = model.transcribe(str(block_wav), **kwargs)
+        aligned_words = []
+        for seg in segments_gen:
+            if not seg.words:
+                continue
+            for word in seg.words:
+                normalized = _normalize_token(word.word)
+                if not normalized or word.start is None or word.end is None:
+                    continue
+                aligned_words.append(
+                    {
+                        "word": word.word,
+                        "normalized": normalized,
+                        "start": float(word.start),
+                        "end": float(word.end),
+                    }
+                )
+
+        timestamps, coverage, all_matched = _map_aligned_words_to_sentences(
+            block["sentence_texts"],
+            aligned_words,
+            float(block["audio_start"]),
+            cursor_index,
+        )
+        if coverage < 0.90 or not all_matched:
+            logger.warning(
+                "Block {} faster-whisper coverage {:.2%} (all_matched={}) -> sentence fallback",
+                block["block_index"],
+                coverage,
+                all_matched,
+            )
+            patched_block = tts_step.materialize_sentence_fallback_for_block(video_dir, block["block_index"])
+            timestamps = _timestamps_from_fallback_segments(patched_block, cursor_index)
+            coverage = 1.0
+            all_matched = True
+
+        all_timestamps.extend(timestamps)
+        block_diagnostics.append(
+            {
+                "block_index": block["block_index"],
+                "coverage": round(coverage, 4),
+                "used_fallback_segments": block.get("fallback_level") == 2,
+            }
+        )
+        cursor_index += len(block["sentence_texts"])
+
+    if len(all_timestamps) != manifest["sentence_count"]:
+        logger.error(
+            "Timestamp count {} does not match manifest sentence count {}",
+            len(all_timestamps),
+            manifest["sentence_count"],
+        )
+        sys.exit(1)
+
+    prev_end = 0.0
+    for entry in all_timestamps:
+        entry["start"] = round(max(entry["start"], prev_end), 3)
+        entry["end"] = round(max(entry["end"], entry["start"] + 0.1), 3)
+        prev_end = entry["end"]
+
+    if audio_duration and abs(all_timestamps[-1]["end"] - audio_duration) > 2.5:
+        logger.error(
+            "Final timestamp {:.3f}s drifts too far from audio_master duration {:.3f}s",
+            all_timestamps[-1]["end"],
+            audio_duration,
+        )
+        sys.exit(1)
+
+    diagnostics_path = video_dir / "tts_blocks" / "alignment_diagnostics.json"
+    diagnostics_path.write_text(
+        json.dumps(
+            {
+                "engine": "faster_whisper",
+                "mode": "block",
+                "audio_duration": round(audio_duration, 3),
+                "blocks": block_diagnostics,
+            },
+            ensure_ascii=False,
+            indent=2,
+        ),
+        encoding="utf-8",
+    )
+    return all_timestamps
+
+
+def _run_stable_ts_full(
     audio_path: Path,
     script_path: Path,
     model_name: str,
     language: str,
     device: str = "cpu",
 ) -> list[dict]:
-    """
-    Align audio to canonical script sentences using stable-ts.
-
-    Strategy:
-    1. Load model and run align() against the full canonical script text.
-    2. Map aligned word spans back to script sentence boundaries.
-    3. Sentence start = first aligned word; end = last aligned word.
-    4. Gaps/failures → interpolate from surrounding sentences.
-    5. Enforce monotonicity and cap final end to audio duration.
-    """
     import stable_whisper
-    import mutagen.mp3
 
-    sentences = _split_script_sentences(script_path)
+    sentences = [unit.text for unit in load_sentence_units(script_path)]
     if not sentences:
         logger.error("No sentences found in script.txt")
         sys.exit(1)
 
-    logger.info("Script: {} sentences", len(sentences))
-
-    # Build canonical text for alignment (join with spaces)
     canonical_text = " ".join(sentences)
-
-    logger.info("Loading stable-ts model ({})...", model_name)
     model = stable_whisper.load_model(model_name, device=device)
-
-    logger.info("Aligning {} to script text ({} chars)...", audio_path.name, len(canonical_text))
     result = model.align(str(audio_path), canonical_text, language=language)
-
-    # Get audio duration for capping
-    try:
-        audio_info = mutagen.mp3.MP3(str(audio_path))
-        audio_duration = audio_info.info.length
-    except Exception:
-        audio_duration = None
-
-    # Extract word-level timestamps from stable-ts result
-    words: list[dict] = []
-    for seg in result.segments:
-        for w in seg.words:
-            if w.start is not None and w.end is not None:
-                words.append({"word": w.word, "start": w.start, "end": w.end})
-
-    logger.info("stable-ts produced {} aligned word timestamps", len(words))
-
-    if not words:
-        logger.error("stable-ts alignment produced no word timestamps — check audio/script match")
+    aligned_words = _collect_aligned_words(result)
+    timestamps, coverage, all_matched = _map_aligned_words_to_sentences(sentences, aligned_words, 0.0, 1)
+    if coverage < 0.90 or not all_matched:
+        logger.error(
+            "Full-file stable-ts coverage too low ({:.2%}, all_matched={})",
+            coverage,
+            all_matched,
+        )
         sys.exit(1)
-
-    # Map words to sentences by word count
-    timestamps = _assign_words_to_sentences(sentences, words, audio_duration)
     return timestamps
 
 
-def _assign_words_to_sentences(
-    sentences: list[str],
-    words: list[dict],
-    audio_duration: float | None,
-) -> list[dict]:
-    """
-    Assign aligned word timestamps to canonical sentences.
-
-    Consumes words greedily by word count per sentence.
-    Interpolates spans for sentences with no aligned words.
-    Enforces monotonicity and caps to audio_duration.
-    """
-    def word_count(s: str) -> int:
-        return len([w for w in _normalize(s).split() if w])
-
-    # First pass: assign word ranges
-    w_idx = 0
-    n_words = len(words)
-    spans: list[tuple[float, float] | None] = []
-
-    for sentence in sentences:
-        n = word_count(sentence)
-        if n == 0:
-            spans.append(None)
-            continue
-
-        if w_idx >= n_words:
-            spans.append(None)
-            continue
-
-        end_idx = min(w_idx + n, n_words) - 1
-        start = words[w_idx]["start"]
-        end = words[end_idx]["end"]
-        spans.append((start, end))
-        w_idx = end_idx + 1
-
-    # Second pass: interpolate None spans
-    def _find_prev(i: int) -> float | None:
-        for j in range(i - 1, -1, -1):
-            if spans[j] is not None:
-                return spans[j][1]
-        return None
-
-    def _find_next(i: int) -> float | None:
-        for j in range(i + 1, len(spans)):
-            if spans[j] is not None:
-                return spans[j][0]
-        return audio_duration
-
-    resolved: list[tuple[float, float]] = []
-    for i, span in enumerate(spans):
-        if span is not None:
-            resolved.append(span)
-        else:
-            prev = _find_prev(i) or 0.0
-            nxt = _find_next(i)
-            # Count consecutive Nones to divide interval
-            block_start = i
-            while block_start > 0 and spans[block_start - 1] is None:
-                block_start -= 1
-            block_end = i
-            while block_end < len(spans) - 1 and spans[block_end + 1] is None:
-                block_end += 1
-            block_size = block_end - block_start + 1
-            block_pos = i - block_start
-            if nxt is not None:
-                step = (nxt - prev) / block_size
-                s = round(prev + block_pos * step, 3)
-                e = round(prev + (block_pos + 1) * step, 3)
-            else:
-                s = round(prev + block_pos * 1.0, 3)
-                e = round(prev + (block_pos + 1) * 1.0, 3)
-            resolved.append((s, e))
-
-    # Third pass: enforce monotonicity + cap to audio_duration
+def _align_sentences_to_words(sentences: list[str], whisper_words: list[dict]) -> list[dict]:
     result = []
-    prev_end = 0.0
-    for i, (sentence, (start, end)) in enumerate(zip(sentences, resolved)):
-        start = max(round(start, 3), prev_end)
-        end = max(round(end, 3), start + 0.1)
-        if audio_duration is not None and i == len(sentences) - 1:
-            end = min(end, round(audio_duration, 3))
-        result.append({
-            "index": i + 1,
-            "start": start,
-            "end": end,
-            "text": sentence,
-        })
-        prev_end = end
-
-    return result
-
-
-# ── faster-whisper engine (legacy) ────────────────────────────────────────────
-
-def _align_sentences_to_words(
-    sentences: list[str],
-    whisper_words: list[dict],
-) -> list[dict]:
-    """Greedy word-count matching (faster-whisper align mode)."""
-    def tokenize(s: str) -> list[str]:
-        return [w for w in _normalize(s).split() if w]
-
-    result = []
-    w_idx = 0
-    n_words = len(whisper_words)
-
-    for i, sentence in enumerate(sentences):
-        s_words = tokenize(sentence)
-        if not s_words:
+    word_index = 0
+    total_words = len(whisper_words)
+    for i, sentence in enumerate(sentences, start=1):
+        sentence_tokens = _tokenize_sentence(sentence)
+        token_count = len(sentence_tokens)
+        if token_count == 0:
             continue
-        n_needed = len(s_words)
-
-        if w_idx >= n_words:
+        if word_index >= total_words:
             prev_end = result[-1]["end"] if result else 0.0
-            result.append({
-                "index": len(result) + 1,
-                "start": round(prev_end, 3),
-                "end": round(prev_end + 1.0, 3),
-                "text": sentence,
-            })
+            result.append(
+                {
+                    "index": i,
+                    "start": round(prev_end, 3),
+                    "end": round(prev_end + 1.0, 3),
+                    "text": sentence,
+                }
+            )
             continue
-
-        seg_start = whisper_words[w_idx]["start"]
-        end_idx = min(w_idx + n_needed, n_words) - 1
-        seg_end = whisper_words[end_idx]["end"]
-        w_idx = end_idx + 1
-
-        result.append({
-            "index": len(result) + 1,
-            "start": round(seg_start, 3),
-            "end": round(seg_end, 3),
-            "text": sentence,
-        })
-
+        end_index = min(word_index + token_count, total_words) - 1
+        result.append(
+            {
+                "index": i,
+                "start": round(whisper_words[word_index]["start"], 3),
+                "end": round(whisper_words[end_index]["end"], 3),
+                "text": sentence,
+            }
+        )
+        word_index = end_index + 1
     return result
 
 
@@ -289,70 +441,61 @@ def _run_faster_whisper(
 
     logger.info("Loading faster-whisper model ({}, CPU, int8)...", model_name)
     model = WhisperModel(model_name, device="cpu", compute_type="int8")
-
-    logger.info("Transcribing {}...", audio_path)
     kwargs = {"word_timestamps": True}
     if language:
         kwargs["language"] = language
+
     segments_gen, info = model.transcribe(str(audio_path), **kwargs)
     segments = list(segments_gen)
-
-    logger.info(
-        "Detected language: {} (probability {:.2f})",
-        info.language, info.language_probability,
-    )
+    logger.info("Detected language: {} (probability {:.2f})", info.language, info.language_probability)
 
     if align_mode and script_path and script_path.exists():
         whisper_words = []
         for seg in segments:
-            if seg.words:
-                for w in seg.words:
-                    whisper_words.append({"word": w.word, "start": w.start, "end": w.end})
-        logger.info("Whisper produced {} word timestamps", len(whisper_words))
-        sentences = _split_script_sentences(script_path)
-        logger.info("Script has {} sentences", len(sentences))
+            if not seg.words:
+                continue
+            for word in seg.words:
+                whisper_words.append({"word": word.word, "start": word.start, "end": word.end})
+        sentences = [unit.text for unit in load_sentence_units(script_path)]
         return _align_sentences_to_words(sentences, whisper_words)
 
-    # Default auto-segmentation mode
     result = []
-    index = 1
     current_words: list[str] = []
     current_start = None
     current_end = None
-
-    for segment in segments:
-        for word in segment.words:
+    index = 1
+    for seg in segments:
+        for word in seg.words:
             if current_start is None:
                 current_start = word.start
             current_words.append(word.word)
             current_end = word.end
             text_so_far = "".join(current_words).strip()
-            ends_sentence = text_so_far.endswith((".", "!", "?", "..."))
-            long_enough = (current_end - current_start) >= 4.5
-            if ends_sentence or long_enough:
-                result.append({
-                    "index": index,
-                    "start": round(current_start, 3),
-                    "end": round(current_end, 3),
-                    "text": text_so_far,
-                })
+            if text_so_far.endswith((".", "!", "?", "...")) or (current_end - current_start) >= 4.5:
+                result.append(
+                    {
+                        "index": index,
+                        "start": round(current_start, 3),
+                        "end": round(current_end, 3),
+                        "text": text_so_far,
+                    }
+                )
                 index += 1
                 current_words = []
                 current_start = None
                 current_end = None
 
     if current_words and current_start is not None and current_end is not None:
-        result.append({
-            "index": index,
-            "start": round(current_start, 3),
-            "end": round(current_end, 3),
-            "text": "".join(current_words).strip(),
-        })
-
+        result.append(
+            {
+                "index": index,
+                "start": round(current_start, 3),
+                "end": round(current_end, 3),
+                "text": "".join(current_words).strip(),
+            }
+        )
     return result
 
-
-# ── main entry point ──────────────────────────────────────────────────────────
 
 def run(video_id: str) -> None:
     video_dir = Path(config.OUTPUT_DIR) / video_id
@@ -364,7 +507,6 @@ def run(video_id: str) -> None:
         logger.error("audio.mp3 not found: {}", audio_path)
         sys.exit(1)
 
-    # Load per-video config
     engine = "faster_whisper"
     whisper_model = "medium.en"
     whisper_language: str | None = None
@@ -381,32 +523,61 @@ def run(video_id: str) -> None:
         device = cfg.get("device", device)
         logger.info(
             "Transcribe config: engine={} model={} language={} mode={} device={}",
-            engine, whisper_model, whisper_language,
-            "align" if align_mode else "default", device,
+            engine,
+            whisper_model,
+            whisper_language,
+            "align" if align_mode else "default",
+            device,
         )
 
-    if engine == "stable_ts":
+    manifest_path = video_dir / "tts_blocks" / "blocks.json"
+    manifest = _load_blocks_manifest(video_dir)
+    use_block_mode = manifest is not None and _blocks_are_newer(video_dir, manifest_path, output_path)
+
+    if use_block_mode and engine == "stable_ts":
+        result = _run_stable_ts_blocks(
+            video_dir,
+            manifest,
+            model_name=whisper_model,
+            language=whisper_language or "vi",
+            device=device,
+        )
+    elif use_block_mode:
+        result = _run_faster_whisper_blocks(
+            video_dir,
+            manifest,
+            model_name=whisper_model,
+            language=whisper_language,
+        )
+    elif engine == "stable_ts":
         if not script_path.exists():
             logger.error("stable_ts engine requires script.txt: {}", script_path)
             sys.exit(1)
-        result = _run_stable_ts(
-            audio_path, script_path,
+        result = _run_stable_ts_full(
+            audio_path,
+            script_path,
             model_name=whisper_model,
             language=whisper_language or "vi",
             device=device,
         )
     else:
         result = _run_faster_whisper(
-            audio_path, script_path,
+            audio_path,
+            script_path,
             model_name=whisper_model,
             language=whisper_language,
             align_mode=align_mode,
         )
 
-    output_path.write_text(json.dumps(result, ensure_ascii=False, indent=2), encoding="utf-8")
+    expected_sentence_count = len(load_sentence_units(script_path)) if script_path.exists() else None
+    if expected_sentence_count is not None and len(result) != expected_sentence_count:
+        logger.error(
+            "timestamps.json count {} does not match script sentence count {}",
+            len(result),
+            expected_sentence_count,
+        )
+        sys.exit(1)
 
-    total_duration = result[-1]["end"] if result else 0
-    logger.info(
-        "Transcription complete: {} segments, {:.1f}s total → {}",
-        len(result), total_duration, output_path,
-    )
+    output_path.write_text(json.dumps(result, ensure_ascii=False, indent=2), encoding="utf-8")
+    total_duration = result[-1]["end"] if result else 0.0
+    logger.info("Transcription complete: {} segments, {:.1f}s total -> {}", len(result), total_duration, output_path)

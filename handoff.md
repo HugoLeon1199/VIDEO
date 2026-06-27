@@ -527,3 +527,31 @@ Invoke-RestMethod "https://api.runpod.ai/v2/9hs6ppcsssn990/purge-queue" -Method 
 ```
 
 Mỗi commit push `main` → RunPod tự build lại. Không push dồn (nhiều build song song gây lẫn lộn).
+## Final Kokoro production audit - 2026-06-27
+
+- Audited `output/ancient-child-surgery-31000-years` under Kokoro block mode.
+- Cap validation:
+  - largest sentence measured `278 phoneme chars`
+  - script is valid for the `500 phoneme chars` hard cap
+- Step 2 / Step 3 results:
+  - `engine = kokoro`
+  - `mode = block`
+  - `voice = am_fenrir`
+  - `speed = 0.95`
+  - `reused_block_count = 20`
+  - `regenerated_block_count = 0`
+  - `fallback_block_count = 0`
+  - `sentence_count = 92`
+  - `block_count = 20`
+  - `timestamps.json` count matched sentence count
+  - `restart_count = 0`
+  - `max_phoneme_chars = 418`
+  - `max_actual_seconds = 21.625`
+- Boundary clips exported under:
+  - `output/ancient-child-surgery-31000-years/kokoro_continuity_audit/`
+- Selected listening boundaries:
+  - `1`, `3`, `5`, `6`, `8`, `9`, `10`, `12`, `14`, `16`
+- Decision:
+  - Kokoro production config is `FROZEN`
+  - no voice, speed, or block-limit tuning was applied
+  - cache was preserved as-is

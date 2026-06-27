@@ -1,5 +1,69 @@
 # CURSOR_WORKLOG - Repo worklog
 
+## Session 2026-06-27 - Final Kokoro production audit on `ancient-child-surgery-31000-years`
+
+### Goal
+Validate Kokoro block-mode production on a real English video with a clean sentence set under the phoneme cap, then freeze the Kokoro config if the run passes.
+
+### Files touched
+| File | Action |
+|------|--------|
+| `.ai/CURSOR_WORKLOG.md` | MODIFIED - recorded audit evidence and freeze decision |
+
+### Video audited
+- `output/ancient-child-surgery-31000-years`
+
+### Cap check
+- Verified all script sentences are under the Kokoro hard cap.
+- The largest sentence in this script measured `278 phoneme chars`, so `ancient-child-surgery-31000-years` is valid for Kokoro block mode without splitting or tuning limits.
+
+### Step 2 / Step 3 runs
+- Step 2 production run used Kokoro block mode:
+  - `engine = kokoro`
+  - `mode = block`
+  - `voice = am_fenrir`
+  - `speed = 0.95`
+- Step 2 follow-up rerun on the same input reused the cache fully:
+  - `reused_block_count = 20`
+  - `regenerated_block_count = 0`
+  - `fallback_block_count = 0`
+- Step 3 block-aware alignment completed successfully:
+  - `92` timestamp segments
+  - block-aware mode stayed active
+  - `restart_count = 0`
+  - timestamp count matched sentence count
+
+### Manifest evidence
+- `sentence_count = 92`
+- `block_count = 20`
+- `max_phoneme_chars = 418`
+- `max_actual_seconds = 21.625`
+- No block had fallback or per-block params outside the configured defaults.
+- No block internal split was observed in the manifest.
+
+### Boundary clips exported for manual listening
+Created under:
+
+`output/ancient-child-surgery-31000-years/kokoro_continuity_audit/`
+
+Selected clips:
+- `boundary_001_b001_to_b002.mp3`
+- `boundary_003_b003_to_b004.mp3`
+- `boundary_005_b005_to_b006.mp3`
+- `boundary_006_b006_to_b007.mp3`
+- `boundary_008_b008_to_b009.mp3`
+- `boundary_009_b009_to_b010.mp3`
+- `boundary_010_b010_to_b011.mp3`
+- `boundary_012_b012_to_b013.mp3`
+- `boundary_014_b014_to_b015.mp3`
+- `boundary_016_b016_to_b017.mp3`
+
+### Decision
+- Kokoro production config is **FROZEN** for this repo state.
+- No tuning was applied to voice, speed, or block limits.
+- Cache was preserved; only the audit docs were updated.
+- If Leon hears a boundary issue in the exported clips, the next step should be to regenerate only the specific block involved and re-audit the adjacent boundary clips.
+
 ## Session 2026-06-27 - Final TTS continuity audit for `to-tien-ban-lam-gi-ca-ngay-vi`
 
 ### Goal

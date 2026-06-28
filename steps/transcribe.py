@@ -155,9 +155,9 @@ def _build_exact_word_timestamps(
     word_timestamps = []
     for idx, canonical in enumerate(canonical_words):
         aligned = matched[idx]
-        start = round(audio_start + float(aligned["start"]), 3)
-        end = round(audio_start + float(aligned["end"]), 3)
-        if end <= start:
+        raw_start = audio_start + float(aligned["start"])
+        raw_end = audio_start + float(aligned["end"])
+        if raw_end < raw_start:
             return [], coverage, False
         word_timestamps.append(
             {
@@ -165,8 +165,8 @@ def _build_exact_word_timestamps(
                 "word_index": canonical["word_index"],
                 "text": canonical["text"],
                 "normalized": canonical["normalized"],
-                "start": start,
-                "end": end,
+                "start": round(raw_start, 6),
+                "end": round(raw_end, 6),
                 "timing_source": timing_source,
             }
         )

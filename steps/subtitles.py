@@ -111,7 +111,9 @@ def _load_word_assets(video_dir: Path) -> tuple[list[dict], dict, Path]:
     return _load_json(words_path), diagnostics, words_path
 
 
-def _wrap_tokens(tokens: list[str], max_chars_per_line: int = config.SUBTITLE_MAX_CHARS_PER_LINE) -> list[str]:
+def _wrap_tokens(tokens: list[str], max_chars_per_line: int | None = None) -> list[str]:
+    if max_chars_per_line is None:
+        max_chars_per_line = config.SUBTITLE_MAX_CHARS_PER_LINE
     lines: list[str] = []
     current: list[str] = []
     for token in tokens:
@@ -127,7 +129,7 @@ def _wrap_tokens(tokens: list[str], max_chars_per_line: int = config.SUBTITLE_MA
 
 
 def _format_cue_text(tokens: list[str]) -> tuple[str, int]:
-    lines = _wrap_tokens(tokens)
+    lines = _wrap_tokens(tokens, max_chars_per_line=config.SUBTITLE_MAX_CHARS_PER_LINE)
     if len(lines) > 2:
         raise ValueError("Cue exceeds 2 lines")
     return "\n".join(lines), len(lines)
@@ -220,19 +222,45 @@ def _validate_word_stream(script_path: Path, word_timestamps: list[dict]) -> Non
             raise RuntimeError(f"Normalized word mismatch for '{expected['text']}'")
 
 
-def build_subtitle_cues(script_path: Path, word_timestamps: list[dict], audio_duration: float) -> list[dict]:
+def build_subtitle_cues(
+    script_path: Path,
+    word_timestamps: list[dict],
+    audio_duration: float,
+    sentence_timestamps: list[dict] | None = None,
+) -> list[dict]:
     _validate_word_stream(script_path, word_timestamps)
+    sentence_timestamps_by_index = {item["index"]: item for item in sentence_timestamps or []}
     cues: list[dict] = []
     cursor = 0
     cue_index = 1
+    previous_end = 0.0
     while cursor < len(word_timestamps):
         end_index = _pick_cue_end(word_timestamps, cursor)
+        sentence_index = int(word_timestamps[cursor]["sentence_index"])
+        sentence_end_index = cursor
+        while (
+            sentence_end_index + 1 < len(word_timestamps)
+            and int(word_timestamps[sentence_end_index + 1]["sentence_index"]) == sentence_index
+        ):
+            sentence_end_index += 1
+        if end_index < sentence_end_index:
+            sentence_tail = word_timestamps[end_index + 1 : sentence_end_index + 1]
+            if sentence_tail and all(float(item["end"]) <= float(item["start"]) for item in sentence_tail):
+                end_index = sentence_end_index
         tokens = [item["text"] for item in word_timestamps[cursor : end_index + 1]]
         text, line_count = _format_cue_text(tokens)
         start = round(float(word_timestamps[cursor]["start"]), 3)
         end = round(min(float(word_timestamps[end_index]["end"]), audio_duration), 3)
         if end <= start:
-            raise RuntimeError("Cue has non-positive duration")
+            if sentence_timestamps_by_index:
+                start_sentence = int(word_timestamps[cursor]["sentence_index"])
+                end_sentence = int(word_timestamps[end_index]["sentence_index"])
+                start = round(float(sentence_timestamps_by_index.get(start_sentence, {}).get("start", start)), 3)
+                end = round(min(float(sentence_timestamps_by_index.get(end_sentence, {}).get("end", end)), audio_duration), 3)
+            if end <= start:
+                raise RuntimeError("Cue has non-positive duration")
+        if start < previous_end:
+            start = round(previous_end, 3)
         cues.append(
             {
                 "index": cue_index,
@@ -245,6 +273,7 @@ def build_subtitle_cues(script_path: Path, word_timestamps: list[dict], audio_du
                 "_tokens": tokens,
             }
         )
+        previous_end = end
         cue_index += 1
         cursor = end_index + 1
 
@@ -396,7 +425,9 @@ def generate(video_id: str, style: str = STYLE_CINEMATIC_CLEAN) -> dict:
     word_timestamps, _diagnostics, _words_path = _load_word_assets(video_dir)
     audio_path = _preferred_audio_path(video_dir)
     audio_duration = _audio_duration(audio_path)
-    cues = build_subtitle_cues(script_path, word_timestamps, audio_duration)
+    sentence_timestamps_path = video_dir / "timestamps.json"
+    sentence_timestamps = _load_json(sentence_timestamps_path) if sentence_timestamps_path.exists() else None
+    cues = build_subtitle_cues(script_path, word_timestamps, audio_duration, sentence_timestamps=sentence_timestamps)
     diagnostics = _build_diagnostics(script_path, word_timestamps, cues, audio_duration)
     if not diagnostics["validation_passed"]:
         raise RuntimeError("Subtitle validation failed")

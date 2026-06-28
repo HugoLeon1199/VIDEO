@@ -226,27 +226,42 @@ def _build_vast_backend(n_images: int = 100):
     env_vars["USE_8BIT"] = os.getenv("VAST_USE_8BIT", "1")
 
     max_attempts = int(os.getenv("VAST_MAX_RENT_ATTEMPTS", "4"))
+    cost_caps = tuple(getattr(_cfg, "VAST_ESTIMATED_TOTAL_COST_FALLBACKS", ()) or ())
+    if not cost_caps:
+        cost_caps = (getattr(_cfg, "VAST_MAX_ESTIMATED_TOTAL_COST", 0.20),)
     tried_machines: set = set()
     last_err: Exception | None = None
 
     for attempt in range(1, max_attempts + 1):
         # Each round re-queries and excludes machines we already burned, so we move
         # down the cheapest-first list instead of re-renting the same dud.
-        offer = manager.find_offer(
-            min_vram_gb=_cfg.VAST_MIN_VRAM_GB,
-            max_vram_gb=_cfg.VAST_MAX_VRAM_GB,
-            gpu_name=_cfg.VAST_GPU_NAME,
-            max_price_per_hour=_cfg.VAST_MAX_PRICE_PER_HOUR,
-            min_inet_down_mbps=_cfg.VAST_MIN_INET_DOWN_MBPS,
-            min_reliability=_cfg.VAST_MIN_RELIABILITY,
-            min_disk_gb=disk_floor,
-            max_inet_cost_per_gb=_cfg.VAST_MAX_INET_DOWN_COST,
-            preferred_inet_cost_per_gb=_cfg.VAST_PREFERRED_INET_DOWN_COST,
-            expected_download_gb=_cfg.VAST_EXPECTED_DOWNLOAD_GB,
-            expected_upload_gb=_cfg.VAST_EXPECTED_UPLOAD_GB,
-            n_images=n_images,
-            exclude_machine_ids=tried_machines,
-        )
+        offer = None
+        last_cap_err: Exception | None = None
+        for total_cap in cost_caps:
+            logger.info("Vast: trying estimated total cost cap <= $%.2f", total_cap)
+            try:
+                offer = manager.find_offer(
+                    min_vram_gb=_cfg.VAST_MIN_VRAM_GB,
+                    max_vram_gb=_cfg.VAST_MAX_VRAM_GB,
+                    gpu_name=_cfg.VAST_GPU_NAME,
+                    max_price_per_hour=_cfg.VAST_MAX_PRICE_PER_HOUR,
+                    min_inet_down_mbps=_cfg.VAST_MIN_INET_DOWN_MBPS,
+                    min_reliability=_cfg.VAST_MIN_RELIABILITY,
+                    min_disk_gb=disk_floor,
+                    max_inet_cost_per_gb=_cfg.VAST_MAX_INET_DOWN_COST,
+                    preferred_inet_cost_per_gb=_cfg.VAST_PREFERRED_INET_DOWN_COST,
+                    expected_download_gb=_cfg.VAST_EXPECTED_DOWNLOAD_GB,
+                    expected_upload_gb=_cfg.VAST_EXPECTED_UPLOAD_GB,
+                    max_estimated_total_cost=total_cap,
+                    n_images=n_images,
+                    exclude_machine_ids=tried_machines,
+                )
+                break
+            except RuntimeError as exc:
+                last_cap_err = exc
+                logger.warning("Vast: no offer under estimated total cap $%.2f: %s", total_cap, exc)
+        if offer is None:
+            raise RuntimeError(last_cap_err or "No Vast.ai offer found under configured total cost caps")
         tried_machines.add(offer.get("machine_id"))
         instance = manager.rent(
             offer_id=offer["id"],

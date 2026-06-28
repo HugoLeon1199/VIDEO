@@ -776,3 +776,111 @@ Copy-Item output\creative-smoke-vi\images_vi\img_*.png output\creative-smoke-vi\
 - `scripts/generate_images.py --track vi` promotes into `images_vi/`.
 - `steps/render_video.py` still prefers canonical `images/` when both exist.
 - Without the copy step, render would keep using the older canonical images.
+
+## Session 2026-06-28 - Production autopilot from pasted script
+
+### Goal
+- add a reusable autopilot entrypoint so Cursor can ingest a narration script, create production configs and creative package assets, and run the repo toward a finished video without manual JSON/file choreography
+
+### Code changes
+- Added `steps/autopilot.py`
+  - script normalization
+  - language detection
+  - safe overwrite / resume hash checks
+  - automatic `tts_config.json` + `transcribe_config.json`
+  - automatic fallback `creative_package.json`
+  - `autopilot_state.json` + `autopilot_summary.json`
+- Reworked `steps/image_prompts.py`
+  - now reads prompt templates from:
+    - `prompts/image_prompt_vi.txt`
+    - `prompts/image_prompt_en.txt`
+  - supports exact-word visual beats
+  - falls back to sentence=image only when exact words are unavailable
+- Added `steps/visual_beats.py`
+- Reworked `steps/generate_images.py`
+  - canonical `images/` stays the render source
+  - thumbnails still run even when scenes are already complete
+  - thumbnails can reuse the same backend lifecycle
+- Updated `steps/thumbnails.py` for backend override reuse
+- Updated `main.py` to support:
+  - `--autopilot`
+  - `--script-file`
+- Refreshed:
+  - `AGENTS.md`
+  - `CLAUDE.md`
+  - `prompts/image_prompt_vi.txt`
+  - `prompts/image_prompt_en.txt`
+
+### Tests added
+- `tests/test_autopilot.py`
+- `tests/test_visual_beats.py`
+- extended `tests/test_thumbnails.py`
+
+### Commands run
+```powershell
+$py = "C:\Users\LEON_RM\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\python.exe"
+& $py -m pytest tests/test_autopilot.py -q
+& $py -m pytest tests/test_visual_beats.py -q
+& $py -m pytest tests/test_thumbnails.py -q
+& $py -m pytest tests/test_creative_package.py -q
+& $py -m pytest tests/test_subtitles.py -q
+& $py -m pytest tests/test_publishing.py -q
+& $py -m pytest tests -q
+```
+
+### Results
+- `tests/test_autopilot.py`: `5 passed`
+- `tests/test_visual_beats.py`: `5 passed`
+- `tests/test_thumbnails.py`: `4 passed`
+- `tests/test_creative_package.py`: `5 passed`
+- `tests/test_subtitles.py`: `9 passed`
+- `tests/test_publishing.py`: `3 passed`
+- full `tests/`: `168 passed`
+
+### Notes
+- The repo now has a real autopilot truth source in `main.py`.
+- This patch intentionally did not commit or stage anything under `output/`.
+- No paid Vast smoke was executed in this turn; only code/test/doc verification was completed.
+
+## Session 2026-06-28 - Subtitle recovery and final subbed render
+
+### Goal
+- recover the production subtitle path for the fresh Vietnamese run and finish the video with `final_subbed.mp4`
+
+### Code changes
+- `steps/transcribe.py`
+  - accepted exact zero-duration aligned words instead of failing the whole subtitle export
+- `steps/subtitles.py`
+  - added sentence-bound fallback for zero-duration spans
+  - prevented cue overlap by clamping cue starts to the previous cue end
+  - made subtitle wrapping respect the configured max chars per line dynamically
+- `config.py`
+  - raised the default subtitle line budget to `46` chars
+- `tests/test_subtitles.py`
+  - added coverage for zero-duration exact words and sentence-bound fallback
+
+### Commands run
+```powershell
+$py = "C:\Users\LEON_RM\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\python.exe"
+& $py -m pytest tests/test_subtitles.py -q
+& $py -m pytest tests/test_autopilot.py tests/test_thumbnails.py -q
+& $py -m pytest tests -q
+& $py main.py --video-id to-tien-cua-ban-chi-lam-viec-15-tieng-mot-tuan-vi-fresh-full-20260628-1320 --step 3
+& $py main.py --video-id to-tien-cua-ban-chi-lam-viec-15-tieng-mot-tuan-vi-fresh-full-20260628-1320 --step 7 --subtitles
+```
+
+### Results
+- step 3 now writes `word_timestamps.json`
+- subtitle diagnostics report exact readiness with:
+  - `missing_word_count = 0`
+  - `repeated_word_count = 0`
+  - `overlap_count = 0`
+  - `max_lines = 2`
+- `final.mp4` exists
+- `final_subbed.mp4` exists
+- full test suite passed: `170 passed`
+
+### Notes
+- The fresh run was finished at:
+  - `output/to-tien-cua-ban-chi-lam-viec-15-tieng-mot-tuan-vi-fresh-full-20260628-1320`
+- No `output/` files were staged for commit.

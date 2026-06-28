@@ -174,9 +174,9 @@ def build_contact_sheet(video_dir: Path, prompt_entries: list[dict[str, Any]]) -
 
 def _build_backend():
     if config.IMAGE_BACKEND == "vast_instance":
-        from steps.generate_images import _build_vast_backend
+        from scripts.generate_images import _build_vast_backend
 
-        return _build_vast_backend()
+        return _build_vast_backend(n_images=config.CREATIVE_PACKAGE_DEFAULT_CONCEPT_COUNT)
     from steps.generate_images import _build_runpod_backend
 
     return _build_runpod_backend()
@@ -198,6 +198,8 @@ def generate_thumbnail_assets(
     *,
     regenerate: list[int] | None = None,
     allow_stale_package: bool = False,
+    backend_override=None,
+    teardown_override=None,
 ) -> dict[str, Any]:
     video_dir = Path(config.OUTPUT_DIR) / video_id
     load_validated_package(video_dir, allow_stale_package=allow_stale_package)
@@ -210,7 +212,11 @@ def generate_thumbnail_assets(
     regenerate_set = {int(value) for value in regenerate or []}
     log_path = _thumbnail_log_path(video_dir)
     generation_log = _load_json(log_path, {})
-    backend, teardown = _build_backend()
+    backend = backend_override
+    teardown = teardown_override
+    owns_backend = backend is None
+    if backend is None:
+        backend, teardown = _build_backend()
     generated = 0
     failed_ids: list[int] = []
     try:
@@ -265,7 +271,7 @@ def generate_thumbnail_assets(
                 _cleanup_candidate_dir(candidate_dir)
         _atomic_write_json(log_path, generation_log)
     finally:
-        if teardown:
+        if owns_backend and teardown:
             teardown()
     existing_entries = [entry for entry in prompt_entries if _thumbnail_path(video_dir, int(entry["concept_id"])).exists()]
     contact_sheet_path = None

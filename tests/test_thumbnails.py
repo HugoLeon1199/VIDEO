@@ -7,6 +7,7 @@ from PIL import Image
 
 import config
 from image_generation.schemas import CandidateResult, SceneResult
+from steps import generate_images
 from steps import thumbnails
 
 
@@ -120,3 +121,20 @@ def test_contact_sheet_contains_labels_and_thumbnail_failures_do_not_touch_scene
     sheet = Image.open(video_dir / "publishing" / "thumbnail_contact_sheet.jpg")
     assert sheet.size[0] > 0
     assert (video_dir / "generation_log.json").exists()
+
+
+def test_step5_still_generates_thumbnails_when_scenes_are_already_complete(tmp_path: Path, monkeypatch) -> None:
+    video_dir, backend = _setup(tmp_path, monkeypatch)
+    monkeypatch.setattr(config, "IMAGE_BACKEND", "vast_instance")
+    monkeypatch.setattr(generate_images.config, "OUTPUT_DIR", str(tmp_path))
+    monkeypatch.setattr(generate_images.config, "PUBLISHING_DIRNAME", "publishing")
+    monkeypatch.setattr(generate_images.config, "IMAGE_BACKEND", "vast_instance")
+    monkeypatch.setattr(generate_images, "_build_vast_backend", lambda: (backend, None))
+    _write_json(video_dir / "image_prompts.json", [{"index": 1, "prompt": "scene", "start": 0.0, "end": 1.0}])
+    _write_json(video_dir / "generation_log.json", {"001": {"status": "completed", "selected_image": str(video_dir / "images" / "img_001.png"), "candidates_saved": 1}})
+    (video_dir / "images").mkdir(exist_ok=True)
+    (video_dir / "images" / "img_001.png").write_bytes(b"png")
+
+    generate_images.run("thumbs")
+
+    assert (video_dir / "publishing" / "thumbnail_contact_sheet.jpg").exists()

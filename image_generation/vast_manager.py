@@ -96,6 +96,7 @@ class VastManager:
         expected_download_gb: float = 37.0,    # model(34) + docker/setup(3) pulled per rental
         expected_upload_gb: float = 2.0,       # output images sent back
         n_images: int = 100,                   # batch size — drives the GPU-hours estimate
+        max_estimated_total_cost: float | None = None,
         sec_per_image: float = 19.0,           # measured warm gen time (fallback)
         boot_seconds: float = 120.0,           # fixed boot/init before model download
         allowed_countries: set | None = None,
@@ -136,14 +137,27 @@ class VastManager:
         if gpu_name:
             params["q"]["gpu_name"] = {"eq": gpu_name}
 
-        resp = requests.get(
-            f"{VAST_API_BASE}/bundles",
-            headers=self._headers,
-            params={"q": json.dumps(params["q"])},
-            timeout=30,
-        )
-        resp.raise_for_status()
-        offers = resp.json().get("offers", [])
+        offers = []
+        last_status = None
+        for attempt in range(1, 5):
+            resp = requests.get(
+                f"{VAST_API_BASE}/bundles",
+                headers=self._headers,
+                params={"q": json.dumps(params["q"])},
+                timeout=30,
+            )
+            last_status = resp.status_code
+            if resp.status_code == 429:
+                retry_after = float(resp.headers.get("Retry-After", "0") or 0)
+                sleep_s = retry_after if retry_after > 0 else min(2 ** attempt, 15)
+                logger.warning("Vast bundles rate-limited (429), retrying in {:.1f}s [attempt {}/4]", sleep_s, attempt)
+                time.sleep(sleep_s)
+                continue
+            resp.raise_for_status()
+            offers = resp.json().get("offers", [])
+            break
+        else:
+            raise RuntimeError(f"Vast bundles request rate-limited after retries (last_status={last_status})")
 
         # Exclude GPUs that look fine by cuda_max_good but don't actually run our
         # FLUX/bf16 image well (old pre-Ampere architectures: no proper bf16, the
@@ -238,11 +252,9 @@ class VastManager:
         # box. So: if any datacenter box passes the gates, choose the cheapest of
         # THOSE; only fall back to home hosts when no datacenter is available in range.
         # (All survivors already passed reliability/inet/on-demand/disk/arch gates.)
-        pool = eligible
         if prefer_datacenter:
             datacenters = [o for o in eligible if o.get("hosting_type") == 1]
             if datacenters:
-                pool = datacenters
                 logger.info("Vast: {} datacenter (🏢) offers in range — preferring those over home hosts",
                             len(datacenters))
             else:
@@ -281,22 +293,34 @@ class VastManager:
             # but we rent ~60GB → add it explicitly. storage_cost is $/GB/month.
             store = (o.get("storage_cost") or 0) * min_disk_gb / 720.0 * jh
             return gpu + dl + ul + store
+        if max_estimated_total_cost is not None:
+            capped = [o for o in eligible if _true_cost(o) <= max_estimated_total_cost]
+            if not capped:
+                cheapest = min(eligible, key=_true_cost)
+                raise RuntimeError(
+                    "No Vast.ai offers under estimated total cost cap "
+                    f"${max_estimated_total_cost:.2f}; cheapest eligible estimate "
+                    f"is ${_true_cost(cheapest):.3f} for {cheapest.get('gpu_name')} "
+                    f"at ${cheapest.get('dph_total')}/hr"
+                )
+            eligible = capped
+
         # Rank by true cost. Tie-break (costs within ~$0.02): prefer a host at or
         # below preferred_inet_cost_per_gb — so a near-tie goes to the cheaper-
         # bandwidth box, WITHOUT hard-filtering the pool to that threshold.
         def _sort_key(o: dict):
             tc = _true_cost(o)
-            bucket = round(tc / 0.02)  # group near-equal costs
             below_pref = 0 if (o.get("inet_down_cost") or 0) <= preferred_inet_cost_per_gb else 1
-            return (bucket, below_pref, o.get("inet_down_cost") or 0, tc)
-        best = min(pool, key=_sort_key)
+            datacenter_pref = 0 if (prefer_datacenter and o.get("hosting_type") == 1) else 1
+            return (tc, below_pref, datacenter_pref, o.get("inet_down_cost") or 0)
+        best = min(eligible, key=_sort_key)
         host_kind = "datacenter🏢" if best.get("hosting_type") == 1 else "home🏠"
         logger.info(
             "Vast offer selected: id={} machine={} gpu={} vram={}GB ${:.3f}/hr "
-            "inet_down={:.0f}Mbps reliability={:.3f} {} verified={} ports={} geo={}",
+            "inet_down={:.0f}Mbps reliability={:.3f} est_total=${:.3f} {} verified={} ports={} geo={}",
             best["id"], best.get("machine_id"), best.get("gpu_name"),
             best.get("gpu_ram", 0) // 1024, best["dph_total"],
-            best.get("inet_down") or 0, _reliability(best), host_kind,
+            best.get("inet_down") or 0, _reliability(best), _true_cost(best), host_kind,
             best.get("verification"), best.get("direct_port_count"),
             best.get("geolocation"),
         )

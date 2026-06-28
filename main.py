@@ -6,7 +6,6 @@ from pathlib import Path
 
 from loguru import logger
 
-# Load .env before importing config so all API keys are available
 _env_file = Path(__file__).parent / ".env"
 if _env_file.exists():
     for _line in _env_file.read_text(encoding="utf-8").splitlines():
@@ -40,82 +39,54 @@ def get_video_dir(video_id: str) -> Path:
 
 
 def _setup_demo_dir(base_video_id: str, n: int) -> str:
-    """Create output/{base_id}_demo{n}/ and copy/trim input files from base folder.
-    Returns the demo video_id to use for all subsequent steps.
-    """
     import json as _json
+    import subprocess as _sp
 
     demo_id = f"{base_video_id}_demo{n}"
     base_dir = get_video_dir(base_video_id)
     demo_dir = get_video_dir(demo_id)
     demo_dir.mkdir(parents=True, exist_ok=True)
-
-    # Copy script and timestamps
     for fname in ("script.txt", "timestamps.json"):
         src = base_dir / fname
         dst = demo_dir / fname
         if src.exists() and not dst.exists():
             shutil.copy2(src, dst)
-            logger.debug("Demo: copied {} → {}", src.name, dst)
 
-    # Trim audio to the end of the last demo prompt / last demo sentence
-    # Use timestamps.json to find the cut point (n-th sentence end time)
     src_audio = base_dir / "audio.mp3"
     dst_audio = demo_dir / "audio_trimmed.mp3"
     if src_audio.exists() and not dst_audio.exists():
-        ts_path = base_dir / "timestamps.json"
-        prompts_path = demo_dir / "image_prompts.json"
         cut_time = None
-
-        # Prefer existing demo image_prompts end time
+        prompts_path = demo_dir / "image_prompts.json"
+        ts_path = base_dir / "timestamps.json"
         if prompts_path.exists():
             try:
                 items = _json.loads(prompts_path.read_text(encoding="utf-8"))
-                cut_time = items[-1]["end"] + 1.0  # 1s tail
+                cut_time = items[-1]["end"] + 1.0
             except Exception:
-                pass
-
-        # Fall back to timestamps
+                cut_time = None
         if cut_time is None and ts_path.exists():
             try:
                 ts = _json.loads(ts_path.read_text(encoding="utf-8"))
-                demo_ts = ts[:n]
-                cut_time = demo_ts[-1]["end"] + 1.0
+                cut_time = ts[:n][-1]["end"] + 1.0
             except Exception:
-                pass
-
+                cut_time = None
         if cut_time:
-            import subprocess as _sp
-            import os as _os
             ffmpeg_path = shutil.which("ffmpeg") or str(
                 Path(r"C:\Users\LEON_RM\AppData\Local\Microsoft\WinGet\Packages"
                      r"\Gyan.FFmpeg_Microsoft.Winget.Source_8wekyb3d8bbwe\ffmpeg-8.1.1-full_build\bin") / "ffmpeg.exe"
             )
-            _os.environ["PATH"] = str(Path(ffmpeg_path).parent) + _os.pathsep + _os.environ.get("PATH", "")
+            os.environ["PATH"] = str(Path(ffmpeg_path).parent) + os.pathsep + os.environ.get("PATH", "")
             cmd = ["ffmpeg", "-y", "-i", str(src_audio), "-t", f"{cut_time:.3f}", "-c:a", "copy", str(dst_audio)]
-            r = _sp.run(cmd, capture_output=True)
-            if r.returncode == 0:
-                logger.info("Demo: trimmed audio to {:.1f}s → {}", cut_time, dst_audio.name)
-            else:
-                logger.warning("Demo: audio trim failed, falling back to full audio")
+            result = _sp.run(cmd, capture_output=True)
+            if result.returncode != 0:
                 shutil.copy2(src_audio, demo_dir / "audio.mp3")
         else:
             shutil.copy2(src_audio, demo_dir / "audio.mp3")
-            logger.debug("Demo: copied full audio (no cut time)")
-
     logger.info("Demo folder: output/{}/", demo_id)
     return demo_id
 
 
 def detect_resume_step(video_dir: Path) -> int:
-    """Return the next step number to run based on existing output files.
-
-    Resume logic (new workflow where 1 scene can span multiple sentences):
-    - Does image_prompts.json exist?       → yes: check images
-    - Do all img_NNN.png exist?            → yes: check render
-    - Does final.mp4 exist?                → yes: check metadata
-    - timestamps.json existence drives step 3→4, not compared to prompts count.
-    """
     import json as _json
 
     images_dir = video_dir / "images"
@@ -129,13 +100,9 @@ def detect_resume_step(video_dir: Path) -> int:
             n_prompts = len(_json.loads(prompts_path.read_text(encoding="utf-8")))
         except Exception:
             n_prompts = 0
-
         if n_prompts > 0:
-            completed_images = (
-                sum(1 for _ in images_dir.glob("img_*.png")) if images_dir.exists() else 0
-            )
+            completed_images = sum(1 for _ in images_dir.glob("img_*.png")) if images_dir.exists() else 0
             if completed_images >= n_prompts:
-                # All images done — check render
                 if (video_dir / "final.mp4").exists():
                     if (video_dir / "metadata.json").exists():
                         return 9
@@ -143,26 +110,15 @@ def detect_resume_step(video_dir: Path) -> int:
                 if (video_dir / "soundscape.json").exists():
                     return 7
                 return 6
-            elif completed_images > 0:
-                # Partial images — resume generation
+            if completed_images > 0:
                 return 5
-            else:
-                # Prompts exist but no images yet
-                return 5
-
-        # image_prompts.json exists but empty/corrupt — redo step 4
+            return 5
         return 4
 
-    # No image_prompts.json yet
-    checks = [
-        (ts_path, 4),
-        (audio_path, 3),
-        (script_path, 2),
-    ]
+    checks = [(ts_path, 4), (audio_path, 3), (script_path, 2)]
     for path, next_step in checks:
         if path.exists():
             return next_step
-
     return 2
 
 
@@ -202,77 +158,62 @@ def validate_environment(video_id: str) -> None:
         logger.info("Create it and add script.txt: output/{}/script.txt", video_id)
         sys.exit(1)
 
-    if not config.ANTHROPIC_API_KEY and not config.GEMINI_API_KEY:
-        logger.warning("No API keys set — steps 4, 5, and 7 will fail")
-    elif not config.ANTHROPIC_API_KEY:
-        logger.warning("ANTHROPIC_API_KEY not set — step 7 will fail (step 4 uses Gemini)")
-    if not config.GEMINI_API_KEY:
-        logger.warning("GEMINI_API_KEY not set — steps 4 and 5 will fail")
-
 
 def main() -> None:
-    parser = argparse.ArgumentParser(
-        description="YouTube Autopilot Pipeline — Ancient Humans channel"
-    )
+    parser = argparse.ArgumentParser(description="YouTube Autopilot Pipeline - Ancient Humans channel")
     parser.add_argument("--video-id", required=True, help="Video slug (e.g. what-ancient-humans-did-all-day)")
-    parser.add_argument("--step", type=int, help="Run only this step (1–8)")
+    parser.add_argument("--autopilot", action="store_true", help="Run full production autopilot from a script file")
+    parser.add_argument("--script-file", help="Path to the narration script used by --autopilot")
+    parser.add_argument("--step", type=int, help="Run only this step (1-8)")
     parser.add_argument("--from-step", type=int, help="Run from this step to step 8")
     parser.add_argument("--resume", action="store_true", help="Auto-detect and resume from last completed step")
     parser.add_argument("--subtitles", action="store_true", help="Also burn subtitles into final_subbed.mp4 during step 7")
-    parser.add_argument(
-        "--demo",
-        type=int,
-        metavar="N",
-        nargs="?",
-        const=10,
-        help="Demo mode: run steps 4–7 in output/{video_id}_demo{N}/ (default N=10)",
-    )
+    parser.add_argument("--demo", type=int, metavar="N", nargs="?", const=10, help="Demo mode: run steps 4-7 in output/{video_id}_demo{N}/")
     args = parser.parse_args()
 
     setup_logging()
     logger.info("=== YouTube Autopilot Pipeline ===")
 
-    # Demo mode: redirect to isolated subfolder, steps 4–6 only
-    if args.demo:
-        n = args.demo
-        validate_environment(args.video_id)
-        demo_id = _setup_demo_dir(args.video_id, n)
-        logger.info("Video ID (demo): {} ({} images)", demo_id, n)
-        start_step = args.from_step or (args.step or 4)
-        steps = [args.step] if args.step else range(start_step, 8)  # steps 4,5,6,7 only
-        for step in steps:
-            logger.info("--- Step {} ---", step)
-            run_step(step, demo_id, subtitles=args.subtitles, n_override=n)
-        logger.info("=== Demo finished → output/{}/ ===", demo_id)
+    if args.autopilot:
+        if not args.script_file:
+            logger.error("--autopilot requires --script-file")
+            sys.exit(1)
+        from steps.autopilot import run as run_autopilot
+
+        logger.info("Running production autopilot for {}", args.video_id)
+        run_autopilot(args.video_id, args.script_file, resume=args.resume)
+        logger.info("=== Autopilot finished ===")
         return
 
-    # Full / single / resume mode — always uses base video_id, no n_override
+    if args.demo:
+        validate_environment(args.video_id)
+        demo_id = _setup_demo_dir(args.video_id, args.demo)
+        start_step = args.from_step or (args.step or 4)
+        steps = [args.step] if args.step else range(start_step, 8)
+        for step in steps:
+            logger.info("--- Step {} ---", step)
+            run_step(step, demo_id, subtitles=args.subtitles, n_override=args.demo)
+        logger.info("=== Demo finished -> output/{}/ ===", demo_id)
+        return
+
     logger.info("Video ID: {}", args.video_id)
     validate_environment(args.video_id)
 
     if args.step:
-        logger.info("Running single step: {}", args.step)
         run_step(args.step, args.video_id, subtitles=args.subtitles)
-
     elif args.from_step:
-        logger.info("Running from step {} to 8", args.from_step)
         for step in range(args.from_step, 9):
             logger.info("--- Step {} ---", step)
             run_step(step, args.video_id, subtitles=args.subtitles)
-
     elif args.resume:
-        video_dir = get_video_dir(args.video_id)
-        next_step = detect_resume_step(video_dir)
+        next_step = detect_resume_step(get_video_dir(args.video_id))
         if next_step >= 9:
             logger.info("Pipeline already complete for: {}", args.video_id)
             return
-        logger.info("Resuming from step {}", next_step)
         for step in range(next_step, 9):
             logger.info("--- Step {} ---", step)
             run_step(step, args.video_id, subtitles=args.subtitles)
-
     else:
-        logger.info("Running full pipeline (steps 2–8)")
         script_path = get_video_dir(args.video_id) / "script.txt"
         if not script_path.exists():
             logger.error("script.txt not found at: {}", script_path)

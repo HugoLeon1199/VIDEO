@@ -284,3 +284,72 @@ def test_render_step_with_subtitles_creates_final_subbed_without_overwriting_fin
 
     assert (video_dir / "final.mp4").read_bytes() == b"video-bytes"
     assert (video_dir / "final_subbed.mp4").read_bytes() == b"subbed"
+
+
+def test_zero_duration_word_timings_remain_exact_and_ready():
+    sentences = ["Xin chào."]
+    aligned_words = [
+        {"word": " Xin", "normalized": "xin", "start": 0.10, "end": 0.32},
+        {"word": " chào.", "normalized": "chao", "start": 0.32, "end": 0.32},
+    ]
+
+    word_timestamps, coverage, exact_words = transcribe._build_exact_word_timestamps(
+        sentences,
+        aligned_words,
+        audio_start=0.0,
+        starting_sentence_index=1,
+        starting_global_word_index=1,
+        timing_source="stable_ts",
+    )
+
+    assert coverage == 1.0
+    assert exact_words is True
+    assert word_timestamps == [
+        {
+            "sentence_index": 1,
+            "word_index": 1,
+            "text": "Xin",
+            "normalized": "xin",
+            "start": 0.1,
+            "end": 0.32,
+            "timing_source": "stable_ts",
+        },
+        {
+            "sentence_index": 1,
+            "word_index": 2,
+            "text": "chào.",
+            "normalized": "chao",
+            "start": 0.32,
+            "end": 0.32,
+            "timing_source": "stable_ts",
+        },
+    ]
+
+
+def test_zero_duration_cue_uses_sentence_bounds_fallback(tmp_path):
+    video_dir = tmp_path / "video"
+    video_dir.mkdir()
+    script = "Xin chào. Cụm từ này cần né plateau."
+    _make_script(video_dir, script)
+    _write_json(
+        video_dir / "timestamps.json",
+        [
+            {"index": 1, "start": 0.0, "end": 0.9, "text": "Xin chào."},
+            {"index": 2, "start": 1.0, "end": 3.5, "text": "Cụm từ này cần né plateau."},
+        ],
+    )
+    word_timestamps = [
+        {"sentence_index": 1, "word_index": 1, "text": "Xin", "normalized": "xin", "start": 0.0, "end": 0.3, "timing_source": "stable_ts"},
+        {"sentence_index": 1, "word_index": 2, "text": "chào.", "normalized": "chao", "start": 0.3, "end": 0.9, "timing_source": "stable_ts"},
+        {"sentence_index": 2, "word_index": 1, "text": "Cụm", "normalized": "cum", "start": 1.0, "end": 1.0, "timing_source": "stable_ts"},
+        {"sentence_index": 2, "word_index": 2, "text": "từ", "normalized": "tu", "start": 1.0, "end": 1.0, "timing_source": "stable_ts"},
+        {"sentence_index": 2, "word_index": 3, "text": "này", "normalized": "nay", "start": 1.0, "end": 1.0, "timing_source": "stable_ts"},
+        {"sentence_index": 2, "word_index": 4, "text": "cần", "normalized": "can", "start": 1.0, "end": 1.0, "timing_source": "stable_ts"},
+        {"sentence_index": 2, "word_index": 5, "text": "né", "normalized": "ne", "start": 1.0, "end": 1.0, "timing_source": "stable_ts"},
+        {"sentence_index": 2, "word_index": 6, "text": "plateau.", "normalized": "plateau", "start": 1.0, "end": 1.0, "timing_source": "stable_ts"},
+    ]
+
+    cues = subtitles.build_subtitle_cues(video_dir / "script.txt", word_timestamps, 3.5, sentence_timestamps=json.loads((video_dir / "timestamps.json").read_text(encoding="utf-8")))
+
+    assert cues[1]["start"] == 1.0
+    assert cues[1]["end"] == 3.5

@@ -49,12 +49,10 @@ VAST_API_KEY = os.getenv("VAST_API_KEY", "")
 VAST_WORKER_PORT = int(os.getenv("VAST_WORKER_PORT", "8080"))
 VAST_MIN_VRAM_GB = int(os.getenv("VAST_MIN_VRAM_GB", "24"))   # FLUX 8-bit needs ~15GB → 24GB (16GB OOMs)
 VAST_MAX_VRAM_GB = int(os.getenv("VAST_MAX_VRAM_GB", "200"))   # no real cap; arch gate + _true_cost decide
-# Price cap: $0.40/hr. $0.20 is ideal (cheap RTX 3090 ~$0.12-0.19) but the pool of
-# 24GB Ada/Ampere boxes that ALSO pass disk≥60 / US-EU / reliability / on-demand is
-# small and shifts minute-to-minute — at $0.20 it's often empty. $0.40 reliably
-# catches a good RTX 4090 (~$0.38) when no cheaper one is up. Strategy stays: gate
-# hard, prefer datacenter, take cheapest in range, retry the next on failure.
-VAST_MAX_PRICE_PER_HOUR = float(os.getenv("VAST_MAX_PRICE_PER_HOUR", "0.40"))
+# GPU hourly price cap only; bandwidth/download fees are gated separately by
+# VAST_MAX_INET_DOWN_COST below. Keep the default cheap-first and do not silently
+# raise this in production runs without Leon explicitly approving the cost.
+VAST_MAX_PRICE_PER_HOUR = float(os.getenv("VAST_MAX_PRICE_PER_HOUR", "0.20"))
 VAST_GPU_NAME = os.getenv("VAST_GPU_NAME", "")             # e.g. "RTX 4090", "" = any (blacklist handles 50xx/Tesla)
 VAST_MAX_RENT_ATTEMPTS = int(os.getenv("VAST_MAX_RENT_ATTEMPTS", "4"))  # try N cheapest machines before giving up
 VAST_WORKER_IMAGE = os.getenv("VAST_WORKER_IMAGE", "pytorch/pytorch:2.3.0-cuda12.1-cudnn8-runtime")
@@ -70,6 +68,12 @@ VAST_USE_FP8 = os.getenv("VAST_USE_FP8", "1")  # "1" = FP8 (~12GB VRAM), "0" = b
 # slightly pricier-bandwidth box that's a cheaper/faster GPU can win on true cost.
 VAST_MAX_INET_DOWN_COST = float(os.getenv("VAST_MAX_INET_DOWN_COST", "0.005"))
 VAST_PREFERRED_INET_DOWN_COST = float(os.getenv("VAST_PREFERRED_INET_DOWN_COST", "0.003"))
+VAST_MAX_ESTIMATED_TOTAL_COST = float(os.getenv("VAST_MAX_ESTIMATED_TOTAL_COST", "0.20"))
+VAST_ESTIMATED_TOTAL_COST_FALLBACKS = tuple(
+    float(value.strip())
+    for value in os.getenv("VAST_ESTIMATED_TOTAL_COST_FALLBACKS", "0.20,0.30,0.40").split(",")
+    if value.strip()
+)
 # Expected download per rental, used by find_offer true-cost ranking. After adding
 # ignore_patterns (skip 23.8GB single-file dup), the HF model is ~34GB; Docker image
 # pull + pip/apt setup adds ~3GB → ~37GB total. Tune IMAGE_AND_SETUP after invoices.
@@ -81,16 +85,11 @@ VAST_EXPECTED_DOWNLOAD_GB = float(os.getenv(
 VAST_EXPECTED_UPLOAD_GB = float(os.getenv("VAST_EXPECTED_UPLOAD_GB", "2.0"))
 HF_MODEL_REVISION = os.getenv("HF_MODEL_REVISION", "")  # pin commit SHA after testing
 MAX_LEASE_MINUTES = int(os.getenv("MAX_LEASE_MINUTES", "90"))  # reaper kills boxes older than this
-# Raised to 2000 Mbps: the slow/hung cold starts were on machines whose real model
-# download crawled despite an advertised 800 Mbps. Vast's own guidance is "higher
-# reliability = higher price; pay for it" — so we filter for genuinely fast links
-# (the verified/datacenter boxes that survive this gate run 3-16 Gbps) to make the
-# ~24GB model land in well under the 5-min budget.
-# Raised to 10000 Mbps (10 Gbps): pick a genuinely top-tier box, not the cheapest.
-# The flaky cold starts were machines that loaded in 4min one run, 10min the next.
-# Filtering for ≥10Gbps links lands the real datacenter cards (RTX 5090 / 6000 Ada
-# at 14-18 Gbps) where the 24GB model downloads in tens of seconds — no lottery.
-VAST_MIN_INET_DOWN_MBPS = int(os.getenv("VAST_MIN_INET_DOWN_MBPS", "10000"))
+# Keep production cheap-first: `find_offer` already ranks eligible machines by
+# estimated true total cost. A 10Gbps floor can force expensive GPUs; 500Mbps keeps
+# good low-cost RTX 3090/4090 offers in the pool while reliability/disk/arch gates
+# still reject bad machines.
+VAST_MIN_INET_DOWN_MBPS = int(os.getenv("VAST_MIN_INET_DOWN_MBPS", "500"))
 VAST_MIN_RELIABILITY = float(os.getenv("VAST_MIN_RELIABILITY", "0.98"))     # drop low-uptime hosts (avoid lemons)
 VAST_REQUEST_TIMEOUT = int(os.getenv("VAST_REQUEST_TIMEOUT", "600"))
 
@@ -144,7 +143,7 @@ SUBTITLE_FONT_SIZE = int(os.getenv("SUBTITLE_FONT_SIZE", "38"))
 SUBTITLE_OUTLINE = float(os.getenv("SUBTITLE_OUTLINE", "3.0"))
 SUBTITLE_SHADOW = float(os.getenv("SUBTITLE_SHADOW", "1.2"))
 SUBTITLE_MARGIN_V = int(os.getenv("SUBTITLE_MARGIN_V", "120"))
-SUBTITLE_MAX_CHARS_PER_LINE = int(os.getenv("SUBTITLE_MAX_CHARS_PER_LINE", "34"))
+SUBTITLE_MAX_CHARS_PER_LINE = int(os.getenv("SUBTITLE_MAX_CHARS_PER_LINE", "46"))
 SUBTITLE_MIN_WORDS = int(os.getenv("SUBTITLE_MIN_WORDS", "3"))
 SUBTITLE_MAX_WORDS = int(os.getenv("SUBTITLE_MAX_WORDS", "8"))
 SUBTITLE_TARGET_MIN_SECONDS = float(os.getenv("SUBTITLE_TARGET_MIN_SECONDS", "1.2"))

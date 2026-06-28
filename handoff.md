@@ -1217,3 +1217,141 @@ Mỗi commit push `main` → RunPod tự build lại. Không push dồn (nhiều
 - The `track vi` path in `scripts/generate_images.py` saves promoted files into `images_vi/`.
 - `steps/render_video.py` still prefers canonical `images/` when that folder already exists.
 - Because of that, a pure `--track vi` rerun does not automatically become the render source unless we sync or swap the directories.
+
+## Production autopilot patch - 2026-06-28
+
+- Added a reusable production entrypoint:
+  - `python main.py --autopilot --video-id <id> --script-file <path>`
+- Goal:
+  - let Cursor take a pasted narration script and drive the repo to a finished production package without Leon manually creating files, configs, or subtitle burns.
+
+### Shipped behavior
+
+- New `steps/autopilot.py`
+  - normalizes narration text
+  - detects `vi|en`
+  - writes:
+    - `script.txt`
+    - `tts_config.json`
+    - `transcribe_config.json`
+    - `autopilot_state.json`
+    - `autopilot_summary.json`
+  - creates a default `creative_package.json` when none exists
+  - respects an existing manual creative package
+  - blocks unsafe overwrite and validates resume by script hash
+- `main.py`
+  - now supports:
+    - `--autopilot`
+    - `--script-file`
+- `steps/image_prompts.py`
+  - no longer uses duplicated inline prompt policy as the primary source of truth
+  - reads:
+    - `prompts/image_prompt_vi.txt`
+    - `prompts/image_prompt_en.txt`
+  - supports sentence -> `1..3` visual beats when exact word timing exists
+  - falls back to `1 sentence = 1 image` when exact words are unavailable
+  - emits round-trippable beat fields including:
+    - `source_sentence_index`
+    - `beat_index`
+    - `word_start`
+    - `word_end`
+    - `visual_intent`
+  - writes template/model/style diagnostics into scene entries
+- New `steps/visual_beats.py`
+  - exact word-based beat timing
+  - fallback sentence-beat planning
+  - beat normalization / validation
+- `steps/generate_images.py`
+  - keeps canonical output in `images/`
+  - no longer exits early before thumbnail generation when scenes are already complete
+  - reuses the same backend for scene images and thumbnails inside the step wrapper
+- `steps/thumbnails.py`
+  - accepts backend reuse via override hooks so the same rented lifecycle can be shared
+- Prompt templates refreshed
+  - production-safe clothing and anatomy language is now explicit
+  - test-locked legacy keywords for VI/EN prompt tracks were preserved
+
+### Files changed
+
+- `main.py`
+- `steps/autopilot.py`
+- `steps/image_prompts.py`
+- `steps/visual_beats.py`
+- `steps/generate_images.py`
+- `steps/thumbnails.py`
+- `prompts/image_prompt_vi.txt`
+- `prompts/image_prompt_en.txt`
+- `tests/test_autopilot.py`
+- `tests/test_visual_beats.py`
+- `tests/test_thumbnails.py`
+- `CLAUDE.md`
+- `AGENTS.md`
+- `.ai/CURSOR_WORKLOG.md`
+- `handoff.md`
+
+### Tests run
+
+- `C:\Users\LEON_RM\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\python.exe -m pytest tests/test_autopilot.py -q`
+  - `5 passed`
+- `...python.exe -m pytest tests/test_visual_beats.py -q`
+  - `5 passed`
+- `...python.exe -m pytest tests/test_thumbnails.py -q`
+  - `4 passed`
+- `...python.exe -m pytest tests/test_creative_package.py -q`
+  - `5 passed`
+- `...python.exe -m pytest tests/test_subtitles.py -q`
+  - `9 passed`
+- `...python.exe -m pytest tests/test_publishing.py -q`
+  - `3 passed`
+- `...python.exe -m pytest tests -q`
+  - `168 passed`
+
+### Notes
+
+- This patch implements the repo entrypoint and data contracts for Cursor-first production.
+- I did not run a real paid Vast autopilot smoke in this patch turn.
+- Generated `output/` artifacts were not added to commit scope.
+
+## Subtitle recovery - 2026-06-28
+
+- Goal:
+  - finish the fresh Vietnamese production run with exact subtitles burned into `final_subbed.mp4`
+
+### What changed
+
+- `steps/transcribe.py`
+  - accepts exact zero-duration aligned words instead of failing subtitle readiness
+- `steps/subtitles.py`
+  - sentence-bound fallback for zero-duration spans
+  - dynamic wrap width using the configured subtitle line budget
+  - clamp cue starts so sequential cues do not overlap
+- `config.py`
+  - subtitle default line budget increased to `46` chars
+- `tests/test_subtitles.py`
+  - added regression coverage for zero-duration word timings and fallback sentence spans
+
+### Commands run
+
+- `python -m pytest tests/test_subtitles.py -q`
+- `python -m pytest tests/test_autopilot.py tests/test_thumbnails.py -q`
+- `python -m pytest tests -q`
+- `python main.py --video-id to-tien-cua-ban-chi-lam-viec-15-tieng-mot-tuan-vi-fresh-full-20260628-1320 --step 3`
+- `python main.py --video-id to-tien-cua-ban-chi-lam-viec-15-tieng-mot-tuan-vi-fresh-full-20260628-1320 --step 7 --subtitles`
+
+### Results
+
+- `word_timestamps.json` regenerated successfully
+- `subtitle_diagnostics.json` now passes with:
+  - `missing_word_count = 0`
+  - `repeated_word_count = 0`
+  - `overlap_count = 0`
+  - `max_lines = 2`
+- `final.mp4` exists
+- `final_subbed.mp4` exists
+- full test suite passed: `170 passed`
+
+### Notes
+
+- Fresh run folder:
+  - `output/to-tien-cua-ban-chi-lam-viec-15-tieng-mot-tuan-vi-fresh-full-20260628-1320`
+- No `output/` files were committed.

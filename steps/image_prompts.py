@@ -1,12 +1,8 @@
-"""Step 4: Generate image prompts with a strict one-sentence-one-scene mapping.
+from __future__ import annotations
 
-Each script sentence becomes exactly one scene / one image prompt. Timestamps are
-read from timestamps.json when available, or computed proportionally as a fallback.
-"""
-
+import hashlib
 import json
 import re
-import subprocess
 import sys
 import time
 from pathlib import Path
@@ -15,137 +11,20 @@ from loguru import logger
 
 import config
 from steps.creative_package import CreativePackageError, _atomic_write_json, load_validated_package
-
-# Negative prompt used for all VI scenes
-VI_NEGATIVE_PROMPT = (
-    "nudity, bare chest, naked, nsfw, western cartoon style, anime, 3D render, "
-    "CGI, watermark, text, logo, signature, doodle, stick figure, flat 2D vector, "
-    "children, old people only, modern clothing, modern buildings, technology"
-)
-
-# Negative prompt for EN scenes
-EN_NEGATIVE_PROMPT = (
-    "nudity, bare chest, naked, nsfw, anime, 3D render, CGI, watermark, text, logo, signature"
-)
-
-# ── System prompt sent to Claude ─────────────────────────────────────────────
-
-VI_SYSTEM_PROMPT = """Bạn là chuyên gia tạo storyboard cho video YouTube lịch sử tiền sử.
-
-Tôi sẽ gửi cho bạn một script tiếng Việt và danh sách các câu đã được đánh số (1-based).
-Nhiệm vụ của bạn: tạo SCENES theo nguyên tắc tuyệt đối MỖI CÂU = 1 SCENE = 1 ẢNH.
-
-NGUYÊN TẮC PHÂN SCENE:
-- Mỗi câu trong danh sách phải tạo đúng 1 scene.
-- Không được gom nhiều câu vào 1 scene.
-- Không được tách 1 câu thành nhiều scene.
-- Trường `sentences` luôn phải chứa đúng 1 index câu. Ví dụ: [5], không phải [5,6].
-- Trường `scene_text` phải là nguyên văn đúng câu đó.
-- Số scene phải bằng số câu trong danh sách.
-- Phải phủ kín toàn bộ các câu từ 1 đến N, không bỏ sót, không lặp.
-
-CÁCH VIẾT PROMPT ẢNH:
-Style bắt buộc: "cinematic 2D painted documentary illustration, semi-realistic prehistoric humans, warm ochre earth tones, firelight atmosphere"
-- Mô tả cảnh cụ thể: người, hành động, bối cảnh
-- KHÔNG dùng text/chữ trong ảnh
-- Câu về số liệu (1960, mười hai tiếng...): thêm chi tiết môi trường, đừng cố render số
-- Câu về địa danh (Kalahari, Tanzania): thêm cảnh thiên nhiên đặc trưng
-
-ICON OVERLAYS (chỉ dùng khi thực sự cần):
-- Câu liệt kê hành động hiện đại đối lập (email, ca làm việc, deadline): dùng icon
-- Format: [{"icon": "email", "position": "center", "label": "Không có email chưa đọc"}]
-- Icon hợp lệ: email, calendar, clock, phone, laptop, checkmark, x-mark, fire, leaf, wheat, skull, heart, star, sun, moon, mountain, river, tree, person, group
-
-TEXT OVERLAYS: để trống [] — subtitle .srt xử lý text
-
-OUTPUT: JSON array thuần, không có markdown, không có giải thích.
-Mỗi phần tử:
-{
-  "index": 1,
-  "sentences": [1],
-  "scene_text": "nguyên văn câu 1",
-  "prompt": "cinematic 2D painted...",
-  "icon_overlays": [],
-  "text_overlays": []
-}
-
-QUAN TRỌNG: Scene 1 phải ứng với câu 1, scene 2 ứng với câu 2, tiếp tục tuần tự đến câu N."""
-
-EN_SYSTEM_PROMPT = """You are a storyboard expert for a prehistoric history YouTube channel.
-
-I will send you an English script and a numbered list of sentences (1-based).
-Your task: create scenes using the strict rule ONE SENTENCE = ONE SCENE = ONE IMAGE.
-
-SCENE RULES:
-- Every numbered sentence must become exactly one scene.
-- Do not group multiple sentences into one scene.
-- Do not split one sentence into multiple scenes.
-- `sentences` must always contain exactly one sentence index. Example: [5], never [5,6].
-- `scene_text` must be the exact original sentence for that scene.
-- Total scene count must equal total sentence count.
-- Cover every sentence from 1 to N exactly once, with no omissions and no duplicates.
-
-IMAGE PROMPT STYLE:
-Required style: "cinematic wide shot, photorealistic, natural lighting, shallow depth of field, 16:9, no text"
-- Describe specific scene: people, action, environment
-- No text/numbers rendered in the image
-- For stat sentences: describe the environment context instead
-
-ICON OVERLAYS: only for modern-life-contrast listing sentences
-TEXT OVERLAYS: leave as [] — subtitle .srt handles all text
-
-OUTPUT: pure JSON array only, no markdown, no explanation.
-Each element:
-{
-  "index": 1,
-  "sentences": [1],
-  "scene_text": "exact sentence 1 text",
-  "prompt": "cinematic wide shot...",
-  "icon_overlays": [],
-  "text_overlays": []
-}
-
-IMPORTANT: Scene 1 must map to sentence 1, scene 2 to sentence 2, and so on through sentence N."""
+from steps.text_units import load_script_text, load_sentence_units
+from steps import visual_beats
 
 
-# ── Script parsing ────────────────────────────────────────────────────────────
-
-_SCRIPT_STOP_MARKERS = (
-    "COMMENT SEED:",
-    "RESEARCH NOTES:",
-    "Your script is ready",
-    "Save as:",
-    "Then: python",
-)
-
-
-def _load_script_text(script_path: Path) -> str:
-    text = script_path.read_text(encoding="utf-8").lstrip("﻿")
-    for marker in _SCRIPT_STOP_MARKERS:
-        idx = text.find(marker)
-        if idx != -1:
-            text = text[:idx]
-    return text.strip()
-
-
-def _split_sentences(script_text: str) -> list[str]:
-    """Split script into sentences for proportional timestamp mapping."""
-    paragraphs = re.split(r"\n{2,}", script_text)
-    sentences = []
-    first = True
-    for para in paragraphs:
-        para = para.strip()
-        if not para:
-            continue
-        if first:
-            first = False
-            if not re.search(r"[.!?]$", para) and len(para.split()) <= 12:
-                continue
-        for part in re.split(r"(?<=[.!?])\s+", para):
-            part = part.strip()
-            if part:
-                sentences.append(part)
-    return sentences
+def _load_prompt_template(language: str) -> dict:
+    meta = visual_beats.prompt_template_metadata(language)
+    text = meta["text"]
+    sha = hashlib.sha256(text.encode("utf-8")).hexdigest()
+    return {
+        "path": meta["path"],
+        "text": text,
+        "fields": meta["fields"],
+        "sha256": sha,
+    }
 
 
 def _looks_vietnamese(text: str) -> bool:
@@ -156,19 +35,19 @@ def _looks_vietnamese(text: str) -> bool:
     return hits >= 5 or (letters > 0 and hits / letters >= 0.01)
 
 
-def _select_language_profile(video_id: str, script_text: str) -> tuple[str, str, str]:
+def _select_language(video_id: str, script_text: str) -> str:
     if video_id.lower().endswith("-vi") or _looks_vietnamese(script_text):
-        return "vi", VI_SYSTEM_PROMPT, VI_NEGATIVE_PROMPT
-    return "en", EN_SYSTEM_PROMPT, EN_NEGATIVE_PROMPT
+        return "vi"
+    return "en"
 
-
-# ── Timestamp computation ─────────────────────────────────────────────────────
 
 def _get_audio_duration(audio_path: Path) -> float:
+    import subprocess
+
     result = subprocess.run(
-        ["ffprobe", "-v", "error", "-show_entries", "format=duration",
-         "-of", "default=noprint_wrappers=1:nokey=1", str(audio_path)],
-        capture_output=True, text=True,
+        ["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "default=noprint_wrappers=1:nokey=1", str(audio_path)],
+        capture_output=True,
+        text=True,
     )
     try:
         return float(result.stdout.strip())
@@ -176,71 +55,7 @@ def _get_audio_duration(audio_path: Path) -> float:
         return 0.0
 
 
-def _compute_sentence_times(sentences: list[str], total_dur: float) -> list[dict]:
-    """Assign start/end to each sentence proportional to character count."""
-    total_chars = sum(len(s) for s in sentences)
-    if total_chars == 0:
-        return []
-    cursor = 0.0
-    result = []
-    for i, s in enumerate(sentences, 1):
-        dur = total_dur * len(s) / total_chars
-        result.append({
-            "index": i,
-            "start": round(cursor, 3),
-            "end": round(cursor + dur, 3),
-            "text": s,
-        })
-        cursor += dur
-    return result
-
-
-# ── Claude API ────────────────────────────────────────────────────────────────
-
-def _call_claude(script_text: str, sentences: list[str], system_prompt: str) -> list[dict]:
-    import anthropic
-
-    numbered = "\n".join(f"[{i}] {s}" for i, s in enumerate(sentences, 1))
-    user_message = (
-        f"Đây là toàn bộ script ({len(sentences)} câu):\n\n"
-        f"SCRIPT ĐẦY ĐỦ:\n{script_text}\n\n"
-        f"DANH SÁCH CÂU ĐÁNH SỐ:\n{numbered}\n\n"
-        f"Hãy tách thành scenes. Trả về JSON array thuần (không markdown)."
-    )
-
-    client = anthropic.Anthropic(api_key=config.ANTHROPIC_API_KEY)
-    response = client.messages.create(
-        model="claude-sonnet-4-6",
-        max_tokens=16000,
-        system=system_prompt,
-        messages=[{"role": "user", "content": user_message}],
-    )
-    logger.info(
-        "Claude tokens: {} in / {} out",
-        response.usage.input_tokens, response.usage.output_tokens,
-    )
-    return _parse_json_response(response.content[0].text)
-
-
-def _call_gemini(script_text: str, sentences: list[str], system_prompt: str) -> list[dict]:
-    from google import genai
-
-    numbered = "\n".join(f"[{i}] {s}" for i, s in enumerate(sentences, 1))
-    full_prompt = (
-        f"{system_prompt}\n\n"
-        f"SCRIPT ĐẦY ĐỦ:\n{script_text}\n\n"
-        f"DANH SÁCH CÂU ĐÁNH SỐ:\n{numbered}\n\n"
-        f"Hãy tách thành scenes. Trả về JSON array thuần (không markdown)."
-    )
-    client = genai.Client(api_key=config.GEMINI_API_KEY)
-    response = client.models.generate_content(
-        model="gemini-2.5-flash",
-        contents=full_prompt,
-    )
-    return _parse_json_response(response.text)
-
-
-def _parse_json_response(text: str) -> list[dict]:
+def _parse_json_response(text: str):
     text = re.sub(r"```(?:json)?\s*", "", text).strip().rstrip("`").strip()
     start = text.find("[")
     end = text.rfind("]") + 1
@@ -249,136 +64,175 @@ def _parse_json_response(text: str) -> list[dict]:
     return json.loads(text[start:end])
 
 
-def _parse_json_object_response(text: str) -> dict:
-    text = re.sub(r"```(?:json)?\s*", "", text).strip().rstrip("`").strip()
-    start = text.find("{")
-    end = text.rfind("}") + 1
-    if start == -1 or end == 0:
-        raise ValueError("No JSON object found in response")
-    return json.loads(text[start:end])
-
-
-def _validate_one_to_one_scenes(scenes: list[dict], sentences: list[str]) -> None:
-    errors = []
-    seen_indices = []
-    sentence_count = len(sentences)
-
-    for scene_idx, scene in enumerate(scenes, 1):
-        sent_indices = scene.get("sentences")
-        if not isinstance(sent_indices, list):
-            errors.append(f"Scene {scene_idx}: sentences must be a list, got {type(sent_indices).__name__}")
-            continue
-        if len(sent_indices) != 1:
-            errors.append(f"Scene {scene_idx}: sentences must contain exactly 1 index, got {sent_indices}")
-            continue
-        sent_idx = sent_indices[0]
-        if not isinstance(sent_idx, int):
-            errors.append(f"Scene {scene_idx}: sentence index must be int, got {sent_idx!r}")
-            continue
-        if sent_idx < 1 or sent_idx > sentence_count:
-            errors.append(f"Scene {scene_idx}: sentence index {sent_idx} out of range 1..{sentence_count}")
-            continue
-        scene_text = scene.get("scene_text", "")
-        if not isinstance(scene_text, str) or not scene_text.strip():
-            errors.append(f"Scene {scene_idx}: scene_text is empty")
-        seen_indices.append(sent_idx)
-
-    missing = sorted(set(range(1, sentence_count + 1)) - set(seen_indices))
-    duplicates = sorted({idx for idx in seen_indices if seen_indices.count(idx) > 1})
-    if missing:
-        errors.append(f"Missing sentence indices: {missing}")
-    if duplicates:
-        errors.append(f"Duplicate sentence indices: {duplicates}")
-
-    if errors:
-        for error in errors:
-            logger.error("Scene validation error: {}", error)
-        logger.error("Model output must be strict 1:1 sentence→scene. Fix prompt/model output and rerun step 4.")
-        sys.exit(1)
-
-
-# ── Scene → timestamp mapping ─────────────────────────────────────────────────
-
-def _map_scene_times(scenes: list[dict], sentence_times: list[dict], negative_prompt: str) -> list[dict]:
-    """Map each scene's sentences[] to start/end timestamps."""
-    st_map = {s["index"]: s for s in sentence_times}
-    result = []
-    for i, scene in enumerate(scenes, 1):
-        sent_indices = scene.get("sentences", [])
-        if not sent_indices:
-            logger.warning("Scene {} has no sentences", i)
-            continue
-        first_idx = min(sent_indices)
-        last_idx = max(sent_indices)
-        start = st_map.get(first_idx, {}).get("start", 0.0)
-        end = st_map.get(last_idx, {}).get("end", 0.0)
-        result.append({
-            "index": i,
-            "sentences": sent_indices,
-            "scene_text": scene.get("scene_text", ""),
-            "start": round(start, 3),
-            "end": round(end, 3),
-            "prompt": scene.get("prompt", ""),
-            "negative_prompt": negative_prompt,
-            "icon_overlays": scene.get("icon_overlays", []),
-            "text_overlays": scene.get("text_overlays", []),
-        })
-    return result
-
-
-def _validate_scene_times(prompts: list[dict], audio_duration: float) -> None:
-    """Validate scene timings before render. Exits on any critical error."""
-    errors = []
-    warnings = []
-
-    prev_end = 0.0
-    for p in prompts:
-        idx = p["index"]
-        s, e = p["start"], p["end"]
-
-        if e <= s:
-            errors.append(f"Scene {idx}: end ({e}s) <= start ({s}s)")
-        if s < prev_end - 0.01:
-            errors.append(
-                f"Scene {idx}: start ({s}s) goes back before previous end ({prev_end}s)"
-            )
-        prev_end = e
-
-    # Last scene should end near audio duration
-    if prompts:
-        last_end = prompts[-1]["end"]
-        drift = abs(last_end - audio_duration)
-        if drift > 5.0:
-            errors.append(
-                f"Last scene ends at {last_end}s but audio is {audio_duration}s "
-                f"(drift {drift:.1f}s > 5s threshold)"
-            )
-        elif drift > 1.0:
-            warnings.append(
-                f"Last scene ends at {last_end}s vs audio {audio_duration}s (drift {drift:.1f}s)"
-            )
-
-    for w in warnings:
-        logger.warning("Timing warning: {}", w)
-    if errors:
-        for e in errors:
-            logger.error("Timing error: {}", e)
-        logger.error(
-            "{} timing error(s) found — fix timestamps.json and re-run step 3 before rendering",
-            len(errors),
-        )
-        sys.exit(1)
-
-    logger.info(
-        "Timing OK: {} scenes, {:.1f}s — {:.1f}s (audio {:.1f}s)",
-        len(prompts),
-        prompts[0]["start"] if prompts else 0,
-        prompts[-1]["end"] if prompts else 0,
-        audio_duration,
+def _build_system_prompt(language: str, template_text: str) -> str:
+    language_name = "Vietnamese" if language == "vi" else "English"
+    return (
+        f"You are a semantic storyboard planner for a {language_name} history video.\n"
+        "Return a pure JSON array only.\n"
+        "You may create 1 to 3 visual beats per sentence, but only when there is a real scene shift.\n"
+        "Each item must contain: source_sentence_index, beat_index, word_start, word_end, scene_text, visual_intent, prompt.\n"
+        "Rules:\n"
+        "- word_start and word_end are word indices inside that single sentence only.\n"
+        "- Beats for each sentence must be contiguous, ordered, and cover the whole sentence exactly once.\n"
+        "- Do not create tiny filler beats.\n"
+        "- Do not split only because the sentence is long.\n"
+        "- prompt must follow the production image template below.\n\n"
+        "PRODUCTION TEMPLATE SOURCE OF TRUTH:\n"
+        f"{template_text}"
     )
 
 
-# ── Main ──────────────────────────────────────────────────────────────────────
+def _call_claude(script_text: str, sentence_payload: list[dict], system_prompt: str) -> list[dict]:
+    import anthropic
+
+    client = anthropic.Anthropic(api_key=config.ANTHROPIC_API_KEY)
+    response = client.messages.create(
+        model=config.CLAUDE_MODEL,
+        max_tokens=16000,
+        system=system_prompt,
+        messages=[{"role": "user", "content": json.dumps({"script": script_text, "sentences": sentence_payload}, ensure_ascii=False, indent=2)}],
+    )
+    return _parse_json_response(response.content[0].text)
+
+
+def _call_gemini(script_text: str, sentence_payload: list[dict], system_prompt: str) -> list[dict]:
+    from google import genai
+
+    client = genai.Client(api_key=config.GEMINI_API_KEY)
+    response = client.models.generate_content(
+        model=config.GEMINI_TEXT_MODEL,
+        contents=f"{system_prompt}\n\n{json.dumps({'script': script_text, 'sentences': sentence_payload}, ensure_ascii=False, indent=2)}",
+    )
+    return _parse_json_response(response.text)
+
+
+def _sentence_payload(sentence_spans: list[visual_beats.SentenceSpan]) -> list[dict]:
+    payload: list[dict] = []
+    for item in sentence_spans:
+        payload.append(
+            {
+                "sentence_index": item.sentence_index,
+                "text": item.text,
+                "start": item.start,
+                "end": item.end,
+                "word_start": item.word_start,
+                "word_end": item.word_end,
+            }
+        )
+    return payload
+
+
+def _deterministic_prompt(language: str, text: str) -> str:
+    if language == "vi":
+        return (
+            "cinematic 2D painted documentary illustration, semi-realistic prehistoric humans, "
+            "all visible people fully clothed in historically plausible full-coverage hide and fur clothing, "
+            "warm earthy documentary lighting, anatomically coherent figures, no text, no logo, no watermark, "
+            f"visualize this narration beat: {text}"
+        )
+    return (
+        "Ink sketch illustration on aged parchment paper, cinematic illustrated history documentary, "
+        "all visible people fully clothed in historically plausible full-coverage hide and fur clothing, "
+        "correct human anatomy, no extra limbs, no written labels, no letters or numbers, no text, no logo, no watermark, "
+        f"visualize this narration beat: {text}"
+    )
+
+
+def _deterministic_plan(sentence_spans: list[visual_beats.SentenceSpan], language: str) -> list[dict]:
+    plan: list[dict] = []
+    for span in sentence_spans:
+        word_start = int(span.word_start or 1)
+        word_end = int(span.word_end or word_start)
+        plan.append(
+            {
+                "source_sentence_index": span.sentence_index,
+                "beat_index": 1,
+                "word_start": word_start,
+                "word_end": word_end,
+                "scene_text": span.text,
+                "visual_intent": span.text,
+                "prompt": _deterministic_prompt(language, span.text),
+            }
+        )
+    return plan
+
+
+def _normalize_model_beats(raw_items: list[dict], sentence_spans: list[visual_beats.SentenceSpan]) -> list[dict]:
+    sentence_map = {item.sentence_index: item for item in sentence_spans}
+    normalized: list[dict] = []
+    per_sentence_counts: dict[int, int] = {}
+    for item in raw_items:
+        if "source_sentence_index" in item:
+            sentence_index = int(item["source_sentence_index"])
+            beat_index = int(item.get("beat_index", per_sentence_counts.get(sentence_index, 0) + 1))
+            word_start = int(item["word_start"])
+            word_end = int(item["word_end"])
+            scene_text = str(item.get("scene_text", sentence_map[sentence_index].text)).strip()
+            visual_intent = str(item.get("visual_intent", scene_text)).strip()
+            prompt = str(item.get("prompt", visual_intent)).strip()
+        else:
+            sentence_indices = item.get("sentences", [])
+            if len(sentence_indices) != 1:
+                raise ValueError(f"Legacy scene entry must map to exactly one sentence: {item}")
+            sentence_index = int(sentence_indices[0])
+            sentence = sentence_map[sentence_index]
+            beat_index = 1
+            word_start = int(sentence.word_start or 1)
+            word_end = int(sentence.word_end or word_start)
+            scene_text = str(item.get("scene_text", sentence.text)).strip()
+            visual_intent = scene_text
+            prompt = str(item.get("prompt", scene_text)).strip()
+        per_sentence_counts[sentence_index] = beat_index
+        normalized.append(
+            {
+                "source_sentence_index": sentence_index,
+                "beat_index": beat_index,
+                "word_start": word_start,
+                "word_end": word_end,
+                "scene_text": scene_text,
+                "visual_intent": visual_intent,
+                "prompt": prompt,
+            }
+        )
+    return normalized
+
+
+def _attach_generation_fields(
+    beats: list[dict],
+    *,
+    language: str,
+    template: dict,
+) -> list[dict]:
+    track_cfg = config.TRACK_CONFIG[language]
+    entries: list[dict] = []
+    for beat in beats:
+        final_prompt = str(beat.get("prompt", beat["visual_intent"])).strip()
+        negative_prompt = (
+            "Avoid: text, letters, logo, watermark, malformed anatomy, extra limbs, merged bodies, "
+            "modern objects, sexualized body, bare torso, bare chest, exposed breasts."
+        )
+        entry = dict(beat)
+        entry.update(
+            {
+                "prompt": final_prompt,
+                "negative_prompt": negative_prompt,
+                "track": language,
+                "template_sha256": template["sha256"],
+                "style_version": track_cfg["style_version"],
+                "image_model": track_cfg["model"],
+                "final_positive_prompt": final_prompt,
+                "final_avoidance_prompt": negative_prompt,
+                "steps": track_cfg["steps"],
+                "guidance": track_cfg["guidance_scale"],
+                "resolution": f"{config.IMAGE_WIDTH}x{config.IMAGE_HEIGHT}",
+                "width": config.IMAGE_WIDTH,
+                "height": config.IMAGE_HEIGHT,
+                "guidance_scale": track_cfg["guidance_scale"],
+            }
+        )
+        entries.append(entry)
+    return entries
+
 
 def _generate_thumbnail_prompt_payload(video_id: str, validated_package: dict, use_claude: bool) -> None:
     publishing_dir = Path(config.OUTPUT_DIR) / video_id / config.PUBLISHING_DIRNAME
@@ -427,7 +281,7 @@ def _generate_thumbnail_prompt_payload(video_id: str, validated_package: dict, u
                 contents=f"{system_prompt}\n\n{json.dumps(payload, ensure_ascii=False, indent=2)}",
             )
             raw = response.text
-        parsed = _parse_json_object_response(raw)
+        parsed = json.loads(re.sub(r"```(?:json)?\s*", "", raw).strip().rstrip("`").strip())
         entries = parsed.get("thumbnail_prompts", [])
         concepts = validated_package["thumbnail_concepts"]
         if not isinstance(entries, list) or len(entries) != len(concepts):
@@ -485,12 +339,59 @@ def _generate_thumbnail_prompt_payload(video_id: str, validated_package: dict, u
         logger.warning("Thumbnail prompt generation failed: {}", exc)
 
 
+def _generate_deterministic_thumbnail_prompts(video_id: str, validated_package: dict) -> None:
+    publishing_dir = Path(config.OUTPUT_DIR) / video_id / config.PUBLISHING_DIRNAME
+    output_path = publishing_dir / "thumbnail_prompts.json"
+    diagnostics_path = publishing_dir / "thumbnail_prompt_diagnostics.json"
+    entries: list[dict] = []
+    for concept in validated_package["thumbnail_concepts"]:
+        visual_hook = str(concept.get("visual_hook", "")).strip()
+        must_show = ", ".join(str(item) for item in concept.get("must_show", []) if str(item).strip())
+        must_avoid = ", ".join(str(item) for item in concept.get("must_avoid", []) if str(item).strip())
+        image_prompt = (
+            "YouTube thumbnail background, cinematic illustrated history documentary, 16:9 composition, "
+            "one strong focal subject, dramatic readable silhouette, clean negative space on "
+            f"{concept['text_side']}, no text, no letters, no logo, no watermark, no extra limbs, "
+            "no malformed hands, no merged bodies, all visible people fully clothed in full-coverage hide and fur clothing, "
+            f"concept: {visual_hook}"
+        )
+        if must_show:
+            image_prompt += f", must show: {must_show}"
+        negative_prompt = "text, letters, logo, watermark, extra limbs, malformed hands, merged bodies"
+        if must_avoid:
+            negative_prompt += f", {must_avoid}"
+        entries.append(
+            {
+                "concept_id": int(concept["id"]),
+                "type": concept["type"],
+                "image_prompt": image_prompt,
+                "negative_prompt": negative_prompt,
+                "thumbnail_text": concept["thumbnail_text"],
+                "subject_side": concept["subject_side"],
+                "text_side": concept["text_side"],
+                "paired_title_ids": concept["paired_title_ids"],
+            }
+        )
+    _atomic_write_json(output_path, entries)
+    _atomic_write_json(
+        diagnostics_path,
+        {
+            "package_version": validated_package["package_version"],
+            "script_sha256": validated_package["script_sha256"],
+            "language": validated_package["language"],
+            "concept_count": len(validated_package["thumbnail_concepts"]),
+            "thumbnail_prompt_count": len(entries),
+            "validation_passed": True,
+            "warnings": ["deterministic_fallback_no_text_model_key"],
+        },
+    )
+
+
 def run(video_id: str, n_override: int | None = None, allow_stale_package: bool = False) -> None:
     video_dir = Path(config.OUTPUT_DIR) / video_id
     script_path = video_dir / "script.txt"
     audio_path = video_dir / "audio.mp3"
     output_path = video_dir / "image_prompts.json"
-
     if not script_path.exists():
         logger.error("script.txt not found: {}", script_path)
         sys.exit(1)
@@ -498,107 +399,85 @@ def run(video_id: str, n_override: int | None = None, allow_stale_package: bool 
         logger.error("audio.mp3 not found: {}", audio_path)
         sys.exit(1)
 
+    script_text = load_script_text(script_path)
+    sentence_units = load_sentence_units(script_path)
+    sentence_spans = visual_beats.load_sentence_spans(video_dir)
+    if n_override is not None:
+        sentence_units = sentence_units[:n_override]
+        sentence_spans = sentence_spans[:n_override]
+    if len(sentence_units) != len(sentence_spans):
+        logger.error("Script sentence count {} does not match timestamps {}", len(sentence_units), len(sentence_spans))
+        sys.exit(1)
+
+    language = _select_language(video_id, script_text)
+    template = _load_prompt_template(language)
     use_claude = bool(config.ANTHROPIC_API_KEY)
     use_gemini = bool(config.GEMINI_API_KEY)
     if not use_claude and not use_gemini:
-        logger.error("Neither ANTHROPIC_API_KEY nor GEMINI_API_KEY set. Add to .env file.")
-        sys.exit(1)
-    if use_claude:
-        logger.info("Using Claude claude-sonnet-4-6 for scene segmentation")
-    else:
-        logger.info("Falling back to Gemini (ANTHROPIC_API_KEY not set)")
+        logger.warning("No text-model API key found -> using deterministic production prompt fallback")
 
-    script_text = _load_script_text(script_path)
-    sentences = _split_sentences(script_text)
-    language, system_prompt, negative_prompt = _select_language_profile(video_id, script_text)
-
-    if n_override is not None:
-        sentences = sentences[:n_override]
-        logger.info("Demo mode: using first {} sentences", len(sentences))
-
-    logger.info("Script: {} sentences detected", len(sentences))
-    logger.info("Scene generation profile: {}", language.upper())
-
-    total_dur = _get_audio_duration(audio_path)
-    if total_dur <= 0:
+    audio_duration = _get_audio_duration(audio_path)
+    if audio_duration <= 0:
         logger.error("Could not read audio duration from {}", audio_path)
         sys.exit(1)
-    logger.info("Audio duration: {:.1f}s", total_dur)
 
-    # Prefer timestamps.json (from sentence-mode TTS or Whisper align) — exact timing
-    # Fallback: proportional by character count (less accurate)
-    timestamps_path = video_dir / "timestamps.json"
-    if timestamps_path.exists():
-        sentence_times = json.loads(timestamps_path.read_text(encoding="utf-8"))
-        logger.info("Using sentence timestamps from timestamps.json ({} entries)", len(sentence_times))
-        if n_override is None and len(sentence_times) != len(sentences):
-            logger.error(
-                "timestamps.json has {} entries but script split into {} sentences — 1:1 scene mode requires an exact match",
-                len(sentence_times), len(sentences),
-            )
-            sys.exit(1)
-        if n_override is not None and len(sentence_times) < len(sentences):
-            logger.error(
-                "timestamps.json has {} entries but demo needs {} sentences",
-                len(sentence_times), len(sentences),
-            )
-            sys.exit(1)
-    else:
-        sentence_times = _compute_sentence_times(sentences, total_dur)
-        logger.info("Using proportional timestamps (no timestamps.json found)")
-
-    logger.info("Calling model to generate 1:1 sentence scenes...")
-
-    scenes = None
-    last_error = None
-    for attempt in range(1, config.CLAUDE_MAX_RETRIES + 2):
-        try:
-            if use_claude:
-                scenes = _call_claude(script_text, sentences, system_prompt)
-            else:
-                scenes = _call_gemini(script_text, sentences, system_prompt)
-            break
-        except (json.JSONDecodeError, ValueError) as e:
-            last_error = e
-            logger.warning("Attempt {}: JSON parse failed — {}", attempt, e)
-            if attempt <= config.CLAUDE_MAX_RETRIES:
-                time.sleep(config.CLAUDE_RETRY_SLEEP)
-        except Exception as e:
-            last_error = e
-            logger.warning("Attempt {}: API error — {}", attempt, e)
-            if attempt <= config.CLAUDE_MAX_RETRIES:
-                time.sleep(config.CLAUDE_RETRY_SLEEP)
-
-    if scenes is None:
-        logger.error("All Claude attempts failed: {}", last_error)
-        sys.exit(1)
-
-    logger.info("Model returned {} scenes (from {} sentences)", len(scenes), len(sentences))
-    if len(scenes) != len(sentences):
-        logger.warning(
-            "Scene count ({}) != sentence count ({}) — expected 1:1",
-            len(scenes), len(sentences),
+    word_ready = visual_beats.exact_word_timing_ready(video_dir)
+    if word_ready:
+        logger.info("Exact word timings available -> semantic visual beats enabled")
+        if use_claude or use_gemini:
+            sentence_payload = _sentence_payload(sentence_spans)
+            system_prompt = _build_system_prompt(language, template["text"])
+            last_error = None
+            raw_plan = None
+            for attempt in range(1, config.CLAUDE_MAX_RETRIES + 2):
+                try:
+                    if use_claude:
+                        raw_plan = _call_claude(script_text, sentence_payload, system_prompt)
+                    else:
+                        raw_plan = _call_gemini(script_text, sentence_payload, system_prompt)
+                    break
+                except Exception as exc:
+                    last_error = exc
+                    logger.warning("Attempt {}: scene planning failed -> {}", attempt, exc)
+                    if attempt <= config.CLAUDE_MAX_RETRIES:
+                        time.sleep(config.CLAUDE_RETRY_SLEEP)
+            if raw_plan is None:
+                logger.error("All visual beat attempts failed: {}", last_error)
+                sys.exit(1)
+            normalized_plan = _normalize_model_beats(raw_plan, sentence_spans)
+        else:
+            normalized_plan = _deterministic_plan(sentence_spans, language)
+        prompt_plan = visual_beats.derive_beat_timings(
+            normalized_plan,
+            sentence_spans,
+            visual_beats.load_exact_word_spans(video_dir),
         )
+        for beat, source in zip(prompt_plan, normalized_plan):
+            beat["prompt"] = source["prompt"]
+    else:
+        logger.warning("Exact word timing unavailable -> falling back to 1 sentence = 1 image planning")
+        prompt_plan = visual_beats.build_fallback_sentence_beats(sentence_spans)
+        for beat in prompt_plan:
+            beat["prompt"] = beat["visual_intent"]
 
-    _validate_one_to_one_scenes(scenes, sentences)
-
-    prompts = _map_scene_times(scenes, sentence_times, negative_prompt)
-
-    # Fix last entry end time to exactly match audio duration
+    prompts = _attach_generation_fields(prompt_plan, language=language, template=template)
     if prompts:
-        prompts[-1]["end"] = round(total_dur, 3)
+        prompts[-1]["end"] = round(audio_duration, 3)
 
-    _validate_scene_times(prompts, total_dur)
+    _atomic_write_json(output_path, prompts)
+    logger.info("Saved {} visual scenes -> {}", len(prompts), output_path)
 
-    output_path.write_text(json.dumps(prompts, ensure_ascii=False, indent=2), encoding="utf-8")
-    logger.info("Saved {} scenes → {}", len(prompts), output_path)
     creative_package_path = video_dir / "creative_package.json"
     if not creative_package_path.exists():
-        logger.info("No creative_package.json found — skipping thumbnail prompt generation")
+        logger.info("No creative_package.json found -> skipping thumbnail prompt generation")
         return
     try:
         validated_package = load_validated_package(video_dir, allow_stale_package=allow_stale_package)
     except CreativePackageError:
         logger.error("creative_package.json is invalid or stale for {}", video_id)
         sys.exit(1)
-    _generate_thumbnail_prompt_payload(video_id, validated_package, use_claude)
+    if use_claude or use_gemini:
+        _generate_thumbnail_prompt_payload(video_id, validated_package, use_claude)
+    else:
+        logger.warning("No text-model API key found -> using deterministic thumbnail prompt fallback")
+        _generate_deterministic_thumbnail_prompts(video_id, validated_package)

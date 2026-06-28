@@ -138,3 +138,13 @@ def test_step5_still_generates_thumbnails_when_scenes_are_already_complete(tmp_p
     generate_images.run("thumbs")
 
     assert (video_dir / "publishing" / "thumbnail_contact_sheet.jpg").exists()
+
+
+def test_backend_override_skips_backend_rebuild(tmp_path: Path, monkeypatch) -> None:
+    video_dir, backend = _setup(tmp_path, monkeypatch)
+    monkeypatch.setattr(thumbnails, "_build_backend", lambda: (_ for _ in ()).throw(AssertionError("should not rebuild backend")))
+
+    diagnostics = thumbnails.generate_thumbnail_assets("thumbs", backend_override=backend)
+
+    assert diagnostics["thumbnail_generated_count"] == 3
+    assert len(backend.calls) == 3

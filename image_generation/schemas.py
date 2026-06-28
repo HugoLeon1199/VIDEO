@@ -11,6 +11,7 @@ class SceneRequest:
     video_id: str
     scene_id: str
     prompt: str
+    clip_prompt: str = ""
     global_style: str = ""
     negative_prompt: str = ""
     width: int = 1024
@@ -30,6 +31,7 @@ class SceneRequest:
             "video_id": self.video_id,
             "scene_id": self.scene_id,
             "prompt": self.prompt,
+            "clip_prompt": self.clip_prompt,
             "global_style": self.global_style,
             "negative_prompt": self.negative_prompt,
             "width": self.width,

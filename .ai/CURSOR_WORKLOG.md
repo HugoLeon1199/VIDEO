@@ -884,3 +884,31 @@ $py = "C:\Users\LEON_RM\.cache\codex-runtimes\codex-primary-runtime\dependencies
 - The fresh run was finished at:
   - `output/to-tien-cua-ban-chi-lam-viec-15-tieng-mot-tuan-vi-fresh-full-20260628-1320`
 - No `output/` files were staged for commit.
+## Image pipe hardening - 2026-06-28
+
+- Focused patch on the image pipeline only:
+  - split scene prompts into `scene_text`, `clip_prompt`, full `prompt`, and `negative_prompt`
+  - added NFC normalization and `U+FFFD` rejection
+  - enforced real CLIP/T5 token limits with diagnostics
+  - passed `clip_prompt` through scene and thumbnail generation
+  - added Vast worker auth via `WORKER_API_TOKEN`
+  - pinned and validated `HF_MODEL_REVISION`
+  - kept scene/image/thumbnails sharing one Vast backend when injected
+
+### Tests run
+
+- `python -m py_compile config.py image_generation/flux_prompting.py image_generation/schemas.py image_generation/vast_backend.py image_generation/vast_manager.py steps/image_prompts.py steps/generate_images.py steps/thumbnails.py vast_worker/server.py tests/test_image_prompts.py tests/test_vast_worker.py tests/test_vast_backend.py tests/test_vast_lifecycle.py`
+- `python -m pytest tests/test_image_prompts.py -q`
+- `python -m pytest tests/test_vast_worker.py -q`
+- `python -m pytest tests/test_vast_backend.py -q`
+- `python -m pytest tests/test_vast_lifecycle.py -q`
+- `python -m pytest tests/test_thumbnails.py -q`
+- `python -m pytest tests/test_runpod_backend.py -q`
+- `python -m pytest tests/test_autopilot.py -q`
+- `python -m pytest tests/test_creative_package.py -q`
+- `python -m pytest tests -q`
+
+### Result
+
+- Full suite passed: `182 passed`
+- No `output/` files were staged or committed

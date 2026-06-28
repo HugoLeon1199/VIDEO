@@ -17,13 +17,14 @@ import os
 import signal
 import sys
 import time
+import unicodedata
 from typing import Optional
 
 import torch
 import uvicorn
 from diffusers import FluxPipeline, FluxTransformer2DModel, BitsAndBytesConfig
 from transformers import T5EncoderModel
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.responses import JSONResponse
 from PIL import Image
 from pydantic import BaseModel
@@ -53,7 +54,7 @@ def _load_model() -> FluxPipeline:
         return _pipe
 
     model_id = os.getenv("MODEL_ID", "black-forest-labs/FLUX.1-dev")
-    model_revision = os.getenv("HF_MODEL_REVISION", "") or None
+    model_revision = _validate_model_revision()
     hf_token = os.getenv("HF_TOKEN", "")
     device = "cuda" if torch.cuda.is_available() else "cpu"
 
@@ -76,7 +77,7 @@ def _load_model() -> FluxPipeline:
     # revision: pin a commit SHA so a repo change can't silently alter size/layout
     # (breaking the cost estimate or the pipeline). Empty env = repo default (main).
     from huggingface_hub import snapshot_download
-    print(f"Downloading {model_id} (rev={model_revision or 'main'}, skip root single-file)...", flush=True)
+    print(f"Downloading {model_id} (rev={model_revision}, skip root single-file)...", flush=True)
     model_path = snapshot_download(
         repo_id=model_id,
         revision=model_revision,
@@ -132,6 +133,7 @@ class GenerateRequest(BaseModel):
     video_id: str
     scene_id: str
     prompt: str
+    clip_prompt: str = ""
     negative_prompt: str = ""
     width: int = 1024
     height: int = 576
@@ -158,19 +160,58 @@ def health() -> dict:
 CLOTHING_RULE = "all people fully clothed in modest traditional clothing"
 
 
+def _normalize_prompt_text(text: str) -> str:
+    normalized = unicodedata.normalize("NFC", str(text))
+    if "\ufffd" in normalized:
+        raise HTTPException(status_code=400, detail="Prompt contains U+FFFD replacement character")
+    return normalized
+
+
+def _count_tokens(tokenizer, text: str) -> int:
+    return len(tokenizer.encode(text, add_special_tokens=True))
+
+
+def _require_worker_token(request: Request) -> None:
+    expected = (os.getenv("WORKER_API_TOKEN", "local-worker-token") or "").strip()
+    if not expected:
+        raise HTTPException(status_code=401, detail="Missing worker token configuration")
+    header_token = request.headers.get("x-worker-token", "").strip()
+    auth_header = request.headers.get("authorization", "").strip()
+    if not header_token and auth_header.lower().startswith("bearer "):
+        header_token = auth_header.split(" ", 1)[1].strip()
+    if header_token != expected:
+        raise HTTPException(status_code=401, detail="Invalid worker token")
+
+
+def _validate_model_revision() -> str:
+    revision = (os.getenv("HF_MODEL_REVISION", "") or "").strip()
+    if not revision or revision.lower() == "main":
+        raise RuntimeError("HF_MODEL_REVISION must be pinned to a commit SHA, not blank/main")
+    return revision
+
+
 @app.post("/generate")
-def generate(req: GenerateRequest) -> JSONResponse:
+def generate(req: GenerateRequest, request: Request) -> JSONResponse:
+    _require_worker_token(request)
     pipe = _load_model()
     images_out = []
     errors = []
 
     # CLIP encodes `prompt` with a hard 77-token cap; T5 encodes `prompt_2` with
-    # 512 tokens. Prepend the clothing constraint to clip_prompt so it always
-    # survives the 77-token window, then fold the full text + negative into t5.
-    clip_prompt = f"{CLOTHING_RULE}. {req.prompt}"
-    t5_prompt = clip_prompt
+    # 512 tokens. The client sends the short CLIP prompt separately so we can
+    # validate the real tokenizer budget before FLUX truncates anything.
+    clip_prompt = _normalize_prompt_text(req.clip_prompt or req.prompt)
+    t5_prompt = _normalize_prompt_text(req.prompt)
     if req.negative_prompt:
-        t5_prompt = f"{clip_prompt}. Avoid: {req.negative_prompt}"
+        t5_prompt = f"{t5_prompt}. Avoid: {_normalize_prompt_text(req.negative_prompt)}"
+
+    clip_tokens = _count_tokens(pipe.tokenizer, clip_prompt)
+    if clip_tokens > 77:
+        raise HTTPException(status_code=400, detail=f"clip_prompt exceeds 77-token limit ({clip_tokens})")
+
+    t5_tokens = _count_tokens(getattr(pipe, "tokenizer_2", pipe.tokenizer), t5_prompt)
+    if t5_tokens > 512:
+        raise HTTPException(status_code=400, detail=f"prompt_2 exceeds 512-token limit ({t5_tokens})")
 
     device = "cuda" if torch.cuda.is_available() else "cpu"
     for seed in req.candidate_seeds:
@@ -233,6 +274,8 @@ if __name__ == "__main__":
     parser.add_argument("--host", default="0.0.0.0")
     parser.add_argument("--preload", action="store_true", help="Load model at startup")
     args = parser.parse_args()
+
+    _validate_model_revision()
 
     # Preload in the background: the HTTP server (and /health) comes up immediately,
     # so the client stops waiting on container boot and then polls model_loaded.

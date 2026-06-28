@@ -34,14 +34,22 @@ class VastInstanceBackend(BaseImageBackend):
         port: int,
         timeout: int = 600,
         output_root: str | Path = "output",
+        worker_token: str = "",
     ):
         self.base_url = f"http://{host}:{port}"
         self.timeout = timeout
         self.output_root = Path(output_root)
+        token = worker_token.strip()
+        self._worker_headers = {}
+        if token:
+            self._worker_headers = {
+                "Authorization": f"Bearer {token}",
+                "X-Worker-Token": token,
+            }
 
     def health_check(self) -> bool:
         try:
-            r = requests.get(f"{self.base_url}/health", timeout=10)
+            r = requests.get(f"{self.base_url}/health", timeout=10, headers=self._worker_headers)
             return r.status_code == 200
         except requests.RequestException:
             return False
@@ -52,6 +60,7 @@ class VastInstanceBackend(BaseImageBackend):
             "video_id": request.video_id,
             "scene_id": request.scene_id,
             "prompt": request.prompt,
+            "clip_prompt": request.clip_prompt or request.prompt,
             "negative_prompt": request.negative_prompt,
             "width": request.width,
             "height": request.height,
@@ -70,6 +79,7 @@ class VastInstanceBackend(BaseImageBackend):
                 f"{self.base_url}/generate",
                 json=payload,
                 timeout=self.timeout,
+                headers=self._worker_headers,
             )
             resp.raise_for_status()
             data = resp.json()

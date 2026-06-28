@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import json
 import os
+import shlex
 import subprocess
 import time
 from dataclasses import dataclass
@@ -625,6 +626,8 @@ class VastManager:
         instance: VastInstance,
         worker_dir: str = "vast_worker",
         hf_token: str = "",
+        model_revision: str = "",
+        worker_token: str = "",
     ) -> None:
         """SCP worker files to instance and start the FastAPI server."""
         dest = f"root@{instance.ssh_host}"
@@ -638,7 +641,15 @@ class VastManager:
         )
 
         # Install deps + start server in background
-        hf_export = f"export HF_TOKEN={hf_token} && " if hf_token else ""
+        env_exports = []
+        if hf_token:
+            env_exports.append(f"export HF_TOKEN={shlex.quote(hf_token)}")
+        if model_revision:
+            env_exports.append(f"export HF_MODEL_REVISION={shlex.quote(model_revision)}")
+        if worker_token:
+            env_exports.append(f"export WORKER_API_TOKEN={shlex.quote(worker_token)}")
+        env_exports.append(f"export USE_8BIT={shlex.quote(os.getenv('VAST_USE_8BIT', '1'))}")
+        hf_export = " && ".join(env_exports) + " && "
         cmd = (
             f"cd /workspace && "
             f"pip install -q fastapi uvicorn diffusers transformers accelerate "

@@ -1355,3 +1355,80 @@ Mỗi commit push `main` → RunPod tự build lại. Không push dồn (nhiều
 - Fresh run folder:
   - `output/to-tien-cua-ban-chi-lam-viec-15-tieng-mot-tuan-vi-fresh-full-20260628-1320`
 - No `output/` files were committed.
+## Image pipe hardening - 2026-06-28
+
+### What changed
+
+- `steps/image_prompts.py`
+  - split image prompts into `scene_text`, `clip_prompt`, full `prompt`, and `negative_prompt`
+  - added NFC normalization and `U+FFFD` rejection
+  - added clip/T5 token counting diagnostics and hard fail on overflow
+  - added thumbnail `clip_prompt` generation so the Vast worker can validate short CLIP prompts there too
+- `image_generation/schemas.py`
+  - added explicit `clip_prompt` to image generation requests
+- `image_generation/vast_backend.py`
+  - now sends worker auth headers and the short `clip_prompt`
+- `vast_worker/server.py`
+  - requires `WORKER_API_TOKEN`
+  - validates pinned `HF_MODEL_REVISION`
+  - enforces CLIP and T5 token budgets before FLUX inference
+- `steps/generate_images.py`, `scripts/generate_images.py`, `steps/thumbnails.py`
+  - now pass `clip_prompt` through the whole Vast generation path
+  - reuse the same Vast backend object for scene images and thumbnails when provided
+- `image_generation/vast_manager.py`
+  - worker deployment now exports the revision pin and worker token
+
+### Verification
+
+- `python -m py_compile config.py image_generation/flux_prompting.py image_generation/schemas.py image_generation/vast_backend.py image_generation/vast_manager.py steps/image_prompts.py steps/generate_images.py steps/thumbnails.py vast_worker/server.py tests/test_image_prompts.py tests/test_vast_worker.py tests/test_vast_backend.py tests/test_vast_lifecycle.py`
+- `python -m pytest tests/test_image_prompts.py -q`
+- `python -m pytest tests/test_vast_worker.py -q`
+- `python -m pytest tests/test_vast_backend.py -q`
+- `python -m pytest tests/test_vast_lifecycle.py -q`
+- `python -m pytest tests/test_thumbnails.py -q`
+- `python -m pytest tests/test_runpod_backend.py -q`
+- `python -m pytest tests/test_autopilot.py -q`
+- `python -m pytest tests/test_creative_package.py -q`
+- `python -m pytest tests -q`
+
+### Notes
+
+- No production TTS, subtitle, or render timing logic was changed.
+- No `output/` files were staged or committed.
+
+## Git publish - 2026-06-28
+
+### Progress
+
+- Prepared a clean source-only commit for the image-pipeline hardening work.
+- Left generated artifacts under `output/` and runtime logs out of commit scope.
+
+### Changed files included for publish
+
+- `config.py`
+- `image_generation/flux_prompting.py`
+- `image_generation/schemas.py`
+- `image_generation/vast_backend.py`
+- `image_generation/vast_manager.py`
+- `scripts/generate_images.py`
+- `steps/generate_images.py`
+- `steps/image_prompts.py`
+- `steps/thumbnails.py`
+- `tests/test_creative_package.py`
+- `tests/test_image_prompts.py`
+- `tests/test_thumbnails.py`
+- `tests/test_vast_backend.py`
+- `tests/test_vast_lifecycle.py`
+- `tests/test_vast_worker.py`
+- `vast_worker/server.py`
+- `.ai/CURSOR_WORKLOG.md`
+- `handoff.md`
+
+### Decisions
+
+- Publish only source, tests, and session docs.
+- Exclude generated `output/` artifacts from the commit even when already tracked in the repo.
+
+### Remaining work
+
+- Repo still contains tracked historical files under `output/`; consider a later cleanup/untracking pass if you want future publishes to stay cleaner.

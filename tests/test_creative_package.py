@@ -164,6 +164,11 @@ def test_step4_preserves_scene_prompts_when_thumbnail_generation_fails(tmp_path:
     monkeypatch.setattr(image_prompts, "_get_audio_duration", lambda _: 5.0)
     monkeypatch.setattr(
         image_prompts,
+        "token_count_for_model",
+        lambda _model_id, _text, subfolder, _revision=None: 20 if subfolder == "tokenizer" else 80,
+    )
+    monkeypatch.setattr(
+        image_prompts,
         "_call_gemini",
         lambda script_text, sentences, system_prompt: [
             {"index": idx, "sentences": [idx], "scene_text": sentence, "prompt": f"scene {idx}", "icon_overlays": [], "text_overlays": []}

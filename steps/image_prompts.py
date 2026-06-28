@@ -10,6 +10,7 @@ from pathlib import Path
 from loguru import logger
 
 import config
+from image_generation.flux_prompting import normalize_prompt_text, token_count_for_model
 from steps.creative_package import CreativePackageError, _atomic_write_json, load_validated_package
 from steps.text_units import load_script_text, load_sentence_units
 from steps import visual_beats
@@ -138,6 +139,23 @@ def _deterministic_prompt(language: str, text: str) -> str:
     )
 
 
+def _clip_prompt_prefix(language: str) -> str:
+    if language == "vi":
+        return (
+            "cinematic 2D painted documentary illustration, all visible people fully clothed in historically "
+            "plausible full-coverage hide and fur clothing, no text, no logo, no watermark,"
+        )
+    return (
+        "cinematic illustrated history documentary, all visible people fully clothed in historically plausible "
+        "full-coverage hide and fur clothing, no text, no logo, no watermark,"
+    )
+
+
+def _build_clip_prompt(language: str, scene_text: str) -> str:
+    clip_prompt = normalize_prompt_text(f"{_clip_prompt_prefix(language)} {scene_text}".strip())
+    return clip_prompt
+
+
 def _deterministic_plan(sentence_spans: list[visual_beats.SentenceSpan], language: str) -> list[dict]:
     plan: list[dict] = []
     for span in sentence_spans:
@@ -204,24 +222,50 @@ def _attach_generation_fields(
     template: dict,
 ) -> list[dict]:
     track_cfg = config.TRACK_CONFIG[language]
+    revision = config.require_pinned_hf_model_revision()
+    model_id = track_cfg["model"]
+    template_version = template["fields"].get("style_version", track_cfg["style_version"])
     entries: list[dict] = []
     for beat in beats:
-        final_prompt = str(beat.get("prompt", beat["visual_intent"])).strip()
+        scene_text = normalize_prompt_text(str(beat.get("scene_text", beat["visual_intent"]))).strip()
+        final_prompt = normalize_prompt_text(str(beat.get("prompt", beat["visual_intent"])).strip())
+        clip_prompt = _build_clip_prompt(language, scene_text)
         negative_prompt = (
             "Avoid: text, letters, logo, watermark, malformed anatomy, extra limbs, merged bodies, "
             "modern objects, sexualized body, bare torso, bare chest, exposed breasts."
         )
+        clip_token_count = token_count_for_model(model_id, clip_prompt, "tokenizer", revision)
+        t5_prompt = final_prompt
+        if negative_prompt:
+            t5_prompt = f"{t5_prompt}. {negative_prompt}"
+        t5_token_count = token_count_for_model(model_id, t5_prompt, "tokenizer_2", revision)
+        if clip_token_count > config.FLUX_CLIP_TOKEN_LIMIT:
+            raise ValueError(
+                f"clip_prompt exceeds {config.FLUX_CLIP_TOKEN_LIMIT} tokens ({clip_token_count}) for scene {beat['source_sentence_index']}"
+            )
+        if t5_token_count > config.FLUX_T5_TOKEN_LIMIT:
+            raise ValueError(
+                f"prompt_2 exceeds {config.FLUX_T5_TOKEN_LIMIT} tokens ({t5_token_count}) for scene {beat['source_sentence_index']}"
+            )
         entry = dict(beat)
         entry.update(
             {
+                "scene_text": scene_text,
                 "prompt": final_prompt,
+                "clip_prompt": clip_prompt,
                 "negative_prompt": negative_prompt,
                 "track": language,
                 "template_sha256": template["sha256"],
                 "style_version": track_cfg["style_version"],
+                "template_version": template_version,
                 "image_model": track_cfg["model"],
                 "final_positive_prompt": final_prompt,
                 "final_avoidance_prompt": negative_prompt,
+                "clip_token_count": clip_token_count,
+                "clip_limit": config.FLUX_CLIP_TOKEN_LIMIT,
+                "t5_token_count": t5_token_count,
+                "t5_limit": config.FLUX_T5_TOKEN_LIMIT,
+                "unicode_valid": True,
                 "steps": track_cfg["steps"],
                 "guidance": track_cfg["guidance_scale"],
                 "resolution": f"{config.IMAGE_WIDTH}x{config.IMAGE_HEIGHT}",
@@ -294,6 +338,9 @@ def _generate_thumbnail_prompt_payload(video_id: str, validated_package: dict, u
             if concept is None:
                 raise ValueError(f"Unknown concept_id in thumbnail prompt output: {concept_id}")
             image_prompt = str(entry.get("image_prompt", "")).strip()
+            clip_prompt = normalize_prompt_text(
+                f"YouTube thumbnail, {concept['type'].replace('_', ' ')}, {concept['thumbnail_text']}"
+            )
             prompt_lower = image_prompt.lower()
             for required in ("no text", "no logo", "no watermark"):
                 if required not in prompt_lower:
@@ -302,6 +349,7 @@ def _generate_thumbnail_prompt_payload(video_id: str, validated_package: dict, u
                 {
                     "concept_id": concept_id,
                     "type": concept["type"],
+                    "clip_prompt": clip_prompt,
                     "image_prompt": image_prompt,
                     "negative_prompt": str(entry.get("negative_prompt", "")).strip(),
                     "thumbnail_text": concept["thumbnail_text"],
@@ -348,6 +396,9 @@ def _generate_deterministic_thumbnail_prompts(video_id: str, validated_package: 
         visual_hook = str(concept.get("visual_hook", "")).strip()
         must_show = ", ".join(str(item) for item in concept.get("must_show", []) if str(item).strip())
         must_avoid = ", ".join(str(item) for item in concept.get("must_avoid", []) if str(item).strip())
+        clip_prompt = normalize_prompt_text(
+            f"YouTube thumbnail, {concept['type'].replace('_', ' ')}, {concept['thumbnail_text']}"
+        )
         image_prompt = (
             "YouTube thumbnail background, cinematic illustrated history documentary, 16:9 composition, "
             "one strong focal subject, dramatic readable silhouette, clean negative space on "
@@ -364,6 +415,7 @@ def _generate_deterministic_thumbnail_prompts(video_id: str, validated_package: 
             {
                 "concept_id": int(concept["id"]),
                 "type": concept["type"],
+                "clip_prompt": clip_prompt,
                 "image_prompt": image_prompt,
                 "negative_prompt": negative_prompt,
                 "thumbnail_text": concept["thumbnail_text"],
@@ -460,7 +512,11 @@ def run(video_id: str, n_override: int | None = None, allow_stale_package: bool 
         for beat in prompt_plan:
             beat["prompt"] = beat["visual_intent"]
 
-    prompts = _attach_generation_fields(prompt_plan, language=language, template=template)
+    try:
+        prompts = _attach_generation_fields(prompt_plan, language=language, template=template)
+    except Exception as exc:
+        logger.error("Prompt validation failed: {}", exc)
+        sys.exit(1)
     if prompts:
         prompts[-1]["end"] = round(audio_duration, 3)
 

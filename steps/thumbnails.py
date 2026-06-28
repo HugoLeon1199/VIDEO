@@ -234,6 +234,10 @@ def generate_thumbnail_assets(
                 video_id=video_id,
                 scene_id=temp_scene_id,
                 prompt=entry["image_prompt"],
+                clip_prompt=entry.get(
+                    "clip_prompt",
+                    f"YouTube thumbnail, {entry['type'].replace('_', ' ')}, {entry['thumbnail_text']}",
+                ),
                 negative_prompt=entry.get("negative_prompt", ""),
                 width=config.IMAGE_WIDTH,
                 height=config.IMAGE_HEIGHT,

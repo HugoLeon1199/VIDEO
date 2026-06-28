@@ -189,6 +189,7 @@ def _build_vast_backend(n_images: int = 100):
     if not _cfg.VAST_API_KEY:
         raise RuntimeError("VAST_API_KEY not set — add it to .env")
 
+    revision = _cfg.require_pinned_hf_model_revision()
     manager = VastManager(api_key=_cfg.VAST_API_KEY, worker_port=_cfg.VAST_WORKER_PORT)
 
     # Manual / resume mode: instance already running
@@ -199,6 +200,7 @@ def _build_vast_backend(n_images: int = 100):
             host=_cfg.VAST_INSTANCE_HOST,
             port=_cfg.VAST_INSTANCE_PORT,
             timeout=_cfg.VAST_REQUEST_TIMEOUT,
+            worker_token=_cfg.WORKER_API_TOKEN,
         )
         manager.wait_worker_ready(_cfg.VAST_INSTANCE_HOST, _cfg.VAST_INSTANCE_PORT, timeout=120)
         return backend, None  # caller manages lifetime
@@ -221,6 +223,8 @@ def _build_vast_backend(n_images: int = 100):
     env_vars = {}
     if _cfg.VAST_HF_TOKEN:
         env_vars["HF_TOKEN"] = _cfg.VAST_HF_TOKEN
+    env_vars["HF_MODEL_REVISION"] = revision
+    env_vars["WORKER_API_TOKEN"] = _cfg.WORKER_API_TOKEN
     # Worker reads USE_8BIT (quantize transformer + T5) — the proven RunPod path
     # that avoids both OOM and the '_hf_hook' crash. Default on.
     env_vars["USE_8BIT"] = os.getenv("VAST_USE_8BIT", "1")
@@ -295,6 +299,7 @@ def _build_vast_backend(n_images: int = 100):
             host=instance.public_ipaddr,
             port=instance.direct_port,
             timeout=_cfg.VAST_REQUEST_TIMEOUT,
+            worker_token=_cfg.WORKER_API_TOKEN,
         )
         inst_id = instance.instance_id
 
@@ -587,6 +592,7 @@ def main() -> None:
             video_id=args.video_id,
             scene_id=scene_id,
             prompt=p["prompt"],
+            clip_prompt=p.get("clip_prompt", p["prompt"]),
             global_style=p.get("global_style", ""),
             negative_prompt=p.get("negative_prompt", ""),
             width=p.get("width", 1024),

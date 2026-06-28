@@ -83,7 +83,8 @@ VAST_EXPECTED_DOWNLOAD_GB = float(os.getenv(
     "VAST_EXPECTED_DOWNLOAD_GB",
     str(VAST_EXPECTED_MODEL_GB + VAST_EXPECTED_IMAGE_AND_SETUP_GB)))
 VAST_EXPECTED_UPLOAD_GB = float(os.getenv("VAST_EXPECTED_UPLOAD_GB", "2.0"))
-HF_MODEL_REVISION = os.getenv("HF_MODEL_REVISION", "")  # pin commit SHA after testing
+HF_MODEL_REVISION = os.getenv("HF_MODEL_REVISION", "3de623fc3c33e44ffbe2bad470d0f45bccf2eb21")  # pinned Flux rev
+WORKER_API_TOKEN = os.getenv("WORKER_API_TOKEN", "local-worker-token")
 MAX_LEASE_MINUTES = int(os.getenv("MAX_LEASE_MINUTES", "90"))  # reaper kills boxes older than this
 # Keep production cheap-first: `find_offer` already ranks eligible machines by
 # estimated true total cost. A 10Gbps floor can force expensive GPUs; 500Mbps keeps
@@ -128,6 +129,8 @@ IMAGE_CANDIDATES = 3
 IMAGE_CANDIDATE_SEEDS = [11001, 11002, 11003]
 IMAGE_OUTPUT_FORMAT = "WEBP"
 IMAGE_QUALITY = 92
+FLUX_CLIP_TOKEN_LIMIT = int(os.getenv("FLUX_CLIP_TOKEN_LIMIT", "77"))
+FLUX_T5_TOKEN_LIMIT = int(os.getenv("FLUX_T5_TOKEN_LIMIT", "512"))
 
 # Video Settings
 VIDEO_WIDTH = 1920
@@ -183,3 +186,12 @@ THUMBNAIL_CONTACT_SHEET_LABEL_COLOR = (44, 34, 24)
 # Claude API retry
 CLAUDE_MAX_RETRIES = 2
 CLAUDE_RETRY_SLEEP = 5   # seconds
+
+
+def require_pinned_hf_model_revision() -> str:
+    revision = (HF_MODEL_REVISION or "").strip()
+    if not revision or revision.lower() == "main":
+        raise RuntimeError(
+            "HF_MODEL_REVISION must be pinned to a commit SHA before Vast image generation"
+        )
+    return revision

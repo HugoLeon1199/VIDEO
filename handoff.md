@@ -5,6 +5,83 @@ File này chứa thông tin kỹ thuật chi tiết, lịch sử debug, và quy�
 
 ---
 
+## VieNeu voice swap + subtitle burn - 2026-06-28
+
+- Goal:
+  - switch the attached Vietnamese video from edge-tts to VieNeu
+  - keep the existing images untouched
+  - produce a subtitle-burned video
+
+### What changed
+
+- `output/to-tien-cua-ban-chi-lam-viec-15-tieng-mot-tuan-vi/tts_config.json`
+  - changed from `edge` to `vieneu`
+  - voice set to `Thái Sơn`
+  - mode set to `sentence`
+
+### Commands run
+
+- `python main.py --video-id to-tien-cua-ban-chi-lam-viec-15-tieng-mot-tuan-vi --step 2`
+- `python main.py --video-id to-tien-cua-ban-chi-lam-viec-15-tieng-mot-tuan-vi --step 7`
+- manual FFmpeg subtitle burn from the existing `subtitles.srt` to `final_subbed.mp4`
+
+### Results
+
+- Step 2 completed with VieNeu `Thái Sơn`
+  - audio duration: about `565s`
+- Step 7 completed without rerendering images
+  - `final.mp4` rendered successfully
+- Subtitle burn succeeded
+  - `final_subbed.mp4` created successfully
+
+## Vietnamese end-to-end rerun - 2026-06-28
+
+- Goal in this session:
+  - run the attached Vietnamese script from TTS through render end-to-end
+  - verify what still works in the current checkout without comparing against other output folders
+
+### What I ran
+
+- Target video:
+  - `output/to-tien-cua-ban-chi-lam-viec-15-tieng-mot-tuan-vi`
+- Commands run:
+  - `python main.py --video-id to-tien-cua-ban-chi-lam-viec-15-tieng-mot-tuan-vi --step 2`
+  - `python main.py --video-id to-tien-cua-ban-chi-lam-viec-15-tieng-mot-tuan-vi --step 3`
+  - `python scripts/generate_images.py --video-id to-tien-cua-ban-chi-lam-viec-15-tieng-mot-tuan-vi --backend vast_instance --no-qa --force --candidates 1 --workers 5`
+  - `python scripts/generate_images.py --video-id to-tien-cua-ban-chi-lam-viec-15-tieng-mot-tuan-vi --backend runpod_serverless --no-qa --force --candidates 1 --workers 5`
+  - `python main.py --video-id to-tien-cua-ban-chi-lam-viec-15-tieng-mot-tuan-vi --step 6`
+  - `python main.py --video-id to-tien-cua-ban-chi-lam-viec-15-tieng-mot-tuan-vi --step 7`
+
+### Results
+
+- Step 2:
+  - initially failed because `tts_config.json` had `rate=0%`
+  - after changing it to `rate=-8%`, step 2 completed successfully
+  - audio duration: about `657s`
+- Step 3:
+  - initially failed under `faster_whisper` because timestamps count did not match the script
+  - after switching `transcribe_config.json` to `stable_ts` align, step 3 completed successfully
+  - output count: `146` timestamps
+  - `word_timestamps_diagnostics.json` reported subtitles not ready, so no approximate word export was fabricated
+- Vast.ai image generation:
+  - attempted first, but Vast could not find an offer that matched the repo's current filters
+  - that path was blocked by offer availability, not by the video assets
+- RunPod image generation:
+  - succeeded and regenerated all `70` prompt scenes into `images/`
+- Step 6:
+  - passed
+  - wrote `soundscape.json` with rule-based SFX
+- Step 7:
+  - passed
+  - rendered `final.mp4`
+  - final size: about `82.5 MB`
+
+### Important notes
+
+- I did not compare against other output folders; this run used the attached Vietnamese script and the current folder only.
+- The current folder still has a grouped `image_prompts.json` with `70` scenes, so the render is scene-grouped rather than strict 1-sentence-1-image.
+- No generated `output/` files were staged for commit.
+
 ## Vietnamese pipeline rerun audit - 2026-06-27
 
 - Goal in this session:
@@ -1080,3 +1157,63 @@ Mỗi commit push `main` → RunPod tự build lại. Không push dồn (nhiều
 ### Important note
 
 - Generated files under `output/` were used only for smoke validation and must stay out of commits.
+
+## Vietnamese rerun smoke - 2026-06-28
+
+- Chosen video:
+  - `creative-smoke-vi`
+- Why this one:
+  - it is the only Vietnamese folder in the current checkout with `script.txt` and `timestamps.json` still aligned 5/5, so it was safe to rerun from the source script without inventing a new sample.
+
+### Real commands run
+
+- `python main.py --video-id creative-smoke-vi --step 2`
+- `python main.py --video-id creative-smoke-vi --step 3`
+- `python scripts/generate_images.py --video-id creative-smoke-vi --force --candidates 1 --workers 5`
+- `python main.py --video-id creative-smoke-vi --step 6`
+- `python main.py --video-id creative-smoke-vi --step 7`
+
+### Observed results
+
+- Step 2:
+  - Kokoro block TTS reran successfully
+  - `audio.mp3` regenerated
+  - duration about `13.6s`
+- Step 3:
+  - faster-whisper block alignment ran
+  - sentence fallback triggered for the single block
+  - fresh `timestamps.json` was written
+  - `word_timestamps_diagnostics.json` reported subtitles not ready
+- Step 5:
+  - forced regeneration of all 5 images succeeded through RunPod
+- Step 6:
+  - soundscape produced no usable SFX for this smoke case
+- Step 7:
+  - clean `final.mp4` rendered successfully
+  - size about `2.5 MB`
+
+### Important note
+
+- `step 4` was not rerun in this environment because `GEMINI_API_KEY` is not set in the checkout, so I reused the existing `image_prompts.json` for the rerun.
+- This rerun is a short smoke fixture, not a production-length Vietnamese video.
+
+## Vast image rerun - 2026-06-28
+
+- Target video:
+  - `creative-smoke-vi`
+- What I ran:
+  - `scripts/generate_images.py --video-id creative-smoke-vi --track vi --force --candidates 1 --workers 5` with `IMAGE_BACKEND=vast_instance`
+  - then copied `images_vi/img_*.png` into canonical `images/`
+  - then reran `main.py --video-id creative-smoke-vi --step 7`
+
+### Result
+
+- Vast.ai image generation completed successfully for all 5 scenes.
+- No scene failures or QA failures were reported.
+- Final render completed successfully after copying the new Vast images into canonical `images/`.
+
+### Issue found
+
+- The `track vi` path in `scripts/generate_images.py` saves promoted files into `images_vi/`.
+- `steps/render_video.py` still prefers canonical `images/` when that folder already exists.
+- Because of that, a pure `--track vi` rerun does not automatically become the render source unless we sync or swap the directories.

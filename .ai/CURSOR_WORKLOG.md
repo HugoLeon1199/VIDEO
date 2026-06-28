@@ -1,5 +1,50 @@
 # CURSOR_WORKLOG - Repo worklog
 
+## Session 2026-06-28 - VieNeu voice swap and subtitle burn
+
+### Goal
+Switch the attached Vietnamese video to VieNeu voice, keep images unchanged, and produce a subtitle-burned output.
+
+### Commands run
+- `python main.py --video-id to-tien-cua-ban-chi-lam-viec-15-tieng-mot-tuan-vi --step 2`
+- `python main.py --video-id to-tien-cua-ban-chi-lam-viec-15-tieng-mot-tuan-vi --step 7`
+- manual FFmpeg burn from existing `subtitles.srt` to `final_subbed.mp4`
+
+### Outcome
+- Updated `tts_config.json` to use `engine=vieneu`, `voice=Thái Sơn`, `mode=sentence`
+- Step 2 reran successfully with VieNeu
+- Step 7 reran successfully without touching image generation
+- `final_subbed.mp4` was produced successfully
+
+### Notes
+- Images were not regenerated.
+- The subtitle burn reused the existing `subtitles.srt` already present in the video folder.
+
+## Session 2026-06-28 - Vietnamese script end-to-end rerun
+
+### Goal
+Run the attached Vietnamese script from TTS through render in the current checkout and verify the real workflow behavior.
+
+### Commands run
+- `python main.py --video-id to-tien-cua-ban-chi-lam-viec-15-tieng-mot-tuan-vi --step 2`
+- `python main.py --video-id to-tien-cua-ban-chi-lam-viec-15-tieng-mot-tuan-vi --step 3`
+- `python scripts/generate_images.py --video-id to-tien-cua-ban-chi-lam-viec-15-tieng-mot-tuan-vi --backend vast_instance --no-qa --force --candidates 1 --workers 5`
+- `python scripts/generate_images.py --video-id to-tien-cua-ban-chi-lam-viec-15-tieng-mot-tuan-vi --backend runpod_serverless --no-qa --force --candidates 1 --workers 5`
+- `python main.py --video-id to-tien-cua-ban-chi-lam-viec-15-tieng-mot-tuan-vi --step 6`
+- `python main.py --video-id to-tien-cua-ban-chi-lam-viec-15-tieng-mot-tuan-vi --step 7`
+
+### Outcome
+- Step 2 initially failed because `tts_config.json` used `rate=0%`; after changing it to `rate=-8%`, TTS completed.
+- Step 3 initially failed under the default transcribe mode; after switching to `stable_ts` align, timestamps completed successfully.
+- Vast.ai image generation was attempted first but no offer matched the repo's current filters.
+- RunPod image generation completed all `70` grouped prompt scenes.
+- Step 6 completed and wrote `soundscape.json`.
+- Step 7 completed and rendered `final.mp4` at about `82.5 MB`.
+
+### Notes
+- I used only the current Vietnamese output folder and did not compare against other output folders.
+- No `output/` artifacts were staged for commit.
+
 ## Session 2026-06-27 - Kokoro Voice Lab simplification and round-gated review
 
 ### Goal
@@ -667,3 +712,67 @@ $python = "C:\Users\LEON_RM\.cache\codex-runtimes\codex-primary-runtime\dependen
 
 ### Important note
 - No generated `output/` artifacts should be committed.
+
+## Session 2026-06-28 - Vietnamese rerun smoke
+
+### Goal
+Rerun one Vietnamese sample from source script through final render and force fresh image generation to verify the live pipeline in this checkout.
+
+### Video selected
+- `creative-smoke-vi`
+
+### Commands run
+```powershell
+$python = "C:\Users\LEON_RM\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\python.exe"
+& $python main.py --video-id creative-smoke-vi --step 2
+& $python main.py --video-id creative-smoke-vi --step 3
+& $python scripts\generate_images.py --video-id creative-smoke-vi --force --candidates 1 --workers 5
+& $python main.py --video-id creative-smoke-vi --step 6
+& $python main.py --video-id creative-smoke-vi --step 7
+```
+
+### Results
+- Step 2:
+  - Kokoro block TTS reran successfully
+  - `audio.mp3` regenerated
+  - duration about `13.6s`
+- Step 3:
+  - block-aware faster-whisper ran
+  - sentence fallback triggered for the single block
+  - fresh `timestamps.json` was written
+  - `word_timestamps_diagnostics.json` reported subtitles not ready
+- Step 5:
+  - forced regeneration of all 5 images succeeded through RunPod
+- Step 7:
+  - clean `final.mp4` rendered successfully
+  - size about `2.5 MB`
+
+### Note
+- `step 4` was not rerun here because `GEMINI_API_KEY` is not set in the checkout.
+- This rerun is a small smoke fixture, not a production-length Vietnamese video.
+
+## Session 2026-06-28 - Vast image rerun
+
+### Goal
+Rerun the image generation step for a Vietnamese smoke sample using the Vast.ai backend, then confirm final render behavior.
+
+### Video selected
+- `creative-smoke-vi`
+
+### Commands run
+```powershell
+$env:IMAGE_BACKEND = "vast_instance"
+& $python scripts\generate_images.py --video-id creative-smoke-vi --track vi --force --candidates 1 --workers 5
+Copy-Item output\creative-smoke-vi\images_vi\img_*.png output\creative-smoke-vi\images -Force
+& $python main.py --video-id creative-smoke-vi --step 7
+```
+
+### Results
+- Vast.ai image generation completed successfully for all 5 scenes.
+- No scene failures or QA failures were reported.
+- Final render completed successfully after syncing the new Vast images into canonical `images/`.
+
+### Issue found
+- `scripts/generate_images.py --track vi` promotes into `images_vi/`.
+- `steps/render_video.py` still prefers canonical `images/` when both exist.
+- Without the copy step, render would keep using the older canonical images.

@@ -200,6 +200,8 @@ def generate_thumbnail_assets(
     allow_stale_package: bool = False,
     backend_override=None,
     teardown_override=None,
+    manage_backend: bool = True,
+    lifecycle=None,
 ) -> dict[str, Any]:
     video_dir = Path(config.OUTPUT_DIR) / video_id
     load_validated_package(video_dir, allow_stale_package=allow_stale_package)
@@ -212,22 +214,40 @@ def generate_thumbnail_assets(
     regenerate_set = {int(value) for value in regenerate or []}
     log_path = _thumbnail_log_path(video_dir)
     generation_log = _load_json(log_path, {})
+    pending_entries = []
+    for entry in prompt_entries:
+        concept_id = int(entry["concept_id"])
+        bg_path = _background_path(video_dir, concept_id)
+        thumb_path = _thumbnail_path(video_dir, concept_id)
+        if regenerate_set and concept_id not in regenerate_set:
+            continue
+        if not regenerate_set and bg_path.exists() and thumb_path.exists():
+            continue
+        pending_entries.append(entry)
+    if not pending_entries:
+        existing_entries = [entry for entry in prompt_entries if _thumbnail_path(video_dir, int(entry["concept_id"])).exists()]
+        diagnostics = {
+            "thumbnail_prompt_count": len(prompt_entries),
+            "thumbnail_generated_count": len(existing_entries),
+            "thumbnail_failed_ids": [],
+            "validation_passed": True,
+            "warnings": [],
+            "contact_sheet_path": str(build_contact_sheet(video_dir, existing_entries)) if existing_entries else None,
+        }
+        _atomic_write_json(_thumbnail_diagnostics_path(video_dir), diagnostics)
+        return diagnostics
     backend = backend_override
     teardown = teardown_override
-    owns_backend = backend is None
+    owns_backend = backend is None and manage_backend
     if backend is None:
         backend, teardown = _build_backend()
     generated = 0
     failed_ids: list[int] = []
     try:
-        for entry in prompt_entries:
+        for entry in pending_entries:
             concept_id = int(entry["concept_id"])
             bg_path = _background_path(video_dir, concept_id)
             thumb_path = _thumbnail_path(video_dir, concept_id)
-            if regenerate_set and concept_id not in regenerate_set:
-                continue
-            if not regenerate_set and bg_path.exists() and thumb_path.exists():
-                continue
             temp_scene_id = str(9000 + concept_id)
             candidate_dir = Path(config.OUTPUT_DIR) / video_id / "images" / f"scene_{int(temp_scene_id):03d}"
             request = SceneRequest(
@@ -249,6 +269,8 @@ def generate_thumbnail_assets(
                 output_mode="base64",
             )
             try:
+                if lifecycle is not None:
+                    lifecycle.thumbnail_request_count += 1
                 result = backend.generate(request)
                 if not result.candidates:
                     raise ThumbnailGenerationError(f"No thumbnail candidates returned for concept {concept_id}")

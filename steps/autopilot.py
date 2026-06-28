@@ -24,6 +24,7 @@ AUTOPILOT_STAGES = [
     "image_prompts",
     "images",
     "soundscape",
+    "effects",
     "render",
     "publishing",
 ]
@@ -256,31 +257,6 @@ def _ensure_output_slot(video_id: str, script_sha256: str, language: str, resume
     return state
 
 
-def _run_image_generation_cli(video_id: str, language: str) -> None:
-    python = sys.executable
-    env = os.environ.copy()
-    env["IMAGE_BACKEND"] = "vast_instance"
-    track = language if language in {"vi", "en"} else "en"
-    cmd = [
-        python,
-        "scripts/generate_images.py",
-        "--video-id",
-        video_id,
-        "--backend",
-        "vast_instance",
-        "--workers",
-        "1",
-        "--output-root",
-        str(config.OUTPUT_DIR),
-    ]
-    if track:
-        cmd.extend(["--track", track])
-    logger.info("Autopilot image generation command: {}", " ".join(cmd))
-    result = subprocess.run(cmd, cwd=Path(__file__).resolve().parent.parent, env=env, capture_output=True, text=True)
-    if result.returncode != 0:
-        raise RuntimeError(result.stderr[-2000:] or result.stdout[-2000:])
-
-
 def _promote_canonical_images(video_id: str) -> int:
     video_dir = _video_dir(video_id)
     canonical_dir = video_dir / "images"
@@ -299,7 +275,8 @@ def _promote_canonical_images(video_id: str) -> int:
 
 
 def run(video_id: str, script_file: str, resume: bool = False) -> dict:
-    from steps import design_soundscape, image_prompts, metadata, render_video, thumbnails, transcribe, tts
+    from image_generation.production import VastLifecycle, VastSession, pending_scene_prompts, pending_thumbnail_prompts
+    from steps import design_effects, design_soundscape, generate_images, image_prompts, metadata, render_video, thumbnails, transcribe, tts
 
     raw_script = Path(script_file).read_text(encoding="utf-8")
     normalized_script = normalize_script_text(raw_script)
@@ -307,6 +284,7 @@ def run(video_id: str, script_file: str, resume: bool = False) -> dict:
     script_sha256 = _sha256_text(normalized_script)
     state = _ensure_output_slot(video_id, script_sha256, language, resume=resume)
     video_dir = _video_dir(video_id)
+    lifecycle = VastLifecycle()
 
     try:
         if resume:
@@ -354,26 +332,40 @@ def run(video_id: str, script_file: str, resume: bool = False) -> dict:
 
         if not _stage_completed(state, "images"):
             _update_stage(state, video_id, "images", "running")
-            try:
-                _run_image_generation_cli(video_id, language)
-                promoted = _promote_canonical_images(video_id)
-                if promoted:
-                    logger.info("Promoted {} track images into canonical images/", promoted)
+            pending_gpu_work = bool(pending_scene_prompts(video_id) or pending_thumbnail_prompts(video_id))
+            if pending_gpu_work:
                 old_backend = config.IMAGE_BACKEND
                 try:
                     config.IMAGE_BACKEND = "vast_instance"
-                    thumbnails.generate_thumbnail_assets(video_id)
+                    with VastSession(lifecycle) as session:
+                        generate_images.run(
+                            video_id,
+                            backend_override=session.backend,
+                            manage_backend=False,
+                            lifecycle=lifecycle,
+                            include_thumbnails=False,
+                        )
+                        thumbnails.generate_thumbnail_assets(
+                            video_id,
+                            backend_override=session.backend,
+                            manage_backend=False,
+                            lifecycle=lifecycle,
+                        )
                 finally:
                     config.IMAGE_BACKEND = old_backend
-            finally:
-                state["vast_teardown_confirmed"] = True
-                _write_json(_state_path(video_id), state)
+            state["vast_teardown_confirmed"] = lifecycle.vast_teardown_confirmed
+            _write_json(_state_path(video_id), state)
             _update_stage(state, video_id, "images", "completed")
 
         if not _stage_completed(state, "soundscape"):
             _update_stage(state, video_id, "soundscape", "running")
             design_soundscape.run(video_id)
             _update_stage(state, video_id, "soundscape", "completed")
+
+        if not _stage_completed(state, "effects"):
+            _update_stage(state, video_id, "effects", "running")
+            design_effects.run(video_id)
+            _update_stage(state, video_id, "effects", "completed")
 
         if not _stage_completed(state, "render"):
             _update_stage(state, video_id, "render", "running")
@@ -406,7 +398,8 @@ def run(video_id: str, script_file: str, resume: bool = False) -> dict:
         "thumbnail_path": str(video_dir / config.PUBLISHING_DIRNAME / "thumbnail_contact_sheet.jpg"),
         "publishing_title_path": str(video_dir / config.PUBLISHING_DIRNAME / "title_options.txt"),
         "publishing_description_path": str(video_dir / config.PUBLISHING_DIRNAME / "description.txt"),
-        "vast_teardown_confirmed": state.get("vast_teardown_confirmed", False),
+        "vast_teardown_confirmed": lifecycle.vast_teardown_confirmed or state.get("vast_teardown_confirmed", False),
     }
+    summary.update(lifecycle.to_summary())
     _write_json(_summary_path(video_id), summary)
     return summary

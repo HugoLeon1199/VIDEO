@@ -20,7 +20,8 @@ def _read_json(path: Path):
 
 
 def _stub_pipeline(monkeypatch, *, fail_stage: str | None = None):
-    from steps import design_soundscape, image_prompts, metadata, render_video, thumbnails, transcribe, tts
+    from steps import design_effects, design_soundscape, generate_images, image_prompts, metadata, render_video, thumbnails, transcribe, tts
+    from image_generation import production
 
     def _write_tts(video_id: str):
         video_dir = Path(config.OUTPUT_DIR) / video_id
@@ -44,7 +45,7 @@ def _stub_pipeline(monkeypatch, *, fail_stage: str | None = None):
             encoding="utf-8",
         )
 
-    def _write_images(video_id: str, n_override=None):
+    def _write_images(video_id: str, n_override=None, **_kwargs):
         video_dir = Path(config.OUTPUT_DIR) / video_id / "images"
         video_dir.mkdir(parents=True, exist_ok=True)
         (video_dir / "img_001.png").write_bytes(b"png")
@@ -64,6 +65,36 @@ def _stub_pipeline(monkeypatch, *, fail_stage: str | None = None):
         video_dir = Path(config.OUTPUT_DIR) / video_id
         (video_dir / "soundscape.json").write_text("[]", encoding="utf-8")
 
+    def _write_effects(video_id: str):
+        video_dir = Path(config.OUTPUT_DIR) / video_id
+        (video_dir / "effects_plan.json").write_text(
+            json.dumps(
+                {
+                    "version": "cinematic-documentary-v1",
+                    "global_look": {"grade": "warm_documentary", "grain": 0.0, "vignette": 0.0, "enabled": False},
+                    "effects_enabled": False,
+                    "scenes": [
+                        {
+                            "scene_index": 1,
+                            "source_sentence_index": 1,
+                            "source_start": 0.0,
+                            "source_end": 4.0,
+                            "display_start": 0.0,
+                            "display_end": 4.0,
+                            "motion": {"type": "hold", "start_scale": 1.0, "end_scale": 1.0, "focus_x": 0.5, "focus_y": 0.45, "easing": "ease_in_out"},
+                            "transition_out": {"type": "hard_cut", "duration": 0.0},
+                        }
+                    ],
+                },
+                indent=2,
+            ),
+            encoding="utf-8",
+        )
+        (video_dir / "effects_diagnostics.json").write_text(
+            json.dumps({"scene_count": 1, "motion_distribution": {"hold": 1}, "transition_distribution": {}, "max_scale": 1.0, "max_pan": 0.0, "duration_drift": 0.0, "validation_passed": True, "warnings": []}, indent=2),
+            encoding="utf-8",
+        )
+
     def _write_render(video_id: str, subtitles: bool = False):
         video_dir = Path(config.OUTPUT_DIR) / video_id
         (video_dir / "final.mp4").write_bytes(b"final")
@@ -82,11 +113,18 @@ def _stub_pipeline(monkeypatch, *, fail_stage: str | None = None):
     monkeypatch.setattr(tts, "run", _write_tts)
     monkeypatch.setattr(transcribe, "run", _write_transcribe)
     monkeypatch.setattr(image_prompts, "run", _write_prompts)
-    monkeypatch.setattr(autopilot, "_run_image_generation_cli", _write_images)
+    monkeypatch.setattr(generate_images, "run", _write_images)
     monkeypatch.setattr(thumbnails, "generate_thumbnail_assets", _write_thumbnails)
     monkeypatch.setattr(design_soundscape, "run", _write_soundscape)
+    monkeypatch.setattr(design_effects, "run", _write_effects)
     monkeypatch.setattr(render_video, "run", _write_render)
     monkeypatch.setattr(metadata, "run", _write_metadata)
+    monkeypatch.setattr(
+        production.VastSession,
+        "__enter__",
+        lambda self: setattr(self, "backend", object()) or self,
+    )
+    monkeypatch.setattr(production.VastSession, "__exit__", lambda self, exc_type, exc, tb: False)
 
 
 def test_safe_video_id_and_script_normalization():

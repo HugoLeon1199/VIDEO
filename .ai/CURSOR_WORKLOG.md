@@ -912,3 +912,51 @@ $py = "C:\Users\LEON_RM\.cache\codex-runtimes\codex-primary-runtime\dependencies
 
 - Full suite passed: `182 passed`
 - No `output/` files were staged or committed
+
+## Session 2026-06-28 - Timeline-safe cinematic effects + shared Vast lifecycle
+
+### Goal
+- implement restrained cinematic documentary effects without changing semantic timing ownership
+- refactor production render to one timeline-safe FFmpeg encode
+- make autopilot reuse one real Vast backend/session across scene images and thumbnails
+
+### What shipped
+- Added `steps/design_effects.py`
+  - writes `effects_plan.json`
+  - writes `effects_diagnostics.json`
+  - keeps `image_prompts.json` as the semantic timing source of truth
+  - derives per-scene `display_start` / `display_end` coverage timing
+- Added `steps/post_production_design.py`
+  - step 6 now writes both `soundscape.json` and `effects_plan.json`
+- Reworked `steps/render_video.py`
+  - removed lossy per-scene H.264 intermediates
+  - uses one `filter_complex_script` timeline compositor
+  - preserves audio-aligned total duration
+  - keeps clean `final.mp4` before subtitle burn
+  - uses lossless `audio_with_sfx.wav` instead of MP3 intermediate
+- Added `scripts/preview_effects.py`
+  - local 45-second preview using the same renderer as production
+- Added shared image-generation core in `image_generation/production.py`
+  - pending-scene detection
+  - failed-scene retry path
+  - `VastSession` lifecycle wrapper
+- Reworked `steps/autopilot.py`
+  - inserted `effects` stage between `soundscape` and `render`
+  - stopped shelling out to the image CLI for production autopilot
+  - now reuses one real Vast backend/session for scenes and thumbnails
+  - records real lifecycle counters in `autopilot_summary.json`
+
+### Verification
+- `python -m py_compile main.py steps/autopilot.py steps/design_effects.py steps/generate_images.py steps/post_production_design.py steps/render_video.py steps/thumbnails.py image_generation/production.py scripts/preview_effects.py tests/test_autopilot.py tests/test_autopilot_vast_session.py tests/test_effects_pipeline.py tests/test_render_effects.py`
+- `python -m pytest tests/test_effects_pipeline.py tests/test_render_effects.py tests/test_autopilot.py tests/test_autopilot_vast_session.py tests/test_thumbnails.py tests/test_vast_lifecycle.py -q`
+- `python -m pytest tests/test_subtitles.py tests/test_creative_package.py tests/test_publishing.py tests/test_image_prompts.py tests/test_visual_beats.py tests/test_runpod_backend.py -q`
+- `python -m pytest tests -q`
+
+### Results
+- targeted effects/render/autopilot/vast tests: passed
+- regression suites around subtitles/creative package/image prompts: passed
+- full suite: `192 passed`
+
+### Notes
+- No generated `output/` files were staged or committed.
+- The renderer now validates duration against the audio timeline when FFprobe can read the output.

@@ -76,10 +76,36 @@ output/<video-id>/images/img_002.png
 Autopilot production uses `Vast.ai` only.
 
 - no silent RunPod fallback in autopilot
-- scene images and thumbnails should reuse one active Vast lifecycle when possible
-- teardown must happen in `finally`
+- scene images and thumbnails must reuse one real shared Vast lifecycle when GPU work is pending
+- autoplay production must not shell out to the image CLI
+- owned rented instances must be destroy-verified before reporting teardown success
+- predictable/default worker tokens are not allowed for rented public workers
 
 Manual tools may still keep RunPod support for debugging or standby use.
+
+## Effects Contract
+
+- step 6 now designs:
+  - `soundscape.json`
+  - `effects_plan.json`
+  - `effects_diagnostics.json`
+- `image_prompts.json` remains the semantic timing source of truth
+- `effects_plan.json` carries render-only display timing:
+  - `source_start`
+  - `source_end`
+  - `display_start`
+  - `display_end`
+- render must preserve pause coverage:
+  - first scene starts visually at `0`
+  - non-final scenes hold until the next canonical scene starts
+  - final scene holds until audio end
+- effects must stay restrained:
+  - no shake
+  - no bounce
+  - no rotation
+  - no glitch
+  - no aggressive zoom
+- effects-disabled mode must keep the same timing and visual boundaries without motion, transitions, or look filters
 
 ## Subtitle Contract
 
@@ -110,6 +136,7 @@ Production completion requires both files.
 & $python main.py --video-id "<id>" --from-step 5
 & $python main.py --video-id "<id>" --resume
 & $python scripts/generate_images.py --video-id "<id>" --backend vast_instance --qa --workers 1
+& $python scripts/preview_effects.py --video-id "<id>" --seconds 45
 ```
 
 ## Validation Commands

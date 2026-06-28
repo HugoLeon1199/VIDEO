@@ -139,6 +139,20 @@ VIDEO_FPS = 30
 VIDEO_BITRATE = "8M"
 KEN_BURNS_ZOOM = 0.05    # 5% zoom for Ken Burns effect
 FADE_DURATION = 0.3      # seconds for fade transition
+VIDEO_CRF = int(os.getenv("VIDEO_CRF", "18"))
+VIDEO_PRESET = os.getenv("VIDEO_PRESET", "slow")
+
+# Timeline-safe documentary effects
+EFFECTS_ENABLED = os.getenv("EFFECTS_ENABLED", "true").lower() == "true"
+EFFECTS_LOOK_ENABLED = os.getenv("EFFECTS_LOOK_ENABLED", "true").lower() == "true"
+EFFECTS_LOOK_PRESET = os.getenv("EFFECTS_LOOK_PRESET", "cinematic_documentary_v1")
+EFFECTS_DEFAULT_GRADE = os.getenv("EFFECTS_DEFAULT_GRADE", "warm_documentary")
+EFFECTS_DEFAULT_GRAIN = float(os.getenv("EFFECTS_DEFAULT_GRAIN", "0.025"))
+EFFECTS_DEFAULT_VIGNETTE = float(os.getenv("EFFECTS_DEFAULT_VIGNETTE", "0.06"))
+EFFECTS_DURATION_TOLERANCE_SECONDS = float(os.getenv("EFFECTS_DURATION_TOLERANCE_SECONDS", "0.05"))
+EFFECTS_MAX_SCALE = float(os.getenv("EFFECTS_MAX_SCALE", "1.08"))
+EFFECTS_MAX_PAN = float(os.getenv("EFFECTS_MAX_PAN", "0.05"))
+EFFECTS_PREVIEW_SECONDS = int(os.getenv("EFFECTS_PREVIEW_SECONDS", "45"))
 
 # Subtitle settings (burn-in)
 SUBTITLE_FONT_FAMILY = os.getenv("SUBTITLE_FONT_FAMILY", "Segoe UI Semibold")
@@ -195,3 +209,12 @@ def require_pinned_hf_model_revision() -> str:
             "HF_MODEL_REVISION must be pinned to a commit SHA before Vast image generation"
         )
     return revision
+
+
+def require_explicit_worker_token() -> str:
+    token = (WORKER_API_TOKEN or "").strip()
+    if not token or token in {"local-worker-token", "changeme", "default-token"}:
+        raise RuntimeError(
+            "WORKER_API_TOKEN must be set to a non-default explicit token before renting a public Vast worker"
+        )
+    return token

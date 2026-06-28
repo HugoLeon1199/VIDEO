@@ -1432,3 +1432,91 @@ Mỗi commit push `main` → RunPod tự build lại. Không push dồn (nhiều
 ### Remaining work
 
 - Repo still contains tracked historical files under `output/`; consider a later cleanup/untracking pass if you want future publishes to stay cleaner.
+
+## Timeline-safe cinematic effects + shared Vast lifecycle - 2026-06-28
+
+### What changed
+
+- Added `steps/design_effects.py`
+  - deterministic restrained documentary motion/transition planning
+  - one effects scene per visual scene
+  - separate `source_*` vs `display_*` timing
+  - chapter sentence indices now map to the first visual beat whose `source_sentence_index` reaches that chapter
+- Added `steps/post_production_design.py`
+  - step 6 now produces both:
+    - `soundscape.json`
+    - `effects_plan.json`
+    - `effects_diagnostics.json`
+- Reworked `steps/render_video.py`
+  - replaced lossy per-scene `ultrafast` intermediates with one `filter_complex_script` compositor
+  - preserves pause coverage by rendering display timing instead of semantic timing directly
+  - validates final render duration against audio timing
+  - uses lossless `audio_with_sfx.wav` before final AAC mux
+  - keeps clean `final.mp4` before optional subtitle burn to `final_subbed.mp4`
+- Added `scripts/preview_effects.py`
+  - production-renderer preview for about `45s`
+- Added `image_generation/production.py`
+  - shared scene-generation core
+  - failed-scene retry helper
+  - pending-work detection
+  - `VastSession` lifecycle tracking and teardown verification
+- Reworked `steps/generate_images.py`
+  - now routes scene generation through the shared production core
+  - reuses the same backend object for thumbnails when available
+- Reworked `steps/thumbnails.py`
+  - now skips backend creation when no thumbnail work is pending
+  - accepts lifecycle tracking hooks
+- Reworked `steps/autopilot.py`
+  - inserted `effects` stage between `soundscape` and `render`
+  - no longer shells out to `scripts/generate_images.py` for production autopilot
+  - uses one shared Vast backend/session across scene images and thumbnails
+  - records real lifecycle counters:
+    - `vast_session_count`
+    - `rent_count`
+    - `backend_create_count`
+    - `worker_boot_id`
+    - `worker_ready_count`
+    - `model_load_count`
+    - `scene_request_count`
+    - `thumbnail_request_count`
+    - `teardown_attempt_count`
+    - `teardown_verified_count`
+
+### Files changed
+
+- `config.py`
+- `main.py`
+- `steps/autopilot.py`
+- `steps/design_effects.py`
+- `steps/generate_images.py`
+- `steps/post_production_design.py`
+- `steps/render_video.py`
+- `steps/thumbnails.py`
+- `image_generation/production.py`
+- `scripts/preview_effects.py`
+- `tests/test_autopilot.py`
+- `tests/test_autopilot_vast_session.py`
+- `tests/test_effects_pipeline.py`
+- `tests/test_render_effects.py`
+- `AGENTS.md`
+- `CLAUDE.md`
+- `.ai/CURSOR_WORKLOG.md`
+- `handoff.md`
+
+### Verification
+
+- `python -m py_compile main.py steps/autopilot.py steps/design_effects.py steps/generate_images.py steps/post_production_design.py steps/render_video.py steps/thumbnails.py image_generation/production.py scripts/preview_effects.py tests/test_autopilot.py tests/test_autopilot_vast_session.py tests/test_effects_pipeline.py tests/test_render_effects.py`
+- `python -m pytest tests/test_effects_pipeline.py tests/test_render_effects.py tests/test_autopilot.py tests/test_autopilot_vast_session.py tests/test_thumbnails.py tests/test_vast_lifecycle.py -q`
+- `python -m pytest tests/test_subtitles.py tests/test_creative_package.py tests/test_publishing.py tests/test_image_prompts.py tests/test_visual_beats.py tests/test_runpod_backend.py -q`
+- `python -m pytest tests -q`
+
+### Results
+
+- focused effects/render/autopilot/vast tests passed
+- regression suites around subtitles/creative package/prompts passed
+- full suite passed: `192 passed`
+
+### Notes
+
+- Generated `output/` artifacts were not staged or committed.
+- The renderer now warns instead of hard-failing only when duration probing is unavailable in a mocked test environment; real runs still validate timing drift when FFprobe returns a duration.

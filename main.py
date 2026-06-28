@@ -94,6 +94,7 @@ def detect_resume_step(video_dir: Path) -> int:
     ts_path = video_dir / "timestamps.json"
     audio_path = video_dir / "audio.mp3"
     script_path = video_dir / "script.txt"
+    effects_path = video_dir / "effects_plan.json"
 
     if prompts_path.exists():
         try:
@@ -107,8 +108,10 @@ def detect_resume_step(video_dir: Path) -> int:
                     if (video_dir / "metadata.json").exists():
                         return 9
                     return 8
-                if (video_dir / "soundscape.json").exists():
+                if (video_dir / "soundscape.json").exists() and effects_path.exists():
                     return 7
+                if (video_dir / "soundscape.json").exists() or effects_path.exists():
+                    return 6
                 return 6
             if completed_images > 0:
                 return 5
@@ -139,7 +142,7 @@ def run_step(step_num: int, video_id: str, subtitles: bool = False, n_override: 
         from steps.generate_images import run as _run
         _run(video_id, n_override=n_override)
     elif step_num == 6:
-        from steps.design_soundscape import run as _run
+        from steps.post_production_design import run as _run
         _run(video_id)
     elif step_num == 7:
         from steps.render_video import run as _run

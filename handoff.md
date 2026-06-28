@@ -5,6 +5,98 @@ File này chứa thông tin kỹ thuật chi tiết, lịch sử debug, và quy�
 
 ---
 
+## Vietnamese pipeline rerun audit - 2026-06-27
+
+- Goal in this session:
+  - rerun a real Vietnamese pipeline path end-to-end
+  - include image-generation step behavior
+  - identify where the current repo state still breaks
+
+### Runs executed
+
+- First VI candidate tested:
+  - `output/nao-ban-nho-hon-nao-to-tien-vi`
+- Commands run:
+  - `python main.py --video-id nao-ban-nho-hon-nao-to-tien-vi --step 2`
+  - `python main.py --video-id nao-ban-nho-hon-nao-to-tien-vi --step 3`
+- Result:
+  - step 2 completed with `edge-tts`
+  - step 3 failed with:
+    - `timestamps.json count 124 does not match script sentence count 114`
+- Interpretation:
+  - this video folder is not clean for the current strict `1 sentence = 1 timestamp = 1 image` pipeline
+  - it should not be used as the primary regression sample for VI end-to-end checks until its script/timestamps/prompt set is rebuilt
+
+### Clean VI regression sample used
+
+- Switched to:
+  - `output/buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi`
+- Reason:
+  - current repo state still shows this folder as a clean VI case with:
+    - `75` parsed script sentences
+    - `75` timestamps
+
+### Commands run on the clean VI sample
+
+- `python main.py --video-id buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi --step 2`
+- `python main.py --video-id buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi --step 3`
+- `python main.py --video-id buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi --step 4`
+- `python scripts/generate_images.py --video-id buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi --workers 5 --candidates 1`
+- `python main.py --video-id buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi --step 6`
+- `python main.py --video-id buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi --step 7`
+
+### Observed results
+
+- Step 2:
+  - passed
+  - `edge-tts` regenerated `audio.mp3`
+  - audio duration about `480.89s`
+- Step 3:
+  - passed
+  - produced `75` timestamp segments
+- Step 4:
+  - failed immediately because this shell had no text-model key available
+  - exact symptom:
+    - `Neither ANTHROPIC_API_KEY nor GEMINI_API_KEY set. Add to .env file.`
+  - practical fallback used:
+    - continue with the existing checked-in `image_prompts.json`
+- Step 5:
+  - passed in resume mode
+  - all `155` scenes were already done and skipped cleanly
+- Step 6:
+  - passed
+  - wrote `soundscape.json` with rule-based SFX only
+- Step 7:
+  - initial run failed in `_mix_sfx_audio(...)` with:
+    - `FileNotFoundError: [WinError 206] The filename or extension is too long`
+  - root cause:
+    - the FFmpeg command line for the SFX mix becomes too long on Windows when `soundscape.json` has many events
+
+### Practical completion workaround used
+
+- To finish the video without changing repo code:
+  - temporarily renamed `soundscape.json`
+  - reran step 7 so render used voice-only audio
+  - restored `soundscape.json` afterward
+- Result:
+  - `final.mp4` rendered successfully
+  - final size about `75.9 MB`
+
+### Important conclusions from this rerun
+
+- Current VI pipeline status is mixed:
+  - text-to-speech works
+  - transcription works on clean folders
+  - image generation resume works
+  - render works without SFX mix explosion
+- Two real blockers remain for a fully healthy VI A-to-Z path:
+  - missing text-model key in this environment prevents step 4 regeneration
+  - step 7 SFX mixing can still hit Windows command-line length limits
+- Best current VI regression sample:
+  - `buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi`
+- Not safe as a regression sample right now:
+  - `nao-ban-nho-hon-nao-to-tien-vi`
+
 ## Kokoro Voice Lab simplification - 2026-06-27
 
 - Refactored `scripts/kokoro_voice_lab.py` into a strict round-gated workflow:
@@ -679,3 +771,99 @@ Mỗi commit push `main` → RunPod tự build lại. Không push dồn (nhiều
   - Kokoro production config is `FROZEN`
   - no voice, speed, or block-limit tuning was applied
   - cache was preserved as-is
+
+## VieNeu Voice Lab bootstrap - 2026-06-28
+
+- Added a new independent lab CLI at `scripts/vieneu_voice_lab.py`.
+- Production TTS in `steps/tts.py` was left unchanged.
+
+### New workflow
+
+- Supported commands:
+  - `base`
+  - `topic`
+  - `style`
+  - `final`
+  - `report`
+- Output root is isolated at:
+  - `output/vieneu_voice_lab/`
+- Added `.gitignore` coverage for:
+  - `output/vieneu_voice_lab/`
+
+### Round behavior implemented
+
+- Base round:
+  - discovers VieNeu voices from the runtime via `Vieneu().list_preset_voices()`
+  - creates exactly one blind sample per discovered voice
+  - stores:
+    - `round`
+    - `round_order`
+    - `source_voice`
+    - `preset`
+    - `effective_infer_params`
+    - `duration_seconds`
+  - enforces target `20-25s`, acceptable `18-30s`
+  - warns outside target, fails outside acceptable
+- Topic round:
+  - reads finalists only from `base` decisions
+  - caps finalists at `5`
+  - creates exactly one `topic_reel` per finalist
+  - hard-enforces `45-60s`
+- Style round:
+  - reads finalists only from `topic` decisions
+  - caps finalists at `3`
+  - tests only:
+    - `production_default`
+    - `natural_calm`
+  - stores full effective infer params per artifact
+  - enforces target `25-30s`, acceptable `22-35s`
+- Final round:
+  - reads finalists only from `style` decisions
+  - caps finalists at `2`
+  - calls the real production VieNeu block-mode path inside the lab only
+  - exports:
+    - main audio
+    - `blocks.json`
+    - `diagnostics.json`
+    - up to `5` suspicious boundary clips
+  - boundary ranking uses:
+    - RMS delta
+    - peak delta
+    - short blocks
+    - trailing silence
+    - gap anomaly
+  - hard-enforces `90-120s`
+
+### Review and report behavior
+
+- `report` reads `decisions.csv` and ranks only the `active_round`.
+- Ranking order:
+  - `Keep`
+  - `Maybe`
+  - `Reject`
+  - tie-break by `round_order`
+- Review HTML now:
+  - restores local state from `localStorage`
+  - keeps Reveal disabled until a decision is selected
+  - exports `decisions.csv`
+  - avoids rendering raw voice names in the pre-reveal HTML payload
+
+### Tests completed
+
+- `python -m py_compile scripts/vieneu_voice_lab.py tests/test_vieneu_voice_lab.py`
+- `python -m pytest tests/test_vieneu_voice_lab.py -q`
+  - result: `9 passed`
+- `python -m pytest tests -q`
+  - result: `137 passed`
+
+### Files changed
+
+- `.gitignore`
+- `scripts/vieneu_voice_lab.py`
+- `tests/test_vieneu_voice_lab.py`
+- `.ai/CURSOR_WORKLOG.md`
+- `handoff.md`
+
+### Commit scope reminder
+
+- Keep generated `output/` audio, review exports, and other dirty repo output artifacts out of commits.

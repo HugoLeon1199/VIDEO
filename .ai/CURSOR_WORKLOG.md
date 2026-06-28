@@ -481,3 +481,45 @@ Implement dual-track image generation:
 ### Verification
 - `tests/test_track_routing.py`: passed
 - full `tests/`: passed in that session
+
+## Session 2026-06-28 - VieNeu Voice Lab
+
+### Goal
+Create a simple, independent VieNeu Voice Lab for blind Vietnamese voice selection without touching production TTS.
+
+### Files changed
+- `.gitignore`
+- `scripts/vieneu_voice_lab.py`
+- `tests/test_vieneu_voice_lab.py`
+- `handoff.md`
+
+### What shipped
+- New lab CLI:
+  - `base`
+  - `topic`
+  - `style`
+  - `final`
+  - `report`
+- Round-gated finalist flow:
+  - `topic` <- `base` decisions
+  - `style` <- `topic` decisions
+  - `final` <- `style` decisions
+- Blind review HTML:
+  - `Keep / Maybe / Reject`
+  - Reveal locked until a decision is chosen
+  - localStorage restore on reload
+  - CSV export filename fixed to `decisions.csv`
+  - no raw voice-name text rendered in pre-reveal HTML
+- Final round uses production VieNeu block mode inside the isolated lab path and exports max `5` suspicious boundary clips.
+
+### Verification
+```powershell
+$python = "C:\Users\LEON_RM\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\python.exe"
+& $python -m py_compile scripts/vieneu_voice_lab.py tests/test_vieneu_voice_lab.py
+& $python -m pytest tests/test_vieneu_voice_lab.py -q
+& $python -m pytest tests -q
+```
+
+### Results
+- `tests/test_vieneu_voice_lab.py`: `9 passed`
+- full `tests/`: `137 passed`

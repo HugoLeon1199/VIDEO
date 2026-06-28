@@ -876,3 +876,96 @@ Mỗi commit push `main` → RunPod tự build lại. Không push dồn (nhiều
 ### Commit scope reminder
 
 - Keep generated `output/` audio, review exports, and other dirty repo output artifacts out of commits.
+
+## Subtitle patch - 2026-06-28
+
+- Added a subtitle pipeline that is independent from production TTS and sentence-level image timing.
+- `timestamps.json` remains the image-timing source of truth and keeps its prior shape/semantics.
+
+### What changed
+
+- `steps/transcribe.py`
+  - still writes `timestamps.json` exactly as before
+  - now also writes:
+    - `word_timestamps.json` only when exact canonical word timing is available
+    - `word_timestamps_diagnostics.json` on every run
+  - does not run a second alignment/model pass
+  - does not fabricate per-word timing when exact canonical matches are missing
+  - marks subtitle readiness false for fallback blocks or partial canonical coverage
+- `steps/subtitles.py`
+  - new subtitle builder from:
+    - `script.txt`
+    - `word_timestamps.json`
+    - `audio_master.wav` or `audio.mp3`
+  - writes atomically:
+    - `subtitle_cues.json`
+    - `subtitles.srt`
+    - `subtitles.ass`
+    - `subtitle_diagnostics.json`
+  - supports:
+    - `cinematic_clean`
+    - `cinematic_accent`
+  - preview rendering now rebases cue times to preview-local time before ASS serialization
+  - Windows libass burn path now uses a temp working directory and a safe local `subtitles.ass` filename
+- `scripts/generate_subtitles.py`
+  - new standalone CLI for subtitle generation / validation / preview
+- `steps/render_video.py`
+  - still renders clean `final.mp4` first
+  - with `--subtitles`, burns from `final.mp4` to `final_subbed.mp4`
+  - never overwrites `final.mp4`
+- `main.py`
+  - fixed help text so `--subtitles` points to step 7, not step 6
+- `config.py`
+  - added subtitle style/layout defaults and configurability for font family and rendering constants
+
+### Tests completed
+
+- `python -m py_compile steps/transcribe.py steps/subtitles.py steps/render_video.py scripts/generate_subtitles.py tests/test_subtitles.py`
+- `python -m pytest tests/test_subtitles.py -q`
+  - result: `9 passed`
+- `python -m pytest tests -q`
+  - result: `146 passed`
+
+### Real commands run
+
+- Production-sample subtitle readiness checks:
+  - `python main.py --video-id buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi --step 3`
+  - `python main.py --video-id ancient-child-surgery-31000-years --step 3`
+  - `python scripts/generate_subtitles.py --video-id buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi --style cinematic_clean --validate-only`
+  - `python scripts/generate_subtitles.py --video-id ancient-child-surgery-31000-years --style cinematic_clean --validate-only`
+- Synthetic smoke for preview and Windows burn path:
+  - generated local fixture under `output/subtitle-smoke-local/`
+  - `python scripts/generate_subtitles.py --video-id subtitle-smoke-local --style cinematic_clean --preview-seconds 45`
+  - `python scripts/generate_subtitles.py --video-id subtitle-smoke-local --style cinematic_accent --preview-seconds 45`
+  - `python main.py --video-id subtitle-smoke-local --step 7 --subtitles`
+
+### Real smoke outcomes
+
+- `buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi`
+  - step 3 succeeded
+  - subtitle diagnostics reported:
+    - `subtitle_ready = false`
+    - `reason = exact_canonical_word_timing_unavailable`
+  - `generate_subtitles.py --validate-only` hard-failed as designed with rerun guidance
+- `ancient-child-surgery-31000-years`
+  - step 3 succeeded
+  - subtitle diagnostics reported:
+    - `subtitle_ready = false`
+    - `reason = exact_canonical_word_timing_unavailable`
+  - `generate_subtitles.py --validate-only` hard-failed as designed with rerun guidance
+- `subtitle-smoke-local`
+  - subtitle generation succeeded
+  - preview outputs succeeded:
+    - `subtitle_preview_clean.mp4`
+    - `subtitle_preview_accent.mp4`
+  - step 7 subtitle burn succeeded:
+    - clean `final.mp4`
+    - burned `final_subbed.mp4`
+
+### Important behavior note
+
+- This patch intentionally prefers fail-safe blocking over approximate subtitle timing.
+- If exact canonical word timing is unavailable, operators will get:
+  - `word_timestamps_diagnostics.json`
+  - a clear failure from subtitle generation / `--subtitles`
+  - no fabricated `word_timestamps.json`

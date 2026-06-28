@@ -5,6 +5,7 @@ from __future__ import annotations
 import json
 import re
 import sys
+import tempfile
 import unicodedata
 from difflib import SequenceMatcher
 from pathlib import Path
@@ -16,6 +17,9 @@ from steps import tts as tts_step
 from steps.text_units import load_sentence_units
 
 MAX_BLOCK_ALIGNMENT_RESTARTS = 2
+WORD_TIMESTAMPS_NAME = "word_timestamps.json"
+WORD_DIAGNOSTICS_NAME = "word_timestamps_diagnostics.json"
+_LAST_SUBTITLE_EXPORT: dict | None = None
 
 
 def _normalize_token(text: str) -> str:
@@ -28,6 +32,18 @@ def _normalize_token(text: str) -> str:
 
 def _tokenize_sentence(text: str) -> list[str]:
     return [token for token in (_normalize_token(part) for part in text.split()) if token]
+
+
+def _atomic_write_text(path: Path, text: str) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with tempfile.NamedTemporaryFile("w", encoding="utf-8", dir=path.parent, delete=False) as fh:
+        fh.write(text)
+        tmp_path = Path(fh.name)
+    tmp_path.replace(path)
+
+
+def _atomic_write_json(path: Path, payload: object) -> None:
+    _atomic_write_text(path, json.dumps(payload, ensure_ascii=False, indent=2))
 
 
 def _audio_duration(path: Path) -> float:
@@ -77,40 +93,134 @@ def _collect_aligned_words(result) -> list[dict]:
     return words
 
 
-def _map_aligned_words_to_sentences(
+def _canonical_sentence_words(
     sentence_texts: list[str],
-    aligned_words: list[dict],
-    audio_start: float,
-    starting_index: int,
-) -> tuple[list[dict], float, bool]:
-    canonical_words: list[dict] = []
-    sentence_spans: list[tuple[int, int]] = []
-    cursor = 0
-    for sentence in sentence_texts:
-        tokens = _tokenize_sentence(sentence)
-        start = cursor
-        for token in tokens:
-            canonical_words.append({"token": token})
-            cursor += 1
-        sentence_spans.append((start, cursor))
+    starting_sentence_index: int = 1,
+    starting_global_word_index: int = 1,
+) -> list[dict]:
+    words: list[dict] = []
+    global_index = starting_global_word_index
+    for sentence_offset, sentence in enumerate(sentence_texts):
+        sentence_index = starting_sentence_index + sentence_offset
+        word_index = 1
+        for raw_token in sentence.split():
+            normalized = _normalize_token(raw_token)
+            if not normalized:
+                continue
+            words.append(
+                {
+                    "sentence_index": sentence_index,
+                    "word_index": word_index,
+                    "text": raw_token,
+                    "normalized": normalized,
+                    "global_word_index": global_index,
+                }
+            )
+            word_index += 1
+            global_index += 1
+    return words
 
+
+def _match_canonical_words(canonical_words: list[dict], aligned_words: list[dict]) -> tuple[dict[int, dict], float]:
     aligned_tokens = [word["normalized"] for word in aligned_words]
-    canonical_tokens = [word["token"] for word in canonical_words]
+    canonical_tokens = [word["normalized"] for word in canonical_words]
     matcher = SequenceMatcher(a=canonical_tokens, b=aligned_tokens, autojunk=False)
-
     matched: dict[int, dict] = {}
     for tag, i1, i2, j1, j2 in matcher.get_opcodes():
         if tag != "equal":
             continue
         for offset in range(i2 - i1):
             matched[i1 + offset] = aligned_words[j1 + offset]
-
     coverage = len(matched) / max(1, len(canonical_words))
+    return matched, coverage
+
+
+def _build_exact_word_timestamps(
+    sentence_texts: list[str],
+    aligned_words: list[dict],
+    audio_start: float,
+    starting_sentence_index: int,
+    starting_global_word_index: int,
+    timing_source: str,
+) -> tuple[list[dict], float, bool]:
+    canonical_words = _canonical_sentence_words(
+        sentence_texts,
+        starting_sentence_index=starting_sentence_index,
+        starting_global_word_index=starting_global_word_index,
+    )
+    matched, coverage = _match_canonical_words(canonical_words, aligned_words)
+    if len(matched) != len(canonical_words):
+        return [], coverage, False
+
+    word_timestamps = []
+    for idx, canonical in enumerate(canonical_words):
+        aligned = matched[idx]
+        start = round(audio_start + float(aligned["start"]), 3)
+        end = round(audio_start + float(aligned["end"]), 3)
+        if end <= start:
+            return [], coverage, False
+        word_timestamps.append(
+            {
+                "sentence_index": canonical["sentence_index"],
+                "word_index": canonical["word_index"],
+                "text": canonical["text"],
+                "normalized": canonical["normalized"],
+                "start": start,
+                "end": end,
+                "timing_source": timing_source,
+            }
+        )
+    return word_timestamps, coverage, True
+
+
+def _set_subtitle_export(payload: dict | None) -> None:
+    global _LAST_SUBTITLE_EXPORT
+    _LAST_SUBTITLE_EXPORT = payload
+
+
+def _subtitle_failure(reason: str, *, timing_source: str, affected_blocks: list[int] | None = None, alignment_coverage: float | None = None, block_diagnostics: list[dict] | None = None) -> dict:
+    return {
+        "subtitle_ready": False,
+        "reason": reason,
+        "affected_blocks": affected_blocks or [],
+        "alignment_coverage": round(alignment_coverage, 4) if alignment_coverage is not None else None,
+        "timing_source": timing_source,
+        "block_diagnostics": block_diagnostics or [],
+        "word_timestamps": [],
+    }
+
+
+def _subtitle_success(word_timestamps: list[dict], *, timing_source: str, alignment_coverage: float | None = None, block_diagnostics: list[dict] | None = None) -> dict:
+    return {
+        "subtitle_ready": True,
+        "reason": "",
+        "affected_blocks": [],
+        "alignment_coverage": round(alignment_coverage, 4) if alignment_coverage is not None else 1.0,
+        "timing_source": timing_source,
+        "block_diagnostics": block_diagnostics or [],
+        "word_timestamps": word_timestamps,
+    }
+
+
+def _map_aligned_words_to_sentences(
+    sentence_texts: list[str],
+    aligned_words: list[dict],
+    audio_start: float,
+    starting_index: int,
+) -> tuple[list[dict], float, bool]:
+    canonical_words = _canonical_sentence_words(sentence_texts, starting_sentence_index=starting_index)
+    sentence_spans: dict[int, list[dict]] = {}
+    for item in canonical_words:
+        sentence_spans.setdefault(item["sentence_index"], []).append(item)
+
+    matched, coverage = _match_canonical_words(canonical_words, aligned_words)
+
     timestamps: list[dict] = []
     all_sentences_matched = True
     for sentence_offset, sentence in enumerate(sentence_texts):
-        span_start, span_end = sentence_spans[sentence_offset]
-        matched_words = [matched[idx] for idx in range(span_start, span_end) if idx in matched]
+        sentence_index = starting_index + sentence_offset
+        span_words = sentence_spans.get(sentence_index, [])
+        matched_words = [matched[idx] for idx, item in enumerate(canonical_words) if item in span_words and idx in matched]
         if not matched_words:
             all_sentences_matched = False
             continue
@@ -145,6 +255,13 @@ def _timestamps_from_fallback_segments(block: dict, starting_index: int) -> list
     return timestamps
 
 
+def _assign_words_to_sentences(sentences: list[str], words: list[dict], audio_duration: float | None = None) -> list[dict]:
+    result = _align_sentences_to_words(sentences, words)
+    if audio_duration and result:
+        result[-1]["end"] = round(min(result[-1]["end"], audio_duration), 3)
+    return result
+
+
 def _run_stable_ts_blocks(
     video_dir: Path,
     model_name: str,
@@ -165,9 +282,14 @@ def _run_stable_ts_blocks(
             sys.exit(1)
 
         all_timestamps: list[dict] = []
+        all_word_timestamps: list[dict] = []
         cursor_index = 1
+        global_word_index = 1
         block_diagnostics: list[dict] = []
         restart_needed = False
+        subtitle_ready = True
+        subtitle_reason = ""
+        affected_blocks: list[int] = []
 
         for block in manifest["blocks"]:
             if block.get("fallback_level") == 2 and block.get("fallback_segments"):
@@ -181,9 +303,14 @@ def _run_stable_ts_blocks(
                         "block_index": block["block_index"],
                         "coverage": 1.0,
                         "used_fallback_segments": True,
+                        "subtitle_ready": False,
                     }
                 )
+                subtitle_ready = False
+                subtitle_reason = "sentence_fallback_without_exact_word_timestamps"
+                affected_blocks.append(block["block_index"])
                 cursor_index += len(block["sentence_texts"])
+                global_word_index += len(_canonical_sentence_words(block["sentence_texts"]))
                 continue
 
             block_wav = video_dir / block["wav_path"]
@@ -223,15 +350,32 @@ def _run_stable_ts_blocks(
                 restart_needed = True
                 break
 
+            block_words, word_coverage, exact_words = _build_exact_word_timestamps(
+                block["sentence_texts"],
+                aligned_words,
+                float(block["audio_start"]),
+                cursor_index,
+                global_word_index,
+                "stable_ts",
+            )
             all_timestamps.extend(timestamps)
             block_diagnostics.append(
                 {
                     "block_index": block["block_index"],
                     "coverage": round(coverage, 4),
                     "used_fallback_segments": False,
+                    "word_coverage": round(word_coverage, 4),
+                    "subtitle_ready": exact_words,
                 }
             )
+            if exact_words:
+                all_word_timestamps.extend(block_words)
+            else:
+                subtitle_ready = False
+                subtitle_reason = "exact_canonical_word_timing_unavailable"
+                affected_blocks.append(block["block_index"])
             cursor_index += len(block["sentence_texts"])
+            global_word_index += len(_canonical_sentence_words(block["sentence_texts"]))
 
         if restart_needed:
             logger.info(
@@ -268,20 +412,36 @@ def _run_stable_ts_blocks(
             sys.exit(1)
 
         diagnostics_path = video_dir / "tts_blocks" / "alignment_diagnostics.json"
-        diagnostics_path.write_text(
-            json.dumps(
-                {
-                    "engine": "stable_ts",
-                    "mode": "block",
-                    "audio_duration": round(audio_duration, 3),
-                    "restart_count": restart_count,
-                    "blocks": block_diagnostics,
-                },
-                ensure_ascii=False,
-                indent=2,
-            ),
-            encoding="utf-8",
+        _atomic_write_json(
+            diagnostics_path,
+            {
+                "engine": "stable_ts",
+                "mode": "block",
+                "audio_duration": round(audio_duration, 3),
+                "restart_count": restart_count,
+                "blocks": block_diagnostics,
+            },
         )
+        average_coverage = sum(item["coverage"] for item in block_diagnostics) / max(1, len(block_diagnostics))
+        if subtitle_ready:
+            _set_subtitle_export(
+                _subtitle_success(
+                    all_word_timestamps,
+                    timing_source="stable_ts",
+                    alignment_coverage=average_coverage,
+                    block_diagnostics=block_diagnostics,
+                )
+            )
+        else:
+            _set_subtitle_export(
+                _subtitle_failure(
+                    subtitle_reason or "exact_canonical_word_timing_unavailable",
+                    timing_source="stable_ts",
+                    affected_blocks=affected_blocks,
+                    alignment_coverage=average_coverage,
+                    block_diagnostics=block_diagnostics,
+                )
+            )
         return all_timestamps
 
     logger.error("Stable-ts block alignment exhausted restart guard unexpectedly")
@@ -306,9 +466,14 @@ def _run_faster_whisper_blocks(
             sys.exit(1)
 
         all_timestamps: list[dict] = []
+        all_word_timestamps: list[dict] = []
         cursor_index = 1
+        global_word_index = 1
         block_diagnostics: list[dict] = []
         restart_needed = False
+        subtitle_ready = True
+        subtitle_reason = ""
+        affected_blocks: list[int] = []
 
         for block in manifest["blocks"]:
             if block.get("fallback_level") == 2 and block.get("fallback_segments"):
@@ -322,9 +487,14 @@ def _run_faster_whisper_blocks(
                         "block_index": block["block_index"],
                         "coverage": 1.0,
                         "used_fallback_segments": True,
+                        "subtitle_ready": False,
                     }
                 )
+                subtitle_ready = False
+                subtitle_reason = "sentence_fallback_without_exact_word_timestamps"
+                affected_blocks.append(block["block_index"])
                 cursor_index += len(block["sentence_texts"])
+                global_word_index += len(_canonical_sentence_words(block["sentence_texts"]))
                 continue
 
             block_wav = video_dir / block["wav_path"]
@@ -381,15 +551,32 @@ def _run_faster_whisper_blocks(
                 restart_needed = True
                 break
 
+            block_words, word_coverage, exact_words = _build_exact_word_timestamps(
+                block["sentence_texts"],
+                aligned_words,
+                float(block["audio_start"]),
+                cursor_index,
+                global_word_index,
+                "faster_whisper",
+            )
             all_timestamps.extend(timestamps)
             block_diagnostics.append(
                 {
                     "block_index": block["block_index"],
                     "coverage": round(coverage, 4),
                     "used_fallback_segments": False,
+                    "word_coverage": round(word_coverage, 4),
+                    "subtitle_ready": exact_words,
                 }
             )
+            if exact_words:
+                all_word_timestamps.extend(block_words)
+            else:
+                subtitle_ready = False
+                subtitle_reason = "exact_canonical_word_timing_unavailable"
+                affected_blocks.append(block["block_index"])
             cursor_index += len(block["sentence_texts"])
+            global_word_index += len(_canonical_sentence_words(block["sentence_texts"]))
 
         if restart_needed:
             logger.info(
@@ -422,20 +609,36 @@ def _run_faster_whisper_blocks(
             sys.exit(1)
 
         diagnostics_path = video_dir / "tts_blocks" / "alignment_diagnostics.json"
-        diagnostics_path.write_text(
-            json.dumps(
-                {
-                    "engine": "faster_whisper",
-                    "mode": "block",
-                    "audio_duration": round(audio_duration, 3),
-                    "restart_count": restart_count,
-                    "blocks": block_diagnostics,
-                },
-                ensure_ascii=False,
-                indent=2,
-            ),
-            encoding="utf-8",
+        _atomic_write_json(
+            diagnostics_path,
+            {
+                "engine": "faster_whisper",
+                "mode": "block",
+                "audio_duration": round(audio_duration, 3),
+                "restart_count": restart_count,
+                "blocks": block_diagnostics,
+            },
         )
+        average_coverage = sum(item["coverage"] for item in block_diagnostics) / max(1, len(block_diagnostics))
+        if subtitle_ready:
+            _set_subtitle_export(
+                _subtitle_success(
+                    all_word_timestamps,
+                    timing_source="faster_whisper",
+                    alignment_coverage=average_coverage,
+                    block_diagnostics=block_diagnostics,
+                )
+            )
+        else:
+            _set_subtitle_export(
+                _subtitle_failure(
+                    subtitle_reason or "exact_canonical_word_timing_unavailable",
+                    timing_source="faster_whisper",
+                    affected_blocks=affected_blocks,
+                    alignment_coverage=average_coverage,
+                    block_diagnostics=block_diagnostics,
+                )
+            )
         return all_timestamps
 
     logger.error("Faster-whisper block alignment exhausted restart guard unexpectedly")
@@ -461,6 +664,14 @@ def _run_stable_ts_full(
     result = model.align(str(audio_path), canonical_text, language=language)
     aligned_words = _collect_aligned_words(result)
     timestamps, coverage, all_matched = _map_aligned_words_to_sentences(sentences, aligned_words, 0.0, 1)
+    word_timestamps, word_coverage, exact_words = _build_exact_word_timestamps(
+        sentences,
+        aligned_words,
+        0.0,
+        1,
+        1,
+        "stable_ts",
+    )
     if coverage < 0.90 or not all_matched:
         logger.error(
             "Full-file stable-ts coverage too low ({:.2%}, all_matched={})",
@@ -468,6 +679,16 @@ def _run_stable_ts_full(
             all_matched,
         )
         sys.exit(1)
+    if exact_words:
+        _set_subtitle_export(_subtitle_success(word_timestamps, timing_source="stable_ts", alignment_coverage=word_coverage))
+    else:
+        _set_subtitle_export(
+            _subtitle_failure(
+                "exact_canonical_word_timing_unavailable",
+                timing_source="stable_ts",
+                alignment_coverage=word_coverage,
+            )
+        )
     return timestamps
 
 
@@ -529,9 +750,44 @@ def _run_faster_whisper(
             if not seg.words:
                 continue
             for word in seg.words:
-                whisper_words.append({"word": word.word, "start": word.start, "end": word.end})
+                if word.start is None or word.end is None:
+                    continue
+                whisper_words.append(
+                    {
+                        "word": word.word,
+                        "normalized": _normalize_token(word.word),
+                        "start": float(word.start),
+                        "end": float(word.end),
+                    }
+                )
         sentences = [unit.text for unit in load_sentence_units(script_path)]
-        return _align_sentences_to_words(sentences, whisper_words)
+        timestamps = _align_sentences_to_words(sentences, whisper_words)
+        word_timestamps, coverage, exact_words = _build_exact_word_timestamps(
+            sentences,
+            whisper_words,
+            0.0,
+            1,
+            1,
+            "faster_whisper",
+        )
+        if exact_words:
+            _set_subtitle_export(_subtitle_success(word_timestamps, timing_source="faster_whisper", alignment_coverage=coverage))
+        else:
+            _set_subtitle_export(
+                _subtitle_failure(
+                    "exact_canonical_word_timing_unavailable",
+                    timing_source="faster_whisper",
+                    alignment_coverage=coverage,
+                )
+            )
+        return timestamps
+
+    _set_subtitle_export(
+        _subtitle_failure(
+            "canonical_script_alignment_unavailable_in_default_faster_whisper_mode",
+            timing_source="faster_whisper",
+        )
+    )
 
     result = []
     current_words: list[str] = []
@@ -607,6 +863,8 @@ def run(video_id: str) -> None:
     manifest = _load_blocks_manifest(video_dir)
     use_block_mode = _should_use_block_mode(video_dir, manifest)
 
+    _set_subtitle_export(None)
+
     if use_block_mode and engine == "stable_ts":
         result = _run_stable_ts_blocks(
             video_dir,
@@ -649,6 +907,31 @@ def run(video_id: str) -> None:
         )
         sys.exit(1)
 
-    output_path.write_text(json.dumps(result, ensure_ascii=False, indent=2), encoding="utf-8")
+    _atomic_write_json(output_path, result)
+    subtitle_export = _LAST_SUBTITLE_EXPORT or _subtitle_failure(
+        "subtitle_export_state_unavailable",
+        timing_source=engine,
+    )
+    diagnostics_path = video_dir / WORD_DIAGNOSTICS_NAME
+    word_timestamps_path = video_dir / WORD_TIMESTAMPS_NAME
+    diagnostics_payload = {
+        "subtitle_ready": subtitle_export["subtitle_ready"],
+        "reason": subtitle_export["reason"],
+        "affected_blocks": subtitle_export["affected_blocks"],
+        "alignment_coverage": subtitle_export["alignment_coverage"],
+        "timing_source": subtitle_export["timing_source"],
+        "word_count": len(subtitle_export["word_timestamps"]),
+        "block_diagnostics": subtitle_export.get("block_diagnostics", []),
+    }
+    _atomic_write_json(diagnostics_path, diagnostics_payload)
+    if subtitle_export["subtitle_ready"]:
+        _atomic_write_json(word_timestamps_path, subtitle_export["word_timestamps"])
+    elif word_timestamps_path.exists():
+        word_timestamps_path.unlink()
+
     total_duration = result[-1]["end"] if result else 0.0
     logger.info("Transcription complete: {} segments, {:.1f}s total -> {}", len(result), total_duration, output_path)
+    if subtitle_export["subtitle_ready"]:
+        logger.info("Word timestamps ready -> {}", word_timestamps_path)
+    else:
+        logger.warning("Word subtitles not ready: {} -> {}", subtitle_export["reason"], diagnostics_path)

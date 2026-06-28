@@ -218,7 +218,7 @@ def main() -> None:
     parser.add_argument("--step", type=int, help="Run only this step (1–8)")
     parser.add_argument("--from-step", type=int, help="Run from this step to step 8")
     parser.add_argument("--resume", action="store_true", help="Auto-detect and resume from last completed step")
-    parser.add_argument("--subtitles", action="store_true", help="Burn subtitles into video (step 6)")
+    parser.add_argument("--subtitles", action="store_true", help="Also burn subtitles into final_subbed.mp4 during step 7")
     parser.add_argument(
         "--demo",
         type=int,

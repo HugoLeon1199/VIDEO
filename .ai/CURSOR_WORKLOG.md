@@ -530,3 +530,62 @@ $python = "C:\Users\LEON_RM\.cache\codex-runtimes\codex-primary-runtime\dependen
   - `10` base samples generated
   - `active_round = base`
   - one warning-only sample at `25.70s`, still acceptable
+
+## Session 2026-06-28 - Subtitle patch
+
+### Goal
+Add professional subtitle generation and optional burned subtitle render without changing production TTS or sentence-level image timing.
+
+### Files changed
+- `config.py`
+- `main.py`
+- `steps/render_video.py`
+- `steps/transcribe.py`
+- `steps/subtitles.py`
+- `scripts/generate_subtitles.py`
+- `tests/test_subtitles.py`
+- `handoff.md`
+
+### What shipped
+- Step 3 now keeps `timestamps.json` unchanged and separately exports:
+  - `word_timestamps.json` only on exact canonical word timing
+  - `word_timestamps_diagnostics.json` on every run
+- Added a standalone subtitle pipeline that writes atomically:
+  - `subtitle_cues.json`
+  - `subtitles.srt`
+  - `subtitles.ass`
+  - `subtitle_diagnostics.json`
+- Added two ASS presets:
+  - `cinematic_clean`
+  - `cinematic_accent`
+- Added preview rendering with preview-local cue timing.
+- Step 7 now:
+  - renders clean `final.mp4`
+  - optionally burns `final_subbed.mp4`
+  - never overwrites `final.mp4`
+
+### Verification
+```powershell
+$python = "C:\Users\LEON_RM\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\python.exe"
+& $python -m py_compile steps/transcribe.py steps/subtitles.py steps/render_video.py scripts/generate_subtitles.py tests/test_subtitles.py
+& $python -m pytest tests/test_subtitles.py -q
+& $python -m pytest tests -q
+& $python main.py --video-id buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi --step 3
+& $python main.py --video-id ancient-child-surgery-31000-years --step 3
+& $python scripts/generate_subtitles.py --video-id buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi --style cinematic_clean --validate-only
+& $python scripts/generate_subtitles.py --video-id ancient-child-surgery-31000-years --style cinematic_clean --validate-only
+& $python scripts/generate_subtitles.py --video-id subtitle-smoke-local --style cinematic_clean --preview-seconds 45
+& $python scripts/generate_subtitles.py --video-id subtitle-smoke-local --style cinematic_accent --preview-seconds 45
+& $python main.py --video-id subtitle-smoke-local --step 7 --subtitles
+```
+
+### Results
+- `tests/test_subtitles.py`: `9 passed`
+- full `tests/`: `146 passed`
+- production sample readiness:
+  - `buc-tranh-co-nhat-the-gioi-khong-nam-o-chau-au-vi` -> `subtitle_ready=false`
+  - `ancient-child-surgery-31000-years` -> `subtitle_ready=false`
+- synthetic smoke:
+  - preview clean: passed
+  - preview accent: passed
+  - step 7 -> `final.mp4` + `final_subbed.mp4`: passed

@@ -1,4 +1,4 @@
-"""Step 6: Render final video — image slideshow synced to audio with correct gaps."""
+"""Step 7: Render final video — image slideshow synced to audio with correct gaps."""
 
 import json
 import os
@@ -80,21 +80,15 @@ def _compute_clip_durations(prompts: list[dict], audio_duration: float) -> list[
     return durations
 
 
-def _timestamps_to_srt(timestamps: list[dict], srt_path: Path) -> None:
-    lines = []
-    for seg in timestamps:
-        start = _seconds_to_srt_time(seg["start"])
-        end = _seconds_to_srt_time(seg["end"])
-        lines.append(f"{seg['index']}\n{start} --> {end}\n{seg['text'].strip()}\n")
-    srt_path.write_text("\n".join(lines), encoding="utf-8")
-
-
-def _seconds_to_srt_time(seconds: float) -> str:
-    h = int(seconds // 3600)
-    m = int((seconds % 3600) // 60)
-    s = int(seconds % 60)
-    ms = int((seconds % 1) * 1000)
-    return f"{h:02d}:{m:02d}:{s:02d},{ms:03d}"
+def _resolve_images_dir(video_dir: Path) -> Path:
+    images_dir = video_dir / "images"
+    if (images_dir / "img_001.png").exists():
+        return images_dir
+    for candidate in ["images_flat2d", "images_en", "images_vi"]:
+        candidate_dir = video_dir / candidate
+        if (candidate_dir / "img_001.png").exists():
+            return candidate_dir
+    return images_dir
 
 
 def _apply_overlays(img_path: Path, scene: dict, tmp_dir: Path) -> Path:
@@ -280,13 +274,7 @@ def run(video_id: str, subtitles: bool = False) -> None:
     prompts_path = video_dir / "image_prompts.json"
     audio_path = video_dir / "audio.mp3"
     images_dir = video_dir / "images"
-    # Fall back to track-specific subdirs if no rendered PNGs in default dir
-    if not (images_dir / "img_001.png").exists():
-        for candidate in ["images_flat2d", "images_en", "images_vi"]:
-            candidate_dir = video_dir / candidate
-            if (candidate_dir / "img_001.png").exists():
-                images_dir = candidate_dir
-                break
+    images_dir = _resolve_images_dir(video_dir)
     output_path = video_dir / "final.mp4"
 
     # Check for trimmed audio from demo mode
@@ -313,19 +301,6 @@ def run(video_id: str, subtitles: bool = False) -> None:
     clip_durations = _compute_clip_durations(prompts, audio_duration)
     total_video_dur = sum(clip_durations)
     logger.info("Rendering video: {} images, total {:.2f}s → {}", n, total_video_dur, output_path)
-
-    # Generate .srt sidecar (always — useful for YouTube caption upload)
-    timestamps_path = video_dir / "timestamps.json"
-    srt_path = video_dir / "subtitles.srt"
-    if timestamps_path.exists():
-        # Only include timestamps that fall within our prompt range
-        all_ts = json.loads(timestamps_path.read_text(encoding="utf-8"))
-        last_end = prompts[-1]["end"]
-        demo_ts = [dict(t) for t in all_ts if t["start"] <= last_end]
-        for t in demo_ts:
-            t["end"] = min(t["end"], audio_duration)
-        _timestamps_to_srt(demo_ts, srt_path)
-        logger.info("Subtitles: {} → {}", len(demo_ts), srt_path.name)
 
     with tempfile.TemporaryDirectory() as tmpdir:
         tmpdir_path = Path(tmpdir)
@@ -388,3 +363,12 @@ def run(video_id: str, subtitles: bool = False) -> None:
 
     file_size_mb = output_path.stat().st_size / (1024 * 1024)
     logger.info("Video rendered: {} ({:.1f} MB)", output_path, file_size_mb)
+
+    if subtitles:
+        from steps import subtitles as subtitle_step
+
+        logger.info("Generating subtitle artifacts for burned output...")
+        subtitle_result = subtitle_step.generate(video_id, style=config.SUBTITLE_DEFAULT_STYLE)
+        final_subbed_path = video_dir / "final_subbed.mp4"
+        subtitle_step.burn_subtitles(output_path, subtitle_result["ass_path"], final_subbed_path)
+        logger.info("Subtitle-burned video rendered: {}", final_subbed_path)

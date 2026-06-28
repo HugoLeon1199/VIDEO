@@ -14,6 +14,7 @@ from pathlib import Path
 from loguru import logger
 
 import config
+from steps.creative_package import CreativePackageError, _atomic_write_json, load_validated_package
 
 # Negative prompt used for all VI scenes
 VI_NEGATIVE_PROMPT = (
@@ -248,6 +249,15 @@ def _parse_json_response(text: str) -> list[dict]:
     return json.loads(text[start:end])
 
 
+def _parse_json_object_response(text: str) -> dict:
+    text = re.sub(r"```(?:json)?\s*", "", text).strip().rstrip("`").strip()
+    start = text.find("{")
+    end = text.rfind("}") + 1
+    if start == -1 or end == 0:
+        raise ValueError("No JSON object found in response")
+    return json.loads(text[start:end])
+
+
 def _validate_one_to_one_scenes(scenes: list[dict], sentences: list[str]) -> None:
     errors = []
     seen_indices = []
@@ -370,7 +380,112 @@ def _validate_scene_times(prompts: list[dict], audio_duration: float) -> None:
 
 # ── Main ──────────────────────────────────────────────────────────────────────
 
-def run(video_id: str, n_override: int | None = None) -> None:
+def _generate_thumbnail_prompt_payload(video_id: str, validated_package: dict, use_claude: bool) -> None:
+    publishing_dir = Path(config.OUTPUT_DIR) / video_id / config.PUBLISHING_DIRNAME
+    output_path = publishing_dir / "thumbnail_prompts.json"
+    diagnostics_path = publishing_dir / "thumbnail_prompt_diagnostics.json"
+    system_prompt = (
+        "You convert saved YouTube thumbnail strategy into technical image prompts. "
+        "Keep the concept unchanged. Return strict JSON object with a single key "
+        "`thumbnail_prompts` containing one entry per concept. Each entry must include "
+        "concept_id, type, image_prompt, negative_prompt, thumbnail_text, subject_side, "
+        "text_side, paired_title_ids. The image_prompt must enforce 16:9 composition, "
+        "one strong focal subject, clean negative space on text_side, thumbnail-style "
+        "contrast, no text, no letters, no logo, no watermark, no extra limbs, no "
+        "malformed hands, and no merged bodies."
+    )
+    payload = {
+        "language": validated_package["language"],
+        "image_model": config.CLAUDE_MODEL if use_claude else config.GEMINI_TEXT_MODEL,
+        "track_config": {
+            "width": config.IMAGE_WIDTH,
+            "height": config.IMAGE_HEIGHT,
+            "steps": config.IMAGE_STEPS,
+            "guidance_scale": config.IMAGE_GUIDANCE_SCALE,
+        },
+        "title_options": validated_package["title_options"],
+        "thumbnail_concepts": validated_package["thumbnail_concepts"],
+    }
+    try:
+        if use_claude:
+            import anthropic
+
+            client = anthropic.Anthropic(api_key=config.ANTHROPIC_API_KEY)
+            response = client.messages.create(
+                model=config.CLAUDE_MODEL,
+                max_tokens=6000,
+                system=system_prompt,
+                messages=[{"role": "user", "content": json.dumps(payload, ensure_ascii=False, indent=2)}],
+            )
+            raw = response.content[0].text
+        else:
+            from google import genai
+
+            client = genai.Client(api_key=config.GEMINI_API_KEY)
+            response = client.models.generate_content(
+                model=config.GEMINI_TEXT_MODEL,
+                contents=f"{system_prompt}\n\n{json.dumps(payload, ensure_ascii=False, indent=2)}",
+            )
+            raw = response.text
+        parsed = _parse_json_object_response(raw)
+        entries = parsed.get("thumbnail_prompts", [])
+        concepts = validated_package["thumbnail_concepts"]
+        if not isinstance(entries, list) or len(entries) != len(concepts):
+            raise ValueError("thumbnail_prompts must match the creative_package concept count")
+        concept_map = {int(item["id"]): item for item in concepts}
+        normalized: list[dict] = []
+        for entry in entries:
+            concept_id = int(entry["concept_id"])
+            concept = concept_map.get(concept_id)
+            if concept is None:
+                raise ValueError(f"Unknown concept_id in thumbnail prompt output: {concept_id}")
+            image_prompt = str(entry.get("image_prompt", "")).strip()
+            prompt_lower = image_prompt.lower()
+            for required in ("no text", "no logo", "no watermark"):
+                if required not in prompt_lower:
+                    raise ValueError(f"thumbnail prompt {concept_id} must contain '{required}'")
+            normalized.append(
+                {
+                    "concept_id": concept_id,
+                    "type": concept["type"],
+                    "image_prompt": image_prompt,
+                    "negative_prompt": str(entry.get("negative_prompt", "")).strip(),
+                    "thumbnail_text": concept["thumbnail_text"],
+                    "subject_side": concept["subject_side"],
+                    "text_side": concept["text_side"],
+                    "paired_title_ids": concept["paired_title_ids"],
+                }
+            )
+        _atomic_write_json(output_path, normalized)
+        _atomic_write_json(
+            diagnostics_path,
+            {
+                "package_version": validated_package["package_version"],
+                "script_sha256": validated_package["script_sha256"],
+                "language": validated_package["language"],
+                "concept_count": len(concepts),
+                "thumbnail_prompt_count": len(normalized),
+                "validation_passed": True,
+                "warnings": [],
+            },
+        )
+    except Exception as exc:
+        _atomic_write_json(
+            diagnostics_path,
+            {
+                "package_version": validated_package["package_version"],
+                "script_sha256": validated_package["script_sha256"],
+                "language": validated_package["language"],
+                "concept_count": len(validated_package["thumbnail_concepts"]),
+                "thumbnail_prompt_count": 0,
+                "validation_passed": False,
+                "warnings": [str(exc)],
+            },
+        )
+        logger.warning("Thumbnail prompt generation failed: {}", exc)
+
+
+def run(video_id: str, n_override: int | None = None, allow_stale_package: bool = False) -> None:
     video_dir = Path(config.OUTPUT_DIR) / video_id
     script_path = video_dir / "script.txt"
     audio_path = video_dir / "audio.mp3"
@@ -477,3 +592,13 @@ def run(video_id: str, n_override: int | None = None) -> None:
 
     output_path.write_text(json.dumps(prompts, ensure_ascii=False, indent=2), encoding="utf-8")
     logger.info("Saved {} scenes → {}", len(prompts), output_path)
+    creative_package_path = video_dir / "creative_package.json"
+    if not creative_package_path.exists():
+        logger.info("No creative_package.json found — skipping thumbnail prompt generation")
+        return
+    try:
+        validated_package = load_validated_package(video_dir, allow_stale_package=allow_stale_package)
+    except CreativePackageError:
+        logger.error("creative_package.json is invalid or stale for {}", video_id)
+        sys.exit(1)
+    _generate_thumbnail_prompt_payload(video_id, validated_package, use_claude)

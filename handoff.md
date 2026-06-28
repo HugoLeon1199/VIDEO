@@ -969,3 +969,114 @@ Mỗi commit push `main` → RunPod tự build lại. Không push dồn (nhiều
   - `word_timestamps_diagnostics.json`
   - a clear failure from subtitle generation / `--subtitles`
   - no fabricated `word_timestamps.json`
+
+## Creative package and thumbnail workflow - 2026-06-28
+
+- Added a separate creative-package path that stays isolated from TTS, subtitle alignment, sentence timing, and clean video render behavior.
+- New authoring contract:
+  - save narration only to `output/<video-id>/script.txt`
+  - save strategy only to `output/<video-id>/creative_package.json`
+
+### What changed
+
+- `prompts/script_prompt.txt`
+  - Stage 2 now outputs two explicit sections:
+    - `SCRIPT`
+    - `CREATIVE_PACKAGE_JSON`
+  - SCRIPT is narration-only
+  - metadata / thumbnail strategy must not be appended into `script.txt`
+- `steps/creative_package.py`
+  - new reusable loader/validator
+  - validates schema, title ids, concept distribution, word limits, paired title ids
+  - computes the real `script_sha256`
+  - stores a validated copy at:
+    - `publishing/creative_package.validated.json`
+  - detects stale package after `script.txt` changes
+- `steps/image_prompts.py`
+  - keeps `image_prompts.json` behavior unchanged for scenes
+  - if `creative_package.json` exists and validates, generates separate:
+    - `publishing/thumbnail_prompts.json`
+    - `publishing/thumbnail_prompt_diagnostics.json`
+  - thumbnail prompt failure no longer destroys a valid `image_prompts.json`
+- `steps/thumbnails.py`
+  - new thumbnail background + Pillow overlay pipeline
+  - reuses the existing image backend contract
+  - outputs:
+    - `publishing/thumbnails/thumbnail_XX_background.png`
+    - `publishing/thumbnails/thumbnail_XX.jpg`
+    - `publishing/thumbnail_contact_sheet.jpg`
+    - `publishing/thumbnail_generation_log.json`
+    - `publishing/thumbnail_generation_diagnostics.json`
+- `scripts/generate_thumbnails.py`
+  - new standalone selective thumbnail CLI
+  - supports:
+    - `--video-id`
+    - `--regenerate <concept_id>`
+    - `--allow-stale-package`
+- `steps/generate_images.py`
+  - after normal scene images finish, it now also generates publishing thumbnails when `publishing/thumbnail_prompts.json` exists
+- `steps/metadata.py`
+  - Step 8 now prefers `creative_package.json`
+  - writes:
+    - `publishing/package.json`
+    - `publishing/title_options.txt`
+    - `publishing/description.txt`
+    - `publishing/chapters.txt`
+    - `publishing/tags.txt`
+    - `publishing/publishing_diagnostics.json`
+  - still falls back to the legacy AI metadata path only when `creative_package.json` is absent
+  - stale/invalid creative packages hard-fail Step 8 instead of silently falling back
+- docs updated:
+  - `CLAUDE.md`
+  - `AGENTS.md`
+
+### Tests completed
+
+- `python -m py_compile steps/creative_package.py steps/thumbnails.py steps/image_prompts.py steps/metadata.py scripts/generate_thumbnails.py tests/test_creative_package.py tests/test_thumbnails.py tests/test_publishing.py`
+- `python -m pytest tests/test_creative_package.py -q`
+  - result: `5 passed`
+- `python -m pytest tests/test_thumbnails.py -q`
+  - result: `3 passed`
+- `python -m pytest tests/test_publishing.py -q`
+  - result: `3 passed`
+- `python -m pytest tests -q`
+  - result: `157 passed`
+
+### Smoke commands run
+
+- Synthetic VI + EN smoke for the full new workflow using local fake model responses / fake image backend:
+  - created `output/creative-smoke-vi/`
+  - created `output/creative-smoke-en/`
+  - executed:
+    - `steps.image_prompts.run(...)`
+    - `steps.thumbnails.generate_thumbnail_assets(...)`
+    - `steps.metadata.run(...)`
+- Outcome:
+  - both VI and EN smoke folders produced:
+    - `image_prompts.json`
+    - `publishing/thumbnail_prompts.json`
+    - `publishing/thumbnails/thumbnail_XX_background.png`
+    - `publishing/thumbnails/thumbnail_XX.jpg`
+    - `publishing/thumbnail_contact_sheet.jpg`
+    - `publishing/package.json`
+
+### Changed files
+
+- `prompts/script_prompt.txt`
+- `steps/creative_package.py`
+- `steps/thumbnails.py`
+- `steps/image_prompts.py`
+- `steps/generate_images.py`
+- `steps/metadata.py`
+- `scripts/generate_thumbnails.py`
+- `tests/test_creative_package.py`
+- `tests/test_thumbnails.py`
+- `tests/test_publishing.py`
+- `CLAUDE.md`
+- `AGENTS.md`
+- `.ai/CURSOR_WORKLOG.md`
+- `handoff.md`
+
+### Important note
+
+- Generated files under `output/` were used only for smoke validation and must stay out of commits.

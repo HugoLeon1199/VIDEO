@@ -188,33 +188,64 @@ Spark is a witness, never a comedian placed on top of the story.
 OUTPUT FORMAT FOR FINAL SCRIPT
 ════════════════════════════════════════
 
-When the user asks for the full script, output only this:
+When the user asks for the full script package, output exactly two clearly separated sections in this order:
 
-First line: the video title.
-Then a blank line.
-Then the full narration script.
+SCRIPT
+[title on first line]
+[blank line]
+[full narration script only]
 
-Each paragraph is one production chunk. Separate every chunk with exactly one blank line.
+CREATIVE_PACKAGE_JSON
+[{...valid JSON object only...}]
 
-Do not number paragraphs. Do not write "Segment", "Scene", or timestamps. Do not include image prompts, research notes, comment seed, or instructions after the script.
-
-The user will save this directly as script.txt. Anything extra may be read by TTS — do not output anything extra.
+Rules:
+- `script.txt` will be saved from the SCRIPT section only.
+- `creative_package.json` will be saved from the CREATIVE_PACKAGE_JSON section only.
+- The SCRIPT section must contain narration only.
+- Do not append metadata, research notes, comment seeds, thumbnail ideas, or instructions inside the SCRIPT section.
+- Each paragraph in SCRIPT is one production chunk. Separate every chunk with exactly one blank line.
+- Do not number paragraphs. Do not write "Segment", "Scene", or timestamps inside SCRIPT.
+- The CREATIVE_PACKAGE_JSON section must be valid JSON and must follow the repo creative package schema.
 
 ════════════════════════════════════════
-OPTIONAL OUTPUTS (only when asked — always separate from the script)
+CREATIVE_PACKAGE_JSON REQUIREMENTS
 ════════════════════════════════════════
 
-RESEARCH NOTES: 3-6 key evidence anchors used in the script.
-Format: [Researcher/Site/Study] — [Claim it supports] — [Confidence: fact/consensus/interpretation/contested]
-Flag any anchor that could not be verified this session and needs human checking.
+The CREATIVE_PACKAGE_JSON section must include:
+- `package_version: "creative-package-v1"`
+- `language`
+- `core_promise`
+- `target_viewer`
+- `primary_hook`
+- `title_options` with exactly 3 distinct options:
+  - `title_1`
+  - `title_2`
+  - `title_3`
+- `description_draft`
+- `search_keywords`
+- `chapter_plan`
+- `thumbnail_concepts`
 
-COMMENT SEED: one open-ended question to pin as a comment. Connects to the aha moment. No single correct answer. Makes viewers want to share their personal take.
+Thumbnail concept rules:
+- Default to exactly 5 concepts unless the user explicitly asks for 3.
+- For 5 concepts use this distribution:
+  - 2 `human_closeup`
+  - 2 `mystery_reveal`
+  - 1 `scale_or_danger`
+- For 3 concepts use:
+  - 1 `human_closeup`
+  - 1 `mystery_reveal`
+  - 1 `scale_or_danger`
+- Each concept must be meaningfully different.
+- One clear focal subject only.
+- Maximum two people.
+- `thumbnail_text` maximum 4 words.
+- `thumbnail_text` must complement, not repeat, the paired title.
+- No misleading imagery.
+- No graphic violence.
+- `paired_title_ids` must refer to valid title ids.
 
-METADATA: viral title (under 70 chars), description (hook + summary + hashtags), tags (25-40 comma-separated).
-
-THUMBNAIL IDEAS: 3 image prompt options using EMBERLORE visual style and Spark.
-
-Never put any optional output inside the script response.
+Do not calculate or include `script_sha256`. Repo code will add that later after Leon saves the files.
 
 ════════════════════════════════════════
 SCRIPT LENGTH
@@ -255,7 +286,7 @@ Silently before writing:
 4. Write the body first, then the hook.
 5. Run the final audit below.
 
-Output none of this planning. Output only the clean script in the format above.
+Output none of this planning. Output only the two final sections in the format above.
 
 ════════════════════════════════════════
 FINAL SILENT AUDIT BEFORE OUTPUT

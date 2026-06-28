@@ -38,14 +38,14 @@ Each step is a standalone module in `steps/`; `main.py` dispatches the step sequ
 
 | Step | Module | Input | Output |
 |------|--------|-------|--------|
-| 1 | `generate_script.py` | manual `script.txt` | validates format |
+| 1 | `generate_script.py` | manual `script.txt` (+ optional `creative_package.json`) | validates format |
 | 2 | `tts.py` | `script.txt` | `tts_blocks/` + `audio_master.wav` + `audio.mp3` |
 | 3 | `transcribe.py` | `tts_blocks/blocks.json` + `audio.mp3` | `timestamps.json` |
-| 4 | `image_prompts.py` | `timestamps.json` + `script.txt` | `image_prompts.json` |
-| 5 | `generate_images.py` | `image_prompts.json` | `images/img_001.png` … |
+| 4 | `image_prompts.py` | `timestamps.json` + `script.txt` (+ optional `creative_package.json`) | `image_prompts.json` + `publishing/thumbnail_prompts.json` |
+| 5 | `generate_images.py` | `image_prompts.json` | `images/img_001.png` … + publishing thumbnails |
 | 6 | `design_soundscape.py` | `image_prompts.json` | `soundscape.json` |
 | 7 | `render_video.py` | images + audio + prompts | `final.mp4` + `subtitles.srt` |
-| 8 | `metadata.py` | `script.txt` | `metadata.json` |
+| 8 | `metadata.py` | `script.txt` + `timestamps.json` (+ optional `creative_package.json`) | `publishing/package.json` (+ legacy `metadata.json`) |
 
 Core invariant: one prompt/image per sentence. Each transcript sentence maps to exactly one scene and one generated image. Demo mode is isolated and never overwrites production files.
 
@@ -84,6 +84,7 @@ Core invariant: one prompt/image per sentence. Each transcript sentence maps to 
 - Gemini text model `gemini-2.5-flash` generates one prompt per timestamp
 - Default invariant: `1 sentence = 1 scene = 1 image`
 - `image_prompts.json` count should match `timestamps.json` count exactly
+- If `creative_package.json` exists and validates, step 4 also writes `publishing/thumbnail_prompts.json` in a separate call
 - Script guideline: each sentence should usually read in about 3-7 seconds; for Vietnamese that is often about 10-25 words
 - If a sentence is too long, split it in `script.txt` before running the pipeline
 - `_enforce_timings()` overwrites model-provided timings with exact transcript timings
@@ -98,7 +99,14 @@ Core invariant: one prompt/image per sentence. Each transcript sentence maps to 
 - Each scene: submit job → poll → save webp candidates under `images/scene_XXX/` → promote first candidate to `images/img_XXX.png`
 - Resume: skips any scene where `img_XXX.png` already exists
 - Progress stored in `generation_log.json`
+- If `publishing/thumbnail_prompts.json` exists, the step-5 wrapper also generates thumbnail backgrounds and final JPGs under `publishing/thumbnails/`
 - Speed: ~4s/image, ~167s for 153 images at 5 workers
+
+### Creative Package Files
+- Save narration only to `output/<video-id>/script.txt`
+- Save strategy only to `output/<video-id>/creative_package.json`
+- The repo computes `script_sha256` after save and stores it in `publishing/creative_package.validated.json`
+- If `script.txt` changes after validation, step 4 and step 8 will fail unless the package is refreshed
 
 ### RunPod Serverless Worker
 - Source: `serverless_worker/` (Dockerfile, handler.py, model_loader.py)

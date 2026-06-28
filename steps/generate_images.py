@@ -201,3 +201,9 @@ def run(video_id: str, n_override: int | None = None) -> None:
     logger.info("Done: {}/{} scenes ok, {} failed", ok, len(remaining), fail)
     if fail:
         sys.exit(1)
+    thumbnail_prompts_path = video_dir / config.PUBLISHING_DIRNAME / "thumbnail_prompts.json"
+    if thumbnail_prompts_path.exists():
+        from steps.thumbnails import generate_thumbnail_assets
+
+        logger.info("Thumbnail prompts found — generating publishing thumbnails")
+        generate_thumbnail_assets(video_id)

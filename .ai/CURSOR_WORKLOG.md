@@ -589,3 +589,81 @@ $python = "C:\Users\LEON_RM\.cache\codex-runtimes\codex-primary-runtime\dependen
   - preview clean: passed
   - preview accent: passed
   - step 7 -> `final.mp4` + `final_subbed.mp4`: passed
+
+## Session 2026-06-28 - Creative package and thumbnail workflow
+
+### Goal
+Add a two-stage creative-package and thumbnail workflow without changing TTS, subtitle alignment, sentence timing, or clean video render behavior.
+
+### Files changed
+- `prompts/script_prompt.txt`
+- `steps/creative_package.py`
+- `steps/thumbnails.py`
+- `steps/image_prompts.py`
+- `steps/generate_images.py`
+- `steps/metadata.py`
+- `scripts/generate_thumbnails.py`
+- `tests/test_creative_package.py`
+- `tests/test_thumbnails.py`
+- `tests/test_publishing.py`
+- `CLAUDE.md`
+- `AGENTS.md`
+- `handoff.md`
+
+### What shipped
+- New creative package validator:
+  - computes real `script_sha256`
+  - writes `publishing/creative_package.validated.json`
+  - blocks stale package reuse after `script.txt` changes
+- Step 4 now:
+  - keeps normal `image_prompts.json`
+  - separately generates `publishing/thumbnail_prompts.json` when `creative_package.json` is present and valid
+  - preserves scene prompts when thumbnail prompt generation fails
+- New thumbnail pipeline:
+  - `publishing/thumbnails/thumbnail_XX_background.png`
+  - `publishing/thumbnails/thumbnail_XX.jpg`
+  - `publishing/thumbnail_contact_sheet.jpg`
+  - selective regeneration via `scripts/generate_thumbnails.py --regenerate <id>`
+- Step 8 now prefers `creative_package.json` and writes:
+  - `publishing/package.json`
+  - `publishing/title_options.txt`
+  - `publishing/description.txt`
+  - `publishing/chapters.txt`
+  - `publishing/tags.txt`
+  - `publishing/publishing_diagnostics.json`
+- Legacy AI metadata path remains only when `creative_package.json` is absent.
+
+### Verification
+```powershell
+$python = "C:\Users\LEON_RM\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\python.exe"
+& $python -m py_compile steps\creative_package.py steps\thumbnails.py steps\image_prompts.py steps\metadata.py scripts\generate_thumbnails.py tests\test_creative_package.py tests\test_thumbnails.py tests\test_publishing.py
+& $python -m pytest tests\test_creative_package.py -q
+& $python -m pytest tests\test_thumbnails.py -q
+& $python -m pytest tests\test_publishing.py -q
+& $python -m pytest tests -q
+```
+
+### Results
+- `tests/test_creative_package.py`: `5 passed`
+- `tests/test_thumbnails.py`: `3 passed`
+- `tests/test_publishing.py`: `3 passed`
+- full `tests/`: `157 passed`
+
+### Smoke
+- Ran a synthetic end-to-end smoke for:
+  - `output/creative-smoke-vi`
+  - `output/creative-smoke-en`
+- Each smoke case executed:
+  - `steps.image_prompts.run(...)`
+  - `steps.thumbnails.generate_thumbnail_assets(...)`
+  - `steps.metadata.run(...)`
+- Both smoke cases produced:
+  - `image_prompts.json`
+  - `publishing/thumbnail_prompts.json`
+  - `publishing/thumbnails/thumbnail_XX_background.png`
+  - `publishing/thumbnails/thumbnail_XX.jpg`
+  - `publishing/thumbnail_contact_sheet.jpg`
+  - `publishing/package.json`
+
+### Important note
+- No generated `output/` artifacts should be committed.

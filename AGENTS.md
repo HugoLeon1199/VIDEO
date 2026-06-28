@@ -49,7 +49,8 @@ youtube-autopilot/
 │
 └── output/
     └── {video-id}/              ← Mỗi video có thư mục riêng
-        ├── script.txt           ← Kịch bản (input thủ công)
+        ├── script.txt           ← Kịch bản narration-only (input thủ công)
+        ├── creative_package.json ← Title/thumbnail/chapter strategy lưu riêng
         ├── audio.mp3            ← Output bước 2
         ├── timestamps.json      ← Output bước 3
         ├── image_prompts.json   ← Output bước 4 (hoặc viết tay)
@@ -60,7 +61,8 @@ youtube-autopilot/
         ├── generation_log.json  ← Progress image gen (resume)
         ├── final.mp4            ← Output bước 6
         ├── subtitles.srt        ← Output bước 6
-        └── metadata.json        ← Output bước 7
+        ├── metadata.json        ← Legacy output bước 8
+        └── publishing/          ← Creative package + thumbnails + publishing package
 ```
 
 ---
@@ -68,7 +70,8 @@ youtube-autopilot/
 ## PIPELINE CHI TIẾT
 
 ### Bước 1 — Script (thủ công)
-- Human viết script với Claude → lưu vào `output/{video-id}/script.txt`
+- Human viết script với Claude → lưu narration vào `output/{video-id}/script.txt`
+- Lưu creative strategy riêng vào `output/{video-id}/creative_package.json`
 - Dùng system prompt ở `prompts/script_prompt.txt` khi yêu cầu Claude viết
 - Step 1 chỉ validate format, không sửa nội dung
 
@@ -79,12 +82,7 @@ youtube-autopilot/
 - Không dùng `—` (em dash), `!` đầu từ, `/` trong từ — edge-tts lỗi
 - Không bullet points, không header trong phần script chính
 
-**Phần metadata** (thêm sau script, pipeline tự strip):
-```
-COMMENT SEED: [câu hỏi kêu gọi comment]
-RESEARCH NOTES:
-- [fact — verified/interpretation]
-```
+Không append metadata/thumbnails vào cuối `script.txt`. Các phần đó phải nằm trong `creative_package.json`.
 
 ### Bước 2 — TTS (`steps/tts.py`)
 

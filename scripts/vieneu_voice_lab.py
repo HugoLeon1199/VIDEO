@@ -52,10 +52,8 @@ DECISIONS_FIELDNAMES = [
 ]
 
 BASE_SAMPLE = (
-    "Bạn có tin rằng cùng một giọng nói có thể giữ được sự tự nhiên khi phải đọc ngày 27 tháng 6 năm 2026, "
-    "các con số 31.000, 2,7 tỷ, 18,5%, rồi chuyển sang AI, DNA, NASA, YouTube mà vẫn mượt không? "
-    "Hôm nay chúng ta còn phải đi qua Nguyễn Trãi, Điện Biên Phủ, Neanderthal, Çatalhöyük, và một câu dài có dấu phẩy, dấu chấm phẩy; "
-    "vì Leon cần nghe xem giọng này có đủ rõ, đủ êm, và đủ vững để kể lịch sử theo cách khiến người nghe ở lại đến cuối hay không."
+    "Bạn có tin giọng này vẫn tự nhiên khi đọc ngày 27 tháng 6 năm 2026, các số 31.000, 2,7 tỷ, 18,5%, rồi chuyển sang AI, DNA, NASA, YouTube không? "
+    "Nguyễn Trãi, Điện Biên Phủ, Neanderthal, Çatalhöyük đều có mặt; Leon chỉ cần nghe một câu dài, có dấu phẩy, có chấm phẩy, đủ rõ và đủ êm."
 )
 
 TOPIC_REEL_TEXT = (

@@ -848,6 +848,15 @@ Mỗi commit push `main` → RunPod tự build lại. Không push dồn (nhiều
   - exports `decisions.csv`
   - avoids rendering raw voice names in the pre-reveal HTML payload
 
+### Follow-up after first real base render
+
+- The first real `base` run showed that one longer calibration draft could push slower voices past the `30s` acceptable ceiling.
+- `scripts/vieneu_voice_lab.py` was tightened again so `BASE_SAMPLE` still contains all required calibration tokens but lands safely in the target/acceptable window across the current discovered VieNeu voices.
+- Real base run result after the trim:
+  - `10` samples generated successfully under `output/vieneu_voice_lab/audio/base/`
+  - `manifest.active_round = base`
+  - one sample (`V434`) remained slightly above target at `25.70s`, but still inside the acceptable range, so this is warning-only and valid
+
 ### Tests completed
 
 - `python -m py_compile scripts/vieneu_voice_lab.py tests/test_vieneu_voice_lab.py`

@@ -523,3 +523,10 @@ $python = "C:\Users\LEON_RM\.cache\codex-runtimes\codex-primary-runtime\dependen
 ### Results
 - `tests/test_vieneu_voice_lab.py`: `9 passed`
 - full `tests/`: `137 passed`
+
+### Real run follow-up
+- Shortened `BASE_SAMPLE` once more after the first real render exposed one slow voice above the `30s` acceptable ceiling.
+- Re-ran `base` successfully:
+  - `10` base samples generated
+  - `active_round = base`
+  - one warning-only sample at `25.70s`, still acceptable

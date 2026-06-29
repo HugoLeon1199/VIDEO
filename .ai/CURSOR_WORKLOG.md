@@ -1,5 +1,39 @@
 # CURSOR_WORKLOG - Repo worklog
 
+## Session 2026-06-29 (8) - Klein worker compatibility follow-up and publish prep
+
+### Goal
+Stabilize the real Klein Vast worker path enough for a source-only push, without changing production FLUX.1-dev 12B behavior.
+
+### What changed
+
+**`config.py`**
+- bumped default `KLEIN_WORKER_IMAGE` from `v0.2.0` to `v0.2.3`
+
+**`image_generation/vast_manager.py`**
+- `VastManager.rent(...)` now accepts optional `image_login`
+- forwards `image_login` into the Vast rent payload when private image auth is needed
+
+**`vast_worker_klein/Dockerfile`**
+- uninstalls incompatible `flash-attn`
+- sets `ATTN_IMPLEMENTATION=eager`
+
+**`vast_worker_klein/gpu_worker.py`**
+- stubs `flash_attn` before diffusers import to avoid the known import crash
+- passes `attn_implementation="eager"` into `Flux2KleinPipeline.from_pretrained(...)`
+
+### Verification
+
+- `C:\Users\LEON_RM\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\python.exe -m pytest tests/test_klein_worker.py tests/test_style_concepts.py tests/test_vast_lifecycle.py -q`
+  - result: `50 passed`
+- `C:\Users\LEON_RM\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\python.exe -m py_compile config.py image_generation/vast_manager.py vast_worker_klein/gpu_worker.py`
+  - result: passed
+
+### Notes
+
+- Commit scope stays source/tests/docs only.
+- Dirty and generated files under `output/`, `logs/`, and the untracked helper `scripts/smoke_klein_vast.py` stay out of commit scope.
+
 ## Session 2026-06-29 (7) — Klein 9B P0 checklist: Flux2KleinPipeline, multi-reference, Docker v0.2.0
 
 ### Goal

@@ -16,6 +16,12 @@ ENV HF_HUB_DISABLE_XET=1
 ENV HF_HUB_ENABLE_HF_TRANSFER=0
 RUN pip uninstall -y hf_xet hf-xet 2>/dev/null || true
 
+# flash-attn in base image is incompatible with diffusers 0.38 Flux2KleinPipeline
+# (infer_schema crash on q: torch.Tensor param). Uninstall it; diffusers falls back
+# to PyTorch sdpa which works fine and is faster on Ampere+ anyway.
+RUN pip uninstall -y flash-attn flash_attn 2>/dev/null || true
+ENV ATTN_IMPLEMENTATION=eager
+
 COPY . /workspace/vast_worker_klein/
 
 RUN mkdir -p /workspace/.cache/huggingface /workspace/model_klein

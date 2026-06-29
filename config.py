@@ -224,7 +224,7 @@ CLAUDE_RETRY_SLEEP = 5   # seconds
 # ---------------------------------------------------------------------------
 KLEIN_MODEL_ID = os.getenv("KLEIN_MODEL_ID", "black-forest-labs/FLUX.2-klein-9b-kv-fp8")
 KLEIN_HF_REVISION = os.getenv("KLEIN_HF_REVISION", "")  # pin before Vast use
-KLEIN_WORKER_IMAGE = os.getenv("KLEIN_WORKER_IMAGE", "ghcr.io/hugoleon1199/vast-flux-klein-worker:v0.2.0")
+KLEIN_WORKER_IMAGE = os.getenv("KLEIN_WORKER_IMAGE", "ghcr.io/hugoleon1199/vast-flux-klein-worker:v0.2.3")
 KLEIN_WORKER_PORT = int(os.getenv("KLEIN_WORKER_PORT", "8081"))
 # Klein generates in 4 steps (distilled); 8 is safer for img2img
 KLEIN_STEPS_T2I = int(os.getenv("KLEIN_STEPS_T2I", "4"))

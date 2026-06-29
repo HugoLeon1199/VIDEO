@@ -435,6 +435,7 @@ class VastManager:
         extra_ports: list[int] | None = None,
         disk_gb: float = 40.0,
         num_gpus: int = 1,
+        image_login: str | None = None,
     ) -> VastInstance:
         """Rent an instance using a pre-built Docker image.
 
@@ -462,6 +463,8 @@ class VastManager:
             "env": env_dict,
             "runtype": "args",  # keep image CMD/ENTRYPOINT; map ports; no wrapper
         }
+        if image_login:
+            payload["image_login"] = image_login
 
         resp = requests.put(
             f"{VAST_API_BASE}/asks/{offer_id}/",

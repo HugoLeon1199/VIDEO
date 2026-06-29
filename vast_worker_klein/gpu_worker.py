@@ -20,6 +20,25 @@ import time
 import unicodedata
 from typing import Optional
 
+# Block flash_attn before ANY other import — diffusers 0.38 crashes on import
+# with old flash_attn ("infer_schema: unsupported type torch.Tensor").
+# Must use a stub module, not None, because diffusers does hasattr() checks.
+import sys as _sys
+import types as _types
+
+def _make_flash_attn_stub() -> _types.ModuleType:
+    stub = _types.ModuleType("flash_attn")
+    stub.__version__ = "0.0.0"
+    # diffusers checks flash_attn.flash_attn_func — return a no-op
+    def _noop(*a, **kw):
+        raise ImportError("flash_attn disabled — using PyTorch sdpa")
+    stub.flash_attn_func = _noop
+    stub.flash_attn_varlen_func = _noop
+    return stub
+
+_sys.modules["flash_attn"] = _make_flash_attn_stub()
+_sys.modules["flash_attn.flash_attn_interface"] = _make_flash_attn_stub()
+
 import torch
 import uvicorn
 from fastapi import FastAPI, HTTPException, Request
@@ -90,6 +109,7 @@ def _load_models() -> None:
             model_path,
             torch_dtype=torch.bfloat16,
             local_files_only=True,
+            attn_implementation="eager",
         )
         _pipe.enable_model_cpu_offload()
 

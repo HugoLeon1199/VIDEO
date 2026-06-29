@@ -5,6 +5,42 @@ File này chứa thông tin kỹ thuật chi tiết, lịch sử debug, và quy�
 
 ---
 
+## Klein worker compatibility follow-up + publish prep - 2026-06-29
+
+- Goal:
+  - keep production FLUX.1-dev 12B untouched
+  - stabilize the separate Klein Vast worker path enough for source publish
+
+### What changed
+
+- `config.py`
+  - default `KLEIN_WORKER_IMAGE` now points to `ghcr.io/hugoleon1199/vast-flux-klein-worker:v0.2.3`
+- `image_generation/vast_manager.py`
+  - added optional `image_login` passthrough in `VastManager.rent(...)`
+- `vast_worker_klein/Dockerfile`
+  - uninstalls incompatible `flash-attn`
+  - sets eager attention mode for the Klein image
+- `vast_worker_klein/gpu_worker.py`
+  - pre-stubs `flash_attn` before diffusers import
+  - passes `attn_implementation="eager"` into `Flux2KleinPipeline.from_pretrained(...)`
+
+### Verification
+
+- `C:\Users\LEON_RM\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\python.exe -m pytest tests/test_klein_worker.py tests/test_style_concepts.py tests/test_vast_lifecycle.py -q`
+  - `50 passed`
+- `C:\Users\LEON_RM\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\python.exe -m py_compile config.py image_generation/vast_manager.py vast_worker_klein/gpu_worker.py`
+  - passed
+
+### Decisions
+
+- Keep commit scope source/docs only.
+- Do not stage `output/`, `logs/`, or the untracked `scripts/smoke_klein_vast.py`.
+
+### Remaining work
+
+- Real Klein smoke on Vast is not fully closed out in this publish step.
+- Re-check the remote worker boot path against the actual rented Vast environment before the next paid run.
+
 ## VieNeu voice swap + subtitle burn - 2026-06-28
 
 - Goal:

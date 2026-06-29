@@ -348,6 +348,7 @@ def run(video_id: str, script_file: str, resume: bool = False) -> dict:
                             manage_backend=False,
                             lifecycle=lifecycle,
                             include_thumbnails=False,
+                            max_workers=session.num_gpus,
                         )
                         thumbnails.generate_thumbnail_backgrounds(
                             video_id,
@@ -358,7 +359,7 @@ def run(video_id: str, script_file: str, resume: bool = False) -> dict:
                         )
                 finally:
                     config.IMAGE_BACKEND = old_backend
-            thumbnail_diagnostics = thumbnails.generate_thumbnail_assets(video_id)
+            thumbnail_diagnostics = thumbnails.generate_thumbnail_assets(video_id, allow_gpu_generation=False)
             expected_thumbnail_count = int(thumbnail_diagnostics.get("expected_thumbnail_count", 0))
             if thumbnail_diagnostics.get("thumbnail_failed_ids"):
                 raise RuntimeError(f"Thumbnail generation incomplete: {thumbnail_diagnostics['thumbnail_failed_ids']}")

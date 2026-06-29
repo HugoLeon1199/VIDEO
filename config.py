@@ -53,6 +53,7 @@ VAST_MAX_VRAM_GB = int(os.getenv("VAST_MAX_VRAM_GB", "200"))   # no real cap; ar
 # VAST_MAX_INET_DOWN_COST below. Keep the default cheap-first and do not silently
 # raise this in production runs without Leon explicitly approving the cost.
 VAST_MAX_PRICE_PER_HOUR = float(os.getenv("VAST_MAX_PRICE_PER_HOUR", "0.20"))
+VAST_MAX_PRICE_PER_GPU_HOUR = float(os.getenv("VAST_MAX_PRICE_PER_GPU_HOUR", "0.20"))
 VAST_GPU_NAME = os.getenv("VAST_GPU_NAME", "")             # e.g. "RTX 4090", "" = any (blacklist handles 50xx/Tesla)
 VAST_MAX_RENT_ATTEMPTS = int(os.getenv("VAST_MAX_RENT_ATTEMPTS", "4"))  # try N cheapest machines before giving up
 VAST_WORKER_IMAGE = os.getenv("VAST_WORKER_IMAGE", "pytorch/pytorch:2.3.0-cuda12.1-cudnn8-runtime")

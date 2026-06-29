@@ -12,8 +12,8 @@ WORKDIR /workspace
 RUN pip install --no-cache-dir \
         torch==2.4.1 torchvision==0.19.1 --index-url https://download.pytorch.org/whl/cu121
 
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+COPY requirements.txt /workspace/vast_worker/
+RUN pip install --no-cache-dir -r /workspace/vast_worker/requirements.txt
 
 ARG MODEL_ID=black-forest-labs/FLUX.1-dev
 ENV HF_HOME=/workspace/hf_cache
@@ -33,7 +33,7 @@ RUN pip uninstall -y hf_xet hf-xet 2>/dev/null || true
 # minutes, reliably. Reliability beats raw speed here.
 ENV HF_HUB_ENABLE_HF_TRANSFER=0
 
-COPY server.py .
+COPY . /workspace/vast_worker/
 EXPOSE 8080
 # vastai/base-image ships an ENTRYPOINT that launches supervisor/caddy. Reset it to
 # empty so our CMD runs the worker directly (we rent with runtype="args", which
@@ -44,4 +44,5 @@ ENTRYPOINT []
 # (PATH only carries /usr/bin/python3 + a separate /venv/main that lacks our deps).
 # Our pip (/usr/bin/pip) installed torch/diffusers into the SYSTEM python3
 # (/usr/local/lib/python3.10/dist-packages), so run that interpreter explicitly.
-CMD ["/usr/bin/python3", "server.py", "--port", "8080", "--preload"]
+# Run as a package (not bare script) so `from vast_worker.*` imports resolve.
+CMD ["/usr/bin/python3", "-m", "vast_worker.server", "--port", "8080", "--preload"]

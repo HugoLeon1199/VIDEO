@@ -403,6 +403,7 @@ def generate_thumbnail_assets(
     teardown_override=None,
     manage_backend: bool = True,
     lifecycle=None,
+    allow_gpu_generation: bool = True,
 ) -> dict[str, Any]:
     video_dir = Path(config.OUTPUT_DIR) / video_id
     package = load_validated_package(video_dir, allow_stale_package=allow_stale_package)
@@ -415,7 +416,14 @@ def generate_thumbnail_assets(
     regenerate_set = {int(value) for value in regenerate or []}
     log_path = _thumbnail_log_path(video_dir)
     generation_log = _load_json(log_path, {})
-    if _gpu_pending_entries(video_dir, prompt_entries, regenerate_set):
+    pending_gpu = _gpu_pending_entries(video_dir, prompt_entries, regenerate_set)
+    if pending_gpu:
+        if not allow_gpu_generation:
+            diagnostics = _finalize_thumbnail_outputs(video_dir, prompt_entries, generation_log)
+            diagnostics["thumbnail_failed_ids"] = sorted(int(e["concept_id"]) for e in pending_gpu)
+            diagnostics["validation_passed"] = False
+            _atomic_write_json(_thumbnail_diagnostics_path(video_dir), diagnostics)
+            return diagnostics
         result = generate_thumbnail_backgrounds(
             video_id,
             regenerate=regenerate,

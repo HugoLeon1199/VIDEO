@@ -349,6 +349,7 @@ def regenerate_failed_scenes(
     manage_backend: bool = True,
     lifecycle: VastLifecycle | None = None,
     n_override: int | None = None,
+    max_workers: int | None = None,
 ) -> dict[str, Any]:
     prompts = pending_failed_scene_prompts(video_id, n_override=n_override)
     if not prompts:
@@ -360,4 +361,5 @@ def regenerate_failed_scenes(
         lifecycle=lifecycle,
         n_override=n_override,
         prompt_subset=prompts,
+        max_workers=max_workers,
     )

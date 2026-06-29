@@ -95,6 +95,7 @@ def main() -> None:
                         backend_override=session.backend,
                         manage_backend=False,
                         lifecycle=session.lifecycle,
+                        max_workers=session.num_gpus,
                     )
                     vid_failures += retry.get("scene_fail", 0)
                 except Exception as exc:
@@ -124,7 +125,7 @@ def main() -> None:
     # Thumbnail finalization (CPU-only, no GPU needed)
     for vid in video_ids:
         try:
-            thumb_step.generate_thumbnail_assets(vid)
+            thumb_step.generate_thumbnail_assets(vid, allow_gpu_generation=False)
         except Exception as exc:
             logger.warning("Thumbnail asset finalization failed for {}: {}", vid, exc)
 

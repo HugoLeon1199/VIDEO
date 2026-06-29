@@ -110,6 +110,7 @@ class VastManager:
         num_gpus_choices: list[int] | None = None,  # [1, 2, 3] — search all, pick cheapest
         min_cpu_ram_per_gpu_gb: float = 32.0,  # hard filter for num_gpus >= 2
         min_cpu_cores_per_gpu: float = 4.0,    # hard filter for num_gpus >= 2
+        max_price_per_gpu_hour: float | None = None,  # per-GPU cap for multi-GPU bundles
     ) -> dict:
         """Find the cheapest *good* offer matching requirements.
 
@@ -241,8 +242,12 @@ class VastManager:
         eligible = []
         for o in offers:
             n_gpus = o.get("_num_gpus", 1)
+            _per_gpu_cap = (
+                max_price_per_gpu_hour if (max_price_per_gpu_hour is not None and n_gpus >= 2)
+                else max_price_per_hour
+            )
             if not (
-                o.get("dph_total", 999) <= max_price_per_hour
+                o.get("dph_total", 999) / max(n_gpus, 1) <= _per_gpu_cap
                 and o.get("rentable", False)
                 and (o.get("gpu_ram") or 0) >= min_vram_gb * 1024
                 and (o.get("gpu_ram") or 0) <= (max_vram_gb + 1) * 1024
@@ -762,8 +767,8 @@ class VastManager:
             logger.info("Custom image: injecting env vars and starting server (no SCP/pip)...")
             cmd = (
                 f"{env_prefix}"
-                f"nohup python /workspace/vast_worker/server.py --port {self.worker_port} "
-                f"> /workspace/worker.log 2>&1 &"
+                f"cd /workspace && nohup /usr/bin/python3 -m vast_worker.server "
+                f"--port {self.worker_port} --preload > /workspace/worker.log 2>&1 &"
             )
             subprocess.run(["ssh", *ssh_opts, dest, cmd], check=True)
         else:
@@ -775,9 +780,9 @@ class VastManager:
             cmd = (
                 f"cd /workspace && "
                 f"pip install -q fastapi uvicorn diffusers transformers accelerate "
-                f"safetensors pillow torch huggingface_hub bitsandbytes && "
+                f"safetensors pillow torch huggingface_hub bitsandbytes httpx && "
                 f"{env_prefix}"
-                f"nohup python vast_worker/server.py --port {self.worker_port} "
+                f"nohup /usr/bin/python3 -m vast_worker.server --port {self.worker_port} --preload "
                 f"> /workspace/worker.log 2>&1 &"
             )
             subprocess.run(["ssh", *ssh_opts, dest, cmd], check=True)

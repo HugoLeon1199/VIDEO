@@ -93,8 +93,7 @@ def _spawn_worker(gpu_index: int, model_path: str) -> subprocess.Popen:
     env["MODEL_PATH"] = model_path
     env["WORKER_PORT"] = str(port)
     cmd = [
-        sys.executable,
-        os.path.join(os.path.dirname(__file__), "gpu_worker.py"),
+        sys.executable, "-m", "vast_worker.gpu_worker",
         "--model-path", model_path,
         "--port", str(port),
     ]

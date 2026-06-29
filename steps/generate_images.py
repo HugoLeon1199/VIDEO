@@ -128,6 +128,7 @@ def _build_vast_backend(planned_image_count: int | None = None):
                 min_vram_gb=config.VAST_MIN_VRAM_GB,
                 gpu_name=config.VAST_GPU_NAME,
                 max_price_per_hour=config.VAST_MAX_PRICE_PER_HOUR,
+                max_price_per_gpu_hour=config.VAST_MAX_PRICE_PER_GPU_HOUR,
                 min_inet_down_mbps=config.VAST_MIN_INET_DOWN_MBPS,
                 min_reliability=config.VAST_MIN_RELIABILITY,
                 min_disk_gb=max(60.0, config.VAST_DISK_GB),
@@ -160,13 +161,14 @@ def _build_vast_backend(planned_image_count: int | None = None):
             instance = manager.wait_until_running(instance.instance_id, timeout=config.VAST_INSTANCE_RUNNING_TIMEOUT)
             if not instance.direct_port:
                 instance = manager.wait_for_port(instance.instance_id, timeout=config.VAST_PORT_MAPPING_TIMEOUT)
-            manager.deploy_worker(
-                instance,
-                hf_token=config.VAST_HF_TOKEN,
-                model_revision=revision,
-                worker_token=worker_token,
-                custom_image=config.VAST_WORKER_CUSTOM_IMAGE,
-            )
+            if not config.VAST_WORKER_CUSTOM_IMAGE:
+                manager.deploy_worker(
+                    instance,
+                    hf_token=config.VAST_HF_TOKEN,
+                    model_revision=revision,
+                    worker_token=worker_token,
+                    custom_image=False,
+                )
             manager.wait_worker_ready(instance.public_ipaddr, instance.direct_port or config.VAST_WORKER_PORT, timeout=600)
             backend = VastInstanceBackend(
                 host=instance.public_ipaddr,
@@ -225,6 +227,7 @@ def run(
     manage_backend: bool = True,
     lifecycle=None,
     include_thumbnails: bool = True,
+    max_workers: int | None = None,
 ) -> None:
     from image_generation.production import generate_scene_images, pending_scene_prompts, regenerate_failed_scenes
 
@@ -248,7 +251,9 @@ def run(
     effective_backend = backend_override
     teardown = None
     if effective_backend is None and config.IMAGE_BACKEND == "vast_instance":
-        effective_backend, teardown, _meta = open_backend_with_metadata("vast_instance")
+        from image_generation.production import compute_session_image_count
+        _pic = compute_session_image_count([video_id])
+        effective_backend, teardown, _meta = open_backend_with_metadata("vast_instance", planned_image_count=_pic)
     try:
         result = generate_scene_images(
             video_id,
@@ -256,6 +261,7 @@ def run(
             manage_backend=False if effective_backend is not None else manage_backend,
             lifecycle=lifecycle,
             n_override=n_override,
+            max_workers=max_workers,
         )
         retry_result = regenerate_failed_scenes(
             video_id,
@@ -263,6 +269,7 @@ def run(
             manage_backend=False,
             lifecycle=lifecycle,
             n_override=n_override,
+            max_workers=max_workers,
         )
         fail = result["scene_fail"] + retry_result["scene_fail"]
         if include_thumbnails and (video_dir / config.PUBLISHING_DIRNAME / "thumbnail_prompts.json").exists():
@@ -274,6 +281,7 @@ def run(
                 backend_override=effective_backend,
                 manage_backend=False if effective_backend is not None else manage_backend,
                 lifecycle=lifecycle,
+                max_workers=max_workers,
             )
     finally:
         if teardown:

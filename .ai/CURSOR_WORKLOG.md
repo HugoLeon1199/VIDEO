@@ -1,5 +1,47 @@
 # CURSOR_WORKLOG - Repo worklog
 
+## Session 2026-06-29 (2) — P0 hotfix: multi-GPU Vast production correctness
+
+Narrow hotfix on top of commit `8958069`. Seven production bugs fixed:
+
+1. **Dockerfile** — copies full package dir (`COPY . /workspace/vast_worker/`); CMD uses `-m vast_worker.server --port 8080 --preload`
+2. **httpx** — added to `vast_worker/requirements.txt` and legacy pip install string in `deploy_worker()`
+3. **Custom image** — `_build_vast_backend()` now skips `deploy_worker()` entirely when `VAST_WORKER_CUSTOM_IMAGE=True`; flow is rent→wait_running→wait_port→wait_worker_ready only
+4. **max_workers** — propagated through `generate_images.run()`, `regenerate_failed_scenes()`, autopilot, and batch script
+5. **Thumbnail finalization** — `generate_thumbnail_assets()` gains `allow_gpu_generation=False` guard; autopilot and batch pass it to prevent accidental second rental
+6. **Per-GPU price gate** — `find_offer()` uses `dph_total/num_gpus <= max_price_per_gpu_hour` for multi-GPU; new `VAST_MAX_PRICE_PER_GPU_HOUR` config key
+7. **Planned image count** — `run()` direct Vast path calls `compute_session_image_count([video_id])` and passes real count to `open_backend_with_metadata`
+
+### Changed files
+| File | Change |
+|------|--------|
+| `vast_worker/Dockerfile` | Copy whole package dir; module CMD |
+| `vast_worker/requirements.txt` | Add `httpx>=0.27` |
+| `vast_worker/server.py` | `_spawn_worker` uses `-m vast_worker.gpu_worker` |
+| `image_generation/vast_manager.py` | `deploy_worker` custom_image SSH cmd uses module form + `--preload`; `httpx` in legacy pip; `find_offer` per-GPU price gate + `max_price_per_gpu_hour` param |
+| `config.py` | Add `VAST_MAX_PRICE_PER_GPU_HOUR` |
+| `steps/generate_images.py` | `run()` gains `max_workers`; real `planned_image_count`; custom image guard; threads `max_workers` to scenes/retries/thumbnails |
+| `image_generation/production.py` | `regenerate_failed_scenes()` gains `max_workers` |
+| `steps/autopilot.py` | Pass `max_workers=session.num_gpus` to `run()`; pass `allow_gpu_generation=False` to `generate_thumbnail_assets()` |
+| `steps/thumbnails.py` | `generate_thumbnail_assets()` gains `allow_gpu_generation` flag |
+| `scripts/generate_images_batch.py` | Pass `max_workers=session.num_gpus` to retries; `allow_gpu_generation=False` to finalize |
+| `tests/test_p0_hotfix.py` | **New** — 17 regression tests for all 7 fixes |
+
+### Test results
+```
+245 passed, 17 warnings in 30.07s
+```
+
+### Docker build for new image tag
+```bash
+docker build -t ghcr.io/hugoleon1199/vast-flux-worker:v1.0.1 vast_worker/
+docker run --rm ghcr.io/hugoleon1199/vast-flux-worker:v1.0.1 \
+    /usr/bin/python3 -c "from vast_worker import server, gpu_worker, model_loader; print('OK')"
+docker push ghcr.io/hugoleon1199/vast-flux-worker:v1.0.1
+```
+
+---
+
 ## Session 2026-06-29 - Multi-GPU Vast.ai offer selection and gateway worker
 
 ### Goal

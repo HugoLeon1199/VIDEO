@@ -125,9 +125,17 @@ def main() -> None:
     # Thumbnail finalization (CPU-only, no GPU needed)
     for vid in video_ids:
         try:
-            thumb_step.generate_thumbnail_assets(vid, allow_gpu_generation=False)
+            thumb_diag = thumb_step.generate_thumbnail_assets(vid, allow_gpu_generation=False)
+            failed_ids = thumb_diag.get("thumbnail_failed_ids", [])
+            if failed_ids or not thumb_diag.get("validation_passed"):
+                logger.error(
+                    "Thumbnail finalization failed for {}: failed_ids={}, passed={}",
+                    vid, failed_ids, thumb_diag.get("validation_passed"),
+                )
+                per_video_failures[vid] = per_video_failures.get(vid, 0) + len(failed_ids or [1])
         except Exception as exc:
-            logger.warning("Thumbnail asset finalization failed for {}: {}", vid, exc)
+            logger.error("Thumbnail asset finalization error for {}: {}", vid, exc)
+            per_video_failures[vid] = per_video_failures.get(vid, 0) + 1
 
     total_failures = sum(per_video_failures.values())
     logger.info("Batch complete. Per-video failure counts: {}", per_video_failures)

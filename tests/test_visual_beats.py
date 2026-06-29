@@ -120,6 +120,43 @@ def test_visual_beats_reject_gaps_or_overlaps(tmp_path: Path):
         )
 
 
+def test_zero_width_word_alignment_falls_back_to_sentence_window(tmp_path: Path):
+    video_dir = _make_video_dir(tmp_path, subtitle_ready=True)
+    _write_json(
+        video_dir / transcribe.WORD_TIMESTAMPS_NAME,
+        [
+            {"sentence_index": 1, "word_index": 1, "text": "A", "normalized": "a", "start": 0.0, "end": 0.0, "timing_source": "stable_ts"},
+            {"sentence_index": 1, "word_index": 2, "text": "short", "normalized": "short", "start": 0.0, "end": 0.0, "timing_source": "stable_ts"},
+            {"sentence_index": 1, "word_index": 3, "text": "clear", "normalized": "clear", "start": 0.0, "end": 0.0, "timing_source": "stable_ts"},
+            {"sentence_index": 1, "word_index": 4, "text": "line.", "normalized": "line", "start": 0.0, "end": 0.0, "timing_source": "stable_ts"},
+            {"sentence_index": 2, "word_index": 1, "text": "A", "normalized": "a", "start": 4.2, "end": 4.5, "timing_source": "stable_ts"},
+            {"sentence_index": 2, "word_index": 2, "text": "longer", "normalized": "longer", "start": 4.55, "end": 5.2, "timing_source": "stable_ts"},
+            {"sentence_index": 2, "word_index": 3, "text": "sentence", "normalized": "sentence", "start": 5.25, "end": 6.0, "timing_source": "stable_ts"},
+            {"sentence_index": 2, "word_index": 4, "text": "with", "normalized": "with", "start": 6.05, "end": 6.4, "timing_source": "stable_ts"},
+            {"sentence_index": 2, "word_index": 5, "text": "two", "normalized": "two", "start": 6.45, "end": 6.9, "timing_source": "stable_ts"},
+            {"sentence_index": 2, "word_index": 6, "text": "ideas,", "normalized": "ideas", "start": 6.95, "end": 7.6, "timing_source": "stable_ts"},
+            {"sentence_index": 2, "word_index": 7, "text": "then", "normalized": "then", "start": 8.5, "end": 8.9, "timing_source": "stable_ts"},
+            {"sentence_index": 2, "word_index": 8, "text": "a", "normalized": "a", "start": 8.95, "end": 9.1, "timing_source": "stable_ts"},
+            {"sentence_index": 2, "word_index": 9, "text": "reveal", "normalized": "reveal", "start": 9.15, "end": 10.0, "timing_source": "stable_ts"},
+            {"sentence_index": 2, "word_index": 10, "text": "at", "normalized": "at", "start": 10.05, "end": 10.3, "timing_source": "stable_ts"},
+            {"sentence_index": 2, "word_index": 11, "text": "the", "normalized": "the", "start": 10.35, "end": 10.55, "timing_source": "stable_ts"},
+            {"sentence_index": 2, "word_index": 12, "text": "end.", "normalized": "end", "start": 10.6, "end": 11.0, "timing_source": "stable_ts"},
+        ],
+    )
+    spans = visual_beats.load_sentence_spans(video_dir)
+    words = visual_beats.load_exact_word_spans(video_dir)
+    beats = visual_beats.derive_beat_timings(
+        [
+            {"source_sentence_index": 1, "beat_index": 1, "word_start": 1, "word_end": 4, "scene_text": "A short clear line.", "visual_intent": "single scene"},
+            {"source_sentence_index": 2, "beat_index": 1, "word_start": 1, "word_end": 12, "scene_text": "A longer sentence with two ideas, then a reveal at the end.", "visual_intent": "single scene"},
+        ],
+        spans,
+        words,
+    )
+    assert beats[0]["start"] == 0.0
+    assert beats[0]["end"] == 4.2
+
+
 def test_prompt_template_metadata_reads_real_template():
     meta = visual_beats.prompt_template_metadata("vi")
     assert meta["fields"]["model"] == "black-forest-labs/FLUX.1-dev"

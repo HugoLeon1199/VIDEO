@@ -148,12 +148,65 @@ def _clip_prompt_prefix(language: str) -> str:
     return (
         "cinematic illustrated history documentary, all visible people fully clothed in historically plausible "
         "full-coverage hide and fur clothing, no text, no logo, no watermark,"
-    )
+        )
+
+
+def _condense_clip_scene_text(scene_text: str, *, max_words: int = 24, max_chars: int = 180) -> str:
+    words = [part for part in re.split(r"\s+", scene_text.strip()) if part]
+    condensed = " ".join(words[:max_words])
+    if len(condensed) > max_chars:
+        condensed = condensed[:max_chars].rsplit(" ", 1)[0].strip()
+    return condensed or scene_text.strip()
 
 
 def _build_clip_prompt(language: str, scene_text: str) -> str:
-    clip_prompt = normalize_prompt_text(f"{_clip_prompt_prefix(language)} {scene_text}".strip())
+    condensed_scene_text = _condense_clip_scene_text(scene_text)
+    clip_prompt = normalize_prompt_text(f"{_clip_prompt_prefix(language)} {condensed_scene_text}".strip())
     return clip_prompt
+
+
+def _estimated_token_count(text: str) -> int:
+    words = [part for part in re.split(r"\s+", text.strip()) if part]
+    compact_len = len(re.sub(r"\s+", "", text))
+    return max(len(words) + 4, max(1, (compact_len + 4) // 5))
+
+
+def _should_fallback_token_count(exc: Exception) -> bool:
+    message = str(exc).lower()
+    fallback_markers = (
+        "gated repo",
+        "401",
+        "403",
+        "repository not found",
+        "could not connect",
+        "connection",
+        "timeout",
+        "temporary failure",
+    )
+    return any(marker in message for marker in fallback_markers)
+
+
+def _count_tokens_with_fallback(
+    model_id: str,
+    text: str,
+    subfolder: str,
+    revision: str,
+    *,
+    scene_index: int,
+) -> tuple[int, str]:
+    try:
+        return token_count_for_model(model_id, text, subfolder, revision), "tokenizer"
+    except Exception as exc:
+        if not _should_fallback_token_count(exc):
+            raise
+        estimate = _estimated_token_count(text)
+        logger.warning(
+            "Scene {} {} token count fell back to heuristic because tokenizer access failed: {}",
+            scene_index,
+            subfolder,
+            exc,
+        )
+        return estimate, "heuristic"
 
 
 def _deterministic_plan(sentence_spans: list[visual_beats.SentenceSpan], language: str) -> list[dict]:
@@ -227,6 +280,7 @@ def _attach_generation_fields(
     template_version = template["fields"].get("style_version", track_cfg["style_version"])
     entries: list[dict] = []
     for beat in beats:
+        scene_index = int(beat["source_sentence_index"])
         scene_text = normalize_prompt_text(str(beat.get("scene_text", beat["visual_intent"]))).strip()
         final_prompt = normalize_prompt_text(str(beat.get("prompt", beat["visual_intent"])).strip())
         clip_prompt = _build_clip_prompt(language, scene_text)
@@ -234,11 +288,23 @@ def _attach_generation_fields(
             "Avoid: text, letters, logo, watermark, malformed anatomy, extra limbs, merged bodies, "
             "modern objects, sexualized body, bare torso, bare chest, exposed breasts."
         )
-        clip_token_count = token_count_for_model(model_id, clip_prompt, "tokenizer", revision)
+        clip_token_count, clip_token_count_mode = _count_tokens_with_fallback(
+            model_id,
+            clip_prompt,
+            "tokenizer",
+            revision,
+            scene_index=scene_index,
+        )
         t5_prompt = final_prompt
         if negative_prompt:
             t5_prompt = f"{t5_prompt}. {negative_prompt}"
-        t5_token_count = token_count_for_model(model_id, t5_prompt, "tokenizer_2", revision)
+        t5_token_count, t5_token_count_mode = _count_tokens_with_fallback(
+            model_id,
+            t5_prompt,
+            "tokenizer_2",
+            revision,
+            scene_index=scene_index,
+        )
         if clip_token_count > config.FLUX_CLIP_TOKEN_LIMIT:
             raise ValueError(
                 f"clip_prompt exceeds {config.FLUX_CLIP_TOKEN_LIMIT} tokens ({clip_token_count}) for scene {beat['source_sentence_index']}"
@@ -262,8 +328,10 @@ def _attach_generation_fields(
                 "final_positive_prompt": final_prompt,
                 "final_avoidance_prompt": negative_prompt,
                 "clip_token_count": clip_token_count,
+                "clip_token_count_mode": clip_token_count_mode,
                 "clip_limit": config.FLUX_CLIP_TOKEN_LIMIT,
                 "t5_token_count": t5_token_count,
+                "t5_token_count_mode": t5_token_count_mode,
                 "t5_limit": config.FLUX_T5_TOKEN_LIMIT,
                 "unicode_valid": True,
                 "steps": track_cfg["steps"],

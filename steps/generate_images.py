@@ -203,6 +203,20 @@ def _build_vast_backend(planned_image_count: int | None = None):
     }
 
 
+def _compute_planned_image_count(
+    video_id: str,
+    n_override: int | None,
+    include_thumbnails: bool,
+) -> int:
+    """Pending images for this video only, respecting n_override and include_thumbnails."""
+    from image_generation.production import pending_scene_prompts, pending_thumbnail_prompts
+    scenes = pending_scene_prompts(video_id, n_override=n_override)
+    count = len(scenes) * len(config.IMAGE_CANDIDATE_SEEDS)
+    if include_thumbnails:
+        count += len(pending_thumbnail_prompts(video_id))
+    return count
+
+
 def open_backend_with_metadata(backend_name: str | None = None, *, planned_image_count: int | None = None):
     target_backend = backend_name or config.IMAGE_BACKEND
     if target_backend == "vast_instance":
@@ -251,9 +265,10 @@ def run(
     effective_backend = backend_override
     teardown = None
     if effective_backend is None and config.IMAGE_BACKEND == "vast_instance":
-        from image_generation.production import compute_session_image_count
-        _pic = compute_session_image_count([video_id])
+        _pic = _compute_planned_image_count(video_id, n_override, include_thumbnails)
         effective_backend, teardown, _meta = open_backend_with_metadata("vast_instance", planned_image_count=_pic)
+        if max_workers is None:
+            max_workers = int(_meta.get("num_gpus", 1))
     try:
         result = generate_scene_images(
             video_id,
@@ -289,7 +304,14 @@ def run(
     if include_thumbnails and (video_dir / config.PUBLISHING_DIRNAME / "thumbnail_prompts.json").exists():
         from steps.thumbnails import generate_thumbnail_assets
 
-        generate_thumbnail_assets(video_id)
+        thumb_diag = generate_thumbnail_assets(video_id, allow_gpu_generation=False)
+        if thumb_diag.get("thumbnail_failed_ids"):
+            raise RuntimeError(
+                f"Thumbnail backgrounds missing after GPU session closed; "
+                f"failed concept IDs: {thumb_diag['thumbnail_failed_ids']}"
+            )
+        if not thumb_diag.get("validation_passed"):
+            raise RuntimeError(f"Thumbnail finalization failed: {thumb_diag}")
     remaining_prompts = pending_scene_prompts(video_id, n_override=n_override)
     if not remaining_prompts:
         logger.info("All scenes already generated.")

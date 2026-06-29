@@ -1,5 +1,30 @@
 # CURSOR_WORKLOG - Repo worklog
 
+## Session 2026-06-29 (3) — Hotfix: direct-path correctness gaps
+
+Four correctness gaps in `run()` and batch script, fixed on top of `bc97ff5`:
+
+1. **`num_gpus` from metadata** — `run()` now reads `_meta["num_gpus"]` from `open_backend_with_metadata` and auto-sets `max_workers` when caller doesn't supply it
+2. **No second Vast rental** — after teardown, `generate_thumbnail_assets` is called with `allow_gpu_generation=False`; diagnostics validated; raises `RuntimeError` clearly if backgrounds missing
+3. **Batch thumbnail failures surface** — `scripts/generate_images_batch.py` finalization loop captures diagnostics from `generate_thumbnail_assets`; `thumbnail_failed_ids` increments `per_video_failures`; `sys.exit(1)` fires on any failure
+4. **Accurate planned image count** — new `_compute_planned_image_count(video_id, n_override, include_thumbnails)` helper replaces `compute_session_image_count([video_id])` in direct path; respects `n_override` and excludes thumbnails when `include_thumbnails=False`
+5. **`.env.example` updated** — v1.0.1 image, `VAST_WORKER_CUSTOM_IMAGE`, `VAST_MAX_PRICE_PER_GPU_HOUR`, `VAST_NUM_GPUS_CHOICES`, `VAST_MODEL_LOAD_WALL_SECONDS`, `VAST_MIN_CPU_RAM_PER_GPU_GB`, `VAST_MIN_CPU_CORES_PER_GPU`, `HF_MODEL_REVISION`, `WORKER_API_TOKEN`
+
+### Changed files
+| File | Change |
+|------|--------|
+| `steps/generate_images.py` | Add `_compute_planned_image_count()`; retain `_meta`, auto-set `max_workers`; `allow_gpu_generation=False` + validation after teardown |
+| `scripts/generate_images_batch.py` | Capture + validate thumbnail diagnostics; add failures to `per_video_failures` |
+| `.env.example` | Update Vast section with v1.0.1 image + all multi-GPU config keys |
+| `tests/test_p0_hotfix.py` | Add 6 new regression tests (23 total, all pass) |
+
+### Test results
+```
+251 passed, 17 warnings in 46.08s
+```
+
+---
+
 ## Session 2026-06-29 (2) — P0 hotfix: multi-GPU Vast production correctness
 
 Narrow hotfix on top of commit `8958069`. Seven production bugs fixed:

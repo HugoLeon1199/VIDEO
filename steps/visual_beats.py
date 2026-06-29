@@ -113,6 +113,21 @@ def build_fallback_sentence_beats(sentence_spans: list[SentenceSpan]) -> list[di
     return beats
 
 
+def _resolve_word_timed_bounds(
+    sentence: SentenceSpan,
+    selected_words: list[WordSpan],
+) -> tuple[float, float]:
+    start = min(float(word.start) for word in selected_words)
+    end = max(float(word.end) for word in selected_words)
+    if end > start:
+        return start, end
+    fallback_start = max(float(sentence.start), start)
+    fallback_end = float(sentence.end)
+    if fallback_end <= fallback_start:
+        fallback_end = fallback_start + 0.05
+    return fallback_start, fallback_end
+
+
 def derive_beat_timings(
     beat_plan: list[dict],
     sentence_spans: list[SentenceSpan],
@@ -147,8 +162,8 @@ def derive_beat_timings(
         else:
             sentence_cursors[sentence_index] = end_word + 1
         word_lookup = {word.word_index: word for word in sentence_words}
-        start = word_lookup[start_word].start
-        end = word_lookup[end_word].end
+        selected_words = [word_lookup[word_index] for word_index in range(start_word, end_word + 1)]
+        start, end = _resolve_word_timed_bounds(sentence, selected_words)
         normalized.append(
             {
                 "index": len(normalized) + 1,

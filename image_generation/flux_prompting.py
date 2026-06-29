@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import os
 from functools import lru_cache
 from typing import Any
 import unicodedata
@@ -24,12 +25,14 @@ def token_count_from_tokenizer(tokenizer: Any, text: str) -> int:
 @lru_cache(maxsize=8)
 def load_tokenizer(model_id: str, subfolder: str, revision: str | None = None):
     from transformers import AutoTokenizer
+    token = os.getenv("HF_TOKEN") or os.getenv("VAST_HF_TOKEN") or None
 
     return AutoTokenizer.from_pretrained(
         model_id,
         subfolder=subfolder,
         revision=revision or None,
         use_fast=True,
+        token=token,
     )
 
 

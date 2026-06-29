@@ -489,19 +489,25 @@ def test_direct_run_passes_real_planned_image_count(tmp_path, monkeypatch) -> No
 
     captured_pic: list[int | None] = []
 
-    def fake_build_backend(planned_image_count=None):
+    # pending_scene_prompts is called by _compute_planned_image_count — return 5 items
+    # so count = 5 scenes × 2 seeds = 10.  Also used by the trailing check (return [] then).
+    pending_calls = [0]
+
+    def fake_pending_scene(video_id, n_override=None):
+        pending_calls[0] += 1
+        if pending_calls[0] == 1:
+            # First call: inside _compute_planned_image_count
+            return [{"index": i + 1} for i in range(5)]
+        # Second call: trailing "remaining" check — report all done
+        return []
+
+    def fake_open_backend(backend_name=None, *, planned_image_count=None):
         captured_pic.append(planned_image_count)
-        return object(), lambda: None, {
+        meta = {
             "managed": True, "owned_instance_id": None, "worker_boot_id": "",
             "worker_ready_count": 1, "model_load_count": 1, "rent_count": 1, "num_gpus": 1,
         }
-
-    compute_calls: list[list[str]] = []
-
-    def fake_compute(video_ids):
-        compute_calls.append(list(video_ids))
-        # Real answer: 5 pending scenes × 2 seeds + 0 thumbnails = 10
-        return 10
+        return object(), lambda: None, meta
 
     def fake_generate_scene_images(*_a, **_kw):
         return {"scene_ok": 5, "scene_fail": 0, "processed_count": 5}
@@ -509,18 +515,264 @@ def test_direct_run_passes_real_planned_image_count(tmp_path, monkeypatch) -> No
     def fake_regenerate_failed_scenes(*_a, **_kw):
         return {"scene_ok": 0, "scene_fail": 0, "processed_count": 0}
 
-    monkeypatch.setattr(generate_images, "_build_vast_backend", fake_build_backend)
-    monkeypatch.setattr(production, "compute_session_image_count", fake_compute)
+    monkeypatch.setattr(generate_images, "open_backend_with_metadata", fake_open_backend)
+    monkeypatch.setattr(production, "pending_scene_prompts", fake_pending_scene)
+    monkeypatch.setattr(production, "pending_thumbnail_prompts", lambda *_a, **_kw: [])
     monkeypatch.setattr(production, "generate_scene_images", fake_generate_scene_images)
     monkeypatch.setattr(production, "regenerate_failed_scenes", fake_regenerate_failed_scenes)
-    # pending_scene_prompts used in trailing check — return empty to avoid raise
-    monkeypatch.setattr(production, "pending_scene_prompts", lambda *_a, **_kw: [])
 
     generate_images.run("planvid", include_thumbnails=False)
 
-    assert captured_pic, "_build_vast_backend must have been called"
+    assert captured_pic, "open_backend_with_metadata must have been called"
     pic = captured_pic[0]
-    # Must receive real count (10), NOT IMAGE_CANDIDATES default (3)
+    # Must receive real count (10 = 5 scenes × 2 seeds), NOT IMAGE_CANDIDATES default (3)
     assert pic == 10, \
         f"planned_image_count must be 10 (5 scenes × 2 seeds), got {pic}"
-    assert compute_calls, "compute_session_image_count must have been called by run()"
+
+
+# ---------------------------------------------------------------------------
+# Hotfix — 6 new correctness tests
+# ---------------------------------------------------------------------------
+
+def test_run_uses_num_gpus_from_metadata(tmp_path, monkeypatch) -> None:
+    """run() must default max_workers from _meta['num_gpus'] when caller omits it."""
+    from image_generation import production
+
+    monkeypatch.setattr(config, "OUTPUT_DIR", str(tmp_path))
+    monkeypatch.setattr(config, "IMAGE_BACKEND", "vast_instance")
+    monkeypatch.setattr(config, "IMAGE_CANDIDATE_SEEDS", [11001])
+
+    video_dir = tmp_path / "mgvid"
+    video_dir.mkdir()
+    _write_json(video_dir / "image_prompts.json", [
+        {"index": 1, "prompt": "p", "clip_prompt": "c", "negative_prompt": ""}
+    ])
+    _write_json(video_dir / "generation_log.json",
+                {"001": {"status": "completed", "selected_image": str(video_dir / "images" / "img_001.png")}})
+    (video_dir / "images").mkdir()
+    Image.new("RGB", (64, 64)).save(video_dir / "images" / "img_001.png")
+
+    def fake_open_backend(backend_name=None, *, planned_image_count=None):
+        meta = {
+            "managed": True, "owned_instance_id": 42, "worker_boot_id": "42:h:8080",
+            "worker_ready_count": 1, "model_load_count": 1, "rent_count": 1, "num_gpus": 3,
+        }
+        return object(), lambda: None, meta
+
+    captured_max_workers: list[int | None] = []
+
+    def fake_generate_scene_images(video_id, *, max_workers=None, **_kw):
+        captured_max_workers.append(max_workers)
+        return {"scene_ok": 0, "scene_fail": 0, "processed_count": 0}
+
+    monkeypatch.setattr(generate_images, "open_backend_with_metadata", fake_open_backend)
+    monkeypatch.setattr(production, "generate_scene_images", fake_generate_scene_images)
+    monkeypatch.setattr(production, "regenerate_failed_scenes", lambda *a, **kw: {"scene_ok": 0, "scene_fail": 0, "processed_count": 0})
+    monkeypatch.setattr(production, "pending_scene_prompts", lambda *a, **kw: [])
+
+    generate_images.run("mgvid", include_thumbnails=False)
+
+    assert captured_max_workers and captured_max_workers[0] == 3, \
+        f"run() must forward num_gpus=3 from _meta as max_workers; got {captured_max_workers}"
+
+
+def test_run_thumbnail_finalize_no_second_backend(tmp_path, monkeypatch) -> None:
+    """After teardown, generate_thumbnail_assets must be called with allow_gpu_generation=False."""
+    from image_generation import production
+    from steps import thumbnails as thumb_step
+
+    monkeypatch.setattr(config, "OUTPUT_DIR", str(tmp_path))
+    monkeypatch.setattr(config, "IMAGE_BACKEND", "vast_instance")
+    monkeypatch.setattr(config, "IMAGE_CANDIDATE_SEEDS", [11001])
+    monkeypatch.setattr(config, "PUBLISHING_DIRNAME", "publishing")
+
+    video_dir = tmp_path / "thumbvid"
+    video_dir.mkdir()
+    _write_json(video_dir / "image_prompts.json", [
+        {"index": 1, "prompt": "p", "clip_prompt": "c", "negative_prompt": ""}
+    ])
+    _write_json(video_dir / "generation_log.json",
+                {"001": {"status": "completed", "selected_image": str(video_dir / "images" / "img_001.png")}})
+    (video_dir / "images").mkdir()
+    Image.new("RGB", (64, 64)).save(video_dir / "images" / "img_001.png")
+    (video_dir / "publishing").mkdir()
+    _write_json(video_dir / "publishing" / "thumbnail_prompts.json", [
+        {"concept_id": 1, "type": "human_closeup", "image_prompt": "x",
+         "negative_prompt": "", "thumbnail_text": "T",
+         "subject_side": "left", "text_side": "right", "paired_title_ids": ["title_1"]}
+    ])
+
+    backend_open_count = [0]
+
+    def fake_open_backend(backend_name=None, *, planned_image_count=None):
+        backend_open_count[0] += 1
+        meta = {"managed": True, "owned_instance_id": 1, "worker_boot_id": "1:h:8080",
+                "worker_ready_count": 1, "model_load_count": 1, "rent_count": 1, "num_gpus": 1}
+        return object(), lambda: None, meta
+
+    gpu_generation_flag: list[bool] = []
+
+    def fake_generate_thumbnail_assets(video_id, allow_gpu_generation=True):
+        gpu_generation_flag.append(allow_gpu_generation)
+        return {"validation_passed": True, "thumbnail_failed_ids": []}
+
+    monkeypatch.setattr(generate_images, "open_backend_with_metadata", fake_open_backend)
+    monkeypatch.setattr(production, "generate_scene_images", lambda *a, **kw: {"scene_ok": 0, "scene_fail": 0, "processed_count": 0})
+    monkeypatch.setattr(production, "regenerate_failed_scenes", lambda *a, **kw: {"scene_ok": 0, "scene_fail": 0, "processed_count": 0})
+    monkeypatch.setattr(production, "pending_scene_prompts", lambda *a, **kw: [])
+    monkeypatch.setattr(thumb_step, "generate_thumbnail_backgrounds", lambda *a, **kw: None)
+    monkeypatch.setattr(thumb_step, "generate_thumbnail_assets", fake_generate_thumbnail_assets)
+
+    generate_images.run("thumbvid", include_thumbnails=True)
+
+    assert backend_open_count[0] == 1, \
+        f"open_backend_with_metadata must be called exactly once; got {backend_open_count[0]}"
+    assert gpu_generation_flag and gpu_generation_flag[-1] is False, \
+        f"generate_thumbnail_assets must be called with allow_gpu_generation=False; got {gpu_generation_flag}"
+
+
+def test_run_thumbnail_failure_raises_clearly(tmp_path, monkeypatch) -> None:
+    """When generate_thumbnail_assets returns thumbnail_failed_ids, run() must raise RuntimeError."""
+    from image_generation import production
+    from steps import thumbnails as thumb_step
+
+    monkeypatch.setattr(config, "OUTPUT_DIR", str(tmp_path))
+    monkeypatch.setattr(config, "IMAGE_BACKEND", "vast_instance")
+    monkeypatch.setattr(config, "IMAGE_CANDIDATE_SEEDS", [11001])
+    monkeypatch.setattr(config, "PUBLISHING_DIRNAME", "publishing")
+
+    video_dir = tmp_path / "failthumb"
+    video_dir.mkdir()
+    _write_json(video_dir / "image_prompts.json", [
+        {"index": 1, "prompt": "p", "clip_prompt": "c", "negative_prompt": ""}
+    ])
+    _write_json(video_dir / "generation_log.json",
+                {"001": {"status": "completed", "selected_image": str(video_dir / "images" / "img_001.png")}})
+    (video_dir / "images").mkdir()
+    Image.new("RGB", (64, 64)).save(video_dir / "images" / "img_001.png")
+    (video_dir / "publishing").mkdir()
+    _write_json(video_dir / "publishing" / "thumbnail_prompts.json", [
+        {"concept_id": 7, "type": "human_closeup", "image_prompt": "x",
+         "negative_prompt": "", "thumbnail_text": "T",
+         "subject_side": "left", "text_side": "right", "paired_title_ids": ["title_1"]}
+    ])
+
+    monkeypatch.setattr(generate_images, "open_backend_with_metadata",
+                        lambda *a, **kw: (object(), lambda: None, {
+                            "managed": True, "owned_instance_id": 1, "worker_boot_id": "1:h:8080",
+                            "worker_ready_count": 1, "model_load_count": 1, "rent_count": 1, "num_gpus": 1
+                        }))
+    monkeypatch.setattr(production, "generate_scene_images", lambda *a, **kw: {"scene_ok": 0, "scene_fail": 0, "processed_count": 0})
+    monkeypatch.setattr(production, "regenerate_failed_scenes", lambda *a, **kw: {"scene_ok": 0, "scene_fail": 0, "processed_count": 0})
+    monkeypatch.setattr(production, "pending_scene_prompts", lambda *a, **kw: [])
+    monkeypatch.setattr(thumb_step, "generate_thumbnail_backgrounds", lambda *a, **kw: None)
+    monkeypatch.setattr(thumb_step, "generate_thumbnail_assets",
+                        lambda vid, allow_gpu_generation=True: {
+                            "validation_passed": False, "thumbnail_failed_ids": [7]
+                        })
+
+    with pytest.raises(RuntimeError, match="concept IDs.*7"):
+        generate_images.run("failthumb", include_thumbnails=True)
+
+
+def test_batch_thumbnail_failure_counted(tmp_path, monkeypatch) -> None:
+    """Thumbnail finalization failure must increment per_video_failures and trigger sys.exit(1)."""
+    import importlib
+    import scripts.generate_images_batch as batch_mod
+    from image_generation import production as prod_mod
+    from steps import thumbnails as thumb_step
+
+    monkeypatch.setattr(config, "OUTPUT_DIR", str(tmp_path))
+    monkeypatch.setattr(config, "IMAGE_BACKEND", "vast_instance")
+
+    video_dir = tmp_path / "batchfail"
+    video_dir.mkdir()
+
+    # Simulate VastSession context manager
+    class _FakeSession:
+        num_gpus = 1
+        owned_instance_id = 99
+        backend = object()
+        lifecycle = None
+
+        def __enter__(self): return self
+        def __exit__(self, *_): pass
+
+    monkeypatch.setattr(prod_mod, "compute_session_image_count", lambda *a, **kw: 5)
+
+    import image_generation.production as imp_prod
+    monkeypatch.setattr(imp_prod, "VastSession", lambda **kw: _FakeSession())
+    monkeypatch.setattr(imp_prod, "generate_scene_images", lambda *a, **kw: {"scene_ok": 0, "scene_fail": 0})
+    monkeypatch.setattr(imp_prod, "regenerate_failed_scenes", lambda *a, **kw: {"scene_ok": 0, "scene_fail": 0})
+    monkeypatch.setattr(thumb_step, "generate_thumbnail_assets",
+                        lambda vid, allow_gpu_generation=True: {
+                            "validation_passed": False, "thumbnail_failed_ids": [1, 2]
+                        })
+    monkeypatch.setattr(thumb_step, "generate_thumbnail_backgrounds", lambda *a, **kw: None)
+
+    from image_generation.production import pending_thumbnail_prompts
+    monkeypatch.setattr(imp_prod, "pending_thumbnail_prompts", lambda *a, **kw: [])
+
+    exit_calls: list[int] = []
+    monkeypatch.setattr("sys.exit", lambda code=0: exit_calls.append(code))
+
+    import sys
+    monkeypatch.setattr(sys, "argv", ["generate_images_batch.py", "--video-ids", "batchfail"])
+
+    batch_mod.main()
+
+    assert exit_calls and exit_calls[0] != 0, \
+        f"sys.exit must be called with non-zero code on thumbnail failure; got {exit_calls}"
+
+
+def test_planned_count_respects_n_override(tmp_path, monkeypatch) -> None:
+    """_compute_planned_image_count with n_override=2 must count only 2 scenes × seeds."""
+    from image_generation import production
+
+    monkeypatch.setattr(config, "OUTPUT_DIR", str(tmp_path))
+    monkeypatch.setattr(config, "IMAGE_CANDIDATE_SEEDS", [11001, 11002])
+
+    video_dir = tmp_path / "countvid"
+    video_dir.mkdir()
+    _write_json(video_dir / "image_prompts.json", [
+        {"index": i + 1, "prompt": f"s{i}", "clip_prompt": f"c{i}", "negative_prompt": ""}
+        for i in range(5)
+    ])
+
+    def fake_pending_scene(video_id, n_override=None):
+        prompts = [{"index": i + 1} for i in range(5)]
+        if n_override is not None:
+            prompts = prompts[:n_override]
+        return prompts
+
+    monkeypatch.setattr(production, "pending_scene_prompts", fake_pending_scene)
+    monkeypatch.setattr(production, "pending_thumbnail_prompts", lambda *a, **kw: [])
+
+    count = generate_images._compute_planned_image_count("countvid", n_override=2, include_thumbnails=False)
+    assert count == 4, f"2 scenes × 2 seeds = 4; got {count}"
+
+
+def test_planned_count_excludes_thumbs_when_not_included(tmp_path, monkeypatch) -> None:
+    """_compute_planned_image_count with include_thumbnails=False must exclude thumbnail count."""
+    from image_generation import production
+
+    monkeypatch.setattr(config, "OUTPUT_DIR", str(tmp_path))
+    monkeypatch.setattr(config, "IMAGE_CANDIDATE_SEEDS", [11001])
+
+    video_dir = tmp_path / "nothumbs"
+    video_dir.mkdir()
+
+    def fake_pending_scene(video_id, n_override=None):
+        return [{"index": 1}, {"index": 2}]
+
+    def fake_pending_thumbs(video_id, **kw):
+        return [{"concept_id": 1}, {"concept_id": 2}, {"concept_id": 3}]
+
+    monkeypatch.setattr(production, "pending_scene_prompts", fake_pending_scene)
+    monkeypatch.setattr(production, "pending_thumbnail_prompts", fake_pending_thumbs)
+
+    no_thumbs = generate_images._compute_planned_image_count("nothumbs", n_override=None, include_thumbnails=False)
+    with_thumbs = generate_images._compute_planned_image_count("nothumbs", n_override=None, include_thumbnails=True)
+
+    assert no_thumbs == 2, f"2 scenes × 1 seed = 2 (no thumbnails); got {no_thumbs}"
+    assert with_thumbs == 5, f"2 scenes × 1 seed + 3 thumbnails = 5; got {with_thumbs}"

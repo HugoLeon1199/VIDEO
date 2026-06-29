@@ -1602,3 +1602,43 @@ Mỗi commit push `main` → RunPod tự build lại. Không push dồn (nhiều
 
 - No `output/` or `logs/` artifacts should be staged for commit.
 - Dip-to-black is intentionally disabled by coercion to hard cut until a true symmetric implementation is ready.
+
+## Real VI autopilot smoke after hotfix - 2026-06-29
+
+### Run target
+
+- script: `output/ancient-child-surgery-31000-years-vi/script.txt`
+- video id: `hotfix-e2e-ancient-child-vi-20260629`
+
+### Observed progress
+
+- autopilot completed:
+  - creative package validation
+  - Vietnamese block TTS
+  - exact transcription
+  - `timestamps.json`
+  - `word_timestamps.json`
+  - `word_timestamps_diagnostics.json`
+- pipeline currently stops in `image_prompts`
+
+### New issues found
+
+- `config.py`
+  - `.env` contained `HF_MODEL_REVISION=` blank
+  - because `main.py` injects `.env` keys into `os.environ`, that blank value overrode the pinned default and caused image prompt validation to fail
+  - patched to use:
+    - `os.getenv(\"HF_MODEL_REVISION\") or <pinned_sha>`
+- `image_generation/flux_prompting.py`
+  - local tokenizer loading for FLUX prompt token counting did not forward Hugging Face auth
+  - patched `AutoTokenizer.from_pretrained(...)` to pass `HF_TOKEN` or `VAST_HF_TOKEN`
+
+### Remaining blocker
+
+- the available HF token still gets `401` for gated access to:
+  - `black-forest-labs/FLUX.1-dev`
+- as a result, the current real A-to-Z VI autopilot smoke is blocked before scene prompt generation can finish
+
+### Current status
+
+- render/effects/Vast hotfix code is not the blocking factor in this real run
+- the remaining blocker is external Hugging Face gated-model access for local tokenizer validation

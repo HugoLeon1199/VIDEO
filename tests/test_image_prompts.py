@@ -63,6 +63,13 @@ def test_clip_prompt_unicode_normalization_and_rejection() -> None:
         normalize_prompt_text("bad\ufffdtext")
 
 
+def test_clip_prompt_is_condensed_for_long_scene_text() -> None:
+    long_text = " ".join(f"word{i}" for i in range(1, 60))
+    clip_prompt = image_prompts._build_clip_prompt("vi", long_text)
+    assert "word24" in clip_prompt
+    assert "word25" not in clip_prompt
+
+
 def test_scene_prompt_generation_fails_when_clip_prompt_overflows(tmp_path: Path, monkeypatch) -> None:
     video_dir = tmp_path / "demo"
     _setup_video(video_dir)
@@ -77,3 +84,23 @@ def test_scene_prompt_generation_fails_when_clip_prompt_overflows(tmp_path: Path
         image_prompts.run("demo")
 
     assert not (video_dir / "image_prompts.json").exists()
+
+
+def test_scene_prompt_generation_falls_back_when_tokenizer_access_is_gated(tmp_path: Path, monkeypatch) -> None:
+    video_dir = tmp_path / "demo"
+    _setup_video(video_dir)
+    monkeypatch.setattr(image_prompts, "_get_audio_duration", lambda _path: 6.0)
+
+    def _raise_gated(_model_id, _text, _subfolder, _revision=None):
+        raise RuntimeError("401 Client Error: gated repo")
+
+    monkeypatch.setattr(image_prompts, "token_count_for_model", _raise_gated)
+
+    image_prompts.run("demo")
+
+    prompts = json.loads((video_dir / "image_prompts.json").read_text(encoding="utf-8"))
+    first = prompts[0]
+    assert first["clip_token_count"] > 0
+    assert first["t5_token_count"] > 0
+    assert first["clip_token_count_mode"] == "heuristic"
+    assert first["t5_token_count_mode"] == "heuristic"

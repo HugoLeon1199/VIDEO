@@ -1,5 +1,185 @@
 # CURSOR_WORKLOG - Repo worklog
 
+## Session 2026-06-29 (5) — Style concept generation scripts for Klein 9B reference pack
+
+### Goal
+Generate 10 style concept pairs (hero scene + character lineup) so Leon can pick the best
+art style before running Klein 9B A/B test. Three-round workflow:
+1. 10 concepts × 2 images → contact sheet → Leon picks top 3
+2. Character sheets (male + female) for top 3 concepts → Leon picks top 1
+3. Copy 4 files to `reference_images/` → run A/B test
+
+### What shipped
+
+**`scripts/gen_style_concepts.py`** — generates 10 concept pairs:
+- 20 images total (hero 1024×576 + lineup 576×576 per concept)
+- Fixed style lock prefix on all prompts (ink, off-white, earth colors, minimal)
+- C01–C10 concept prompts covering: river craftsman, cave fire, savanna family, hunt, gather, child, elder, night fire, stone tool, coastal
+- Outputs to `reference_images/concepts/<concept_id>/hero.png` + `lineup.png`
+- Auto-generates `contact_sheet.png` (grid of all 10 concepts × 2 cols) via Pillow
+- Supports RunPod (`--backend runpod`) and Vast (`--backend vast --vast-host HOST`)
+- `--dry-run` prints all prompts without generating
+- `--concepts C01,C04` to run subset only
+
+**`scripts/gen_character_sheets.py`** — generates character sheets for selected concepts:
+- Male (Karo archetype) + female (Luma archetype) per concept
+- 1:1 format (576×576), frontal full-body, plain white background
+- Female prompts all include "fully clothed" (female clothing rule enforced)
+- Accepts `--concepts C01,C04,C07` (top 3 from round 1)
+- Prints copy instructions for manual promotion to `reference_images/`
+
+### Test results
+- `276 passed, 17 warnings` (unchanged)
+- Both scripts compile clean, dry-run verified
+
+### Files changed
+| File | Change |
+|------|--------|
+| `scripts/gen_style_concepts.py` | NEW |
+| `scripts/gen_character_sheets.py` | NEW |
+
+### How to run
+
+```powershell
+$python = "C:\Users\LEON_RM\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\python.exe"
+
+# Round 1: generate 10 concept pairs
+& $python scripts/gen_style_concepts.py --dry-run                        # preview prompts
+& $python scripts/gen_style_concepts.py --vast-host <VAST_IP>            # generate
+# Open: reference_images/concepts/contact_sheet.png → pick top 3
+
+# Round 2: character sheets for top 3 (replace C01,C04,C07 with actual picks)
+& $python scripts/gen_character_sheets.py --concepts C01,C04,C07 --vast-host <VAST_IP>
+
+# Round 3: manually copy winners to reference_images/ then run A/B test
+```
+
+---
+
+## Session 2026-06-29 (4) — FLUX.2-klein-9B experimental branch
+
+### Goal
+Create an isolated experimental pipeline for `FLUX.2-klein-9b-kv-fp8` with reference-image
+support for character scenes, without touching production 12B defaults or TTS/render/subtitle/Vast lifecycle.
+
+### What shipped
+
+**1. Config profile (`config.py`)**
+- Added 12 `KLEIN_*` keys: model ID, worker image/port, T2I steps (4), img2img steps (8),
+  strength values, reference dir, A/B scene count, candidate seeds
+- Production `IMAGE_BACKEND`, `VAST_WORKER_IMAGE`, `IMAGE_STEPS`, `IMAGE_GUIDANCE_SCALE`
+  defaults are **not changed**
+
+**2. Klein worker (`vast_worker_klein/`)**
+- `gpu_worker.py` — FastAPI, loads `FLUX.2-klein` via `FluxPipeline` + `FluxImg2ImgPipeline`
+- `Dockerfile` — custom image, PORT 8081 (separate from production PORT 8080)
+- `requirements.txt` — diffusers ≥ 0.30 (required for FluxImg2ImgPipeline)
+- Auth: same `WORKER_API_TOKEN` env var
+- img2img: decodes `img2img_base64`, passes to `FluxImg2ImgPipeline` at configured strength
+
+**3. KleinBackend (`image_generation/klein_backend.py`)**
+- Wraps `VastInstanceBackend` (reuses HTTP + auth logic)
+- Per-request: classifies scene → decides text-to-image or img2img
+- Character scenes (Karo/Luma closeup, continuity): → img2img with master seed reference
+- Env/object/diagram/timeline: → text-to-image (no reference)
+- Same-scene continuity chain: reuses previous scene image up to `MAX_CHAIN_DEPTH=4`
+- Chain resets on: `chain_depth >= 4`, low confidence (< 0.55), or previous QA failed
+
+**4. A/B test script (`scripts/ab_test_klein.py`)**
+- `--video-id`, `--count N` (default 20), `--dry-run`, `--klein-host HOST:PORT`,
+  `--arm-a-host HOST:PORT`, `--runpod-arm-a`
+- Dry-run: prints scene plan with scene type, arm B mode, character flag
+- Live: generates all scenes on both arms, saves PNG outputs to `output/ab_test_klein/<video_id>/`
+- Writes: `metrics.json`, `arm_b_mode.json`, `report.md`
+- Measures: OK/fail counts, wall-clock time, estimated cost (based on observed $0.24/100 imgs for 12B)
+
+**5. Reference image fixtures (`reference_images/manifest.json`)**
+- Defines 6 slots: 1 style sheet, 2–3 character sheets, 1–2 sample scene sheets
+- Marks which slots are required vs optional
+- PNG files gitignored; manifest committed for structure
+- Maps reference keys to Klein `seed_keys` (null = fallback to t2i)
+
+**6. Tests (`tests/test_klein_ab.py`)**
+- 25 new tests covering: scene classifier, character bible, reference selector, KleinBackend
+  mode routing, A/B planner, config key presence
+- All pass: `276 passed, 17 warnings`
+
+### Changed files
+| File | Change |
+|------|--------|
+| `config.py` | Add 12 `KLEIN_*` experimental keys |
+| `vast_worker_klein/__init__.py` | New package marker |
+| `vast_worker_klein/gpu_worker.py` | New: T2I + img2img worker for FLUX.2-klein |
+| `vast_worker_klein/Dockerfile` | New: custom image build on port 8081 |
+| `vast_worker_klein/requirements.txt` | New: deps for klein worker |
+| `image_generation/klein_backend.py` | New: KleinBackend with classifier-driven mode selection |
+| `scripts/ab_test_klein.py` | New: A/B test runner (20 scenes, dry-run + live) |
+| `reference_images/manifest.json` | New: reference slot definitions |
+| `tests/test_klein_ab.py` | New: 25 regression tests |
+| `.gitignore` | Ignore `reference_images/*.png` and `output/ab_test_klein/` |
+
+### Invariants preserved
+- Production `IMAGE_BACKEND` default = `runpod_serverless` (unchanged)
+- FLUX.1-dev 12B path: not modified
+- TTS, transcribe, render, subtitles, Vast lifecycle: not touched
+- Female clothing rule: enforced in character bible + tested
+
+### How to run the A/B test
+
+**Step 0 — Prepare reference images (one-time)**
+Generate 3–6 reference PNGs using the 12B pipeline, place in `reference_images/`:
+- `style_sheet.png` — art style reference
+- `character_male.png` — KARO frontal character sheet
+- `character_female.png` — LUMA frontal character sheet
+
+**Step 1 — Dry run (no GPU)**
+```powershell
+$python = "C:\Users\LEON_RM\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\python.exe"
+& $python scripts/ab_test_klein.py --video-id chan-trai-dua-tre-31000-nam-vi --count 20 --dry-run
+```
+
+**Step 2 — Rent Klein worker on Vast, run A/B**
+```powershell
+# Boot a Klein worker with VAST_WORKER_IMAGE=ghcr.io/hugoleon1199/vast-flux-klein-worker:v0.1.0
+# Then:
+& $python scripts/ab_test_klein.py \
+    --video-id chan-trai-dua-tre-31000-nam-vi \
+    --count 20 \
+    --arm-a-host <12B_HOST> --arm-a-port 8080 \
+    --klein-host <KLEIN_HOST> --klein-port 8081 \
+    --reference-dir reference_images
+```
+
+**Step 3 — Inspect visually, fill in report.md**
+Compare `output/ab_test_klein/<video-id>/arm_a/*.png` vs `arm_b/*.png`.
+Fill in the "Visual quality" table in `report.md`.
+
+**Step 4 — Decision: keep 12B or switch?**
+Switch criteria:
+- Character consistency >= 12B in visual inspection
+- No clothing violations in Luma scenes
+- Fail rate <= 12B
+- Cost saving >= 30% (model estimates ~50%)
+
+### Test results
+```
+276 passed, 17 warnings in 46.81s
+```
+
+### Docker build (when ready)
+```bash
+docker build -f vast_worker_klein/Dockerfile -t ghcr.io/hugoleon1199/vast-flux-klein-worker:v0.1.0 vast_worker_klein/
+docker push ghcr.io/hugoleon1199/vast-flux-klein-worker:v0.1.0
+```
+
+### What is NOT done yet (intentional)
+- Klein worker Docker image not built or pushed (needs GPU test first)
+- Real reference PNGs not generated (Leon must do after reviewing plan)
+- No GPU smoke test yet — Leon requested: "1 GPU × 2 ảnh first, then 2 GPU × 4–6"
+- Report.md visual scores empty — must be filled after real run
+
+---
+
 ## Session 2026-06-29 (3) — Hotfix: direct-path correctness gaps
 
 Four correctness gaps in `run()` and batch script, fixed on top of `bc97ff5`:

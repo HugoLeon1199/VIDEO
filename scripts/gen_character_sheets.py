@@ -9,8 +9,8 @@ Output: reference_images/candidates/<concept_id>/character_male.png
                                                   character_female.png
 
 Usage:
-  python scripts/gen_character_sheets.py --concepts C01,C04,C07 --backend runpod
-  python scripts/gen_character_sheets.py --concepts C01 --backend vast --vast-host 1.2.3.4
+  python scripts/gen_character_sheets.py --concepts C01,C04,C07 --vast-host 1.2.3.4
+  python scripts/gen_character_sheets.py --concepts C01 --vast-host 1.2.3.4 --vast-port 8080
 
 After Leon picks the final winner, manually copy files to reference_images/:
   reference_images/character_male.png    <- from winning concept
@@ -73,7 +73,7 @@ def main() -> None:
     parser = argparse.ArgumentParser(description="Generate character sheets for selected Klein 9B concepts")
     parser.add_argument("--concepts", required=True, metavar="C01,C04,C07",
                         help="Comma-separated concept IDs to generate character sheets for")
-    parser.add_argument("--backend", choices=["runpod", "vast"], default="runpod")
+    parser.add_argument("--backend", choices=["runpod", "vast"], default="vast")
     parser.add_argument("--vast-host", default="", metavar="HOST")
     parser.add_argument("--vast-port", type=int, default=8080)
     parser.add_argument("--out-dir", default="reference_images/candidates", metavar="DIR")

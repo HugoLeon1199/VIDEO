@@ -9,8 +9,8 @@ Output: reference_images/concepts/<concept_id>/hero.png + lineup.png
 
 Usage:
   python scripts/gen_style_concepts.py --dry-run
-  python scripts/gen_style_concepts.py --backend runpod
-  python scripts/gen_style_concepts.py --backend vast --vast-host 1.2.3.4 --vast-port 8080
+  python scripts/gen_style_concepts.py --vast-host 1.2.3.4
+  python scripts/gen_style_concepts.py --vast-host 1.2.3.4 --vast-port 8080 --vast-port 8080
 """
 
 from __future__ import annotations
@@ -233,7 +233,7 @@ def _make_contact_sheet(concepts_dir: Path, concepts: list[dict]) -> Path:
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="Generate 10 style concept pairs for Klein 9B reference selection")
-    parser.add_argument("--backend", choices=["runpod", "vast"], default="runpod")
+    parser.add_argument("--backend", choices=["runpod", "vast"], default="vast")
     parser.add_argument("--vast-host", default="", metavar="HOST")
     parser.add_argument("--vast-port", type=int, default=8080)
     parser.add_argument("--out-dir", default="reference_images/concepts", metavar="DIR")

@@ -137,19 +137,10 @@ def build_parser() -> argparse.ArgumentParser:
 
 def _build_backend(args):
     if args.backend == "runpod":
-        from image_generation.runpod_client import RunPodClient
-        from image_generation.runpod_serverless_backend import RunPodServerlessBackend
-
-        if not config.RUNPOD_API_KEY:
-            raise RuntimeError("RUNPOD_API_KEY not set")
-        client = RunPodClient(
-            api_key=config.RUNPOD_API_KEY,
-            endpoint_id=config.RUNPOD_ENDPOINT_ID,
-            timeout=config.RUNPOD_REQUEST_TIMEOUT,
-            poll_interval=config.RUNPOD_POLL_INTERVAL,
-            max_retries=config.RUNPOD_MAX_RETRIES,
+        raise RuntimeError(
+            "Klein style concept lab requires --backend vast (direct Vast.ai worker). "
+            "RunPod does not run the Klein worker — start a Vast instance and pass --vast-host <IP>."
         )
-        return RunPodServerlessBackend(client=client)
 
     if args.backend == "vast":
         from image_generation.vast_backend import VastInstanceBackend
@@ -317,6 +308,27 @@ def main() -> None:
     for concept in concepts:
         for image_key, scene_key, column_label in _VARIANTS:
             dest = out_dir / concept["id"] / f"{image_key}.png"
+            if dest.exists():
+                logger.info("{}/{}: SKIP (already exists at {})", concept["id"], image_key, dest)
+                log_entries.append({
+                    "concept_id": concept["id"],
+                    "style_variant": concept["style_variant"],
+                    "image_key": image_key,
+                    "scene_id": int(_numeric_scene_id(concept["id"], column_label)),
+                    "scene_mode": "control" if image_key == "A_control" else "unique",
+                    "output_path": str(dest),
+                    "prompt": _build_full_prompt(concept, scene_key),
+                    "model": health.get("model_id"),
+                    "mode": "skip",
+                    "steps": config.KLEIN_STEPS_T2I,
+                    "guidance": config.KLEIN_GUIDANCE_SCALE,
+                    "seed": _SEED,
+                    "elapsed": 0.0,
+                    "error": None,
+                    "ok": True,
+                    "skipped": True,
+                })
+                continue
             request = _build_request(concept, image_key, scene_key, column_label)
             t0 = time.time()
             error = None

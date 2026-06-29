@@ -45,11 +45,14 @@ class _FakeBackend:
 
 
 def test_step5_reuses_one_vast_backend_for_scenes_and_thumbnails(tmp_path: Path, monkeypatch) -> None:
+    import image_generation.runpod_serverless_backend as runpod_backend
+
     monkeypatch.setattr(config, "OUTPUT_DIR", str(tmp_path))
     monkeypatch.setattr(generate_images.config, "OUTPUT_DIR", str(tmp_path))
     monkeypatch.setattr(thumbnails.config, "OUTPUT_DIR", str(tmp_path))
     monkeypatch.setattr(generate_images.config, "IMAGE_BACKEND", "vast_instance")
     monkeypatch.setattr(config, "IMAGE_BACKEND", "vast_instance")
+    monkeypatch.setattr(runpod_backend, "OUTPUT_ROOT", str(tmp_path))
 
     video_dir = tmp_path / "demo"
     video_dir.mkdir(parents=True, exist_ok=True)
@@ -98,13 +101,18 @@ def test_step5_reuses_one_vast_backend_for_scenes_and_thumbnails(tmp_path: Path,
     Image.new("RGB", (1024, 576), (120, 80, 40)).save(candidate_path)
     backend = _FakeBackend(candidate_path)
     teardown_called: list[bool] = []
-    thumbnail_backend_overrides: list[object] = []
+    thumbnail_background_backends: list[object] = []
+    thumbnail_finalize_calls: list[bool] = []
 
     def fake_build_backend():
         return backend, lambda: teardown_called.append(True)
 
+    def fake_generate_thumbnail_backgrounds(video_id: str, **kwargs):
+        thumbnail_background_backends.append(kwargs.get("backend_override"))
+        return {"background_generated_count": 1, "thumbnail_failed_ids": []}
+
     def fake_generate_thumbnail_assets(video_id: str, **kwargs):
-        thumbnail_backend_overrides.append(kwargs.get("backend_override"))
+        thumbnail_finalize_calls.append(True)
         return {
             "thumbnail_prompt_count": 1,
             "thumbnail_generated_count": 1,
@@ -113,10 +121,12 @@ def test_step5_reuses_one_vast_backend_for_scenes_and_thumbnails(tmp_path: Path,
         }
 
     monkeypatch.setattr(generate_images, "_build_vast_backend", fake_build_backend)
+    monkeypatch.setattr(thumbnails, "generate_thumbnail_backgrounds", fake_generate_thumbnail_backgrounds)
     monkeypatch.setattr(thumbnails, "generate_thumbnail_assets", fake_generate_thumbnail_assets)
 
     generate_images.run("demo")
 
     assert backend.calls == ["001"]
-    assert thumbnail_backend_overrides == [backend]
+    assert thumbnail_background_backends == [backend]
+    assert thumbnail_finalize_calls == [True]
     assert teardown_called == [True]

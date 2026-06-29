@@ -1520,3 +1520,85 @@ Mỗi commit push `main` → RunPod tự build lại. Không push dồn (nhiều
 
 - Generated `output/` artifacts were not staged or committed.
 - The renderer now warns instead of hard-failing only when duration probing is unavailable in a mocked test environment; real runs still validate timing drift when FFprobe returns a duration.
+
+## Production hotfix for effects/render completion and Vast lifecycle - 2026-06-29
+
+### What changed
+
+- `steps/render_video.py`
+  - production-path failures now raise runtime errors instead of `sys.exit()`
+  - fixed real FFmpeg pan expressions by replacing invalid `zoompan` `d` usage with literal frame progress
+  - fixed audio stream mapping in the real FFmpeg graph
+  - render now hard-overrides stale motion/transitions/look when `EFFECTS_ENABLED=false`
+  - validates effects plans against current `image_prompts.json`
+  - reads look enable/grain/vignette/grade from `effects_plan.json`
+  - dip-to-black is currently coerced to hard cut instead of shipping the previous incorrect flash-black behavior
+- `steps/design_effects.py`
+  - effects-disabled plans are fully static
+  - invalid/stale creative packages no longer fall back to raw chapter dips
+  - too-short transitions now fall back to hard cuts
+- `image_generation/production.py`
+  - scene completion now requires:
+    - `status=completed`
+    - no errors
+    - selected image path
+    - readable canonical PNG with non-zero dimensions
+  - `partial` and corrupt/missing artifacts remain pending
+  - `generation_log.json` writes are atomic
+  - bounded Vast destroy verification preserves the original pipeline exception when cleanup also fails
+- `steps/thumbnails.py`
+  - separated thumbnail recovery into GPU background generation vs local JPG/contact-sheet finalize
+  - validates PNG/JPG readability before counting artifacts as complete
+  - preserves successful backgrounds if local overlay work fails
+- `steps/generate_images.py`
+  - production path now raises instead of exiting
+  - hard-fails with exact pending scene IDs after retry if scenes remain incomplete
+  - releases Vast before local thumbnail overlay/contact-sheet work
+- `steps/autopilot.py`
+  - image stage now checks thumbnail diagnostics and fails instead of silently marking complete
+  - shared Vast usage is limited to scenes + thumbnail backgrounds only
+
+### Files changed
+
+- `image_generation/production.py`
+- `steps/autopilot.py`
+- `steps/design_effects.py`
+- `steps/generate_images.py`
+- `steps/render_video.py`
+- `steps/thumbnails.py`
+- `tests/test_autopilot.py`
+- `tests/test_autopilot_vast_session.py`
+- `tests/test_effects_pipeline.py`
+- `tests/test_render_effects.py`
+- `tests/test_thumbnails.py`
+- `tests/test_vast_lifecycle.py`
+- `.ai/CURSOR_WORKLOG.md`
+- `handoff.md`
+
+### Verification
+
+- `C:\Users\LEON_RM\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\python.exe -m pytest tests/test_effects_pipeline.py tests/test_render_effects.py tests/test_autopilot_vast_session.py tests/test_thumbnails.py -q`
+- `C:\Users\LEON_RM\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\python.exe -m pytest tests -q`
+
+### Real FFmpeg smokes
+
+- push-in: `output/hotfix-smoke-push-in/final.mp4`
+- pull-out: `output/hotfix-smoke-pull-out/final.mp4`
+- left-to-right pan: `output/hotfix-smoke-pan-ltr/final.mp4`
+- right-to-left pan: `output/hotfix-smoke-pan-rtl/final.mp4`
+- crossfade: `output/hotfix-smoke-crossfade/final.mp4`
+- effects disabled: `output/hotfix-smoke-effects-off/final.mp4`
+- VI preview: `output/to-tien-cua-ban-chi-lam-viec-15-tieng-mot-tuan-vi-fresh-full-20260628-1320/effects_preview.mp4`
+- EN preview: `output/brain-smaller-than-ancestors-en/effects_preview.mp4`
+
+### Results
+
+- requested targeted suites passed
+- full suite passed: `201 passed`
+- six real local FFmpeg smoke renders completed successfully
+- both 45-second previews rendered successfully
+
+### Notes
+
+- No `output/` or `logs/` artifacts should be staged for commit.
+- Dip-to-black is intentionally disabled by coercion to hard cut until a true symmetric implementation is ready.

@@ -1,15 +1,18 @@
 from __future__ import annotations
 
 import json
+import time
 from contextlib import AbstractContextManager
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
+from PIL import Image, UnidentifiedImageError
 from loguru import logger
 
 import config
 from image_generation.schemas import SceneRequest
+from steps.creative_package import _atomic_write_json
 
 
 def _video_dir(video_id: str) -> Path:
@@ -30,8 +33,7 @@ def _read_json(path: Path, default: Any) -> Any:
 
 
 def _write_json(path: Path, payload: Any) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
+    _atomic_write_json(path, payload)
 
 
 def _load_log(path: Path) -> dict:
@@ -39,11 +41,34 @@ def _load_log(path: Path) -> dict:
     return value if isinstance(value, dict) else {}
 
 
-def _scene_done(log: dict, video_dir: Path, scene_id: str) -> bool:
-    entry = log.get(scene_id, {})
+def _image_is_readable(path: Path) -> bool:
+    if not path.exists():
+        return False
+    try:
+        with Image.open(path) as img:
+            img.verify()
+        with Image.open(path) as img:
+            width, height = img.size
+        return width > 0 and height > 0
+    except (OSError, UnidentifiedImageError, ValueError):
+        return False
+
+
+def _scene_artifact_ready(entry: dict, video_dir: Path, scene_id: str) -> bool:
+    selected_image = str(entry.get("selected_image", "") or "").strip()
+    image_path = _canonical_image_path(video_dir, scene_id)
     if entry.get("status") != "completed":
         return False
-    return _canonical_image_path(video_dir, scene_id).exists()
+    if entry.get("errors"):
+        return False
+    if not selected_image:
+        return False
+    return _image_is_readable(image_path)
+
+
+def _scene_done(log: dict, video_dir: Path, scene_id: str) -> bool:
+    entry = log.get(scene_id, {})
+    return _scene_artifact_ready(entry, video_dir, scene_id)
 
 
 def _load_prompts(video_id: str, n_override: int | None = None) -> list[dict]:
@@ -67,11 +92,15 @@ def pending_failed_scene_prompts(video_id: str, n_override: int | None = None) -
     video_dir = _video_dir(video_id)
     prompts = _load_prompts(video_id, n_override=n_override)
     log = _load_log(video_dir / "generation_log.json")
-    failed_ids = {
-        scene_id
-        for scene_id, entry in log.items()
-        if entry.get("status") in {"failed", "partial"}
-    }
+    failed_ids: set[str] = set()
+    for item in prompts:
+        scene_id = f"{int(item['index']):03d}"
+        entry = log.get(scene_id, {})
+        if entry.get("status") in {"failed", "partial"}:
+            failed_ids.add(scene_id)
+            continue
+        if not _scene_artifact_ready(entry, video_dir, scene_id):
+            failed_ids.add(scene_id)
     return [item for item in prompts if f"{int(item['index']):03d}" in failed_ids]
 
 
@@ -87,8 +116,7 @@ def pending_thumbnail_prompts(video_id: str, regenerate: list[int] | None = None
     for item in prompts:
         concept_id = int(item["concept_id"])
         bg = video_dir / config.PUBLISHING_DIRNAME / "thumbnails" / f"thumbnail_{concept_id:02d}_background.png"
-        thumb = video_dir / config.PUBLISHING_DIRNAME / "thumbnails" / f"thumbnail_{concept_id:02d}.jpg"
-        if not (bg.exists() and thumb.exists()):
+        if not _image_is_readable(bg):
             pending.append(item)
     return pending
 
@@ -130,6 +158,7 @@ class VastSession(AbstractContextManager):
     teardown = None
     owned_instance_id: int | None = None
     managed: bool = False
+    cleanup_error: str = ""
 
     def __enter__(self):
         from steps import generate_images as step_generate_images
@@ -153,21 +182,37 @@ class VastSession(AbstractContextManager):
         from image_generation.vast_manager import VastManager
 
         manager = VastManager(api_key=config.VAST_API_KEY, worker_port=config.VAST_WORKER_PORT)
-        try:
-            for item in manager.list_instances():
-                if int(item.get("id", 0)) == int(self.owned_instance_id):
-                    return False
-        except Exception:
-            return False
-        return True
+        for _attempt in range(5):
+            try:
+                for item in manager.list_instances():
+                    if int(item.get("id", 0)) == int(self.owned_instance_id):
+                        break
+                else:
+                    return True
+            except Exception:
+                return False
+            time.sleep(3)
+        return False
 
     def __exit__(self, exc_type, exc, tb):
         if self.teardown and self.managed:
             self.lifecycle.teardown_attempt_count += 1
-            self.teardown()
+            try:
+                self.teardown()
+            except Exception as teardown_exc:
+                self.cleanup_error = f"Vast teardown call failed: {teardown_exc}"
+                if exc is None:
+                    raise RuntimeError(self.cleanup_error) from teardown_exc
+                logger.warning(self.cleanup_error)
+                return False
             if self.verify_destroyed():
                 self.lifecycle.teardown_verified_count += 1
                 self.lifecycle.vast_teardown_confirmed = True
+            else:
+                self.cleanup_error = f"Vast instance {self.owned_instance_id} could not be destroy-verified"
+                if exc is None:
+                    raise RuntimeError(self.cleanup_error)
+                logger.warning(self.cleanup_error)
         return False
 
 
@@ -231,15 +276,19 @@ def generate_scene_images(
                         video_id=video_id,
                         scene_id=request.scene_id,
                     )
+                status = "completed" if selected_image and not result.errors and _image_is_readable(_canonical_image_path(video_dir, request.scene_id)) else "partial"
                 gen_log[request.scene_id] = {
-                    "status": "completed" if selected_image and not result.errors else "partial",
+                    "status": status,
                     "candidates_saved": len(result.candidates),
                     "selected_image": selected_image,
                     "errors": result.errors,
                     "job_id": result.job_id,
                     "duration_seconds": result.duration_seconds,
                 }
-                ok += 1
+                if status == "completed":
+                    ok += 1
+                else:
+                    fail += 1
             except Exception as exc:
                 logger.error("Scene {} failed: {}", request.scene_id, exc)
                 gen_log[request.scene_id] = {"status": "failed", "error": str(exc)}

@@ -57,6 +57,19 @@ def _load_json(path: Path, default: Any) -> Any:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
+def _image_is_readable(path: Path) -> bool:
+    if not path.exists():
+        return False
+    try:
+        with Image.open(path) as img:
+            img.verify()
+        with Image.open(path) as img:
+            width, height = img.size
+        return width > 0 and height > 0
+    except (OSError, ValueError):
+        return False
+
+
 def _load_font(size: int) -> ImageFont.FreeTypeFont | ImageFont.ImageFont:
     try:
         return ImageFont.truetype(config.THUMBNAIL_FONT_FAMILY, size=size)
@@ -141,7 +154,7 @@ def build_contact_sheet(video_dir: Path, prompt_entries: list[dict[str, Any]]) -
     thumbs: list[tuple[str, Image.Image]] = []
     for idx, entry in enumerate(prompt_entries):
         thumb_path = _thumbnail_path(video_dir, int(entry["concept_id"]))
-        if thumb_path.exists():
+        if _image_is_readable(thumb_path):
             thumbs.append((string.ascii_uppercase[idx], Image.open(thumb_path).convert("RGB")))
     if not thumbs:
         raise ThumbnailGenerationError("No finished thumbnails available for contact sheet")
@@ -193,7 +206,96 @@ def _cleanup_candidate_dir(path: Path) -> None:
         shutil.rmtree(path, ignore_errors=True)
 
 
-def generate_thumbnail_assets(
+def _expected_thumbnail_count(package: dict[str, Any]) -> int:
+    return len(package.get("thumbnail_concepts", []))
+
+
+def _gpu_pending_entries(
+    video_dir: Path,
+    prompt_entries: list[dict[str, Any]],
+    regenerate_set: set[int],
+) -> list[dict[str, Any]]:
+    pending: list[dict[str, Any]] = []
+    for entry in prompt_entries:
+        concept_id = int(entry["concept_id"])
+        if regenerate_set:
+            if concept_id in regenerate_set:
+                pending.append(entry)
+            continue
+        if not _image_is_readable(_background_path(video_dir, concept_id)):
+            pending.append(entry)
+    return pending
+
+
+def _overlay_pending_entries(
+    video_dir: Path,
+    prompt_entries: list[dict[str, Any]],
+    regenerate_set: set[int],
+) -> list[dict[str, Any]]:
+    pending: list[dict[str, Any]] = []
+    for entry in prompt_entries:
+        concept_id = int(entry["concept_id"])
+        if regenerate_set:
+            if concept_id not in regenerate_set:
+                continue
+        if _image_is_readable(_background_path(video_dir, concept_id)) and not _image_is_readable(_thumbnail_path(video_dir, concept_id)):
+            pending.append(entry)
+    return pending
+
+
+def _existing_thumbnail_entries(video_dir: Path, prompt_entries: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    return [entry for entry in prompt_entries if _image_is_readable(_thumbnail_path(video_dir, int(entry["concept_id"])))]
+
+
+def _finalize_thumbnail_outputs(video_dir: Path, prompt_entries: list[dict[str, Any]], generation_log: dict[str, Any]) -> dict[str, Any]:
+    failed_ids: list[int] = []
+    for entry in _overlay_pending_entries(video_dir, prompt_entries, set()):
+        concept_id = int(entry["concept_id"])
+        try:
+            output_path = render_thumbnail_overlay(video_dir, entry)
+            if not _image_is_readable(output_path):
+                raise ThumbnailGenerationError(f"Unreadable thumbnail JPG for concept {concept_id}")
+            generation_log[str(concept_id)] = {
+                "status": "completed",
+                "background_path": str(_background_path(video_dir, concept_id)),
+                "thumbnail_path": str(output_path),
+                "errors": [],
+            }
+        except Exception as exc:
+            failed_ids.append(concept_id)
+            generation_log[str(concept_id)] = {
+                "status": "failed",
+                "error": str(exc),
+                "background_path": str(_background_path(video_dir, concept_id)),
+            }
+            logger.error("Thumbnail overlay {} failed: {}", concept_id, exc)
+
+    existing_entries = _existing_thumbnail_entries(video_dir, prompt_entries)
+    contact_sheet_path = None
+    contact_sheet_ok = False
+    if existing_entries:
+        try:
+            contact_sheet = build_contact_sheet(video_dir, existing_entries)
+            contact_sheet_ok = _image_is_readable(contact_sheet)
+            contact_sheet_path = str(contact_sheet) if contact_sheet_ok else None
+        except Exception as exc:
+            logger.error("Thumbnail contact sheet failed: {}", exc)
+            contact_sheet_ok = False
+    diagnostics = {
+        "thumbnail_prompt_count": len(prompt_entries),
+        "thumbnail_generated_count": len(existing_entries),
+        "thumbnail_failed_ids": sorted(set(failed_ids)),
+        "validation_passed": not failed_ids and contact_sheet_ok,
+        "warnings": [],
+        "contact_sheet_path": contact_sheet_path,
+        "contact_sheet_ok": contact_sheet_ok,
+    }
+    _atomic_write_json(_thumbnail_log_path(video_dir), generation_log)
+    _atomic_write_json(_thumbnail_diagnostics_path(video_dir), diagnostics)
+    return diagnostics
+
+
+def generate_thumbnail_backgrounds(
     video_id: str,
     *,
     regenerate: list[int] | None = None,
@@ -205,49 +307,27 @@ def generate_thumbnail_assets(
 ) -> dict[str, Any]:
     video_dir = Path(config.OUTPUT_DIR) / video_id
     load_validated_package(video_dir, allow_stale_package=allow_stale_package)
-    prompts_path = _thumbnail_prompts_path(video_dir)
-    if not prompts_path.exists():
-        raise FileNotFoundError(f"Missing thumbnail_prompts.json: {prompts_path}")
-    prompt_entries = _load_json(prompts_path, [])
+    prompt_entries = _load_json(_thumbnail_prompts_path(video_dir), [])
     if not isinstance(prompt_entries, list) or not prompt_entries:
         raise ThumbnailGenerationError("thumbnail_prompts.json must contain a non-empty list")
     regenerate_set = {int(value) for value in regenerate or []}
     log_path = _thumbnail_log_path(video_dir)
     generation_log = _load_json(log_path, {})
-    pending_entries = []
-    for entry in prompt_entries:
-        concept_id = int(entry["concept_id"])
-        bg_path = _background_path(video_dir, concept_id)
-        thumb_path = _thumbnail_path(video_dir, concept_id)
-        if regenerate_set and concept_id not in regenerate_set:
-            continue
-        if not regenerate_set and bg_path.exists() and thumb_path.exists():
-            continue
-        pending_entries.append(entry)
+    pending_entries = _gpu_pending_entries(video_dir, prompt_entries, regenerate_set)
     if not pending_entries:
-        existing_entries = [entry for entry in prompt_entries if _thumbnail_path(video_dir, int(entry["concept_id"])).exists()]
-        diagnostics = {
-            "thumbnail_prompt_count": len(prompt_entries),
-            "thumbnail_generated_count": len(existing_entries),
-            "thumbnail_failed_ids": [],
-            "validation_passed": True,
-            "warnings": [],
-            "contact_sheet_path": str(build_contact_sheet(video_dir, existing_entries)) if existing_entries else None,
-        }
-        _atomic_write_json(_thumbnail_diagnostics_path(video_dir), diagnostics)
-        return diagnostics
+        _atomic_write_json(log_path, generation_log)
+        return {"background_generated_count": 0, "thumbnail_failed_ids": []}
     backend = backend_override
     teardown = teardown_override
     owns_backend = backend is None and manage_backend
     if backend is None:
         backend, teardown = _build_backend()
-    generated = 0
     failed_ids: list[int] = []
+    generated = 0
     try:
         for entry in pending_entries:
             concept_id = int(entry["concept_id"])
             bg_path = _background_path(video_dir, concept_id)
-            thumb_path = _thumbnail_path(video_dir, concept_id)
             temp_scene_id = str(9000 + concept_id)
             candidate_dir = Path(config.OUTPUT_DIR) / video_id / "images" / f"scene_{int(temp_scene_id):03d}"
             request = SceneRequest(
@@ -278,9 +358,10 @@ def generate_thumbnail_assets(
                 if not candidate_path.exists():
                     raise ThumbnailGenerationError(f"Missing generated candidate file for concept {concept_id}")
                 _copy_candidate_to_background(candidate_path, bg_path)
-                render_thumbnail_overlay(video_dir, entry)
+                if not _image_is_readable(bg_path):
+                    raise ThumbnailGenerationError(f"Unreadable thumbnail background for concept {concept_id}")
                 generation_log[str(concept_id)] = {
-                    "status": "completed",
+                    "status": "background_ready",
                     "background_path": str(bg_path),
                     "thumbnail_path": str(_thumbnail_path(video_dir, concept_id)),
                     "errors": result.errors,
@@ -299,17 +380,54 @@ def generate_thumbnail_assets(
     finally:
         if owns_backend and teardown:
             teardown()
-    existing_entries = [entry for entry in prompt_entries if _thumbnail_path(video_dir, int(entry["concept_id"])).exists()]
-    contact_sheet_path = None
-    if existing_entries:
-        contact_sheet_path = str(build_contact_sheet(video_dir, existing_entries))
-    diagnostics = {
-        "thumbnail_prompt_count": len(prompt_entries),
-        "thumbnail_generated_count": len(existing_entries),
-        "thumbnail_failed_ids": failed_ids,
-        "validation_passed": not failed_ids,
-        "warnings": [],
-        "contact_sheet_path": contact_sheet_path,
-    }
-    _atomic_write_json(_thumbnail_diagnostics_path(video_dir), diagnostics)
+    return {"background_generated_count": generated, "thumbnail_failed_ids": sorted(set(failed_ids))}
+
+
+def generate_thumbnail_assets(
+    video_id: str,
+    *,
+    regenerate: list[int] | None = None,
+    allow_stale_package: bool = False,
+    backend_override=None,
+    teardown_override=None,
+    manage_backend: bool = True,
+    lifecycle=None,
+) -> dict[str, Any]:
+    video_dir = Path(config.OUTPUT_DIR) / video_id
+    package = load_validated_package(video_dir, allow_stale_package=allow_stale_package)
+    prompts_path = _thumbnail_prompts_path(video_dir)
+    if not prompts_path.exists():
+        raise FileNotFoundError(f"Missing thumbnail_prompts.json: {prompts_path}")
+    prompt_entries = _load_json(prompts_path, [])
+    if not isinstance(prompt_entries, list) or not prompt_entries:
+        raise ThumbnailGenerationError("thumbnail_prompts.json must contain a non-empty list")
+    regenerate_set = {int(value) for value in regenerate or []}
+    log_path = _thumbnail_log_path(video_dir)
+    generation_log = _load_json(log_path, {})
+    if _gpu_pending_entries(video_dir, prompt_entries, regenerate_set):
+        result = generate_thumbnail_backgrounds(
+            video_id,
+            regenerate=regenerate,
+            allow_stale_package=allow_stale_package,
+            backend_override=backend_override,
+            teardown_override=teardown_override,
+            manage_backend=manage_backend,
+            lifecycle=lifecycle,
+        )
+        generation_log = _load_json(log_path, {})
+        if result["thumbnail_failed_ids"]:
+            diagnostics = _finalize_thumbnail_outputs(video_dir, prompt_entries, generation_log)
+            diagnostics["thumbnail_failed_ids"] = sorted(set(diagnostics["thumbnail_failed_ids"]) | set(result["thumbnail_failed_ids"]))
+            diagnostics["validation_passed"] = False
+            _atomic_write_json(_thumbnail_diagnostics_path(video_dir), diagnostics)
+            return diagnostics
+    diagnostics = _finalize_thumbnail_outputs(video_dir, prompt_entries, generation_log)
+    expected_count = _expected_thumbnail_count(package)
+    diagnostics["expected_thumbnail_count"] = expected_count
+    diagnostics["validation_passed"] = (
+        diagnostics["validation_passed"]
+        and diagnostics["thumbnail_generated_count"] == expected_count
+        and expected_count in {3, 5}
+        and diagnostics["contact_sheet_ok"]
+    )
     return diagnostics

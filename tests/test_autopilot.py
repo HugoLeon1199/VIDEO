@@ -4,6 +4,7 @@ import json
 from pathlib import Path
 
 import pytest
+from PIL import Image
 
 import config
 from steps import autopilot
@@ -44,21 +45,40 @@ def _stub_pipeline(monkeypatch, *, fail_stage: str | None = None):
             json.dumps([{"index": 1, "start": 0.0, "end": 4.0, "prompt": "scene prompt"}], indent=2),
             encoding="utf-8",
         )
+        publishing = video_dir / config.PUBLISHING_DIRNAME
+        publishing.mkdir(parents=True, exist_ok=True)
+        (publishing / "thumbnail_prompts.json").write_text(
+            json.dumps(
+                [
+                    {"concept_id": 1, "type": "human_closeup", "image_prompt": "one", "thumbnail_text": "ONE", "text_side": "right"},
+                    {"concept_id": 2, "type": "mystery_reveal", "image_prompt": "two", "thumbnail_text": "TWO", "text_side": "left"},
+                    {"concept_id": 3, "type": "scale_or_danger", "image_prompt": "three", "thumbnail_text": "THREE", "text_side": "right"},
+                ],
+                indent=2,
+            ),
+            encoding="utf-8",
+        )
 
     def _write_images(video_id: str, n_override=None, **_kwargs):
         video_dir = Path(config.OUTPUT_DIR) / video_id / "images"
         video_dir.mkdir(parents=True, exist_ok=True)
-        (video_dir / "img_001.png").write_bytes(b"png")
+        Image.new("RGB", (64, 64), (120, 80, 40)).save(video_dir / "img_001.png")
 
     def _write_thumbnails(video_id: str, **_kwargs):
         publishing = Path(config.OUTPUT_DIR) / video_id / config.PUBLISHING_DIRNAME
-        publishing.mkdir(parents=True, exist_ok=True)
-        (publishing / "thumbnail_contact_sheet.jpg").write_bytes(b"jpg")
+        thumbs_dir = publishing / "thumbnails"
+        thumbs_dir.mkdir(parents=True, exist_ok=True)
+        for concept_id in (1, 2, 3):
+            Image.new("RGB", (320, 180), (concept_id * 30, 70, 60)).save(thumbs_dir / f"thumbnail_{concept_id:02d}_background.png")
+            Image.new("RGB", (320, 180), (concept_id * 30, 70, 60)).save(thumbs_dir / f"thumbnail_{concept_id:02d}.jpg")
+        Image.new("RGB", (640, 360), (20, 20, 20)).save(publishing / "thumbnail_contact_sheet.jpg")
         return {
-            "thumbnail_prompt_count": 1,
-            "thumbnail_generated_count": 1,
+            "thumbnail_prompt_count": 3,
+            "thumbnail_generated_count": 3,
             "thumbnail_failed_ids": [],
             "validation_passed": True,
+            "expected_thumbnail_count": 3,
+            "contact_sheet_path": str(publishing / "thumbnail_contact_sheet.jpg"),
         }
 
     def _write_soundscape(video_id: str):
@@ -114,6 +134,7 @@ def _stub_pipeline(monkeypatch, *, fail_stage: str | None = None):
     monkeypatch.setattr(transcribe, "run", _write_transcribe)
     monkeypatch.setattr(image_prompts, "run", _write_prompts)
     monkeypatch.setattr(generate_images, "run", _write_images)
+    monkeypatch.setattr(thumbnails, "generate_thumbnail_backgrounds", lambda *args, **kwargs: {"background_generated_count": 0, "thumbnail_failed_ids": []})
     monkeypatch.setattr(thumbnails, "generate_thumbnail_assets", _write_thumbnails)
     monkeypatch.setattr(design_soundscape, "run", _write_soundscape)
     monkeypatch.setattr(design_effects, "run", _write_effects)
@@ -205,3 +226,23 @@ def test_downstream_failure_preserves_previous_artifacts(tmp_path, monkeypatch):
     assert (video_dir / "final.mp4").exists()
     state = _read_json(video_dir / "autopilot_state.json")
     assert state["stages"]["publishing"]["status"] == "failed"
+
+
+def test_render_failure_marks_autopilot_stage_failed_with_original_error(tmp_path, monkeypatch):
+    _stub_pipeline(monkeypatch)
+    from steps import render_video
+
+    script_path = tmp_path / "input.txt"
+    script_path.write_text("Hello world.\n\nNext sentence.", encoding="utf-8")
+
+    def _fail_render(video_id: str, subtitles: bool = False):
+        raise render_video.RenderPipelineError("ffmpeg broke")
+
+    monkeypatch.setattr(render_video, "run", _fail_render)
+
+    with pytest.raises(render_video.RenderPipelineError, match="ffmpeg broke"):
+        autopilot.run("video", str(script_path))
+
+    state = _read_json(tmp_path / "video" / "autopilot_state.json")
+    assert state["stages"]["render"]["status"] == "failed"
+    assert state["stages"]["render"]["error"] == "ffmpeg broke"

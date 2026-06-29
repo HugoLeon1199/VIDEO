@@ -960,3 +960,69 @@ $py = "C:\Users\LEON_RM\.cache\codex-runtimes\codex-primary-runtime\dependencies
 ### Notes
 - No generated `output/` files were staged or committed.
 - The renderer now validates duration against the audio timeline when FFprobe can read the output.
+
+## Session 2026-06-29 - Production hotfix for effects/render completion and Vast lifecycle
+
+### Goal
+- patch the remaining production bugs after `17e56ec` without expanding scope into TTS, subtitles, or model changes
+
+### What changed
+- `steps/render_video.py`
+  - removed production-path `sys.exit()` in favor of raised runtime errors
+  - fixed real FFmpeg `zoompan` pan expressions by replacing invalid `d` usage with literal frame-count progress
+  - fixed direct audio stream mapping in the one-pass FFmpeg compositor
+  - added render-time effects-off hard override so stale `effects_plan.json` motion/looks cannot leak through when `EFFECTS_ENABLED=false`
+  - validates loaded effects plans against the current `image_prompts.json`
+  - now reads look enable/grain/vignette/grade from `effects_plan.json`
+  - temporarily coerces dip-to-black planning/rendering to hard cuts instead of shipping the previous flash-black behavior
+- `steps/design_effects.py`
+  - effects-disabled plans are now fully static
+  - invalid/stale creative package no longer falls back to raw chapter dips
+  - unsafe short transitions now fall back to hard cuts
+- `image_generation/production.py`
+  - hardened scene completion so `partial`, corrupt PNGs, missing canonical images, or entries with errors remain pending/retryable
+  - generation-log writes are now atomic
+  - Vast session teardown now uses bounded destroy verification and preserves the original pipeline exception when cleanup also fails
+- `steps/thumbnails.py`
+  - split thumbnail recovery into:
+    - GPU background generation
+    - local JPG overlay rebuild
+    - local contact-sheet rebuild
+  - validates PNG/JPG readability with Pillow before counting artifacts as complete
+  - preserves downloaded backgrounds when local overlay work fails
+- `steps/generate_images.py`
+  - production paths now raise instead of exiting
+  - hard-fails with exact pending scene IDs after retry if any scene is still incomplete
+  - keeps the rented Vast backend only for scene work and missing thumbnail backgrounds, then releases it before local thumbnail finalize work
+- `steps/autopilot.py`
+  - image stage now fails on invalid thumbnail diagnostics instead of silently marking complete
+  - keeps one shared Vast backend for scenes + thumbnail backgrounds only
+- tests
+  - added real FFmpeg pan integration coverage
+  - added render failure/autopilot failed-stage coverage
+  - added local-only thumbnail recovery coverage
+  - added backend reuse / one-rent / one-teardown coverage
+
+### Verification
+- `C:\Users\LEON_RM\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\python.exe -m pytest tests/test_effects_pipeline.py tests/test_render_effects.py tests/test_autopilot_vast_session.py tests/test_thumbnails.py -q`
+- `C:\Users\LEON_RM\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\python.exe -m pytest tests -q`
+
+### Real FFmpeg smokes
+- push-in: `output/hotfix-smoke-push-in/final.mp4`
+- pull-out: `output/hotfix-smoke-pull-out/final.mp4`
+- left-to-right pan: `output/hotfix-smoke-pan-ltr/final.mp4`
+- right-to-left pan: `output/hotfix-smoke-pan-rtl/final.mp4`
+- crossfade: `output/hotfix-smoke-crossfade/final.mp4`
+- effects disabled: `output/hotfix-smoke-effects-off/final.mp4`
+- 45-second VI preview: `output/to-tien-cua-ban-chi-lam-viec-15-tieng-mot-tuan-vi-fresh-full-20260628-1320/effects_preview.mp4`
+- 45-second EN preview: `output/brain-smaller-than-ancestors-en/effects_preview.mp4`
+
+### Results
+- targeted requested suites passed
+- full suite passed: `201 passed`
+- all 6 local FFmpeg smoke renders completed successfully
+- both VI/EN 45-second previews rendered successfully
+
+### Notes
+- No `output/` or `logs/` files are intended for commit.
+- The hotfix deliberately disables dip-to-black behavior for now by coercing it to hard cuts until a true symmetric dip can be implemented safely.

@@ -333,6 +333,7 @@ def run(video_id: str, script_file: str, resume: bool = False) -> dict:
         if not _stage_completed(state, "images"):
             _update_stage(state, video_id, "images", "running")
             pending_gpu_work = bool(pending_scene_prompts(video_id) or pending_thumbnail_prompts(video_id))
+            thumbnail_diagnostics = None
             if pending_gpu_work:
                 old_backend = config.IMAGE_BACKEND
                 try:
@@ -345,7 +346,7 @@ def run(video_id: str, script_file: str, resume: bool = False) -> dict:
                             lifecycle=lifecycle,
                             include_thumbnails=False,
                         )
-                        thumbnails.generate_thumbnail_assets(
+                        thumbnails.generate_thumbnail_backgrounds(
                             video_id,
                             backend_override=session.backend,
                             manage_backend=False,
@@ -353,6 +354,19 @@ def run(video_id: str, script_file: str, resume: bool = False) -> dict:
                         )
                 finally:
                     config.IMAGE_BACKEND = old_backend
+            thumbnail_diagnostics = thumbnails.generate_thumbnail_assets(video_id)
+            expected_thumbnail_count = int(thumbnail_diagnostics.get("expected_thumbnail_count", 0))
+            if thumbnail_diagnostics.get("thumbnail_failed_ids"):
+                raise RuntimeError(f"Thumbnail generation incomplete: {thumbnail_diagnostics['thumbnail_failed_ids']}")
+            if expected_thumbnail_count not in {3, 5}:
+                raise RuntimeError(f"Thumbnail concept count must be 3 or 5, got {expected_thumbnail_count}")
+            if int(thumbnail_diagnostics.get("thumbnail_generated_count", 0)) != expected_thumbnail_count:
+                raise RuntimeError(
+                    f"Thumbnail generation count mismatch: expected {expected_thumbnail_count}, got {thumbnail_diagnostics.get('thumbnail_generated_count', 0)}"
+                )
+            contact_sheet_path = thumbnail_diagnostics.get("contact_sheet_path")
+            if not contact_sheet_path:
+                raise RuntimeError("Thumbnail contact sheet missing after local finalize")
             state["vast_teardown_confirmed"] = lifecycle.vast_teardown_confirmed
             _write_json(_state_path(video_id), state)
             _update_stage(state, video_id, "images", "completed")

@@ -5,6 +5,7 @@ from pathlib import Path
 
 import config
 from steps import design_effects, render_video
+from steps.creative_package import CreativePackageError
 
 
 def _write_json(path: Path, payload) -> None:
@@ -81,7 +82,7 @@ def test_effects_plan_maps_chapter_sentence_to_visual_scene(tmp_path: Path, monk
 
     plan, _diagnostics = design_effects.build_effects_plan("video")
 
-    assert plan["scenes"][1]["transition_out"]["type"] == "dip_to_black"
+    assert plan["scenes"][1]["transition_out"]["type"] == "hard_cut"
 
 
 def test_pan_has_overscan_and_pullout_never_below_one(tmp_path: Path, monkeypatch) -> None:
@@ -142,3 +143,47 @@ def test_render_helpers_preserve_pause_coverage_and_effects_disabled_static() ->
     assert static_plan["scenes"][1]["display_end"] == 8.0
     assert static_plan["effects_enabled"] is False
     assert static_plan["scenes"][0]["motion"]["type"] == "hold"
+
+
+def test_invalid_creative_package_disables_chapter_dips(tmp_path: Path, monkeypatch) -> None:
+    monkeypatch.setattr(config, "OUTPUT_DIR", str(tmp_path))
+    monkeypatch.setattr(design_effects.config, "OUTPUT_DIR", str(tmp_path))
+    video_dir = tmp_path / "video"
+    video_dir.mkdir()
+    _write_json(
+        video_dir / "image_prompts.json",
+        [
+            {"index": 1, "start": 0.0, "end": 2.0, "scene_text": "wide", "source_sentence_index": 1},
+            {"index": 2, "start": 2.0, "end": 4.0, "scene_text": "wide", "source_sentence_index": 3},
+        ],
+    )
+    _write_json(video_dir / "creative_package.json", _creative_package())
+    monkeypatch.setattr(design_effects, "_audio_duration", lambda _video_dir: 5.0)
+    monkeypatch.setattr(design_effects, "load_validated_package", lambda *args, **kwargs: (_ for _ in ()).throw(CreativePackageError("stale")))
+
+    plan, _diagnostics = design_effects.build_effects_plan("video")
+
+    assert plan["scenes"][0]["transition_out"]["type"] == "hard_cut"
+
+
+def test_transition_falls_back_to_hard_cut_when_too_short(tmp_path: Path, monkeypatch) -> None:
+    monkeypatch.setattr(config, "OUTPUT_DIR", str(tmp_path))
+    monkeypatch.setattr(design_effects.config, "OUTPUT_DIR", str(tmp_path))
+    video_dir = tmp_path / "video"
+    video_dir.mkdir()
+    _write_json(
+        video_dir / "image_prompts.json",
+        [
+            {"index": 1, "start": 0.0, "end": 0.5, "scene_text": "soft memory", "source_sentence_index": 1},
+            {"index": 2, "start": 1.0, "end": 1.5, "scene_text": "detail", "source_sentence_index": 2},
+            {"index": 3, "start": 2.0, "end": 2.5, "scene_text": "detail", "source_sentence_index": 3},
+            {"index": 4, "start": 3.0, "end": 3.5, "scene_text": "detail", "source_sentence_index": 4},
+            {"index": 5, "start": 4.0, "end": 4.5, "scene_text": "detail", "source_sentence_index": 5},
+            {"index": 6, "start": 5.0, "end": 5.5, "scene_text": "detail", "source_sentence_index": 6},
+        ],
+    )
+    monkeypatch.setattr(design_effects, "_audio_duration", lambda _video_dir: 6.0)
+
+    plan, _diagnostics = design_effects.build_effects_plan("video")
+
+    assert plan["scenes"][0]["transition_out"]["type"] == "hard_cut"

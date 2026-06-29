@@ -133,7 +133,7 @@ def test_step5_still_generates_thumbnails_when_scenes_are_already_complete(tmp_p
     _write_json(video_dir / "image_prompts.json", [{"index": 1, "prompt": "scene", "start": 0.0, "end": 1.0}])
     _write_json(video_dir / "generation_log.json", {"001": {"status": "completed", "selected_image": str(video_dir / "images" / "img_001.png"), "candidates_saved": 1}})
     (video_dir / "images").mkdir(exist_ok=True)
-    (video_dir / "images" / "img_001.png").write_bytes(b"png")
+    Image.new("RGB", (64, 64), (90, 60, 40)).save(video_dir / "images" / "img_001.png")
 
     generate_images.run("thumbs")
 
@@ -148,3 +148,42 @@ def test_backend_override_skips_backend_rebuild(tmp_path: Path, monkeypatch) -> 
 
     assert diagnostics["thumbnail_generated_count"] == 3
     assert len(backend.calls) == 3
+
+
+def test_missing_jpg_rebuilds_locally_without_backend(tmp_path: Path, monkeypatch) -> None:
+    video_dir, backend = _setup(tmp_path, monkeypatch)
+    thumbnails.generate_thumbnail_assets("thumbs")
+    (video_dir / "publishing" / "thumbnails" / "thumbnail_02.jpg").unlink()
+    backend.calls.clear()
+    monkeypatch.setattr(thumbnails, "_build_backend", lambda: (_ for _ in ()).throw(AssertionError("should not rebuild backend")))
+
+    diagnostics = thumbnails.generate_thumbnail_assets("thumbs")
+
+    assert diagnostics["thumbnail_generated_count"] == 3
+    assert backend.calls == []
+
+
+def test_missing_contact_sheet_rebuilds_locally_without_backend(tmp_path: Path, monkeypatch) -> None:
+    video_dir, backend = _setup(tmp_path, monkeypatch)
+    thumbnails.generate_thumbnail_assets("thumbs")
+    (video_dir / "publishing" / "thumbnail_contact_sheet.jpg").unlink()
+    backend.calls.clear()
+    monkeypatch.setattr(thumbnails, "_build_backend", lambda: (_ for _ in ()).throw(AssertionError("should not rebuild backend")))
+
+    diagnostics = thumbnails.generate_thumbnail_assets("thumbs")
+
+    assert diagnostics["contact_sheet_path"]
+    assert backend.calls == []
+
+
+def test_corrupt_thumbnail_is_treated_as_pending_and_rebuilt_locally(tmp_path: Path, monkeypatch) -> None:
+    video_dir, backend = _setup(tmp_path, monkeypatch)
+    thumbnails.generate_thumbnail_assets("thumbs")
+    (video_dir / "publishing" / "thumbnails" / "thumbnail_01.jpg").write_bytes(b"bad-jpg")
+    backend.calls.clear()
+    monkeypatch.setattr(thumbnails, "_build_backend", lambda: (_ for _ in ()).throw(AssertionError("should not rebuild backend")))
+
+    diagnostics = thumbnails.generate_thumbnail_assets("thumbs")
+
+    assert diagnostics["thumbnail_generated_count"] == 3
+    assert backend.calls == []

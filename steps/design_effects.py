@@ -50,7 +50,7 @@ def _chapter_boundaries(video_dir: Path, prompts: list[dict]) -> set[int]:
     try:
         package = load_validated_package(video_dir, allow_stale_package=False)
     except (CreativePackageError, FileNotFoundError):
-        package = _load_json(creative_path)
+        return set()
     boundaries: set[int] = set()
     for chapter in package.get("chapter_plan", []):
         sentence_index = int(chapter.get("sentence_index", 0))
@@ -135,13 +135,15 @@ def _transition_for_scene(
 ) -> dict[str, Any]:
     if next_scene is None:
         return {"type": "hard_cut", "duration": 0.0}
+    next_duration = next_display_duration or display_duration
+    allowed = round(min(display_duration, next_duration) * 0.2, 3)
     if int(next_scene["index"]) in chapter_boundaries and dip_budget > used_dips:
-        duration = min(0.5, round(min(display_duration, next_display_duration or display_duration) * 0.2, 3))
-        duration = min(0.6, max(0.4, duration))
-        return {"type": "dip_to_black", "duration": duration}
+        return {"type": "hard_cut", "duration": 0.0}
     text = " ".join(str(scene.get(key, "")).lower() for key in ("scene_text", "visual_intent"))
     if crossfade_budget > used_crossfades and any(token in text for token in ("soft", "night", "memory", "reflect", "continue", "time", "dream", "calm")):
-        duration = min(0.35, round(min(display_duration, next_display_duration or display_duration) * 0.15, 3))
+        if allowed < 0.25:
+            return {"type": "hard_cut", "duration": 0.0}
+        duration = min(0.35, allowed)
         duration = min(0.4, max(0.25, duration))
         return {"type": "crossfade", "duration": duration}
     return {"type": "hard_cut", "duration": 0.0}
@@ -152,7 +154,7 @@ def _validate_effects(prompts: list[dict], plan: dict, audio_duration: float) ->
     scenes = plan.get("scenes", [])
     if len(scenes) != len(prompts):
         raise RuntimeError("effects_plan scene count must match image_prompts.json count")
-    for prompt, scene in zip(prompts, scenes):
+    for idx, (prompt, scene) in enumerate(zip(prompts, scenes)):
         if int(scene["scene_index"]) != int(prompt["index"]):
             raise RuntimeError(f"effects scene_index mismatch for scene {prompt['index']}")
         if round(float(scene["source_start"]), 3) != round(float(prompt["start"]), 3):
@@ -181,6 +183,18 @@ def _validate_effects(prompts: list[dict], plan: dict, audio_duration: float) ->
         if transition["type"] != "hard_cut":
             if transition["duration"] > (scene["display_end"] - scene["display_start"]) * 0.2 + 1e-6:
                 raise RuntimeError(f"Transition too long for scene {scene['scene_index']}")
+            next_scene = scenes[idx + 1] if idx + 1 < len(scenes) else None
+            if next_scene is not None and transition["duration"] > (float(next_scene["display_end"]) - float(next_scene["display_start"])) * 0.2 + 1e-6:
+                raise RuntimeError(f"Transition too long for adjacent scene {next_scene['scene_index']}")
+    if plan.get("effects_enabled", True) is False:
+        if plan.get("global_look", {}).get("enabled", False):
+            raise RuntimeError("effects disabled plan must also disable look")
+        for scene in scenes:
+            motion = scene["motion"]
+            if motion["type"] != "hold" or float(motion["start_scale"]) != 1.0 or float(motion["end_scale"]) != 1.0:
+                raise RuntimeError("effects disabled plan must be static")
+            if scene["transition_out"]["type"] != "hard_cut" or float(scene["transition_out"]["duration"]) != 0.0:
+                raise RuntimeError("effects disabled plan must use hard cuts only")
     duration_drift = round(float(scenes[-1]["display_end"]) - float(audio_duration), 6) if scenes else 0.0
     if abs(duration_drift) > config.EFFECTS_DURATION_TOLERANCE_SECONDS:
         raise RuntimeError(f"Display timeline drifts from audio by {duration_drift:.3f}s")
@@ -220,11 +234,12 @@ def build_effects_plan(video_id: str) -> tuple[dict[str, Any], dict[str, Any]]:
     chapter_boundaries = _chapter_boundaries(video_dir, prompts)
     total_transitions = max(0, len(prompts) - 1)
     crossfade_budget = 0 if total_transitions < 5 else max(1, round(total_transitions * 0.18))
-    dip_budget = 0 if not chapter_boundaries else 1
+    dip_budget = 0
     scenes: list[dict[str, Any]] = []
     prior_motions: list[str] = []
     used_crossfades = 0
     used_dips = 0
+    effects_enabled = bool(config.EFFECTS_ENABLED)
     for idx, prompt in enumerate(prompts):
         source_start = round(float(prompt["start"]), 3)
         source_end = round(float(prompt["end"]), 3)
@@ -237,7 +252,14 @@ def build_effects_plan(video_id: str) -> tuple[dict[str, Any], dict[str, Any]]:
             next_display_duration = (
                 round(float(prompts[idx + 2]["start"]), 3) if idx + 2 < len(prompts) else round(audio_duration, 3)
             ) - round(float(next_scene["start"]), 3)
-        motion = _motion_for_scene(prompt, display_duration, prior_motions)
+        motion = _motion_for_scene(prompt, display_duration, prior_motions) if effects_enabled else {
+            "type": "hold",
+            "start_scale": 1.0,
+            "end_scale": 1.0,
+            "focus_x": 0.5,
+            "focus_y": 0.45,
+            "easing": "ease_in_out",
+        }
         transition = _transition_for_scene(
             prompt,
             next_scene,
@@ -248,7 +270,7 @@ def build_effects_plan(video_id: str) -> tuple[dict[str, Any], dict[str, Any]]:
             dip_budget,
             used_crossfades,
             used_dips,
-        )
+        ) if effects_enabled else {"type": "hard_cut", "duration": 0.0}
         if transition["type"] == "crossfade":
             used_crossfades += 1
         elif transition["type"] == "dip_to_black":
@@ -270,11 +292,11 @@ def build_effects_plan(video_id: str) -> tuple[dict[str, Any], dict[str, Any]]:
         "global_look": {
             "preset": config.EFFECTS_LOOK_PRESET,
             "grade": config.EFFECTS_DEFAULT_GRADE,
-            "grain": config.EFFECTS_DEFAULT_GRAIN,
-            "vignette": config.EFFECTS_DEFAULT_VIGNETTE,
-            "enabled": bool(config.EFFECTS_LOOK_ENABLED),
+            "grain": config.EFFECTS_DEFAULT_GRAIN if effects_enabled and bool(config.EFFECTS_LOOK_ENABLED) else 0.0,
+            "vignette": config.EFFECTS_DEFAULT_VIGNETTE if effects_enabled and bool(config.EFFECTS_LOOK_ENABLED) else 0.0,
+            "enabled": bool(effects_enabled and config.EFFECTS_LOOK_ENABLED),
         },
-        "effects_enabled": bool(config.EFFECTS_ENABLED),
+        "effects_enabled": effects_enabled,
         "scenes": scenes,
     }
     diagnostics = _validate_effects(prompts, plan, audio_duration)

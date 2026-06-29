@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import json
 import os
-import sys
+import time
 from pathlib import Path
 
 from loguru import logger
@@ -35,11 +35,9 @@ def _build_runpod_backend():
     from image_generation.runpod_serverless_backend import RunPodServerlessBackend
 
     if not config.RUNPOD_API_KEY:
-        logger.error("RUNPOD_API_KEY not set")
-        sys.exit(1)
+        raise RuntimeError("RUNPOD_API_KEY not set")
     if not config.RUNPOD_ENDPOINT_ID:
-        logger.error("RUNPOD_ENDPOINT_ID not set")
-        sys.exit(1)
+        raise RuntimeError("RUNPOD_ENDPOINT_ID not set")
     client = RunPodClient(
         api_key=config.RUNPOD_API_KEY,
         endpoint_id=config.RUNPOD_ENDPOINT_ID,
@@ -55,8 +53,7 @@ def _build_vast_backend():
     from image_generation.vast_manager import VastManager
 
     if not config.VAST_API_KEY:
-        logger.error("VAST_API_KEY not set - add it to .env")
-        sys.exit(1)
+        raise RuntimeError("VAST_API_KEY not set - add it to .env")
     revision = config.require_pinned_hf_model_revision()
     worker_token = config.require_explicit_worker_token()
 
@@ -67,6 +64,28 @@ def _build_vast_backend():
     env_vars["HF_MODEL_REVISION"] = revision
     env_vars["WORKER_API_TOKEN"] = worker_token
     env_vars["USE_8BIT"] = os.getenv("VAST_USE_8BIT", "1")
+    def destroy_and_verify(instance_id: int, *, lifecycle=None) -> bool:
+        if lifecycle is not None:
+            lifecycle.teardown_attempt_count += 1
+        try:
+            manager.destroy(instance_id)
+        except Exception as exc:
+            logger.warning("Failed to destroy Vast instance {}: {}", instance_id, exc)
+            return False
+        for _attempt in range(5):
+            try:
+                if not any(int(item.get("id", 0)) == int(instance_id) for item in manager.list_instances()):
+                    if lifecycle is not None:
+                        lifecycle.teardown_verified_count += 1
+                        lifecycle.vast_teardown_confirmed = True
+                    return True
+            except Exception as exc:
+                logger.warning("Failed to verify Vast destroy for {}: {}", instance_id, exc)
+                return False
+            time.sleep(3)
+        logger.warning("Vast instance {} did not disappear during bounded destroy verification", instance_id)
+        return False
+
     if config.VAST_INSTANCE_HOST and config.VAST_INSTANCE_PORT:
         logger.info("Using existing Vast instance: {}:{}", config.VAST_INSTANCE_HOST, config.VAST_INSTANCE_PORT)
         backend = VastInstanceBackend(
@@ -144,7 +163,8 @@ def _build_vast_backend():
         except Exception as exc:
             last_error = exc
             logger.warning("Vast instance failed to start or warm up: {}", exc)
-            manager.destroy(instance.instance_id)
+            if instance is not None:
+                destroy_and_verify(instance.instance_id)
             instance = None
             backend = None
             continue
@@ -153,7 +173,7 @@ def _build_vast_backend():
 
     def teardown():
         logger.info("Destroying Vast instance {}...", instance.instance_id)
-        manager.destroy(instance.instance_id)
+        destroy_and_verify(instance.instance_id)
 
     return backend, teardown, {
         "managed": True,
@@ -205,8 +225,7 @@ def run(
     video_dir = Path(config.OUTPUT_DIR) / video_id
     prompts_path = video_dir / "image_prompts.json"
     if not prompts_path.exists():
-        logger.error("image_prompts.json not found: {}", prompts_path)
-        sys.exit(1)
+        raise FileNotFoundError(f"image_prompts.json not found: {prompts_path}")
 
     prompts: list[dict] = json.loads(prompts_path.read_text(encoding="utf-8"))
     if n_override is not None:
@@ -241,10 +260,10 @@ def run(
         )
         fail = result["scene_fail"] + retry_result["scene_fail"]
         if include_thumbnails and (video_dir / config.PUBLISHING_DIRNAME / "thumbnail_prompts.json").exists():
-            from steps.thumbnails import generate_thumbnail_assets
+            from steps.thumbnails import generate_thumbnail_assets, generate_thumbnail_backgrounds
 
             logger.info("Thumbnail prompts found - generating publishing thumbnails")
-            generate_thumbnail_assets(
+            generate_thumbnail_backgrounds(
                 video_id,
                 backend_override=effective_backend,
                 manage_backend=False if effective_backend is not None else manage_backend,
@@ -253,8 +272,16 @@ def run(
     finally:
         if teardown:
             teardown()
-    if not pending_scene_prompts(video_id, n_override=n_override):
+    if include_thumbnails and (video_dir / config.PUBLISHING_DIRNAME / "thumbnail_prompts.json").exists():
+        from steps.thumbnails import generate_thumbnail_assets
+
+        generate_thumbnail_assets(video_id)
+    remaining_prompts = pending_scene_prompts(video_id, n_override=n_override)
+    if not remaining_prompts:
         logger.info("All scenes already generated.")
     logger.info("Done: {} initial ok, {} retry ok, {} failed", result["scene_ok"], retry_result["scene_ok"], fail)
+    if remaining_prompts:
+        pending_ids = ", ".join(f"{int(item['index']):03d}" for item in remaining_prompts)
+        raise RuntimeError(f"Scene generation incomplete; pending scene IDs: {pending_ids}")
     if fail:
-        sys.exit(1)
+        raise RuntimeError(f"Scene generation failed for {fail} scene attempt(s)")

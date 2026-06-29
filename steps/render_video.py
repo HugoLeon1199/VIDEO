@@ -7,7 +7,6 @@ import math
 import os
 import shutil
 import subprocess
-import sys
 import tempfile
 from pathlib import Path
 
@@ -26,6 +25,10 @@ FFMPEG_WINGET_PATH = (
 )
 
 
+class RenderPipelineError(RuntimeError):
+    pass
+
+
 def _ensure_ffmpeg_path() -> None:
     if not shutil.which("ffmpeg"):
         os.environ["PATH"] = FFMPEG_WINGET_PATH + os.pathsep + os.environ.get("PATH", "")
@@ -35,8 +38,7 @@ def _check_ffmpeg() -> None:
     _ensure_ffmpeg_path()
     result = subprocess.run(["ffmpeg", "-version"], capture_output=True)
     if result.returncode != 0:
-        logger.error("FFmpeg not found. Install: winget install Gyan.FFmpeg")
-        sys.exit(1)
+        raise RenderPipelineError("FFmpeg not found. Install: winget install Gyan.FFmpeg")
 
 
 def _get_audio_duration(audio_path: Path) -> float:
@@ -278,12 +280,27 @@ def _build_static_effects(prompts: list[dict], audio_duration: float) -> dict:
     }
 
 
+def _coerce_static_effects(plan: dict, prompts: list[dict], audio_duration: float) -> dict:
+    static_plan = _build_static_effects(prompts, audio_duration)
+    static_plan["version"] = plan.get("version", static_plan["version"])
+    return static_plan
+
+
+def _validate_loaded_effects_plan(prompts: list[dict], plan: dict, audio_duration: float) -> None:
+    from steps import design_effects
+
+    design_effects._validate_effects(prompts, plan, audio_duration)
+
+
 def _load_effects_plan(video_dir: Path, prompts: list[dict], audio_duration: float) -> dict:
+    if not bool(config.EFFECTS_ENABLED):
+        return _build_static_effects(prompts, audio_duration)
     effects_path = video_dir / "effects_plan.json"
     if effects_path.exists():
         plan = json.loads(effects_path.read_text(encoding="utf-8"))
         if plan.get("effects_enabled", True) is False:
-            return plan
+            plan = _coerce_static_effects(plan, prompts, audio_duration)
+        _validate_loaded_effects_plan(prompts, plan, audio_duration)
         return plan
     return _build_static_effects(prompts, audio_duration)
 
@@ -303,13 +320,14 @@ def _zoom_expr(motion: dict, frames: int) -> str:
     return f"if(eq(on,1),{start_scale:.5f},zoom+{delta:.7f})"
 
 
-def _x_expr(motion: dict) -> str:
+def _x_expr(motion: dict, frames: int) -> str:
     motion_type = motion["type"]
     focus_x = float(motion.get("focus_x", 0.5))
+    progress = f"((on-1)/max(1\\,{max(1, frames) - 1}))"
     if motion_type == "pan_left_to_right":
-        return "((on-1)/max(1\\,d-1))*(iw-iw/zoom)"
+        return f"max(0,min(iw-iw/zoom,{progress}*(iw-iw/zoom)))"
     if motion_type == "pan_right_to_left":
-        return "(1-(on-1)/max(1\\,d-1))*(iw-iw/zoom)"
+        return f"max(0,min(iw-iw/zoom,(1-{progress})*(iw-iw/zoom)))"
     return f"max(0,min(iw-iw/zoom,{focus_x:.5f}*iw-iw/zoom/2))"
 
 
@@ -328,12 +346,12 @@ def _build_scene_filter(scene: dict, stream_index: int, fps: int) -> tuple[str, 
     outgoing = float(scene["transition_out"].get("duration", 0.0))
     if incoming > 0:
         fade_parts.append(f"fade=t=in:st=0:d={incoming:.3f}:alpha=1")
-    if outgoing > 0 and scene["transition_out"]["type"] in {"crossfade", "dip_to_black"}:
+    if outgoing > 0 and scene["transition_out"]["type"] == "crossfade":
         relative_boundary = float(scene["display_end"]) - float(scene["display_start"])
         fade_parts.append(f"fade=t=out:st={relative_boundary:.3f}:d={outgoing:.3f}:alpha=1")
     filter_chain = [
         f"[{stream_index}:v]format=rgba",
-        f"zoompan=z='{_zoom_expr(motion, frames)}':x='{_x_expr(motion)}':y='{_y_expr(motion)}':d={frames}:s={config.VIDEO_WIDTH}x{config.VIDEO_HEIGHT}:fps={fps}",
+        f"zoompan=z='{_zoom_expr(motion, frames)}':x='{_x_expr(motion, frames)}':y='{_y_expr(motion)}':d={frames}:s={config.VIDEO_WIDTH}x{config.VIDEO_HEIGHT}:fps={fps}",
         f"trim=duration={duration:.3f}",
         *fade_parts,
         f"setpts=PTS-STARTPTS+{float(scene['display_start']):.3f}/TB[{label}]",
@@ -341,27 +359,10 @@ def _build_scene_filter(scene: dict, stream_index: int, fps: int) -> tuple[str, 
     return label, ",".join(filter_chain)
 
 
-def _build_black_overlay_filters(scenes: list[dict]) -> list[tuple[str, str]]:
-    filters: list[tuple[str, str]] = []
-    for idx, scene in enumerate(scenes):
-        transition = scene["transition_out"]
-        if transition["type"] != "dip_to_black" or transition["duration"] <= 0:
-            continue
-        label = f"blk{idx}"
-        duration = float(transition["duration"])
-        start = float(scene["display_end"])
-        chain = (
-            f"color=c=black@1.0:s={config.VIDEO_WIDTH}x{config.VIDEO_HEIGHT}:r={config.VIDEO_FPS}:d={duration:.3f},"
-            f"format=rgba,fade=t=out:st=0:d={duration:.3f}:alpha=1,"
-            f"setpts=PTS-STARTPTS+{start:.3f}/TB[{label}]"
-        )
-        filters.append((label, chain))
-    return filters
-
-
 def _build_video_filter_script(
     scenes: list[dict],
     audio_duration: float,
+    look_settings: dict,
     preview_window: tuple[float, float] | None = None,
 ) -> tuple[str, str]:
     fps = config.VIDEO_FPS
@@ -376,22 +377,22 @@ def _build_video_filter_script(
         out_label = f"ov_{label}"
         filter_parts.append(f"[{overlay_base}][{label}]overlay=eof_action=pass:repeatlast=0[{out_label}]")
         overlay_base = out_label
-    for label, chain in _build_black_overlay_filters(scenes):
-        filter_parts.append(chain)
-        out_label = f"ov_{label}"
-        filter_parts.append(f"[{overlay_base}][{label}]overlay=eof_action=pass:repeatlast=0[{out_label}]")
-        overlay_base = out_label
     final_label = "vout"
-    look_enabled = bool(config.EFFECTS_LOOK_ENABLED and scenes and scenes[0].get("plan_look_enabled", True))
+    look_enabled = bool(look_settings.get("enabled", False))
     look_parts = []
     if look_enabled:
+        grade = str(look_settings.get("grade", "warm_documentary"))
+        vignette = float(look_settings.get("vignette", 0.0))
         look_parts.extend(
             [
-                "eq=contrast=1.02:brightness=0.01:saturation=1.03:gamma=1.01",
-                f"noise=alls={max(0, round(config.EFFECTS_DEFAULT_GRAIN * 100))}:allf=t+u",
-                "vignette=PI/5",
+                "eq=contrast=1.02:brightness=0.01:saturation=1.03:gamma=1.01"
+                if grade == "warm_documentary"
+                else "eq=contrast=1.0:brightness=0.0:saturation=1.0:gamma=1.0",
+                f"noise=alls={max(0, round(float(look_settings.get('grain', 0.0)) * 100))}:allf=t+u",
             ]
         )
+        if vignette > 0:
+            look_parts.append(f"vignette=PI/{max(1.0, 6.0 - min(vignette, 0.95) * 4.0):.3f}")
     if preview_window is not None:
         start, end = preview_window
         look_parts.extend([f"trim=start={start:.3f}:end={end:.3f}", "setpts=PTS-STARTPTS"])
@@ -419,10 +420,9 @@ def _prepare_effect_scenes(prompts: list[dict], effects_plan: dict) -> list[dict
         entry = dict(plan_scene)
         previous = plan_scenes[idx - 1] if idx > 0 else None
         incoming_duration = 0.0
-        if previous is not None and previous.get("transition_out", {}).get("type") in {"crossfade", "dip_to_black"}:
+        if previous is not None and previous.get("transition_out", {}).get("type") == "crossfade":
             incoming_duration = float(previous["transition_out"].get("duration", 0.0))
         entry["transition_in_duration"] = incoming_duration
-        entry["plan_look_enabled"] = bool(effects_plan.get("global_look", {}).get("enabled", False))
         scenes.append(entry)
     return scenes
 
@@ -457,6 +457,7 @@ def _render_composition(
     audio_duration = _get_audio_duration(audio_path)
     effects_plan = _load_effects_plan(video_dir, prompts, audio_duration)
     scenes = _prepare_effect_scenes(prompts, effects_plan)
+    look_settings = dict(effects_plan.get("global_look", {}))
     with tempfile.TemporaryDirectory(prefix="renderfx_") as tmpdir:
         tmpdir_path = Path(tmpdir)
         prepared_images = _prepare_image_inputs(video_dir, prompts, tmpdir_path)
@@ -467,7 +468,7 @@ def _render_composition(
             library = json.loads(SFX_LIBRARY_PATH.read_text(encoding="utf-8"))
             sfx_out = tmpdir_path / "audio_with_sfx.wav"
             working_audio = _mix_sfx_audio(audio_path, prompts, soundscape, SFX_DIR, library, sfx_out)
-        video_script, video_label = _build_video_filter_script(scenes, audio_duration, preview_window=preview_window)
+        video_script, video_label = _build_video_filter_script(scenes, audio_duration, look_settings, preview_window=preview_window)
         audio_script, audio_label = _build_audio_filter_script(len(prepared_images), preview_window=preview_window)
         script_path = tmpdir_path / "filter_graph.txt"
         script_body = video_script
@@ -482,7 +483,7 @@ def _render_composition(
             [
                 "-filter_complex_script", str(script_path),
                 "-map", f"[{video_label}]",
-                "-map", f"[{audio_label}]",
+                "-map", f"[{audio_label}]" if audio_script else audio_label,
                 "-c:v", "libx264",
                 "-preset", config.VIDEO_PRESET,
                 "-crf", str(config.VIDEO_CRF),
@@ -498,8 +499,7 @@ def _render_composition(
         )
         result = subprocess.run(cmd, capture_output=True, text=True)
         if result.returncode != 0:
-            logger.error("FFmpeg render failed:\n{}", result.stderr[-4000:])
-            sys.exit(1)
+            raise RenderPipelineError(f"FFmpeg render failed:\n{result.stderr[-4000:]}")
     target_duration = audio_duration if preview_window is None else preview_window[1] - preview_window[0]
     actual_duration = _probe_duration(output_path)
     if actual_duration <= 0:

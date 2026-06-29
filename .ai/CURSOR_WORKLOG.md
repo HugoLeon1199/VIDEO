@@ -1,5 +1,157 @@
 # CURSOR_WORKLOG - Repo worklog
 
+## Session 2026-06-29 (7) — Klein 9B P0 checklist: Flux2KleinPipeline, multi-reference, Docker v0.2.0
+
+### Goal
+Full P0 compliance per checklist:
+1. Unified `Flux2KleinPipeline` (not FluxPipeline+FluxImg2ImgPipeline); 4 steps both modes
+2. `diffusers>=0.38.0`; `KLEIN_HF_REVISION` must be 40-char SHA or empty
+3. Wire `model_loader.download_and_validate()` into worker
+4. `reference_images_base64: list[str]` — 0=t2i, 1–3=reference editing
+5. RunPod backend fails clearly with RuntimeError (Vast only)
+6. Resume: skip existing output files, log SKIP
+7. 19 new tests in `test_klein_worker.py`; 327 total passing
+8. Docker image built as `v0.2.0` (not overwriting v0.1.0)
+
+### What shipped (commit e7b2a8f)
+
+**`vast_worker_klein/gpu_worker.py`** — unified pipeline:
+- `from diffusers import Flux2KleinPipeline` — single `_pipe`, no split t2i/img2img
+- `_pipe(image=None, ...)` → t2i; `_pipe(image=ref_pil, ...)` → reference editing
+- `KLEIN_HF_REVISION` validated at import: must be 40-char hex SHA or empty (→ None)
+- `model_loader.download_and_validate()` wired in — no direct `snapshot_download`
+- `GenerateRequest.reference_images_base64: list[str]` + backward-compat `img2img_base64`
+- `/health` exposes: `model_id`, `model_revision`, `pipeline_class`, `model_loaded`, `gpu_vram_total_gb`, `gpu_vram_used_gb`, `load_error`
+- Response per image includes `mode` (text_to_image|reference_editing), `reference_count`
+
+**`vast_worker_klein/requirements.txt`**: `diffusers>=0.38.0` (was >=0.30.0)
+
+**`scripts/gen_style_concepts.py`**:
+- `--backend runpod` raises `RuntimeError` immediately with clear message (Vast only)
+- Resume: if dest file exists, log SKIP and continue; no regeneration
+
+**`config.py`**: `KLEIN_WORKER_IMAGE` → `v0.2.0`
+
+**`tests/test_klein_worker.py`** — 19 new tests:
+- `Flux2KleinPipeline` constant correct, no `FluxPipeline`
+- SHA validation: valid 40-char accepted, empty→None, branch/short SHA → RuntimeError at import
+- `/health` fields: model_id, pipeline_class, model_revision, status states
+- `GenerateRequest`: default empty list, 3-image list, backward-compat img2img_base64
+- model_loader import path verified
+- RunPod raises clearly, Vast raises on missing host
+- Smoke/full concept selection, C01 in both
+
+### Docker build
+- `ghcr.io/hugoleon1199/vast-flux-klein-worker:v0.2.0` — built locally ✓
+- Push: needs `docker login ghcr.io -u HugoLeon1199 --password-stdin` with GitHub PAT
+
+### Next: GPU smoke test
+```powershell
+# After: docker push succeeds, rent Vast ≥32GB GPU with image v0.2.0
+$python = "C:\Users\LEON_RM\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\python.exe"
+& $python scripts/gen_style_concepts.py --smoke --vast-host <IP> --vast-port 8081
+
+# After smoke passes → full 20 images
+& $python scripts/gen_style_concepts.py --vast-host <IP> --vast-port 8081
+
+# Contact sheet: reference_images/concepts/contact_sheet.jpg
+# Commit it, then Leon picks top 3 styles
+```
+
+---
+
+## Session 2026-06-29 (6) — Klein 9B worker + style concept lab hardened
+
+### Goal
+Make Klein 9B style concept lab runnable against a real worker:
+- worker boots, downloads model, exposes correct /health fields
+- scripts validate model ID before generating
+- fair style comparison: shared control scene + unique scene, both with Karo + Luma
+- smoke mode (C01 only, 2 images) before full 20-image run
+- contact_sheet.jpg output per Leon's spec
+- full test coverage for new behavior
+
+### What shipped
+
+**`vast_worker_klein/gpu_worker.py`** — full rewrite:
+- `FluxPipeline` (not non-existent `Flux2KleinPipeline`)
+- Downloads model via `snapshot_download()` in `_load_models()` thread
+- `_model_loaded` flag: `/health` returns `model_loaded=false` until ready
+- `/health` exposes: `model_id`, `model_loaded`, `t2i_loaded`, `img2img_loaded`, `device`, `gpu_vram_gb`, `load_error`
+- Port default 8081 (was 8090 bug); host default `0.0.0.0`
+- `generator = torch.Generator(device="cpu")` — safe for cpu_offload
+
+**`vast_worker_klein/model_loader.py`** — NEW:
+- Klein-specific `download_and_validate()`: no FLUX.1-dev ignore_patterns
+- Same `validate_local()` logic (checks 7 required subdirs + transformer weights)
+
+**`vast_worker_klein/Dockerfile`** — rewritten:
+- Base: `vastai/base-image:cuda-12.1.1...` (same as production, hits layer cache)
+- `HF_HUB_DISABLE_XET=1`, `HF_HUB_ENABLE_HF_TRANSFER=0` (same fix as production)
+- `ENTRYPOINT []` so CMD runs directly
+- `KLEIN_MODEL_ID` env var exposed
+
+**`vast_worker_klein/requirements.txt`** — `torch>=2.4.1` (pinned up from 2.3.0)
+
+**`scripts/gen_style_concepts.py`** — GPT rewrote, improvements preserved:
+- 10 concepts each with distinct `style_variant` in same hand-drawn family
+- Shared `_CONTROL_SCENE` (Karo + Luma cave fire, same pose for fair comparison)
+- Unique scene per concept — all feature Karo + Luma in different settings
+- `--smoke`: runs only C01 (2 images) before full run
+- `--vast-port` defaults to `config.KLEIN_WORKER_PORT` (8081)
+- `steps=KLEIN_STEPS_T2I` (4), `guidance=KLEIN_GUIDANCE_SCALE` (1.0)
+- Numeric scene IDs via `_numeric_scene_id()` (VastInstanceBackend requires int-castable)
+- `_require_klein_worker_ready()`: hits /health, validates `model_id == KLEIN_MODEL_ID` and `model_loaded=True`; fails clearly if wrong model or not ready
+- `generation_log.json`: model_id, model_revision, device, per-image: steps, guidance, seed, mode, elapsed, error
+- `contact_sheet.jpg` (JPEG 92, 10 rows × 2 cols: A_control | B_unique)
+
+**`scripts/gen_character_sheets.py`** — GPT rewrote, improvements preserved:
+- Same `_require_klein_worker_ready()` guard
+- `--vast-port` defaults to `config.KLEIN_WORKER_PORT` (8081)
+
+**`tests/test_style_concepts.py`** — NEW (25 tests):
+- Klein port/steps/guidance config alignment
+- Default port in both parsers matches `config.KLEIN_WORKER_PORT`
+- Numeric scene IDs are unique, int-castable
+- Health check: rejects unloaded worker, rejects 12B model, accepts Klein
+- 10 concepts all have distinct `style_variant`
+- All concepts share same `_CONTROL_SCENE`
+- Karo + Luma in every `unique_scene`
+- Prompt composition includes style_lock + style_variant + scene text
+
+**`tests/test_style_concept_lab.py`** — NEW (7 tests, from GPT):
+- Additional parser/config/scene_id/health validation tests
+
+### Test results
+`308 passed, 17 warnings` (was 276)
+
+### Docker image
+Image tag: `ghcr.io/hugoleon1199/vast-flux-klein-worker:v0.2.0`
+Build command:
+```powershell
+docker build -t ghcr.io/hugoleon1199/vast-flux-klein-worker:v0.2.0 vast_worker_klein/
+docker push ghcr.io/hugoleon1199/vast-flux-klein-worker:v0.2.0
+```
+
+### To run smoke test (after renting Vast with Klein worker image)
+```powershell
+$python = "C:\Users\LEON_RM\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\python.exe"
+
+# Smoke: C01 only (2 images) — must pass before full run
+& $python scripts/gen_style_concepts.py --smoke --vast-host <IP>
+
+# Full: all 10 concepts (20 images)
+& $python scripts/gen_style_concepts.py --vast-host <IP>
+# → reference_images/concepts/contact_sheet.jpg
+```
+
+### Remaining blockers
+- Docker image `v0.2.0` must be built and pushed before Vast can run Klein worker
+- Reference images `*.png` still not generated (waiting for GPU run)
+- `contact_sheet.jpg` path not yet committed (generated at runtime, gitignored)
+
+---
+
 ## Session 2026-06-29 (5) — Style concept generation scripts for Klein 9B reference pack
 
 ### Goal

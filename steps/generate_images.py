@@ -48,7 +48,7 @@ def _build_runpod_backend():
     return RunPodServerlessBackend(client=client), None
 
 
-def _build_vast_backend():
+def _build_vast_backend(planned_image_count: int | None = None):
     from image_generation.vast_backend import VastInstanceBackend
     from image_generation.vast_manager import VastManager
 
@@ -64,6 +64,11 @@ def _build_vast_backend():
     env_vars["HF_MODEL_REVISION"] = revision
     env_vars["WORKER_API_TOKEN"] = worker_token
     env_vars["USE_8BIT"] = os.getenv("VAST_USE_8BIT", "1")
+
+    # Real session image count drives the offer cost estimate.
+    n_images_for_offer = planned_image_count if planned_image_count is not None else config.IMAGE_CANDIDATES
+    logger.info("Vast offer search: planned_image_count={}", n_images_for_offer)
+
     def destroy_and_verify(instance_id: int, *, lifecycle=None) -> bool:
         if lifecycle is not None:
             lifecycle.teardown_attempt_count += 1
@@ -102,18 +107,21 @@ def _build_vast_backend():
             "worker_ready_count": 1,
             "model_load_count": 1,
             "rent_count": 0,
+            "num_gpus": 1,
         }
 
     logger.info(
-        "Renting Vast.ai instance (vram>={} GB, max ${}/hr)...",
+        "Renting Vast.ai instance (vram>={} GB, max ${}/hr, gpu_choices={})...",
         config.VAST_MIN_VRAM_GB,
         config.VAST_MAX_PRICE_PER_HOUR,
+        config.VAST_NUM_GPUS_CHOICES,
     )
     cost_caps = tuple(config.VAST_ESTIMATED_TOTAL_COST_FALLBACKS or ()) or (config.VAST_MAX_ESTIMATED_TOTAL_COST,)
     tried_machines: set[int] = set()
     last_error: Exception | None = None
     backend = None
     instance = None
+    selected_num_gpus = 1
     for total_cap in cost_caps:
         try:
             offer = manager.find_offer(
@@ -128,33 +136,40 @@ def _build_vast_backend():
                 expected_download_gb=config.VAST_EXPECTED_DOWNLOAD_GB,
                 expected_upload_gb=config.VAST_EXPECTED_UPLOAD_GB,
                 max_estimated_total_cost=total_cap,
-                n_images=config.IMAGE_CANDIDATES,
+                n_images=n_images_for_offer,
+                model_load_wall_seconds=config.VAST_MODEL_LOAD_WALL_SECONDS,
                 exclude_machine_ids=tried_machines,
+                num_gpus_choices=config.VAST_NUM_GPUS_CHOICES,
+                min_cpu_ram_per_gpu_gb=config.VAST_MIN_CPU_RAM_PER_GPU_GB,
+                min_cpu_cores_per_gpu=config.VAST_MIN_CPU_CORES_PER_GPU,
             )
         except RuntimeError as exc:
             last_error = exc
             logger.warning("No Vast offer under estimated total cost cap $%.2f: {}", total_cap, exc)
             continue
+        selected_num_gpus = int(offer.get("_num_gpus", 1))
         tried_machines.add(int(offer.get("machine_id")))
         instance = manager.rent(
             offer_id=offer["id"],
             image=config.VAST_WORKER_IMAGE,
             env_vars=env_vars,
             disk_gb=max(60.0, config.VAST_DISK_GB),
+            num_gpus=selected_num_gpus,
         )
         try:
-            instance = manager.wait_until_running(instance.instance_id, timeout=300)
+            instance = manager.wait_until_running(instance.instance_id, timeout=config.VAST_INSTANCE_RUNNING_TIMEOUT)
             if not instance.direct_port:
-                instance = manager.wait_for_port(instance.instance_id, timeout=120)
+                instance = manager.wait_for_port(instance.instance_id, timeout=config.VAST_PORT_MAPPING_TIMEOUT)
             manager.deploy_worker(
                 instance,
                 hf_token=config.VAST_HF_TOKEN,
                 model_revision=revision,
                 worker_token=worker_token,
+                custom_image=config.VAST_WORKER_CUSTOM_IMAGE,
             )
-            manager.wait_worker_ready(instance.ssh_host, instance.direct_port or config.VAST_WORKER_PORT, timeout=600)
+            manager.wait_worker_ready(instance.public_ipaddr, instance.direct_port or config.VAST_WORKER_PORT, timeout=600)
             backend = VastInstanceBackend(
-                host=instance.ssh_host,
+                host=instance.public_ipaddr,
                 port=instance.direct_port or config.VAST_WORKER_PORT,
                 timeout=config.VAST_REQUEST_TIMEOUT,
                 worker_token=worker_token,
@@ -178,28 +193,18 @@ def _build_vast_backend():
     return backend, teardown, {
         "managed": True,
         "owned_instance_id": int(instance.instance_id),
-        "worker_boot_id": f"{instance.instance_id}:{instance.ssh_host}:{instance.direct_port or config.VAST_WORKER_PORT}",
+        "worker_boot_id": f"{instance.instance_id}:{instance.public_ipaddr}:{instance.direct_port or config.VAST_WORKER_PORT}",
         "worker_ready_count": 1,
         "model_load_count": 1,
         "rent_count": 1,
+        "num_gpus": selected_num_gpus,
     }
 
 
-def open_backend_with_metadata(backend_name: str | None = None):
+def open_backend_with_metadata(backend_name: str | None = None, *, planned_image_count: int | None = None):
     target_backend = backend_name or config.IMAGE_BACKEND
     if target_backend == "vast_instance":
-        result = _build_vast_backend()
-        if len(result) == 2:
-            backend, teardown = result
-            return backend, teardown, {
-                "managed": bool(teardown),
-                "owned_instance_id": None,
-                "worker_boot_id": "",
-                "worker_ready_count": 0,
-                "model_load_count": 0,
-                "rent_count": 0,
-            }
-        return result
+        return _build_vast_backend(planned_image_count=planned_image_count)
     backend, teardown = _build_runpod_backend()
     return backend, teardown, {
         "managed": bool(teardown),
@@ -208,6 +213,7 @@ def open_backend_with_metadata(backend_name: str | None = None):
         "worker_ready_count": 0,
         "model_load_count": 0,
         "rent_count": 0,
+        "num_gpus": 1,
     }
 
 

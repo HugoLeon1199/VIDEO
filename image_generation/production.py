@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 import time
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from contextlib import AbstractContextManager
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -121,6 +122,20 @@ def pending_thumbnail_prompts(video_id: str, regenerate: list[int] | None = None
     return pending
 
 
+def compute_session_image_count(video_ids: list[str]) -> int:
+    """Total pending images across all video IDs in a rental session.
+
+    Counts pending scene candidates (scenes × seeds) plus pending thumbnail
+    backgrounds. Already-complete images are excluded because pending_* filters
+    them out.
+    """
+    total = 0
+    for vid in video_ids:
+        total += len(pending_scene_prompts(vid)) * len(config.IMAGE_CANDIDATE_SEEDS)
+        total += len(pending_thumbnail_prompts(vid))
+    return total
+
+
 @dataclass
 class VastLifecycle:
     vast_session_count: int = 0
@@ -153,12 +168,15 @@ class VastLifecycle:
 
 @dataclass
 class VastSession(AbstractContextManager):
+    planned_image_count: int | None = None   # session-wide pending image count
+    video_ids: list[str] | None = None       # optional; used for telemetry
     lifecycle: VastLifecycle = field(default_factory=VastLifecycle)
     backend: Any = None
     teardown = None
     owned_instance_id: int | None = None
     managed: bool = False
     cleanup_error: str = ""
+    num_gpus: int = 1                        # set from backend metadata after __enter__
 
     def __enter__(self):
         from steps import generate_images as step_generate_images
@@ -166,7 +184,10 @@ class VastSession(AbstractContextManager):
         if config.IMAGE_BACKEND != "vast_instance":
             raise RuntimeError("VastSession requires IMAGE_BACKEND=vast_instance")
         self.lifecycle.vast_session_count += 1
-        self.backend, self.teardown, meta = step_generate_images.open_backend_with_metadata("vast_instance")
+        self.backend, self.teardown, meta = step_generate_images.open_backend_with_metadata(
+            "vast_instance",
+            planned_image_count=self.planned_image_count,
+        )
         self.lifecycle.backend_create_count += 1
         self.lifecycle.worker_boot_id = meta.get("worker_boot_id", "")
         self.lifecycle.worker_ready_count += int(meta.get("worker_ready_count", 0))
@@ -174,6 +195,7 @@ class VastSession(AbstractContextManager):
         self.lifecycle.rent_count += int(meta.get("rent_count", 0))
         self.owned_instance_id = meta.get("owned_instance_id")
         self.managed = bool(meta.get("managed", False))
+        self.num_gpus = int(meta.get("num_gpus", 1))
         return self
 
     def verify_destroyed(self) -> bool:
@@ -242,6 +264,7 @@ def generate_scene_images(
     lifecycle: VastLifecycle | None = None,
     n_override: int | None = None,
     prompt_subset: list[dict] | None = None,
+    max_workers: int | None = None,
 ) -> dict[str, Any]:
     from image_generation.runpod_serverless_backend import promote_candidate_to_render_image
     from steps import generate_images as step_generate_images
@@ -260,40 +283,59 @@ def generate_scene_images(
         owns_backend = manage_backend
         if lifecycle is not None:
             lifecycle.backend_create_count += 1
+
+    # Concurrency: default to 1 (sequential) or the caller-supplied max_workers.
+    # Callers that have a VastSession pass session.num_gpus as max_workers.
+    concurrency = max(1, max_workers or 1)
+
+    def _process_one(prompt: dict) -> tuple[str, dict]:
+        request = _scene_request_from_prompt(video_id, prompt)
+        if lifecycle is not None:
+            lifecycle.scene_request_count += 1
+        try:
+            result = backend.generate(request)
+            selected_image = ""
+            if result.candidates:
+                selected_image = promote_candidate_to_render_image(
+                    result.candidates[0],
+                    video_id=video_id,
+                    scene_id=request.scene_id,
+                )
+            status = (
+                "completed"
+                if selected_image and not result.errors and _image_is_readable(
+                    _canonical_image_path(video_dir, request.scene_id)
+                )
+                else "partial"
+            )
+            entry = {
+                "status": status,
+                "candidates_saved": len(result.candidates),
+                "selected_image": selected_image,
+                "errors": result.errors,
+                "job_id": result.job_id,
+                "duration_seconds": result.duration_seconds,
+            }
+            return request.scene_id, entry
+        except Exception as exc:
+            logger.error("Scene {} failed: {}", request.scene_id, exc)
+            return request.scene_id, {"status": "failed", "error": str(exc)}
+
     ok = 0
     fail = 0
     try:
-        for prompt in prompts:
-            request = _scene_request_from_prompt(video_id, prompt)
-            if lifecycle is not None:
-                lifecycle.scene_request_count += 1
-            try:
-                result = backend.generate(request)
-                selected_image = ""
-                if result.candidates:
-                    selected_image = promote_candidate_to_render_image(
-                        result.candidates[0],
-                        video_id=video_id,
-                        scene_id=request.scene_id,
-                    )
-                status = "completed" if selected_image and not result.errors and _image_is_readable(_canonical_image_path(video_dir, request.scene_id)) else "partial"
-                gen_log[request.scene_id] = {
-                    "status": status,
-                    "candidates_saved": len(result.candidates),
-                    "selected_image": selected_image,
-                    "errors": result.errors,
-                    "job_id": result.job_id,
-                    "duration_seconds": result.duration_seconds,
-                }
-                if status == "completed":
+        with ThreadPoolExecutor(max_workers=concurrency) as pool:
+            futures = {pool.submit(_process_one, p): p for p in prompts}
+            for fut in as_completed(futures):
+                scene_id, entry = fut.result()
+                gen_log[scene_id] = entry
+                # Only the coordinator thread writes; lock-free because GIL protects
+                # dict mutation and _write_json is atomic on disk.
+                _write_json(log_path, gen_log)
+                if entry.get("status") == "completed":
                     ok += 1
                 else:
                     fail += 1
-            except Exception as exc:
-                logger.error("Scene {} failed: {}", request.scene_id, exc)
-                gen_log[request.scene_id] = {"status": "failed", "error": str(exc)}
-                fail += 1
-            _write_json(log_path, gen_log)
     finally:
         if owns_backend and teardown:
             teardown()

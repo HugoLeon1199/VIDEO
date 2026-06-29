@@ -1,5 +1,71 @@
 # CURSOR_WORKLOG - Repo worklog
 
+## Session 2026-06-29 - Multi-GPU Vast.ai offer selection and gateway worker
+
+### Goal
+Implement cost-aware multi-GPU Vast.ai offer selection for ~1,000-image sessions. One
+rent, one teardown. Gateway downloads model once, spawns one FastAPI subprocess per GPU,
+routes jobs to least-busy worker.
+
+### Changed files
+| File | Change |
+|------|--------|
+| `config.py` | +6 keys: `VAST_NUM_GPUS_CHOICES`, `VAST_MIN_CPU_RAM_PER_GPU_GB`, `VAST_MIN_CPU_CORES_PER_GPU`, `VAST_MODEL_LOAD_WALL_SECONDS`, `VAST_WORKER_CUSTOM_IMAGE` |
+| `image_generation/vast_manager.py` | `find_offer()` loops 1/2/3-GPU, CPU/RAM hard gates, fixed `dph_total`-based cost formula, `_spi()` local helper; `rent()` injects `NUM_GPUS` env; `deploy_worker()` `custom_image` flag; `wait_worker_ready()` checks `workers_ready>=1` |
+| `image_generation/production.py` | `compute_session_image_count(video_ids)`; `VastSession` fields `planned_image_count`, `num_gpus`; `generate_scene_images()` `ThreadPoolExecutor(max_workers)` |
+| `steps/generate_images.py` | `_build_vast_backend(planned_image_count)` threads count through offer search; `open_backend_with_metadata(planned_image_count=)` passes it; metadata returns `num_gpus` |
+| `steps/autopilot.py` | Computes `session_image_count` before `VastSession`; passes `max_workers=session.num_gpus` to thumbnails |
+| `steps/thumbnails.py` | `generate_thumbnail_backgrounds` gains `max_workers`; replaced sequential loop with `ThreadPoolExecutor` |
+| `vast_worker/server.py` | **Rewrite**: gateway only — model download once, spawns `gpu_worker.py` subprocesses, routes `/generate` to least-busy worker, `/health` reports `num_gpus/workers_alive/workers_ready` |
+| `vast_worker/gpu_worker.py` | **New**: per-GPU FastAPI on localhost port; loads FLUX with `local_files_only=True`; validates model via `model_loader` |
+| `vast_worker/model_loader.py` | **New**: `download_and_validate()` (one-time snapshot download, skip 23.8GB root dups) + `validate_local()` |
+| `vast_worker/__init__.py` | **New**: package marker |
+| `scripts/generate_images_batch.py` | **New**: multi-video batch entrypoint — one `VastSession` for all videos |
+| `tests/test_vast_multigpu.py` | **New**: 20+ tests covering image count, offer selection, cost formula, concurrency, batch, VastSession API |
+| `tests/test_vast_lifecycle.py` | Extended with `test_build_vast_backend_returns_num_gpus_in_meta`, `test_wait_worker_ready_accepts_missing_workers_ready`, `test_rent_injects_num_gpus_env` |
+| `tests/test_vast_worker.py` | Updated to target `gpu_worker.app` instead of legacy `server.app` |
+| `tests/test_autopilot_vast_session.py` | Fixed `VastSession(lifecycle=lifecycle)` keyword arg |
+| `tests/test_thumbnails.py` | Fixed `_build_vast_backend` monkeypatch to 3-tuple return |
+
+### Test results
+```
+228 passed, 17 warnings in 30.86s
+```
+
+### Docker build/push commands
+```bash
+docker build -t ghcr.io/hugoleon1199/vast-flux-worker:v1.0.0 vast_worker/
+echo $GITHUB_TOKEN | docker login ghcr.io -u hugoleon1199 --password-stdin
+docker push ghcr.io/hugoleon1199/vast-flux-worker:v1.0.0
+```
+
+### Required .env additions
+```
+VAST_NUM_GPUS_CHOICES=1,2,3
+VAST_MIN_CPU_RAM_PER_GPU_GB=32
+VAST_MIN_CPU_CORES_PER_GPU=4
+VAST_MODEL_LOAD_WALL_SECONDS=90
+VAST_WORKER_CUSTOM_IMAGE=false   # set true when using ghcr.io image
+```
+
+### Dry-run (prints offer search params, no rent)
+```powershell
+$python = "C:\Users\LEON_RM\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\python.exe"
+& $python scripts/generate_images_batch.py --video-ids chan-trai-dua-tre-31000-nam-vi --dry-run
+```
+
+### Real 1,000-image batch session
+```powershell
+$python = "C:\Users\LEON_RM\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\python.exe"
+& $python scripts/generate_images_batch.py --video-ids video_a video_b video_c
+```
+For autopilot (single video, autopilot selects session count automatically):
+```powershell
+& $python main.py --autopilot --video-id "my-video-slug" --script-file "C:\path\to\script.txt"
+```
+
+---
+
 ## Session 2026-06-28 - VieNeu voice swap and subtitle burn
 
 ### Goal
@@ -1026,3 +1092,33 @@ $py = "C:\Users\LEON_RM\.cache\codex-runtimes\codex-primary-runtime\dependencies
 ### Notes
 - No `output/` or `logs/` files are intended for commit.
 - The hotfix deliberately disables dip-to-black behavior for now by coercing it to hard cuts until a true symmetric dip can be implemented safely.
+
+## Session 2026-06-29 - Real VI autopilot A-to-Z smoke after hotfix
+
+### Run target
+- script: `output/ancient-child-surgery-31000-years-vi/script.txt`
+- video id: `hotfix-e2e-ancient-child-vi-20260629`
+
+### What happened
+- autopilot successfully completed:
+  - creative package validation
+  - full Vietnamese TTS block render
+  - exact transcription
+  - word timing export
+- first blocker found:
+  - `HF_MODEL_REVISION=` blank in `.env` was overriding the pinned default in `config.py`
+  - patched `config.py` so blank env values fall back to the pinned revision
+- second blocker found after resume:
+  - local prompt token validation still failed against gated FLUX tokenizer access
+  - patched `image_generation/flux_prompting.py` to pass `HF_TOKEN` / `VAST_HF_TOKEN` into `AutoTokenizer.from_pretrained(...)`
+- current remaining blocker:
+  - the available HF token still receives `401` on gated repo access for `black-forest-labs/FLUX.1-dev`
+  - autopilot remains stopped in stage:
+    - `image_prompts = running`
+
+### Current conclusion
+- the production workflow is healthier than before:
+  - TTS/transcribe path is working on a real Vietnamese script
+  - the pinned-revision bug is fixed
+  - local tokenizer loading now correctly forwards HF auth tokens
+- the run is still blocked by external Hugging Face access, not by the new render/effects/Vast hotfix code

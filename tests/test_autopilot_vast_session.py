@@ -23,7 +23,7 @@ def _patch_output_dir(tmp_path, monkeypatch):
 
 def test_vast_session_verifies_destroy_before_confirmation(monkeypatch):
     lifecycle = production.VastLifecycle()
-    session = production.VastSession(lifecycle)
+    session = production.VastSession(lifecycle=lifecycle)
     session.managed = True
     session.teardown = lambda: None
     session.owned_instance_id = 123

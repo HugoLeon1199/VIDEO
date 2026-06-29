@@ -31,6 +31,10 @@ class VastInstance:
     direct_port: Optional[int] = None   # mapped external port for FastAPI
     public_ipaddr: str = ""             # public IP for HTTP connections (≠ ssh_host)
 
+    @property
+    def ssh_target_host(self) -> str:
+        return self.ssh_host or self.public_ipaddr
+
 
 class VastManager:
     # Class-level registry of every instance id this process has rented, so cleanup
@@ -100,8 +104,12 @@ class VastManager:
         max_estimated_total_cost: float | None = None,
         sec_per_image: float = 19.0,           # measured warm gen time (fallback)
         boot_seconds: float = 120.0,           # fixed boot/init before model download
+        model_load_wall_seconds: float = 90.0, # concurrent multi-GPU model load wall time
         allowed_countries: set | None = None,
         exclude_machine_ids: set | None = None,
+        num_gpus_choices: list[int] | None = None,  # [1, 2, 3] — search all, pick cheapest
+        min_cpu_ram_per_gpu_gb: float = 32.0,  # hard filter for num_gpus >= 2
+        min_cpu_cores_per_gpu: float = 4.0,    # hard filter for num_gpus >= 2
     ) -> dict:
         """Find the cheapest *good* offer matching requirements.
 
@@ -123,42 +131,61 @@ class VastManager:
         - exclude_machine_ids: machine_ids already rented in this batch, so the
           N parallel instances land on N distinct physical hosts.
         """
-        # gpu_ram cap: lte uses a small margin (24GB cards report ~24576MB, but some
-        # read slightly under, so allow up to max_vram_gb+1 GB to not exclude a real
-        # 24GB box while still rejecting 32/40/48GB cards).
-        params = {
-            "q": {
+        gpu_counts = num_gpus_choices if num_gpus_choices else [1]
+
+        # Collect eligible offers across all requested GPU counts.
+        # Each offer dict gets an injected "_num_gpus" key for cost ranking.
+        all_offers_annotated: list[dict] = []
+        for n_gpus in gpu_counts:
+            # gpu_ram cap: lte uses a small margin (24GB cards report ~24576MB, but some
+            # read slightly under, so allow up to max_vram_gb+1 GB to not exclude a real
+            # 24GB box while still rejecting 32/40/48GB cards).
+            q = {
                 "gpu_ram": {"gte": min_vram_gb * 1024, "lte": (max_vram_gb + 1) * 1024},
                 "rentable": {"eq": True},
-                "num_gpus": {"eq": 1},
+                "num_gpus": {"eq": n_gpus},
                 "inet_down": {"gte": min_inet_down_mbps},
                 "disk_space": {"gte": min_disk_gb},
             }
-        }
-        if gpu_name:
-            params["q"]["gpu_name"] = {"eq": gpu_name}
+            if gpu_name:
+                q["gpu_name"] = {"eq": gpu_name}
 
-        offers = []
-        last_status = None
-        for attempt in range(1, 5):
-            resp = requests.get(
-                f"{VAST_API_BASE}/bundles",
-                headers=self._headers,
-                params={"q": json.dumps(params["q"])},
-                timeout=30,
-            )
-            last_status = resp.status_code
-            if resp.status_code == 429:
-                retry_after = float(resp.headers.get("Retry-After", "0") or 0)
-                sleep_s = retry_after if retry_after > 0 else min(2 ** attempt, 15)
-                logger.warning("Vast bundles rate-limited (429), retrying in {:.1f}s [attempt {}/4]", sleep_s, attempt)
-                time.sleep(sleep_s)
+            last_status = None
+            raw_offers: list[dict] = []
+            for attempt in range(1, 5):
+                resp = requests.get(
+                    f"{VAST_API_BASE}/bundles",
+                    headers=self._headers,
+                    params={"q": json.dumps(q)},
+                    timeout=30,
+                )
+                last_status = resp.status_code
+                if resp.status_code == 429:
+                    retry_after = float(resp.headers.get("Retry-After", "0") or 0)
+                    sleep_s = retry_after if retry_after > 0 else min(2 ** attempt, 15)
+                    logger.warning(
+                        "Vast bundles rate-limited (429) for num_gpus={}, retrying in {:.1f}s [attempt {}/4]",
+                        n_gpus, sleep_s, attempt,
+                    )
+                    time.sleep(sleep_s)
+                    continue
+                resp.raise_for_status()
+                raw_offers = resp.json().get("offers", [])
+                break
+            else:
+                logger.warning(
+                    "Vast bundles rate-limited after retries for num_gpus={} (last_status={}); skipping",
+                    n_gpus, last_status,
+                )
                 continue
-            resp.raise_for_status()
-            offers = resp.json().get("offers", [])
-            break
-        else:
-            raise RuntimeError(f"Vast bundles request rate-limited after retries (last_status={last_status})")
+
+            for o in raw_offers:
+                o["_num_gpus"] = n_gpus
+            all_offers_annotated.extend(raw_offers)
+
+        if not all_offers_annotated and not gpu_counts:
+            raise RuntimeError("num_gpus_choices is empty — no offers searched")
+        offers = all_offers_annotated
 
         # Exclude GPUs that look fine by cuda_max_good but don't actually run our
         # FLUX/bf16 image well (old pre-Ampere architectures: no proper bf16, the
@@ -203,47 +230,63 @@ class VastManager:
         def _reliability(o: dict) -> float:
             return o.get("reliability2", o.get("reliability", 0)) or 0
 
+        def _cpu_ram_gb(o: dict) -> float:
+            return (o.get("cpu_ram") or 0) / 1024.0
+
+        def _cpu_cores(o: dict) -> float:
+            return float(o.get("cpu_cores_effective") or 0)
+
         # Every check here answers "will this machine actually do the work?" —
         # we apply them BEFORE renting, so we never pay to boot a box that fails.
-        eligible = [
-            o for o in offers
-            if o.get("dph_total", 999) <= max_price_per_hour
-            and o.get("rentable", False)
-            # VRAM band: ≥min (fits 8-bit) AND ≤max (don't overpay for 48GB cards).
-            and (o.get("gpu_ram") or 0) >= min_vram_gb * 1024
-            and (o.get("gpu_ram") or 0) <= (max_vram_gb + 1) * 1024
-            and (o.get("inet_down") or 0) >= min_inet_down_mbps
-            and (o.get("disk_space") or 0) >= min_disk_gb
-            and _reliability(o) >= min_reliability
-            and (o.get("cuda_max_good") or 0) >= min_cuda
-            # Arch gate: torch 2.4.1 only supports up to sm_90. compute_cap is sm×10,
-            # so ≤900. This rejects Blackwell (sm_120) & B200 (sm_100) reliably —
-            # the real "card must run our FLUX" check, independent of the name list.
-            and 800 <= (o.get("compute_cap") or 0) <= max_compute_cap
-            # Speed gate: reject cards too slow for FLUX (FP16 TFLOPS). A slow card
-            # is a false bargain — cheap $/hr but many more GPU-hours = higher total.
-            and (o.get("total_flops") or 0) >= min_tflops
-            and (not require_verified or o.get("verification") == "verified")
-            and (o.get("direct_port_count") or 0) >= min_direct_ports
-            # On-demand only: bid/interruptible machines can be yanked mid-batch.
-            and (not on_demand_only or not o.get("is_bid", False))
-            # Bandwidth fee: SOME hosts charge $/GB for download. The worker pulls
-            # the ~30GB FLUX model every rental, so a host at $0.0156/GB silently
-            # adds ~$0.47 PER RUN — that's why a "$0.25/hr" box actually cost ~$1.86/hr
-            # for a 28-min job. Reject hosts with a high inet_down_cost; the good
-            # datacenter boxes charge $0 or a tiny amount.
-            and (o.get("inet_down_cost") or 0) <= max_inet_cost_per_gb
-            and o.get("gpu_name", "") not in _GPU_BLACKLIST
-            and _country(o) in allowed_countries
-            and o.get("machine_id") not in exclude_machine_ids
-        ]
+        eligible = []
+        for o in offers:
+            n_gpus = o.get("_num_gpus", 1)
+            if not (
+                o.get("dph_total", 999) <= max_price_per_hour
+                and o.get("rentable", False)
+                and (o.get("gpu_ram") or 0) >= min_vram_gb * 1024
+                and (o.get("gpu_ram") or 0) <= (max_vram_gb + 1) * 1024
+                and (o.get("inet_down") or 0) >= min_inet_down_mbps
+                and (o.get("disk_space") or 0) >= min_disk_gb
+                and _reliability(o) >= min_reliability
+                and (o.get("cuda_max_good") or 0) >= min_cuda
+                and 800 <= (o.get("compute_cap") or 0) <= max_compute_cap
+                and (o.get("total_flops") or 0) >= min_tflops
+                and (not require_verified or o.get("verification") == "verified")
+                and (o.get("direct_port_count") or 0) >= min_direct_ports
+                and (not on_demand_only or not o.get("is_bid", False))
+                and (o.get("inet_down_cost") or 0) <= max_inet_cost_per_gb
+                and o.get("gpu_name", "") not in _GPU_BLACKLIST
+                and _country(o) in allowed_countries
+                and o.get("machine_id") not in exclude_machine_ids
+            ):
+                continue
+            # Multi-GPU resource gates: CPU offload needs real RAM and cores.
+            # Hard filter for num_gpus >= 2; log-only for 1.
+            if n_gpus >= 2:
+                if _cpu_ram_gb(o) < min_cpu_ram_per_gpu_gb * n_gpus:
+                    logger.debug(
+                        "Vast offer {} ({}×{}) skipped: cpu_ram={:.1f}GB < {:.1f}GB needed",
+                        o.get("id"), n_gpus, o.get("gpu_name"),
+                        _cpu_ram_gb(o), min_cpu_ram_per_gpu_gb * n_gpus,
+                    )
+                    continue
+                if _cpu_cores(o) < min_cpu_cores_per_gpu * n_gpus:
+                    logger.debug(
+                        "Vast offer {} ({}×{}) skipped: cpu_cores={:.1f} < {:.1f} needed",
+                        o.get("id"), n_gpus, o.get("gpu_name"),
+                        _cpu_cores(o), min_cpu_cores_per_gpu * n_gpus,
+                    )
+                    continue
+            eligible.append(o)
+
         if not eligible:
             raise RuntimeError(
                 f"No good Vast.ai offers: vram>={min_vram_gb}GB disk>={min_disk_gb}GB, "
                 f"price<=${max_price_per_hour}/hr, inet_down>={min_inet_down_mbps}Mbps, "
                 f"reliability>={min_reliability}, verified={require_verified}, "
                 f"ports>={min_direct_ports}, cuda>={min_cuda}, on_demand={on_demand_only}, "
-                f"countries={sorted(allowed_countries)}"
+                f"countries={sorted(allowed_countries)}, num_gpus_choices={gpu_counts}"
             )
 
         # PREFER real datacenters (hosting_type==1, the 🏢 icon) over home hosts
@@ -276,56 +319,108 @@ class VastManager:
         #   1) MEASURED_SPEED — real per-GPU times we've actually clocked (most exact),
         #   2) else scale the baseline by FP16 TFLOPS (total_flops) — far better than
         #      dlperf for diffusion, since denoising is compute-bound.
-        def _job_hours(o: dict) -> float:
+        def _spi(o: dict, n_gpus: int) -> float:
+            """Seconds per image for this offer, accounting for GPU count.
+
+            Priority:
+            1. MEASURED_SPEED[gpu_name] (single-GPU measured) ÷ num_gpus.
+            2. num_gpus=1 only: scale from total_flops (per Vast docs, aggregate for offer).
+            3. num_gpus>=2 with unknown GPU: return None — caller skips the offer.
+            """
             name = o.get("gpu_name", "")
-            spi = self.MEASURED_SPEED.get(name)
-            if spi is None:
-                tflops = o.get("total_flops") or self._BASELINE_TFLOPS
-                spi = sec_per_image * (self._BASELINE_TFLOPS / max(tflops, 1.0))
+            measured = self.MEASURED_SPEED.get(name)
+            if measured is not None:
+                return measured / n_gpus
+            if n_gpus >= 2:
+                return None  # can't trust total_flops aggregate for multi-GPU unknown cards
+            tflops = o.get("total_flops") or self._BASELINE_TFLOPS
+            return sec_per_image * (self._BASELINE_TFLOPS / max(tflops, 1.0))
+
+        def _job_hours(o: dict, n_gpus: int, spi_val: float) -> float:
             link_mbps = max(o.get("inet_down") or 1.0, 1.0)
-            dl_sec = expected_download_gb * 8 * 1024 / link_mbps          # GB→Mb / Mbps = s
-            return (boot_seconds + dl_sec + n_images * spi) / 3600.0
-        def _true_cost(o: dict) -> float:
-            jh = _job_hours(o)
+            dl_sec = expected_download_gb * 8 * 1024 / link_mbps   # model downloaded ONCE
+            return (boot_seconds + dl_sec + model_load_wall_seconds + n_images * spi_val) / 3600.0
+
+        def _true_cost(o: dict, n_gpus: int, spi_val: float) -> float:
+            jh = _job_hours(o, n_gpus, spi_val)
+            # dph_total is the total instance price (all GPUs combined) per Vast docs.
             gpu = (o.get("dph_total") or 0) * jh
             dl = expected_download_gb * (o.get("inet_down_cost") or 0)
             ul = expected_upload_gb * (o.get("inet_up_cost") or 0)
-            # storage is billed per hour the box exists; default search assumes 5GB,
-            # but we rent ~60GB → add it explicitly. storage_cost is $/GB/month.
             store = (o.get("storage_cost") or 0) * min_disk_gb / 720.0 * jh
             return gpu + dl + ul + store
+
+        # Filter out multi-GPU offers with unknown GPU speeds (ambiguous total_flops).
+        # Log raw offer fields for later verification of dph_total / total_flops semantics.
+        eligible_with_spi: list[tuple[dict, int, float]] = []
+        for o in eligible:
+            n_gpus = o.get("_num_gpus", 1)
+            spi_val = _spi(o, n_gpus)
+            if spi_val is None:
+                logger.warning(
+                    "Vast offer {} ({}×{}) skipped for cost ranking: GPU '{}' not in "
+                    "MEASURED_SPEED and total_flops ambiguity for multi-GPU. "
+                    "Raw: dph_total={} total_flops={} num_gpus={}",
+                    o.get("id"), n_gpus, o.get("gpu_name"), o.get("gpu_name"),
+                    o.get("dph_total"), o.get("total_flops"), n_gpus,
+                )
+                continue
+            if n_gpus >= 2:
+                logger.info(
+                    "Vast multi-GPU offer candidate: id={} {}×{} dph_total={} "
+                    "total_flops={} cpu_ram_gb={:.1f} cpu_cores={}",
+                    o.get("id"), n_gpus, o.get("gpu_name"),
+                    o.get("dph_total"), o.get("total_flops"),
+                    _cpu_ram_gb(o), _cpu_cores(o),
+                )
+            eligible_with_spi.append((o, n_gpus, spi_val))
+
+        if not eligible_with_spi:
+            raise RuntimeError(
+                "No Vast.ai offers passed cost ranking (check MEASURED_SPEED entries "
+                f"for multi-GPU, or num_gpus_choices={gpu_counts})"
+            )
         if max_estimated_total_cost is not None:
-            capped = [o for o in eligible if _true_cost(o) <= max_estimated_total_cost]
+            capped = [(o, ng, spi) for o, ng, spi in eligible_with_spi
+                      if _true_cost(o, ng, spi) <= max_estimated_total_cost]
             if not capped:
-                cheapest = min(eligible, key=_true_cost)
+                cheapest_o, cheapest_ng, cheapest_spi = min(
+                    eligible_with_spi, key=lambda t: _true_cost(t[0], t[1], t[2])
+                )
                 raise RuntimeError(
                     "No Vast.ai offers under estimated total cost cap "
                     f"${max_estimated_total_cost:.2f}; cheapest eligible estimate "
-                    f"is ${_true_cost(cheapest):.3f} for {cheapest.get('gpu_name')} "
-                    f"at ${cheapest.get('dph_total')}/hr"
+                    f"is ${_true_cost(cheapest_o, cheapest_ng, cheapest_spi):.3f} for "
+                    f"{cheapest_ng}×{cheapest_o.get('gpu_name')} "
+                    f"at ${cheapest_o.get('dph_total')}/hr"
                 )
-            eligible = capped
+            eligible_with_spi = capped
 
-        # Rank by true cost. Tie-break (costs within ~$0.02): prefer a host at or
-        # below preferred_inet_cost_per_gb — so a near-tie goes to the cheaper-
-        # bandwidth box, WITHOUT hard-filtering the pool to that threshold.
-        def _sort_key(o: dict):
-            tc = _true_cost(o)
+        # Rank by true cost. Tie-break: prefer lower bandwidth, then datacenter.
+        def _sort_key(t: tuple) -> tuple:
+            o, ng, spi = t
+            tc = _true_cost(o, ng, spi)
             below_pref = 0 if (o.get("inet_down_cost") or 0) <= preferred_inet_cost_per_gb else 1
             datacenter_pref = 0 if (prefer_datacenter and o.get("hosting_type") == 1) else 1
             return (tc, below_pref, datacenter_pref, o.get("inet_down_cost") or 0)
-        best = min(eligible, key=_sort_key)
-        host_kind = "datacenter🏢" if best.get("hosting_type") == 1 else "home🏠"
+
+        best_o, best_ng, best_spi = min(eligible_with_spi, key=_sort_key)
+        # Inject selected num_gpus as a top-level key for callers.
+        best_o["_num_gpus"] = best_ng
+        host_kind = "datacenter🏢" if best_o.get("hosting_type") == 1 else "home🏠"
         logger.info(
-            "Vast offer selected: id={} machine={} gpu={} vram={}GB ${:.3f}/hr "
-            "inet_down={:.0f}Mbps reliability={:.3f} est_total=${:.3f} {} verified={} ports={} geo={}",
-            best["id"], best.get("machine_id"), best.get("gpu_name"),
-            best.get("gpu_ram", 0) // 1024, best["dph_total"],
-            best.get("inet_down") or 0, _reliability(best), _true_cost(best), host_kind,
-            best.get("verification"), best.get("direct_port_count"),
-            best.get("geolocation"),
+            "Vast offer selected: id={} machine={} {}×{} vram={}GB/gpu ${:.3f}/hr "
+            "inet_down={:.0f}Mbps reliability={:.3f} est_total=${:.3f} {} verified={} "
+            "ports={} geo={} cpu_ram_gb={:.1f} cpu_cores={}",
+            best_o["id"], best_o.get("machine_id"), best_ng, best_o.get("gpu_name"),
+            best_o.get("gpu_ram", 0) // 1024, best_o["dph_total"],
+            best_o.get("inet_down") or 0, _reliability(best_o),
+            _true_cost(best_o, best_ng, best_spi), host_kind,
+            best_o.get("verification"), best_o.get("direct_port_count"),
+            best_o.get("geolocation"),
+            _cpu_ram_gb(best_o), _cpu_cores(best_o),
         )
-        return best
+        return best_o
 
     def rent(
         self,
@@ -334,6 +429,7 @@ class VastManager:
         env_vars: dict[str, str] | None = None,
         extra_ports: list[int] | None = None,
         disk_gb: float = 40.0,
+        num_gpus: int = 1,
     ) -> VastInstance:
         """Rent an instance using a pre-built Docker image.
 
@@ -351,6 +447,8 @@ class VastManager:
         env_dict[f"-p {self.worker_port}:{self.worker_port}"] = "1"
         for p in (extra_ports or []):
             env_dict[f"-p {p}:{p}"] = "1"
+        # Tell the worker how many GPUs are available on this instance.
+        env_dict["NUM_GPUS"] = str(num_gpus)
 
         payload = {
             "client_id": "me",
@@ -397,9 +495,9 @@ class VastManager:
         if isinstance(inst, list):
             inst = inst[0] if inst else {}
 
-        ssh_host = inst.get("ssh_host", "")
-        ssh_port = inst.get("ssh_port", 22)
-        public_ipaddr = inst.get("public_ipaddr", "") or ssh_host
+        ssh_host = inst.get("ssh_host") or ""
+        public_ipaddr = inst.get("public_ipaddr") or ssh_host
+        ssh_port = int(inst.get("ssh_port") or 22)
 
         # Find external port mapped to our worker port
         port_map = inst.get("ports", {}) or {}
@@ -459,14 +557,14 @@ class VastManager:
                 public_ipaddr = inst.get("public_ipaddr", "") or inst.get("ssh_host", "")
                 info = VastInstance(
                     instance_id=instance_id,
-                    ssh_host=inst.get("ssh_host", ""),
-                    ssh_port=inst.get("ssh_port", 22),
+                    ssh_host=inst.get("ssh_host") or "",
+                    ssh_port=int(inst.get("ssh_port") or 22),
                     direct_port=direct_port,
                     public_ipaddr=public_ipaddr,
                 )
                 logger.info(
                     "Vast instance {}: ip={} ssh={} worker_port={}",
-                    status, info.public_ipaddr, info.ssh_host, info.direct_port,
+                    status, info.public_ipaddr, info.ssh_target_host, info.direct_port,
                 )
                 return info
             if status in ("exited", "dead", "error"):
@@ -591,12 +689,11 @@ class VastManager:
         )
 
     def wait_worker_ready(self, host: str, port: int, timeout: int = 600) -> None:
-        """Poll /health until the FLUX model is loaded and ready to generate.
+        """Poll /health until the FLUX model is loaded and at least one GPU worker is ready.
 
         The worker preloads the model in a background thread, so /health responds
-        200 immediately (HTTP up) but reports model_loaded=False until the ~13GB
-        model finishes streaming in. We wait for model_loaded=True; if the worker
-        reports a load_error we fail fast instead of burning the full timeout.
+        200 immediately (HTTP up) but reports model_loaded=False until the model
+        finishes loading. For multi-GPU gateways, also wait for workers_ready >= 1.
         """
         url = f"http://{host}:{port}/health"
         deadline = time.time() + timeout
@@ -612,8 +709,15 @@ class VastManager:
                     if body.get("load_error"):
                         raise RuntimeError(f"Vast worker model load failed: {body['load_error']}")
                     if body.get("model_loaded"):
-                        logger.info("Vast worker ready (model loaded) at {}:{}", host, port)
-                        return
+                        workers_ready = body.get("workers_ready")
+                        # Legacy single-GPU worker doesn't report workers_ready; treat as ready.
+                        if workers_ready is None or int(workers_ready) >= 1:
+                            logger.info(
+                                "Vast worker ready at {}:{} (workers_ready={})",
+                                host, port, workers_ready,
+                            )
+                            return
+                        logger.debug("Vast worker model loaded but workers_ready={} — waiting", workers_ready)
             except (requests.RequestException, ValueError):
                 pass
             time.sleep(5)
@@ -628,19 +732,22 @@ class VastManager:
         hf_token: str = "",
         model_revision: str = "",
         worker_token: str = "",
+        custom_image: bool = False,
     ) -> None:
-        """SCP worker files to instance and start the FastAPI server."""
-        dest = f"root@{instance.ssh_host}"
+        """SCP worker files to instance and start the FastAPI server.
+
+        When custom_image=True the Docker image already contains all dependencies
+        and worker code; only environment variables are injected and the server
+        is started directly. When False (default / legacy) the worker directory is
+        SCPed and pip dependencies are installed at runtime.
+        """
+        ssh_target_host = instance.ssh_target_host
+        if not ssh_target_host:
+            raise RuntimeError(f"Vast instance {instance.instance_id} missing SSH target host")
+        dest = f"root@{ssh_target_host}"
         ssh_opts = ["-o", "StrictHostKeyChecking=no", "-p", str(instance.ssh_port)]
+        scp_opts = ["-o", "StrictHostKeyChecking=no", "-P", str(instance.ssh_port)]
 
-        # Upload worker directory
-        logger.info("Uploading worker files to Vast instance...")
-        subprocess.run(
-            ["scp", *ssh_opts, "-r", worker_dir, f"{dest}:/workspace/vast_worker"],
-            check=True,
-        )
-
-        # Install deps + start server in background
         env_exports = []
         if hf_token:
             env_exports.append(f"export HF_TOKEN={shlex.quote(hf_token)}")
@@ -649,19 +756,31 @@ class VastManager:
         if worker_token:
             env_exports.append(f"export WORKER_API_TOKEN={shlex.quote(worker_token)}")
         env_exports.append(f"export USE_8BIT={shlex.quote(os.getenv('VAST_USE_8BIT', '1'))}")
-        hf_export = " && ".join(env_exports) + " && "
-        cmd = (
-            f"cd /workspace && "
-            f"pip install -q fastapi uvicorn diffusers transformers accelerate "
-            f"safetensors pillow torch && "
-            f"{hf_export}"
-            f"nohup python vast_worker/server.py --port {self.worker_port} "
-            f"> /workspace/worker.log 2>&1 &"
-        )
-        subprocess.run(
-            ["ssh", *ssh_opts, dest, cmd],
-            check=True,
-        )
+        env_prefix = (" && ".join(env_exports) + " && ") if env_exports else ""
+
+        if custom_image:
+            logger.info("Custom image: injecting env vars and starting server (no SCP/pip)...")
+            cmd = (
+                f"{env_prefix}"
+                f"nohup python /workspace/vast_worker/server.py --port {self.worker_port} "
+                f"> /workspace/worker.log 2>&1 &"
+            )
+            subprocess.run(["ssh", *ssh_opts, dest, cmd], check=True)
+        else:
+            logger.info("Uploading worker files to Vast instance...")
+            subprocess.run(
+                ["scp", *scp_opts, "-r", worker_dir, f"{dest}:/workspace/vast_worker"],
+                check=True,
+            )
+            cmd = (
+                f"cd /workspace && "
+                f"pip install -q fastapi uvicorn diffusers transformers accelerate "
+                f"safetensors pillow torch huggingface_hub bitsandbytes && "
+                f"{env_prefix}"
+                f"nohup python vast_worker/server.py --port {self.worker_port} "
+                f"> /workspace/worker.log 2>&1 &"
+            )
+            subprocess.run(["ssh", *ssh_opts, dest, cmd], check=True)
         logger.info("Worker started on Vast instance")
 
     # ── Destroy ───────────────────────────────────────────────────────────────

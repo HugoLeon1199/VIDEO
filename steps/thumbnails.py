@@ -4,6 +4,7 @@ import json
 import math
 import shutil
 import string
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 from typing import Any
 
@@ -304,6 +305,7 @@ def generate_thumbnail_backgrounds(
     teardown_override=None,
     manage_backend: bool = True,
     lifecycle=None,
+    max_workers: int | None = None,
 ) -> dict[str, Any]:
     video_dir = Path(config.OUTPUT_DIR) / video_id
     load_validated_package(video_dir, allow_stale_package=allow_stale_package)
@@ -322,60 +324,69 @@ def generate_thumbnail_backgrounds(
     owns_backend = backend is None and manage_backend
     if backend is None:
         backend, teardown = _build_backend()
+
+    concurrency = max(1, max_workers or 1)
+
+    def _process_one(entry: dict) -> tuple[int, dict, Path | None]:
+        concept_id = int(entry["concept_id"])
+        bg_path = _background_path(video_dir, concept_id)
+        temp_scene_id = str(9000 + concept_id)
+        candidate_dir = Path(config.OUTPUT_DIR) / video_id / "images" / f"scene_{int(temp_scene_id):03d}"
+        request = SceneRequest(
+            video_id=video_id,
+            scene_id=temp_scene_id,
+            prompt=entry["image_prompt"],
+            clip_prompt=entry.get(
+                "clip_prompt",
+                f"YouTube thumbnail, {entry['type'].replace('_', ' ')}, {entry['thumbnail_text']}",
+            ),
+            negative_prompt=entry.get("negative_prompt", ""),
+            width=config.IMAGE_WIDTH,
+            height=config.IMAGE_HEIGHT,
+            steps=config.IMAGE_STEPS,
+            guidance_scale=config.IMAGE_GUIDANCE_SCALE,
+            candidate_seeds=[config.THUMBNAIL_CANDIDATE_SEED],
+            output_format=config.IMAGE_OUTPUT_FORMAT,
+            quality=config.IMAGE_QUALITY,
+            output_mode="base64",
+        )
+        try:
+            if lifecycle is not None:
+                lifecycle.thumbnail_request_count += 1
+            result = backend.generate(request)
+            if not result.candidates:
+                raise ThumbnailGenerationError(f"No thumbnail candidates returned for concept {concept_id}")
+            candidate_path = Path(result.candidates[0].local_path or "")
+            if not candidate_path.exists():
+                raise ThumbnailGenerationError(f"Missing generated candidate file for concept {concept_id}")
+            _copy_candidate_to_background(candidate_path, bg_path)
+            if not _image_is_readable(bg_path):
+                raise ThumbnailGenerationError(f"Unreadable thumbnail background for concept {concept_id}")
+            log_entry = {
+                "status": "background_ready",
+                "background_path": str(bg_path),
+                "thumbnail_path": str(_thumbnail_path(video_dir, concept_id)),
+                "errors": result.errors,
+            }
+            return concept_id, log_entry, candidate_dir
+        except Exception as exc:
+            logger.error("Thumbnail concept {} failed: {}", concept_id, exc)
+            return concept_id, {"status": "failed", "error": str(exc)}, candidate_dir
+
     failed_ids: list[int] = []
     generated = 0
     try:
-        for entry in pending_entries:
-            concept_id = int(entry["concept_id"])
-            bg_path = _background_path(video_dir, concept_id)
-            temp_scene_id = str(9000 + concept_id)
-            candidate_dir = Path(config.OUTPUT_DIR) / video_id / "images" / f"scene_{int(temp_scene_id):03d}"
-            request = SceneRequest(
-                video_id=video_id,
-                scene_id=temp_scene_id,
-                prompt=entry["image_prompt"],
-                clip_prompt=entry.get(
-                    "clip_prompt",
-                    f"YouTube thumbnail, {entry['type'].replace('_', ' ')}, {entry['thumbnail_text']}",
-                ),
-                negative_prompt=entry.get("negative_prompt", ""),
-                width=config.IMAGE_WIDTH,
-                height=config.IMAGE_HEIGHT,
-                steps=config.IMAGE_STEPS,
-                guidance_scale=config.IMAGE_GUIDANCE_SCALE,
-                candidate_seeds=[config.THUMBNAIL_CANDIDATE_SEED],
-                output_format=config.IMAGE_OUTPUT_FORMAT,
-                quality=config.IMAGE_QUALITY,
-                output_mode="base64",
-            )
-            try:
-                if lifecycle is not None:
-                    lifecycle.thumbnail_request_count += 1
-                result = backend.generate(request)
-                if not result.candidates:
-                    raise ThumbnailGenerationError(f"No thumbnail candidates returned for concept {concept_id}")
-                candidate_path = Path(result.candidates[0].local_path or "")
-                if not candidate_path.exists():
-                    raise ThumbnailGenerationError(f"Missing generated candidate file for concept {concept_id}")
-                _copy_candidate_to_background(candidate_path, bg_path)
-                if not _image_is_readable(bg_path):
-                    raise ThumbnailGenerationError(f"Unreadable thumbnail background for concept {concept_id}")
-                generation_log[str(concept_id)] = {
-                    "status": "background_ready",
-                    "background_path": str(bg_path),
-                    "thumbnail_path": str(_thumbnail_path(video_dir, concept_id)),
-                    "errors": result.errors,
-                }
-                generated += 1
-            except Exception as exc:
-                failed_ids.append(concept_id)
-                generation_log[str(concept_id)] = {
-                    "status": "failed",
-                    "error": str(exc),
-                }
-                logger.error("Thumbnail concept {} failed: {}", concept_id, exc)
-            finally:
-                _cleanup_candidate_dir(candidate_dir)
+        with ThreadPoolExecutor(max_workers=concurrency) as pool:
+            futures = {pool.submit(_process_one, e): e for e in pending_entries}
+            for fut in as_completed(futures):
+                concept_id, log_entry, candidate_dir = fut.result()
+                generation_log[str(concept_id)] = log_entry
+                if log_entry.get("status") == "background_ready":
+                    generated += 1
+                else:
+                    failed_ids.append(concept_id)
+                if candidate_dir is not None:
+                    _cleanup_candidate_dir(candidate_dir)
         _atomic_write_json(log_path, generation_log)
     finally:
         if owns_backend and teardown:

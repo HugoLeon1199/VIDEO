@@ -129,7 +129,7 @@ def test_step5_still_generates_thumbnails_when_scenes_are_already_complete(tmp_p
     monkeypatch.setattr(generate_images.config, "OUTPUT_DIR", str(tmp_path))
     monkeypatch.setattr(generate_images.config, "PUBLISHING_DIRNAME", "publishing")
     monkeypatch.setattr(generate_images.config, "IMAGE_BACKEND", "vast_instance")
-    monkeypatch.setattr(generate_images, "_build_vast_backend", lambda: (backend, None))
+    monkeypatch.setattr(generate_images, "_build_vast_backend", lambda planned_image_count=None: (backend, None, {"managed": False, "owned_instance_id": None, "worker_boot_id": "", "worker_ready_count": 1, "model_load_count": 0, "rent_count": 0, "num_gpus": 1}))
     _write_json(video_dir / "image_prompts.json", [{"index": 1, "prompt": "scene", "start": 0.0, "end": 1.0}])
     _write_json(video_dir / "generation_log.json", {"001": {"status": "completed", "selected_image": str(video_dir / "images" / "img_001.png"), "candidates_saved": 1}})
     (video_dir / "images").mkdir(exist_ok=True)

@@ -335,10 +335,13 @@ def run(video_id: str, script_file: str, resume: bool = False) -> dict:
             pending_gpu_work = bool(pending_scene_prompts(video_id) or pending_thumbnail_prompts(video_id))
             thumbnail_diagnostics = None
             if pending_gpu_work:
+                from image_generation.production import compute_session_image_count
+
+                session_image_count = compute_session_image_count([video_id])
                 old_backend = config.IMAGE_BACKEND
                 try:
                     config.IMAGE_BACKEND = "vast_instance"
-                    with VastSession(lifecycle) as session:
+                    with VastSession(planned_image_count=session_image_count, lifecycle=lifecycle) as session:
                         generate_images.run(
                             video_id,
                             backend_override=session.backend,
@@ -351,6 +354,7 @@ def run(video_id: str, script_file: str, resume: bool = False) -> dict:
                             backend_override=session.backend,
                             manage_backend=False,
                             lifecycle=lifecycle,
+                            max_workers=session.num_gpus,
                         )
                 finally:
                     config.IMAGE_BACKEND = old_backend

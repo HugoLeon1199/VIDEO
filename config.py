@@ -83,7 +83,7 @@ VAST_EXPECTED_DOWNLOAD_GB = float(os.getenv(
     "VAST_EXPECTED_DOWNLOAD_GB",
     str(VAST_EXPECTED_MODEL_GB + VAST_EXPECTED_IMAGE_AND_SETUP_GB)))
 VAST_EXPECTED_UPLOAD_GB = float(os.getenv("VAST_EXPECTED_UPLOAD_GB", "2.0"))
-HF_MODEL_REVISION = os.getenv("HF_MODEL_REVISION", "3de623fc3c33e44ffbe2bad470d0f45bccf2eb21")  # pinned Flux rev
+HF_MODEL_REVISION = os.getenv("HF_MODEL_REVISION") or "3de623fc3c33e44ffbe2bad470d0f45bccf2eb21"  # pinned Flux rev
 WORKER_API_TOKEN = os.getenv("WORKER_API_TOKEN", "local-worker-token")
 MAX_LEASE_MINUTES = int(os.getenv("MAX_LEASE_MINUTES", "90"))  # reaper kills boxes older than this
 # Keep production cheap-first: `find_offer` already ranks eligible machines by
@@ -93,6 +93,20 @@ MAX_LEASE_MINUTES = int(os.getenv("MAX_LEASE_MINUTES", "90"))  # reaper kills bo
 VAST_MIN_INET_DOWN_MBPS = int(os.getenv("VAST_MIN_INET_DOWN_MBPS", "500"))
 VAST_MIN_RELIABILITY = float(os.getenv("VAST_MIN_RELIABILITY", "0.98"))     # drop low-uptime hosts (avoid lemons)
 VAST_REQUEST_TIMEOUT = int(os.getenv("VAST_REQUEST_TIMEOUT", "600"))
+VAST_INSTANCE_RUNNING_TIMEOUT = int(os.getenv("VAST_INSTANCE_RUNNING_TIMEOUT", "600"))
+VAST_PORT_MAPPING_TIMEOUT = int(os.getenv("VAST_PORT_MAPPING_TIMEOUT", "120"))
+# Multi-GPU offer selection
+VAST_NUM_GPUS_CHOICES = [
+    int(n.strip())
+    for n in os.getenv("VAST_NUM_GPUS_CHOICES", "1,2,3").split(",")
+    if n.strip().isdigit()
+] or [1]
+VAST_MIN_CPU_RAM_PER_GPU_GB = float(os.getenv("VAST_MIN_CPU_RAM_PER_GPU_GB", "32.0"))
+VAST_MIN_CPU_CORES_PER_GPU = float(os.getenv("VAST_MIN_CPU_CORES_PER_GPU", "4.0"))
+# Model load time estimate for cost formula (workers load concurrently; flat wall-clock)
+VAST_MODEL_LOAD_WALL_SECONDS = float(os.getenv("VAST_MODEL_LOAD_WALL_SECONDS", "90.0"))
+# Custom Docker image flag: true = skip SCP/pip install on deploy
+VAST_WORKER_CUSTOM_IMAGE = os.getenv("VAST_WORKER_CUSTOM_IMAGE", "false").lower() == "true"
 
 # Per-track config — used by scripts/generate_images.py --track vi|en
 # Both tracks share the same unified endpoint (FLUX.1-dev 12B, 24GB GPU)

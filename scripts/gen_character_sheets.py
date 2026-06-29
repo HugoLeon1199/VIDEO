@@ -1,28 +1,8 @@
-"""Generate character sheets for selected style concepts (Step 2 of reference image workflow).
-
-After Leon selects top 3 concepts from the contact sheet, this script generates:
-  - character_male.png  (1:1, frontal, full body, plain background)
-  - character_female.png (1:1, frontal, full body, plain background)
-for each selected concept.
-
-Output: reference_images/candidates/<concept_id>/character_male.png
-                                                  character_female.png
-
-Usage:
-  python scripts/gen_character_sheets.py --concepts C01,C04,C07 --vast-host 1.2.3.4
-  python scripts/gen_character_sheets.py --concepts C01 --vast-host 1.2.3.4 --vast-port 8080
-
-After Leon picks the final winner, manually copy files to reference_images/:
-  reference_images/character_male.png    <- from winning concept
-  reference_images/character_female.png  <- from winning concept
-  reference_images/style_sheet.png       <- hero.png from winning concept
-"""
+"""Generate Karo + Luma character sheets for selected style concepts."""
 
 from __future__ import annotations
 
 import argparse
-import base64
-import io
 import json
 import sys
 import time
@@ -33,134 +13,153 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from loguru import logger
 
 import config
-from image_generation.schemas import SceneRequest, SceneResult
-from scripts.gen_style_concepts import CONCEPTS, _STYLE_LOCK, _build_backend, _save_result
+from image_generation.schemas import SceneRequest
+from scripts.gen_style_concepts import (
+    CONCEPTS,
+    _STYLE_LOCK,
+    _build_backend,
+    _numeric_scene_id,
+    _require_klein_worker_ready,
+    _save_result,
+    build_parser as _build_style_parser,
+)
 
 _SEED = 11001
 
-# Character sheet prompts keyed by concept ID
-# Male: KARO archetype — strong, capable, carries tools
-# Female: LUMA archetype — resourceful, fully clothed, carries basket or tool
+_KARO_BASE = (
+    "Karo standing front view, full body, same prehistoric adult man in practical hide-and-cloth outfit, "
+    "stone blade pouch at belt, relaxed neutral pose, plain off-white background"
+)
+_LUMA_BASE = (
+    "Luma standing front view, full body, same prehistoric adult woman in fully clothed woven hide-and-cloth outfit, "
+    "small utility basket at side, relaxed neutral pose, plain off-white background"
+)
 
-_MALE_PROMPTS: dict[str, str] = {
-    "C01": "prehistoric man named Karo standing front view, full body, simple tunic and animal hide vest, short dark hair, carrying stone blade tool, arms at sides, plain white background, no weapons drawn",
-    "C02": "prehistoric man named Karo standing front view, full body, cave dweller, simple woven tunic, arms at sides, plain white background",
-    "C03": "prehistoric man named Karo standing front view, full body, savanna traveler, earth-tone robe, carrying walking stick, plain white background",
-    "C04": "prehistoric man named Karo standing front view, full body, hunter, animal hide vest and loincloth, spear held upright, plain white background",
-    "C05": "prehistoric man named Karo standing front view, full body, forager, simple cloth tunic, belt with pouch, plain white background",
-    "C06": "prehistoric man named Karo standing front view, full body, young adult, simple earth-tone tunic, bare feet, plain white background",
-    "C07": "prehistoric man named Karo standing front view, full body, craftsman, leather apron over tunic, arms at sides, plain white background",
-    "C08": "prehistoric man named Karo standing front view, full body, tribal member, earth-tone wrapped cloth, plain white background",
-    "C09": "prehistoric man named Karo standing front view, full body, tool-maker, simple tunic, hands visible, plain white background",
-    "C10": "prehistoric man named Karo standing front view, full body, coastal explorer, woven wrap cloth, plain white background",
-}
 
-_FEMALE_PROMPTS: dict[str, str] = {
-    "C01": "prehistoric woman named Luma standing front view, full body, simple woven dress to knees, dark hair tied back, carrying small clay pot, arms at sides, plain white background, fully clothed",
-    "C02": "prehistoric woman named Luma standing front view, full body, cave dweller, layered cloth wrap dress, plain white background, fully clothed",
-    "C03": "prehistoric woman named Luma standing front view, full body, savanna traveler, flowing earth-tone robe, carrying woven basket, plain white background, fully clothed",
-    "C04": "prehistoric woman named Luma standing front view, full body, gatherer, knee-length tunic dress, belt with pouch, plain white background, fully clothed",
-    "C05": "prehistoric woman named Luma standing front view, full body, forager, woven cloth dress, basket on arm, plain white background, fully clothed",
-    "C06": "prehistoric woman named Luma standing front view, full body, simple tunic dress, bare feet, plain white background, fully clothed",
-    "C07": "prehistoric woman named Luma standing front view, full body, artisan, long wrapped cloth dress, arms at sides, plain white background, fully clothed",
-    "C08": "prehistoric woman named Luma standing front view, full body, tribal member, layered cloth wrap, plain white background, fully clothed",
-    "C09": "prehistoric woman named Luma standing front view, full body, craftswoman, simple long tunic, plain white background, fully clothed",
-    "C10": "prehistoric woman named Luma standing front view, full body, coastal gatherer, wind-blown hair, wrapped cloth dress, plain white background, fully clothed",
-}
+def build_parser() -> argparse.ArgumentParser:
+    parser = argparse.ArgumentParser(description="Generate Klein 9B character sheets for selected concepts")
+    parser.add_argument("--concepts", required=True, metavar="C01,C04,C07")
+    parser.add_argument("--backend", choices=["runpod", "vast"], default="vast")
+    parser.add_argument("--vast-host", default="", metavar="HOST")
+    parser.add_argument("--vast-port", type=int, default=config.KLEIN_WORKER_PORT)
+    parser.add_argument("--out-dir", default="reference_images/candidates", metavar="DIR")
+    parser.add_argument("--dry-run", action="store_true")
+    return parser
+
+
+def _select_concepts(concepts_arg: str) -> list[dict]:
+    requested = [item.strip().upper() for item in concepts_arg.split(",") if item.strip()]
+    selected = [concept for concept in CONCEPTS if concept["id"] in requested]
+    missing = [item for item in requested if item not in {concept["id"] for concept in selected}]
+    if missing:
+        raise RuntimeError(f"Unknown concept IDs: {missing}")
+    return selected
+
+
+def _character_prompt(concept: dict, base_prompt: str) -> str:
+    return f"{_STYLE_LOCK}. {concept['style_variant']}. {base_prompt}"
+
+
+def _scene_request(concept: dict, character_key: str, prompt: str) -> SceneRequest:
+    column_label = "A" if character_key == "character_male" else "B"
+    return SceneRequest(
+        video_id="style_character_sheets_klein",
+        scene_id=_numeric_scene_id(concept["id"], column_label),
+        prompt=prompt,
+        clip_prompt=f"{concept['style_variant']}, {character_key.replace('_', ' ')}",
+        width=576,
+        height=576,
+        steps=config.KLEIN_STEPS_T2I,
+        guidance_scale=config.KLEIN_GUIDANCE_SCALE,
+        candidate_seeds=[_SEED],
+        output_format="PNG",
+        quality=100,
+    )
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Generate character sheets for selected Klein 9B concepts")
-    parser.add_argument("--concepts", required=True, metavar="C01,C04,C07",
-                        help="Comma-separated concept IDs to generate character sheets for")
-    parser.add_argument("--backend", choices=["runpod", "vast"], default="vast")
-    parser.add_argument("--vast-host", default="", metavar="HOST")
-    parser.add_argument("--vast-port", type=int, default=8080)
-    parser.add_argument("--out-dir", default="reference_images/candidates", metavar="DIR")
-    parser.add_argument("--dry-run", action="store_true")
+    parser = build_parser()
     args = parser.parse_args()
-
-    concept_ids = [c.strip().upper() for c in args.concepts.split(",")]
-    selected = {c["id"]: c for c in CONCEPTS if c["id"] in concept_ids}
-    missing_ids = [cid for cid in concept_ids if cid not in selected]
-    if missing_ids:
-        logger.error("Unknown concept IDs: {}", missing_ids)
-        sys.exit(1)
-
+    selected = _select_concepts(args.concepts)
     out_dir = Path(args.out_dir)
 
     if args.dry_run:
-        logger.info("DRY RUN — {} concepts × 2 characters = {} images", len(selected), len(selected) * 2)
-        for cid, concept in selected.items():
+        logger.info("DRY RUN - {} concepts x 2 character sheets", len(selected))
+        for concept in selected:
             logger.info("")
-            logger.info("  {} {}", cid, concept["name"])
-            logger.info("    male:   {}", _MALE_PROMPTS.get(cid, "N/A"))
-            logger.info("    female: {}", _FEMALE_PROMPTS.get(cid, "N/A"))
+            logger.info("  {} {}", concept["id"], concept["name"])
+            logger.info("    style_variant: {}", concept["style_variant"])
+            logger.info("    karo: {}", _character_prompt(concept, _KARO_BASE))
+            logger.info("    luma: {}", _character_prompt(concept, _LUMA_BASE))
         return
 
     backend = _build_backend(args)
-    results_log = []
+    health = _require_klein_worker_ready(backend)
+    logger.info("Klein worker ready: model={} device={}", health.get("model_id"), health.get("device"))
 
-    for cid, concept in selected.items():
-        for character, prompt_suffix in [
-            ("character_male",   _MALE_PROMPTS.get(cid, "")),
-            ("character_female", _FEMALE_PROMPTS.get(cid, "")),
-        ]:
-            if not prompt_suffix:
-                logger.warning("{}/{}: no prompt defined, skip", cid, character)
-                continue
-
-            dest = out_dir / cid / f"{character}.png"
-            if dest.exists():
-                logger.info("{}/{}: already exists, skip", cid, character)
-                results_log.append({"id": cid, "character": character, "ok": True, "skipped": True})
-                continue
-
-            full_prompt = f"{_STYLE_LOCK}. {prompt_suffix}"
-            req = SceneRequest(
-                video_id="char_sheets",
-                scene_id=f"{cid}_{character}",
-                prompt=full_prompt,
-                clip_prompt=prompt_suffix[:200],
-                width=576,
-                height=576,
-                steps=config.IMAGE_STEPS,
-                guidance_scale=config.IMAGE_GUIDANCE_SCALE,
-                candidate_seeds=[_SEED],
-                output_format="PNG",
-                quality=100,
-            )
+    log_entries: list[dict] = []
+    for concept in selected:
+        prompt_pairs = (
+            ("character_male", _character_prompt(concept, _KARO_BASE)),
+            ("character_female", _character_prompt(concept, _LUMA_BASE)),
+        )
+        for character_key, prompt in prompt_pairs:
+            dest = out_dir / concept["id"] / f"{character_key}.png"
+            request = _scene_request(concept, character_key, prompt)
             t0 = time.time()
+            error = None
+            ok = False
+            result = None
             try:
-                result = backend.generate(req)
+                result = backend.generate(request)
                 ok = _save_result(result, dest)
-                elapsed = round(time.time() - t0, 1)
-                status = "ok" if ok else "FAIL (no image)"
-                logger.info("{}/{}: {} in {:.1f}s", cid, character, status, elapsed)
-                results_log.append({"id": cid, "character": character, "ok": ok, "elapsed": elapsed})
-            except Exception as exc:
-                elapsed = round(time.time() - t0, 1)
-                logger.error("{}/{}: ERROR in {:.1f}s — {}", cid, character, elapsed, exc)
-                results_log.append({"id": cid, "character": character, "ok": False, "error": str(exc)})
+                if not ok:
+                    error = "; ".join(result.errors) or "no_image_returned"
+            except Exception as exc:  # noqa: BLE001
+                error = str(exc)
+            elapsed = round(time.time() - t0, 2)
+            status = "ok" if ok else f"FAIL ({error})"
+            logger.info("{}/{}: {} in {:.2f}s", concept["id"], character_key, status, elapsed)
+            log_entries.append(
+                {
+                    "concept_id": concept["id"],
+                    "style_variant": concept["style_variant"],
+                    "character_key": character_key,
+                    "scene_id": int(request.scene_id),
+                    "output_path": str(dest),
+                    "model": getattr(result, "model", health.get("model_id")),
+                    "mode": getattr(result, "mode", "vast_instance"),
+                    "steps": request.steps,
+                    "guidance": request.guidance_scale,
+                    "seed": _SEED,
+                    "elapsed": elapsed,
+                    "error": error,
+                    "ok": ok,
+                }
+            )
 
+    out_dir.mkdir(parents=True, exist_ok=True)
     log_path = out_dir / "generation_log.json"
-    log_path.parent.mkdir(parents=True, exist_ok=True)
-    log_path.write_text(json.dumps(results_log, indent=2, ensure_ascii=False), encoding="utf-8")
+    log_path.write_text(
+        json.dumps(
+            {
+                "model_id": health.get("model_id"),
+                "model_revision": health.get("model_revision"),
+                "device": health.get("device"),
+                "entries": log_entries,
+            },
+            indent=2,
+            ensure_ascii=False,
+        ),
+        encoding="utf-8",
+    )
     logger.info("Log: {}", log_path)
 
-    ok_count = sum(1 for r in results_log if r.get("ok"))
-    total = len(results_log)
+    ok_count = sum(1 for entry in log_entries if entry["ok"])
+    total = len(log_entries)
     logger.info("Done: {}/{} character sheets generated", ok_count, total)
-
-    if ok_count == total:
-        logger.info("")
-        logger.info("Next step: pick the winning concept, then copy to reference_images/:")
-        for cid in concept_ids:
-            logger.info("  cp {} reference_images/character_male.png", out_dir / cid / "character_male.png")
-            logger.info("  cp {} reference_images/character_female.png", out_dir / cid / "character_female.png")
-            logger.info("  cp {} reference_images/style_sheet.png", Path("reference_images/concepts") / cid / "hero.png")
-    else:
-        sys.exit(1)
+    if ok_count < total:
+        raise SystemExit(1)
 
 
 if __name__ == "__main__":

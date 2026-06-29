@@ -1,13 +1,4 @@
-"""Per-GPU FastAPI inference worker for FLUX.2-klein-9B-KV-FP8.
-
-Experimental only — production uses vast_worker/ (FLUX.1-dev 12B).
-
-Differences from the production worker:
-- Loads FLUX.2-klein-9B-KV-FP8 (distilled, 4-step, FP8 quantized)
-- Supports text-to-image AND img2img via FluxImg2ImgPipeline
-- steps: 4 (t2i) or 8 (img2img) — set per request
-- guidance_scale: ~1.0 (distilled, CFG-free)
-"""
+"""Per-GPU FastAPI inference worker for FLUX.2-klein-9B-KV-FP8."""
 
 from __future__ import annotations
 
@@ -18,15 +9,16 @@ import io
 import os
 import signal
 import sys
-import threading
 import time
 import unicodedata
+from pathlib import Path
 from typing import Optional
 
 import torch
 import uvicorn
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.responses import JSONResponse
+from huggingface_hub import snapshot_download
 from PIL import Image
 from pydantic import BaseModel
 
@@ -34,23 +26,56 @@ app = FastAPI(title="Vast Klein Worker (FLUX.2-klein-9B)")
 _t2i_pipe = None
 _img2img_pipe = None
 _load_error: Optional[str] = None
-_infer_lock = threading.Lock()
+_model_loaded = False
+_cache_path = ""
+_device_name = ""
+_vram_gb = 0.0
 
-signal.signal(signal.SIGTERM, lambda sig, frame: sys.exit(0))
+MODEL_ID = os.getenv("KLEIN_MODEL_ID") or os.getenv("MODEL_ID") or "black-forest-labs/FLUX.2-klein-9b-kv-fp8"
+MODEL_REVISION = os.getenv("KLEIN_HF_REVISION") or os.getenv("MODEL_REVISION") or None
+WORKER_PORT = int(os.getenv("KLEIN_WORKER_PORT", "8081"))
+HF_CACHE_DIR = os.getenv("HF_HOME", "/workspace/.cache/huggingface")
+
+signal.signal(signal.SIGTERM, lambda _sig, _frame: sys.exit(0))
 
 
-# ---------------------------------------------------------------------------
-# Model loading
-# ---------------------------------------------------------------------------
+def _validate_model_cache(model_path: str) -> None:
+    required = [
+        Path(model_path) / "model_index.json",
+    ]
+    missing = [str(path) for path in required if not path.exists()]
+    if missing:
+        raise RuntimeError(f"Klein cache validation failed, missing: {missing}")
 
-def _load_models(model_path: str) -> None:
-    global _t2i_pipe, _img2img_pipe, _load_error
+
+def _load_models() -> None:
+    global _t2i_pipe, _img2img_pipe, _load_error, _model_loaded, _cache_path, _device_name, _vram_gb
     try:
-        from diffusers import FluxPipeline, FluxImg2ImgPipeline
-        device = "cuda" if torch.cuda.is_available() else "cpu"
-        dtype = torch.bfloat16 if device == "cuda" else torch.float32
+        from diffusers import FluxImg2ImgPipeline, FluxPipeline
 
-        print(f"[klein_worker] Loading FLUX.2-klein text-to-image from {model_path}...", flush=True)
+        if not torch.cuda.is_available():
+            raise RuntimeError("No CUDA device found - Klein 9B requires GPU")
+        token = (
+            os.getenv("HF_TOKEN")
+            or os.getenv("VAST_HF_TOKEN")
+            or os.getenv("HUGGING_FACE_HUB_TOKEN")
+            or None
+        )
+        _device_name = torch.cuda.get_device_name(0)
+        _vram_gb = round(torch.cuda.get_device_properties(0).total_memory / (1024**3), 1)
+        dtype = torch.bfloat16
+
+        print(f"[klein_worker] Downloading/caching {MODEL_ID} revision={MODEL_REVISION or 'default'}...", flush=True)
+        model_path = snapshot_download(
+            repo_id=MODEL_ID,
+            revision=MODEL_REVISION,
+            token=token,
+            cache_dir=HF_CACHE_DIR,
+        )
+        _validate_model_cache(model_path)
+        _cache_path = model_path
+
+        print(f"[klein_worker] Loading FLUX.2 Klein t2i from {model_path} ...", flush=True)
         _t2i_pipe = FluxPipeline.from_pretrained(
             model_path,
             torch_dtype=dtype,
@@ -58,23 +83,31 @@ def _load_models(model_path: str) -> None:
         )
         _t2i_pipe.enable_model_cpu_offload()
 
-        print("[klein_worker] Loading FLUX.2-klein img2img pipeline...", flush=True)
+        print("[klein_worker] Building FLUX.2 Klein img2img pipeline ...", flush=True)
         _img2img_pipe = FluxImg2ImgPipeline(
-            **{k: getattr(_t2i_pipe, k) for k in (
-                "transformer", "scheduler", "vae", "text_encoder",
-                "tokenizer", "text_encoder_2", "tokenizer_2",
-            ) if hasattr(_t2i_pipe, k)}
+            **{
+                key: getattr(_t2i_pipe, key)
+                for key in (
+                    "transformer",
+                    "scheduler",
+                    "vae",
+                    "text_encoder",
+                    "tokenizer",
+                    "text_encoder_2",
+                    "tokenizer_2",
+                )
+                if hasattr(_t2i_pipe, key)
+            }
         )
         _img2img_pipe.enable_model_cpu_offload()
-        print("[klein_worker] Models ready.", flush=True)
-    except Exception as exc:
+        _model_loaded = True
+        print(f"[klein_worker] Model ready on {_device_name} ({_vram_gb} GB VRAM).", flush=True)
+    except Exception as exc:  # noqa: BLE001
         _load_error = str(exc)
+        _model_loaded = False
         print(f"[klein_worker] Model load failed: {exc}", flush=True)
+        raise
 
-
-# ---------------------------------------------------------------------------
-# Request schema
-# ---------------------------------------------------------------------------
 
 class GenerateRequest(BaseModel):
     video_id: str
@@ -93,10 +126,6 @@ class GenerateRequest(BaseModel):
     strength: float = 0.65
 
 
-# ---------------------------------------------------------------------------
-# Auth
-# ---------------------------------------------------------------------------
-
 def _require_worker_token(request: Request) -> None:
     expected = (os.getenv("WORKER_API_TOKEN", "local-worker-token") or "").strip()
     if not expected:
@@ -109,28 +138,26 @@ def _require_worker_token(request: Request) -> None:
         raise HTTPException(status_code=401, detail="Invalid worker token")
 
 
-# ---------------------------------------------------------------------------
-# Prompt helpers
-# ---------------------------------------------------------------------------
-
 def _normalize(text: str) -> str:
     normalized = unicodedata.normalize("NFC", str(text))
-    if "�" in normalized:
+    if "\ufffd" in normalized:
         raise HTTPException(status_code=400, detail="Prompt contains U+FFFD replacement character")
     return normalized
 
 
-# ---------------------------------------------------------------------------
-# Routes
-# ---------------------------------------------------------------------------
-
 @app.get("/health")
 def health() -> dict:
     return {
-        "status": "ok",
-        "model": "FLUX.2-klein-9B-KV-FP8",
+        "status": "ok" if _model_loaded and not _load_error else "loading",
+        "model": MODEL_ID,
+        "model_id": MODEL_ID,
+        "model_revision": MODEL_REVISION,
+        "model_loaded": _model_loaded,
         "t2i_loaded": _t2i_pipe is not None,
         "img2img_loaded": _img2img_pipe is not None,
+        "cache_path": _cache_path,
+        "device": _device_name or ("cuda" if torch.cuda.is_available() else "cpu"),
+        "gpu_vram_gb": _vram_gb,
         "load_error": _load_error,
     }
 
@@ -138,59 +165,54 @@ def health() -> dict:
 @app.post("/generate")
 def generate(req: GenerateRequest, request: Request) -> JSONResponse:
     _require_worker_token(request)
-    if _t2i_pipe is None:
+    if not _model_loaded or _t2i_pipe is None:
         raise HTTPException(status_code=503, detail="Model not loaded yet")
 
     clip_prompt = _normalize(req.clip_prompt or req.prompt)
     t5_prompt = _normalize(req.prompt)
-
     use_img2img = req.img2img_base64 is not None and _img2img_pipe is not None
     pipe = _img2img_pipe if use_img2img else _t2i_pipe
 
-    # Decode reference image once (shared across seeds)
     reference_image: Optional[Image.Image] = None
     if use_img2img:
         try:
             raw_ref = base64.b64decode(req.img2img_base64)
             reference_image = Image.open(io.BytesIO(raw_ref)).convert("RGB")
-        except Exception as exc:
-            raise HTTPException(status_code=400, detail=f"Invalid img2img_base64: {exc}")
+        except Exception as exc:  # noqa: BLE001
+            raise HTTPException(status_code=400, detail=f"Invalid img2img_base64: {exc}") from exc
 
-    device = "cuda" if torch.cuda.is_available() else "cpu"
     images_out = []
     errors = []
-
     for seed in req.candidate_seeds:
         t0 = time.time()
         try:
-            generator = torch.Generator(device=device).manual_seed(seed)
-            with _infer_lock:
-                if use_img2img:
-                    result = pipe(
-                        image=reference_image,
-                        prompt=clip_prompt,
-                        prompt_2=t5_prompt,
-                        strength=req.strength,
-                        width=req.width,
-                        height=req.height,
-                        num_inference_steps=req.steps,
-                        guidance_scale=req.guidance_scale,
-                        generator=generator,
-                        output_type="pil",
-                        max_sequence_length=512,
-                    )
-                else:
-                    result = pipe(
-                        prompt=clip_prompt,
-                        prompt_2=t5_prompt,
-                        width=req.width,
-                        height=req.height,
-                        num_inference_steps=req.steps,
-                        guidance_scale=req.guidance_scale,
-                        generator=generator,
-                        output_type="pil",
-                        max_sequence_length=512,
-                    )
+            generator = torch.Generator(device="cpu").manual_seed(seed)
+            if use_img2img:
+                result = pipe(
+                    image=reference_image,
+                    prompt=clip_prompt,
+                    prompt_2=t5_prompt,
+                    strength=req.strength,
+                    width=req.width,
+                    height=req.height,
+                    num_inference_steps=req.steps,
+                    guidance_scale=req.guidance_scale,
+                    generator=generator,
+                    output_type="pil",
+                    max_sequence_length=512,
+                )
+            else:
+                result = pipe(
+                    prompt=clip_prompt,
+                    prompt_2=t5_prompt,
+                    width=req.width,
+                    height=req.height,
+                    num_inference_steps=req.steps,
+                    guidance_scale=req.guidance_scale,
+                    generator=generator,
+                    output_type="pil",
+                    max_sequence_length=512,
+                )
             img: Image.Image = result.images[0]
             buf = io.BytesIO()
             fmt = req.output_format.upper()
@@ -201,35 +223,31 @@ def generate(req: GenerateRequest, request: Request) -> JSONResponse:
             else:
                 img.save(buf, format="PNG")
             raw = buf.getvalue()
-            images_out.append({
-                "seed": seed,
-                "width": img.width,
-                "height": img.height,
-                "image_base64": base64.b64encode(raw).decode(),
-                "sha256": hashlib.sha256(raw).hexdigest(),
-                "generation_seconds": round(time.time() - t0, 2),
-                "mode": "img2img" if use_img2img else "text_to_image",
-            })
-        except Exception as exc:
+            images_out.append(
+                {
+                    "seed": seed,
+                    "width": img.width,
+                    "height": img.height,
+                    "image_base64": base64.b64encode(raw).decode(),
+                    "sha256": hashlib.sha256(raw).hexdigest(),
+                    "generation_seconds": round(time.time() - t0, 2),
+                    "mode": "img2img" if use_img2img else "text_to_image",
+                }
+            )
+        except Exception as exc:  # noqa: BLE001
             errors.append(f"seed={seed}: {exc}")
 
     return JSONResponse({"images": images_out, "errors": errors})
 
 
-# ---------------------------------------------------------------------------
-# Entry point
-# ---------------------------------------------------------------------------
-
-_model_path: str = "/workspace/model_klein"
-
-
 if __name__ == "__main__":
+    import threading
+
     parser = argparse.ArgumentParser()
-    parser.add_argument("--model-path", default="/workspace/model_klein")
-    parser.add_argument("--port", type=int, default=8090)
-    parser.add_argument("--host", default="127.0.0.1")
+    parser.add_argument("--port", type=int, default=WORKER_PORT)
+    parser.add_argument("--host", default="0.0.0.0")
     args = parser.parse_args()
 
-    _model_path = args.model_path
-    threading.Thread(target=lambda: _load_models(_model_path), daemon=True).start()
+    # Load models in background thread so /health is reachable during loading
+    threading.Thread(target=_load_models, daemon=True).start()
     uvicorn.run(app, host=args.host, port=args.port)

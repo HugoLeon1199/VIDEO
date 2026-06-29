@@ -217,6 +217,30 @@ CLAUDE_MAX_RETRIES = 2
 CLAUDE_RETRY_SLEEP = 5   # seconds
 
 
+# ---------------------------------------------------------------------------
+# Experimental: FLUX.2-klein-9B-KV-FP8 profile
+# Activated only via AB_TEST_BACKEND=klein or --backend klein flag.
+# Production 12B FLUX.1-dev defaults above are NOT changed.
+# ---------------------------------------------------------------------------
+KLEIN_MODEL_ID = os.getenv("KLEIN_MODEL_ID", "black-forest-labs/FLUX.2-klein-9b-kv-fp8")
+KLEIN_HF_REVISION = os.getenv("KLEIN_HF_REVISION", "")  # pin before Vast use
+KLEIN_WORKER_IMAGE = os.getenv("KLEIN_WORKER_IMAGE", "ghcr.io/hugoleon1199/vast-flux-klein-worker:v0.1.0")
+KLEIN_WORKER_PORT = int(os.getenv("KLEIN_WORKER_PORT", "8081"))
+# Klein generates in 4 steps (distilled); 8 is safer for img2img
+KLEIN_STEPS_T2I = int(os.getenv("KLEIN_STEPS_T2I", "4"))
+KLEIN_STEPS_IMG2IMG = int(os.getenv("KLEIN_STEPS_IMG2IMG", "8"))
+KLEIN_GUIDANCE_SCALE = float(os.getenv("KLEIN_GUIDANCE_SCALE", "1.0"))
+# img2img strength for character scenes (0.55–0.72 is the tuned range)
+KLEIN_IMG2IMG_STRENGTH_CHARACTER = float(os.getenv("KLEIN_IMG2IMG_STRENGTH_CHARACTER", "0.65"))
+KLEIN_IMG2IMG_STRENGTH_CONTINUITY = float(os.getenv("KLEIN_IMG2IMG_STRENGTH_CONTINUITY", "0.55"))
+# Reference image directory (shared across the codebase)
+KLEIN_REFERENCE_DIR = os.getenv("KLEIN_REFERENCE_DIR", "reference_images")
+# A/B test config
+KLEIN_AB_SCENE_COUNT = int(os.getenv("KLEIN_AB_SCENE_COUNT", "20"))
+KLEIN_AB_CANDIDATE_SEEDS = [int(s) for s in os.getenv("KLEIN_AB_CANDIDATE_SEEDS", "11001").split(",") if s.strip()]
+KLEIN_AB_OUTPUT_DIR = os.getenv("KLEIN_AB_OUTPUT_DIR", "output/ab_test_klein")
+
+
 def require_pinned_hf_model_revision() -> str:
     revision = (HF_MODEL_REVISION or "").strip()
     if not revision or revision.lower() == "main":

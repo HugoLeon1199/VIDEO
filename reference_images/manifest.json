@@ -1,0 +1,54 @@
+{
+  "version": "reference-images-v1",
+  "description": "Fixed reference images for FLUX.2-klein-9B img2img experiments. Place real PNG files here before running ab_test_klein.py.",
+  "slots": {
+    "style_sheet": {
+      "file": "style_sheet.png",
+      "description": "1 style reference: overall art style, color palette, line weight, flatness level",
+      "required": true
+    },
+    "character_male": {
+      "file": "character_male.png",
+      "description": "Character sheet for KARO — frontal view, plain background, full costume visible",
+      "required": true
+    },
+    "character_female": {
+      "file": "character_female.png",
+      "description": "Character sheet for LUMA — frontal view, plain background, full costume visible",
+      "required": true
+    },
+    "character_group": {
+      "file": "character_group.png",
+      "description": "Optional: group scene with both characters together for continuity reference",
+      "required": false
+    },
+    "sample_scene_interior": {
+      "file": "sample_scene_interior.png",
+      "description": "Sample cave/interior scene — establishes lighting mood and texture style",
+      "required": false
+    },
+    "sample_scene_exterior": {
+      "file": "sample_scene_exterior.png",
+      "description": "Sample savanna/exterior scene — establishes daylight palette and horizon style",
+      "required": false
+    }
+  },
+  "seed_keys": {
+    "character_male": "character_male.png",
+    "character_female": "character_female.png",
+    "character_full_body": "character_group.png",
+    "night_fire": "sample_scene_interior.png",
+    "day_wilderness": "sample_scene_exterior.png",
+    "cosmic_sky": null,
+    "scientific_diagram": null,
+    "timeline_cycle": null,
+    "object_macro": null
+  },
+  "notes": [
+    "Files with null seed_key fall back to text-to-image automatically.",
+    "Replace placeholder files with real AI-generated reference sheets before A/B test.",
+    "Recommended generation: FLUX.1-dev 12B prompt-only, cherry-pick best candidate.",
+    "All female characters must be fully clothed (permanent rule).",
+    "Do not commit real image files — add reference_images/*.png to .gitignore."
+  ]
+}

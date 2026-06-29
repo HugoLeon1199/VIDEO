@@ -66,6 +66,13 @@ VIDEO/
 VIDEO-1/
 master_style_seeds/
 
+# Reference images for Klein A/B (real PNGs not committed — manifest.json is committed)
+reference_images/*.png
+reference_images/*.webp
+
+# Klein A/B test output
+output/ab_test_klein/
+
 # Docker
 .dockerignore
 
